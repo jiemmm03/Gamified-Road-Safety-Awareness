@@ -1,0 +1,381 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net" modified="2026-07-28T01:36:00.000Z" agent="Antigravity AI" version="21.0.0" type="device">
+  <diagram id="RoadSafetyAI_Wireframe" name="AI Gamified Road Safety Wireframe">
+    <mxGraphModel dx="2400" dy="1800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="3300" pageHeight="2100" math="0" shadow="0">
+      <root>
+        <!-- Root and Default Layer -->
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- ================================================================= -->
+        <!-- SCREEN 1: MAIN DASHBOARD & AI LEARNING HUB (x=80, y=80)         -->
+        <!-- ================================================================= -->
+        <mxCell id="screen1_frame" value="Screen 1: Main Dashboard &amp;amp; AI Learning Hub" style="swimlane;whiteSpace=wrap;html=1;startSize=35;fillColor=#f8f9fa;strokeColor=#c2c7cb;fontStyle=1;fontSize=15;fontColor=#1a237e;rounded=1;arcSize=2;" parent="1" vertex="1">
+          <mxGeometry x="80" y="80" width="660" height="760" as="geometry" />
+        </mxCell>
+
+        <!-- Top Navigation Bar -->
+        <mxCell id="s1_nav" value="&lt;b style='font-size:16px;'&gt;🛡️ RoadSafe AI&lt;/b&gt;&lt;span style='font-size:12px;margin-left:20px;'&gt;Dashboard&amp;nbsp;&amp;nbsp;|&amp;nbsp;&amp;nbsp;Modules&amp;nbsp;&amp;nbsp;|&amp;nbsp;&amp;nbsp;Simulations&amp;nbsp;&amp;nbsp;|&amp;nbsp;&amp;nbsp;Leaderboard&amp;nbsp;&amp;nbsp;|&amp;nbsp;&amp;nbsp;AI Coach&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#1a237e;strokeColor=none;fontColor=#ffffff;align=left;spacingLeft=15;" parent="screen1_frame" vertex="1">
+          <mxGeometry x="0" y="35" width="660" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- User Profile & Gamification Header Badge -->
+        <mxCell id="s1_user_badge" value="&lt;b&gt;👤 Juan D.&lt;/b&gt;&lt;br&gt;Level 8 | 2,450 XP&lt;br&gt;🔥 7-Day Streak!" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffab00;strokeColor=#ff8f00;fontColor=#000000;fontStyle=0;fontSize=11;align=center;" parent="screen1_frame" vertex="1">
+          <mxGeometry x="510" y="42" width="135" height="36" as="geometry" />
+        </mxCell>
+
+        <!-- Sidebar Navigation -->
+        <mxCell id="s1_sidebar" value="&lt;b style='color:#1a237e;font-size:13px;'&gt;QUICK NAV&lt;/b&gt;&lt;hr&gt;📚 Study Modules&lt;br&gt;&lt;br&gt;🎮 3D Simulations&lt;br&gt;&lt;br&gt;⚡ Daily AI Quiz&lt;br&gt;&lt;br&gt;🏆 Leaderboards&lt;br&gt;&lt;br&gt;🏅 My Badges&lt;br&gt;&lt;br&gt;📊 AI Diagnostic&lt;br&gt;&lt;br&gt;🏫 School Portal&lt;br&gt;&lt;br&gt;⚙️ Settings" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#e0e0e0;fontColor=#333333;align=left;verticalAlign=top;spacingTop=15;spacingLeft=15;fontSize=13;" parent="screen1_frame" vertex="1">
+          <mxGeometry x="0" y="85" width="150" height="675" as="geometry" />
+        </mxCell>
+
+        <!-- AI Personalized Recommendation Banner (Hero Card) -->
+        <mxCell id="s1_ai_hero" value="&lt;b style='font-size:15px;color:#311b92;'&gt;🤖 AI Coach Personalized Recommendation&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:12px;color:#4527a0;'&gt;&lt;b&gt;Analysis:&lt;/b&gt; You missed 2 Right-of-Way questions in yesterday's quiz. To reinforce your decision-making, AI has prepared a targeted interactive simulation.&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ede7f6;strokeColor=#d1c4e9;fontColor=#333333;align=left;verticalAlign=top;spacingTop=12;spacingLeft=15;spacingRight=15;" parent="screen1_frame" vertex="1">
+          <mxGeometry x="170" y="105" width="470" height="115" as="geometry" />
+        </mxCell>
+
+        <!-- Start Recommended Lesson Button -->
+        <mxCell id="s1_ai_btn" value="🚀 Launch AI Recommended Simulation (#4)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#6200ea;strokeColor=#3700b3;fontColor=#ffffff;fontStyle=1;fontSize=12;cursor=pointer;" parent="screen1_frame" vertex="1">
+          <mxGeometry x="370" y="175" width="250" height="35" as="geometry" />
+        </mxCell>
+
+        <!-- Section Title: Active Learning Modules -->
+        <mxCell id="s1_mod_title" value="&lt;b style='font-size:14px;color:#1a237e;'&gt;📖 Active Learning Modules (AI Adaptive Difficulty)&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="screen1_frame" vertex="1">
+          <mxGeometry x="170" y="235" width="470" height="25" as="geometry" />
+        </mxCell>
+
+        <!-- Module Card 1 -->
+        <mxCell id="s1_mod1" value="&lt;b&gt;Module 2: Traffic Signs &amp;amp; Pavement Markings&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:11px;color:#666;'&gt;Status: In Progress (75%) | AI Difficulty: Medium&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#cccccc;fontColor=#333333;align=left;verticalAlign=top;spacingTop=10;spacingLeft=12;" parent="screen1_frame" vertex="1">
+          <mxGeometry x="170" y="265" width="225" height="100" as="geometry" />
+        </mxCell>
+        <!-- Progress Bar 1 -->
+        <mxCell id="s1_prog1_bg" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e0e0e0;strokeColor=none;" parent="screen1_frame" vertex="1">
+          <mxGeometry x="182" y="325" width="180" height="10" as="geometry" />
+        </mxCell>
+        <mxCell id="s1_prog1_fg" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#00c853;strokeColor=none;" parent="screen1_frame" vertex="1">
+          <mxGeometry x="182" y="325" width="135" height="10" as="geometry" />
+        </mxCell>
+        <mxCell id="s1_mod1_btn" value="Continue" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#2e7d32;strokeColor=#1b5e20;fontColor=#ffffff;fontSize=10;fontStyle=1;" parent="screen1_frame" vertex="1">
+          <mxGeometry x="320" y="338" width="65" height="20" as="geometry" />
+        </mxCell>
+
+        <!-- Module Card 2 -->
+        <mxCell id="s1_mod2" value="&lt;b&gt;Module 3: Speed Limits &amp;amp; Overtaking Laws&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:11px;color:#666;'&gt;Status: Up Next (0%) | AI Difficulty: Hard ⚠️&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#cccccc;fontColor=#333333;align=left;verticalAlign=top;spacingTop=10;spacingLeft=12;" parent="screen1_frame" vertex="1">
+          <mxGeometry x="415" y="265" width="225" height="100" as="geometry" />
+        </mxCell>
+        <!-- Progress Bar 2 -->
+        <mxCell id="s1_prog2_bg" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e0e0e0;strokeColor=none;" parent="screen1_frame" vertex="1">
+          <mxGeometry x="427" y="325" width="180" height="10" as="geometry" />
+        </mxCell>
+        <mxCell id="s1_mod2_btn" value="Start Lesson" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1565c0;strokeColor=#0d47a1;fontColor=#ffffff;fontSize=10;fontStyle=1;" parent="screen1_frame" vertex="1">
+          <mxGeometry x="550" y="338" width="80" height="20" as="geometry" />
+        </mxCell>
+
+        <!-- Gamification Widget Card -->
+        <mxCell id="s1_gamify_card" value="&lt;b style='font-size:14px;color:#e65100;'&gt;🏆 Gamification Hub &amp;amp; Leaderboards&lt;/b&gt;&lt;hr&gt;&lt;b&gt;Current Rank:&lt;/b&gt; #4 in Quezon City LGU League (Top 5%!)&lt;br&gt;&lt;b&gt;Recent Badge Earned:&lt;/b&gt; 🛡️ Defensive Driving Pro&lt;br&gt;&lt;b&gt;Next Milestone Reward:&lt;/b&gt; Reach Lvl 9 to unlock 'Night Driving Simulator Mode'&lt;br&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff8e1;strokeColor=#ffe082;fontColor=#333333;align=left;verticalAlign=top;spacingTop=12;spacingLeft=15;spacingRight=15;fontSize=12;" parent="screen1_frame" vertex="1">
+          <mxGeometry x="170" y="380" width="470" height="135" as="geometry" />
+        </mxCell>
+        <mxCell id="s1_leader_btn" value="View Full Leaderboards &amp;amp; Rewards" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ff8f00;strokeColor=#c67100;fontColor=#ffffff;fontStyle=1;fontSize=11;" parent="screen1_frame" vertex="1">
+          <mxGeometry x="410" y="475" width="210" height="28" as="geometry" />
+        </mxCell>
+
+        <!-- AI Performance Analytics Quick Widget -->
+        <mxCell id="s1_analytics_card" value="&lt;b style='font-size:14px;color:#00695c;'&gt;📊 Driver Competency &amp;amp; Decision Scorecard&lt;/b&gt;&lt;hr&gt;&lt;b&gt;Overall Safety Score:&lt;/b&gt; 84 / 100 (Exam Ready!)&lt;br&gt;&lt;b&gt;Strongest Skill:&lt;/b&gt; Traffic Signs (95% Accuracy)&lt;br&gt;&lt;b&gt;AI Focus Area:&lt;/b&gt; Nighttime Hazard Perception (Reaction time 0.5s slower)&lt;br&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e0f2f1;strokeColor=#80cbc4;fontColor=#333333;align=left;verticalAlign=top;spacingTop=12;spacingLeft=15;spacingRight=15;fontSize=12;" parent="screen1_frame" vertex="1">
+          <mxGeometry x="170" y="530" width="470" height="135" as="geometry" />
+        </mxCell>
+        <mxCell id="s1_analytics_btn" value="View Deep Dive AI Diagnostics" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#00897b;strokeColor=#004d40;fontColor=#ffffff;fontStyle=1;fontSize=11;" parent="screen1_frame" vertex="1">
+          <mxGeometry x="420" y="625" width="200" height="28" as="geometry" />
+        </mxCell>
+
+        <!-- Daily Quiz Banner -->
+        <mxCell id="s1_daily_quiz" value="&lt;b&gt;⚡ Daily AI Adaptive Quiz Available!&lt;/b&gt; Answer 5 dynamic questions in 3 mins to earn +100 XP and keep your streak." style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffebee;strokeColor=#ef9a9a;fontColor=#c62828;align=left;verticalAlign=middle;spacingLeft=15;fontSize=12;" parent="screen1_frame" vertex="1">
+          <mxGeometry x="170" y="680" width="360" height="45" as="geometry" />
+        </mxCell>
+        <mxCell id="s1_quiz_btn" value="Start Quiz" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d32f2f;strokeColor=#b71c1c;fontColor=#ffffff;fontStyle=1;fontSize=11;" parent="screen1_frame" vertex="1">
+          <mxGeometry x="545" y="688" width="95" height="30" as="geometry" />
+        </mxCell>
+
+
+        <!-- ================================================================= -->
+        <!-- SCREEN 2: SCENARIO-BASED AI SIMULATION (x=880, y=80)            -->
+        <!-- ================================================================= -->
+        <mxCell id="screen2_frame" value="Screen 2: Scenario-Based AI Driving Simulation (Decision-Making)" style="swimlane;whiteSpace=wrap;html=1;startSize=35;fillColor=#f8f9fa;strokeColor=#c2c7cb;fontStyle=1;fontSize=15;fontColor=#1a237e;rounded=1;arcSize=2;" parent="1" vertex="1">
+          <mxGeometry x="880" y="80" width="660" height="760" as="geometry" />
+        </mxCell>
+
+        <!-- Sim Top Bar -->
+        <mxCell id="s2_topbar" value="&lt;b&gt;🎮 Simulation Mode:&lt;/b&gt; Scenario #12 - Wet Road Intersection &amp;amp; Right-of-Way" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#212121;strokeColor=none;fontColor=#ffffff;align=left;spacingLeft=15;fontSize=14;" parent="screen2_frame" vertex="1">
+          <mxGeometry x="0" y="35" width="660" height="45" as="geometry" />
+        </mxCell>
+
+        <!-- Timer and AI Mode indicators -->
+        <mxCell id="s2_timer" value="⏱️ Time Left: 00:12s" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d32f2f;strokeColor=none;fontColor=#ffffff;fontStyle=1;fontSize=12;align=center;" parent="screen2_frame" vertex="1">
+          <mxGeometry x="500" y="42" width="140" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="s2_ai_indicator" value="🧠 AI Adaptive Engine: Dynamic Hazard Spawning Active" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#311b92;strokeColor=none;fontColor=#ffffff;fontSize=11;align=center;" parent="screen2_frame" vertex="1">
+          <mxGeometry x="15" y="90" width="340" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="s2_weather" value="🌧️ Weather: Rain | 🛣️ Grip: Low (-30%)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#455a64;strokeColor=none;fontColor=#ffffff;fontSize=11;align=center;" parent="screen2_frame" vertex="1">
+          <mxGeometry x="370" y="90" width="270" height="25" as="geometry" />
+        </mxCell>
+
+        <!-- 3D Simulation Viewport Placeholder -->
+        <mxCell id="s2_viewport" value="&lt;b style='font-size:16px;color:#555555;'&gt;[ Interactive 3D / 2D Driving Simulation Viewport ]&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;span style='font-size:13px;color:#222;'&gt;🚗 &lt;b&gt;Your Vehicle (Blue Car)&lt;/b&gt; is approaching a 4-way intersection at 40 km/h.&lt;br&gt;🚑 &lt;b&gt;Emergency Vehicle (Ambulance)&lt;/b&gt; with active siren is approaching from the left.&lt;br&gt;🚶 &lt;b&gt;Pedestrian&lt;/b&gt; is stepping onto the crosswalk on your right.&lt;br&gt;🚦 &lt;b&gt;Traffic Light&lt;/b&gt; is currently blinking yellow.&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#cfd8dc;strokeColor=#90a4ae;fontColor=#263238;align=center;verticalAlign=middle;strokeWidth=2;dashed=1;" parent="screen2_frame" vertex="1">
+          <mxGeometry x="15" y="125" width="625" height="240" as="geometry" />
+        </mxCell>
+
+        <!-- Visual Hazard Markers inside Viewport -->
+        <mxCell id="s2_marker1" value="⚠️ Hazard 1: Ambulance" style="ellipse;whiteSpace=wrap;html=1;fillColor=#ff5252;strokeColor=#b71c1c;fontColor=#ffffff;fontStyle=1;fontSize=10;" parent="screen2_frame" vertex="1">
+          <mxGeometry x="40" y="145" width="140" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="s2_marker2" value="⚠️ Hazard 2: Pedestrian" style="ellipse;whiteSpace=wrap;html=1;fillColor=#ff9800;strokeColor=#e65100;fontColor=#ffffff;fontStyle=1;fontSize=10;" parent="screen2_frame" vertex="1">
+          <mxGeometry x="480" y="295" width="140" height="35" as="geometry" />
+        </mxCell>
+
+        <!-- Decision Prompt Box -->
+        <mxCell id="s2_prompt" value="&lt;b style='font-size:15px;color:#b71c1c;'&gt;❓ CRITICAL DRIVER DECISION REQUIRED:&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:13px;'&gt;What is the safest and most legally compliant immediate action?&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#333333;fontColor=#000000;align=left;verticalAlign=middle;spacingLeft=15;" parent="screen2_frame" vertex="1">
+          <mxGeometry x="15" y="380" width="625" height="55" as="geometry" />
+        </mxCell>
+
+        <!-- Option A Card -->
+        <mxCell id="s2_optA" value="&lt;b&gt;Option A:&lt;/b&gt; Accelerate quickly to clear the intersection before the ambulance arrives, avoiding a sudden stop on wet pavement." style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#e53935;fontColor=#333333;align=left;verticalAlign=middle;spacingLeft=15;cursor=pointer;" parent="screen2_frame" vertex="1">
+          <mxGeometry x="15" y="445" width="625" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- Option B Card -->
+        <mxCell id="s2_optB" value="&lt;b&gt;Option B:&lt;/b&gt; Honk your horn to warn the pedestrian, yield to the ambulance, and edge forward into the crosswalk to prepare for turning." style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#fb8c00;fontColor=#333333;align=left;verticalAlign=middle;spacingLeft=15;cursor=pointer;" parent="screen2_frame" vertex="1">
+          <mxGeometry x="15" y="505" width="625" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- Option C Card (Selected / Safe Choice) -->
+        <mxCell id="s2_optC" value="&lt;b style='color:#2e7d32;'&gt;Option C (Selected):&lt;/b&gt; Come to a smooth, complete stop before the crosswalk line, yielding right-of-way to both the ambulance and the pedestrian." style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e8f5e9;strokeColor=#2e7d32;strokeWidth=2;fontColor=#1b5e20;align=left;verticalAlign=middle;spacingLeft=15;cursor=pointer;" parent="screen2_frame" vertex="1">
+          <mxGeometry x="15" y="565" width="625" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- Submit Decision Button -->
+        <mxCell id="s2_submit" value="✅ Submit Decision &amp;amp; Verify with AI Coach" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#2e7d32;strokeColor=#1b5e20;fontColor=#ffffff;fontStyle=1;fontSize=13;cursor=pointer;" parent="screen2_frame" vertex="1">
+          <mxGeometry x="15" y="625" width="320" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="s2_hint_btn" value="💡 Request AI Hint (-20 XP)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fbc02d;strokeColor=#f57f17;fontColor=#000000;fontStyle=1;fontSize=12;cursor=pointer;" parent="screen2_frame" vertex="1">
+          <mxGeometry x="350" y="625" width="290" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- Live AI Telemetry Overlay Bottom -->
+        <mxCell id="s2_telemetry" value="&lt;b style='color:#6200ea;'&gt;🤖 Live AI Telemetry:&lt;/b&gt; Eye-tracking simulation detected 1.2s focus on Ambulance siren. Good hazard awareness!" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ede7f6;strokeColor=#d1c4e9;fontColor=#333333;align=left;verticalAlign=middle;spacingLeft=15;fontSize=11;" parent="screen2_frame" vertex="1">
+          <mxGeometry x="15" y="680" width="625" height="35" as="geometry" />
+        </mxCell>
+
+
+        <!-- ================================================================= -->
+        <!-- SCREEN 3: AI INSTANT FEEDBACK & ANALYSIS (x=1680, y=80)         -->
+        <!-- ================================================================= -->
+        <mxCell id="screen3_frame" value="Screen 3: AI Instant Feedback &amp;amp; Decision Pattern Analysis" style="swimlane;whiteSpace=wrap;html=1;startSize=35;fillColor=#f8f9fa;strokeColor=#c2c7cb;fontStyle=1;fontSize=15;fontColor=#1a237e;rounded=1;arcSize=2;" parent="1" vertex="1">
+          <mxGeometry x="1680" y="80" width="660" height="760" as="geometry" />
+        </mxCell>
+
+        <!-- Feedback Header -->
+        <mxCell id="s3_header" value="&lt;b&gt;🎉 Simulation Complete!&lt;/b&gt; | Scenario #12 Evaluation &amp;amp; AI Coaching" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#1b5e20;strokeColor=none;fontColor=#ffffff;align=left;spacingLeft=15;fontSize=14;" parent="screen3_frame" vertex="1">
+          <mxGeometry x="0" y="35" width="660" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- Gamification Reward Banner -->
+        <mxCell id="s3_reward_banner" value="&lt;b style='font-size:16px;color:#2e7d32;'&gt;🌟 Excellent Decision! +150 XP Earned&lt;/b&gt;&lt;br&gt;&lt;span style='color:#333;'&gt;&lt;b&gt;Achievement Progress:&lt;/b&gt; 'Emergency Responder' Badge (4/5 Scenarios Completed)&lt;br&gt;&lt;b&gt;LGU Challenge:&lt;/b&gt; +1 Point toward Quezon City Road Safety Ambassador Certificate&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e8f5e9;strokeColor=#81c784;fontColor=#1b5e20;align=left;verticalAlign=middle;spacingLeft=15;" parent="screen3_frame" vertex="1">
+          <mxGeometry x="20" y="100" width="620" height="75" as="geometry" />
+        </mxCell>
+
+        <!-- Left Column: AI Behavioral & Telemetry Breakdown -->
+        <mxCell id="s3_telemetry_box" value="&lt;b style='font-size:14px;color:#1a237e;'&gt;🤖 AI Behavioral &amp;amp; Telemetry Breakdown&lt;/b&gt;&lt;hr&gt;&lt;br&gt;&lt;b style='color:#2e7d32;'&gt;✅ Rule Compliance: 100%&lt;/b&gt;&lt;br&gt;Properly yielded to emergency vehicle per RA 4136 (Land Transportation and Traffic Code).&lt;br&gt;&lt;br&gt;&lt;b style='color:#f57f17;'&gt;⚠️ Reaction Time: 2.4s&lt;/b&gt; (Target: &lt; 1.8s)&lt;br&gt;&lt;i&gt;AI Diagnosis:&lt;/i&gt; You hesitated for 0.6s before releasing the accelerator. In rainy conditions, quick recognition is vital.&lt;br&gt;&lt;br&gt;&lt;b style='color:#2e7d32;'&gt;👁️ Hazard Perception: Excellent&lt;/b&gt;&lt;br&gt;Successfully identified pedestrian stepping off curb in low-visibility wet conditions.&lt;br&gt;&lt;br&gt;&lt;b style='color:#1565c0;'&gt;⚖️ Risk Assessment Score: 92/100&lt;/b&gt;&lt;br&gt;Low collision probability achieved." style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#cccccc;fontColor=#333333;align=left;verticalAlign=top;spacingTop=10;spacingLeft=12;spacingRight=10;fontSize=12;" parent="screen3_frame" vertex="1">
+          <mxGeometry x="20" y="190" width="300" height="340" as="geometry" />
+        </mxCell>
+
+        <!-- Right Column: AI Decision Tree & Explanation -->
+        <mxCell id="s3_explain_box" value="&lt;b style='font-size:14px;color:#1a237e;'&gt;🧠 AI Decision Analysis &amp;amp; Law Explanation&lt;/b&gt;&lt;hr&gt;&lt;br&gt;&lt;b style='color:#2e7d32;'&gt;Why Option C was the Correct Choice:&lt;/b&gt;&lt;br&gt;Under Philippine Traffic Laws and International Road Safety standards, emergency vehicles with active sirens/lights have &lt;b&gt;absolute right-of-way&lt;/b&gt;. Furthermore, stopping &lt;i&gt;before&lt;/i&gt; the crosswalk ensures pedestrian safety without blocking the intersection clearance.&lt;br&gt;&lt;br&gt;&lt;b style='color:#c62828;'&gt;Why Option A was Dangerous:&lt;/b&gt;&lt;br&gt;Attempting to 'beat' an emergency vehicle on wet pavement creates an extreme 85% probability of a T-bone collision or hydroplaning.&lt;br&gt;&lt;br&gt;&lt;b style='color:#e65100;'&gt;Why Option B was Incorrect:&lt;/b&gt;&lt;br&gt;Honking at pedestrians on crosswalks violates pedestrian priority rules. Edging into the crosswalk obstructs pedestrian flow." style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#cccccc;fontColor=#333333;align=left;verticalAlign=top;spacingTop=10;spacingLeft=12;spacingRight=10;fontSize=12;" parent="screen3_frame" vertex="1">
+          <mxGeometry x="340" y="190" width="300" height="340" as="geometry" />
+        </mxCell>
+
+        <!-- AI Curriculum Adaptive Action Box -->
+        <mxCell id="s3_adaptive_action" value="&lt;b style='color:#311b92;font-size:13px;'&gt;🔄 AI Adaptive Curriculum Update Triggered:&lt;/b&gt;&lt;br&gt;&lt;span style='fontSize:11px;'&gt;Based on your slight reaction hesitation on wet roads, AI has automatically added a &lt;b&gt;5-minute Mini-Lesson on 'Wet Weather Braking Distances'&lt;/b&gt; to your study queue and adjusted future simulation weather patterns.&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ede7f6;strokeColor=#9575cd;fontColor=#333333;align=left;verticalAlign=middle;spacingLeft=15;spacingRight=15;" parent="screen3_frame" vertex="1">
+          <mxGeometry x="20" y="545" width="620" height="65" as="geometry" />
+        </mxCell>
+
+        <!-- Action Navigation Buttons -->
+        <mxCell id="s3_next_btn" value="➡️ Next Simulation Scenario (#13)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#6200ea;strokeColor=#3700b3;fontColor=#ffffff;fontStyle=1;fontSize=12;cursor=pointer;" parent="screen3_frame" vertex="1">
+          <mxGeometry x="20" y="625" width="250" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="s3_retry_btn" value="🔄 Retry with AI Difficulty Boost (+50 XP Bonus)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1565c0;strokeColor=#0d47a1;fontColor=#ffffff;fontStyle=1;fontSize=11;cursor=pointer;" parent="screen3_frame" vertex="1">
+          <mxGeometry x="285" y="625" width="280" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="s3_share_btn" value="📤 Share" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#546e7a;strokeColor=#37474f;fontColor=#ffffff;fontStyle=1;fontSize=11;cursor=pointer;" parent="screen3_frame" vertex="1">
+          <mxGeometry x="575" y="625" width="65" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- Return to Dashboard Link -->
+        <mxCell id="s3_home_link" value="🏠 Return to Main Dashboard | 📚 View Updated Study Queue" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#eceff1;strokeColor=#b0bec5;fontColor=#37474f;fontStyle=1;fontSize=12;align=center;cursor=pointer;" parent="screen3_frame" vertex="1">
+          <mxGeometry x="20" y="680" width="620" height="35" as="geometry" />
+        </mxCell>
+
+
+        <!-- ================================================================= -->
+        <!-- SCREEN 4: GAMIFICATION & COMMUNITY HUB (x=450, y=920)           -->
+        <!-- ================================================================= -->
+        <mxCell id="screen4_frame" value="Screen 4: Gamification, Leaderboards &amp;amp; Community Hub" style="swimlane;whiteSpace=wrap;html=1;startSize=35;fillColor=#f8f9fa;strokeColor=#c2c7cb;fontStyle=1;fontSize=15;fontColor=#1a237e;rounded=1;arcSize=2;" parent="1" vertex="1">
+          <mxGeometry x="450" y="920" width="660" height="760" as="geometry" />
+        </mxCell>
+
+        <!-- Gamification Header -->
+        <mxCell id="s4_header" value="&lt;b&gt;🏆 Gamification Hub:&lt;/b&gt; Compete, Earn Badges, and Become a Road Safety Ambassador!" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#e65100;strokeColor=none;fontColor=#ffffff;align=left;spacingLeft=15;fontSize=14;" parent="screen4_frame" vertex="1">
+          <mxGeometry x="0" y="35" width="660" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- Hub Sub-Navigation Tabs -->
+        <mxCell id="s4_tab1" value="🏆 Leaderboards" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ff8f00;strokeColor=#c67100;fontColor=#ffffff;fontStyle=1;fontSize=12;align=center;" parent="screen4_frame" vertex="1">
+          <mxGeometry x="20" y="100" width="145" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="s4_tab2" value="🏅 Badges &amp;amp; Achievements" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#cccccc;fontColor=#333333;fontStyle=1;fontSize=12;align=center;" parent="screen4_frame" vertex="1">
+          <mxGeometry x="175" y="100" width="180" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="s4_tab3" value="🎁 Rewards Store" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#cccccc;fontColor=#333333;fontStyle=1;fontSize=12;align=center;" parent="screen4_frame" vertex="1">
+          <mxGeometry x="365" y="100" width="135" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="s4_tab4" value="🏛️ LGU &amp;amp; School Groups" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#cccccc;fontColor=#333333;fontStyle=1;fontSize=12;align=center;" parent="screen4_frame" vertex="1">
+          <mxGeometry x="510" y="100" width="130" height="35" as="geometry" />
+        </mxCell>
+
+        <!-- Left Column: Leaderboards Panel -->
+        <mxCell id="s4_leader_panel" value="&lt;b style='font-size:14px;color:#1a237e;'&gt;📊 Leaderboards (Weekly Sprint)&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:11px;color:#666;'&gt;Filter: [Global] | [Driving School A] | &lt;b&gt;[Quezon City LGU]&lt;/b&gt;&lt;/span&gt;&lt;hr&gt;&lt;br&gt;&lt;b style='color:#f57f17;'&gt;🥇 #1 Maria Santos (Lvl 15)&lt;/b&gt; - 14,200 XP&lt;br&gt;&lt;span style='font-size:11px;'&gt;🔥 14-Day Streak | 99% Compliance Score&lt;/span&gt;&lt;br&gt;&lt;br&gt;&lt;b style='color:#78909c;'&gt;🥈 #2 Carlos Reyes (Lvl 14)&lt;/b&gt; - 13,850 XP&lt;br&gt;&lt;span style='font-size:11px;'&gt;🏫 Smart Driving School League&lt;/span&gt;&lt;br&gt;&lt;br&gt;&lt;b style='color:#8d6e63;'&gt;🥉 #3 Elena Gomez (Lvl 12)&lt;/b&gt; - 11,400 XP&lt;br&gt;&lt;span style='font-size:11px;'&gt;🏛️ QC Road Safety Youth Group&lt;/span&gt;&lt;br&gt;&lt;br&gt;&lt;div style='background-color:#fff8e1;padding:5px;border:1px solid #ffb300;border-radius:4px;'&gt;&lt;b style='color:#e65100;'&gt;👤 #4 You (Juan D. - Lvl 8)&lt;/b&gt; - 2,450 XP&lt;br&gt;&lt;span style='font-size:11px;color:#2e7d32;'&gt;⬆️ Up 2 spots today! 350 XP to rank #3&lt;/span&gt;&lt;/div&gt;&lt;br&gt;&lt;b&gt;#5 Pedro Penduko (Lvl 7)&lt;/b&gt; - 2,100 XP" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#cccccc;fontColor=#333333;align=left;verticalAlign=top;spacingTop=10;spacingLeft=12;spacingRight=10;fontSize=12;" parent="screen4_frame" vertex="1">
+          <mxGeometry x="20" y="150" width="310" height="380" as="geometry" />
+        </mxCell>
+
+        <!-- Right Column: Badges & Achievements Grid -->
+        <mxCell id="s4_badge_title" value="&lt;b style='font-size:14px;color:#1a237e;'&gt;🏅 Unlocked Badges &amp;amp; Milestones (6 / 20)&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="screen4_frame" vertex="1">
+          <mxGeometry x="345" y="150" width="295" height="25" as="geometry" />
+        </mxCell>
+
+        <!-- Badge 1 -->
+        <mxCell id="s4_b1" value="&lt;b&gt;🛡️ Hazard Hunter&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:10px;color:#555;'&gt;Successfully avoided 50 sudden pedestrian hazards in simulations.&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e8f5e9;strokeColor=#81c784;fontColor=#1b5e20;align=left;verticalAlign=top;spacingTop=8;spacingLeft=8;" parent="screen4_frame" vertex="1">
+          <mxGeometry x="345" y="185" width="140" height="85" as="geometry" />
+        </mxCell>
+        <!-- Badge 2 -->
+        <mxCell id="s4_b2" value="&lt;b&gt;🛑 Right-of-Way Pro&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:10px;color:#555;'&gt;Achieved 100% accuracy on intersection priority quizzes.&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e3f2fd;strokeColor=#64b5f6;fontColor=#0d47a1;align=left;verticalAlign=top;spacingTop=8;spacingLeft=8;" parent="screen4_frame" vertex="1">
+          <mxGeometry x="500" y="185" width="140" height="85" as="geometry" />
+        </mxCell>
+        <!-- Badge 3 -->
+        <mxCell id="s4_b3" value="&lt;b&gt;🌙 Night Owl Driver&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:10px;color:#555;'&gt;Completed 10 nighttime low-visibility driving lessons.&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f3e5f5;strokeColor=#ba68c8;fontColor=#4a148c;align=left;verticalAlign=top;spacingTop=8;spacingLeft=8;" parent="screen4_frame" vertex="1">
+          <mxGeometry x="345" y="280" width="140" height="85" as="geometry" />
+        </mxCell>
+        <!-- Badge 4 (Locked) -->
+        <mxCell id="s4_b4" value="&lt;b style='color:#777;'&gt;🔒 Law Master (Locked)&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:10px;color:#777;'&gt;Score 95%+ on the LTO Mock Theoretical Exam.&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#e0e0e0;fontColor=#777777;align=left;verticalAlign=top;spacingTop=8;spacingLeft=8;dashed=1;" parent="screen4_frame" vertex="1">
+          <mxGeometry x="500" y="280" width="140" height="85" as="geometry" />
+        </mxCell>
+        <!-- Badge 5 (Locked) -->
+        <mxCell id="s4_b5" value="&lt;b style='color:#777;'&gt;🔒 Zero Collision (Locked)&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:10px;color:#777;'&gt;Complete 20 consecutive simulations with 0 infractions.&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#e0e0e0;fontColor=#777777;align=left;verticalAlign=top;spacingTop=8;spacingLeft=8;dashed=1;" parent="screen4_frame" vertex="1">
+          <mxGeometry x="345" y="375" width="295" height="70" as="geometry" />
+        </mxCell>
+
+        <!-- LGU & Institution Challenge Card -->
+        <mxCell id="s4_lgu_card" value="&lt;b style='font-size:14px;color:#1b5e20;'&gt;🏛️ Active Institutional Challenge: Quezon City LGU &amp;amp; MMDA&lt;/b&gt;&lt;hr&gt;&lt;b&gt;Challenge:&lt;/b&gt; 'Pedestrian First Campaign' - Complete 5 Pedestrian Crosswalk Simulations this week.&lt;br&gt;&lt;b&gt;Reward:&lt;/b&gt; Official LGU Road Safety Digital Certificate + 500 XP + Entry into LGU Safety Raffle!&lt;br&gt;&lt;b&gt;Progress:&lt;/b&gt; 4 / 5 Scenarios Completed (80%)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e8f5e9;strokeColor=#81c784;fontColor=#1b5e20;align=left;verticalAlign=top;spacingTop=12;spacingLeft=15;spacingRight=15;fontSize=12;" parent="screen4_frame" vertex="1">
+          <mxGeometry x="20" y="545" width="620" height="115" as="geometry" />
+        </mxCell>
+
+        <!-- Reward Redemption Action -->
+        <mxCell id="s4_redeem_btn" value="🎁 View Rewards Store &amp;amp; Redeem Points" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e65100;strokeColor=#bf360c;fontColor=#ffffff;fontStyle=1;fontSize=12;cursor=pointer;" parent="screen4_frame" vertex="1">
+          <mxGeometry x="20" y="675" width="300" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="s4_invite_btn" value="👥 Invite Friends to School / LGU League" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1565c0;strokeColor=#0d47a1;fontColor=#ffffff;fontStyle=1;fontSize=12;cursor=pointer;" parent="screen4_frame" vertex="1">
+          <mxGeometry x="340" y="675" width="300" height="40" as="geometry" />
+        </mxCell>
+
+
+        <!-- ================================================================= -->
+        <!-- SCREEN 5: AI ANALYTICS & DRIVER SCORECARD (x=1250, y=920)       -->
+        <!-- ================================================================= -->
+        <mxCell id="screen5_frame" value="Screen 5: AI Performance Analytics &amp;amp; Driver Diagnostic Scorecard" style="swimlane;whiteSpace=wrap;html=1;startSize=35;fillColor=#f8f9fa;strokeColor=#c2c7cb;fontStyle=1;fontSize=15;fontColor=#1a237e;rounded=1;arcSize=2;" parent="1" vertex="1">
+          <mxGeometry x="1250" y="920" width="660" height="760" as="geometry" />
+        </mxCell>
+
+        <!-- Analytics Header -->
+        <mxCell id="s5_header" value="&lt;b&gt;📊 AI Diagnostic Scorecard:&lt;/b&gt; Deep Analytics for Drivers, Instructors &amp;amp; LGUs" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#00695c;strokeColor=none;fontColor=#ffffff;align=left;spacingLeft=15;fontSize=14;" parent="screen5_frame" vertex="1">
+          <mxGeometry x="0" y="35" width="660" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- Portal View Mode Selector (For Stakeholders) -->
+        <mxCell id="s5_view_mode" value="&lt;b&gt;View Portal As:&lt;/b&gt;&amp;nbsp;&amp;nbsp;&lt;span style='background-color:#00897b;color:white;padding:4px 8px;border-radius:4px;'&gt;👤 Student Driver View&lt;/span&gt;&amp;nbsp;&amp;nbsp;|&amp;nbsp;&amp;nbsp;&lt;span style='color:#555;'&gt;🏫 Driving School Instructor Portal&lt;/span&gt;&amp;nbsp;&amp;nbsp;|&amp;nbsp;&amp;nbsp;&lt;span style='color:#555;'&gt;🏛️ LGU / LTO Officer Dashboard&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e0f2f1;strokeColor=#80cbc4;fontColor=#004d40;align=left;verticalAlign=middle;spacingLeft=15;fontSize=12;" parent="screen5_frame" vertex="1">
+          <mxGeometry x="20" y="95" width="620" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- Readiness Summary Cards -->
+        <mxCell id="s5_score_card" value="&lt;b style='font-size:24px;color:#00695c;'&gt;84 / 100&lt;/b&gt;&lt;br&gt;&lt;b style='color:#2e7d32;'&gt;Overall AI Safety Readiness&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:11px;color:#555;'&gt;Status: Ready for LTO Theoretical &amp;amp; Practical Exam&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#80cbc4;fontColor=#333333;align=center;verticalAlign=middle;" parent="screen5_frame" vertex="1">
+          <mxGeometry x="20" y="145" width="200" height="85" as="geometry" />
+        </mxCell>
+        <mxCell id="s5_stats_card1" value="&lt;b style='font-size:18px;color:#1565c0;'&gt;14.2 hrs&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:12px;'&gt;Total Sim &amp;amp; Study Time&lt;/span&gt;&lt;br&gt;&lt;span style='font-size:10px;color:#666;'&gt;Top 10% in Driving School&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#90caf9;fontColor=#333333;align=center;verticalAlign=middle;" parent="screen5_frame" vertex="1">
+          <mxGeometry x="230" y="145" width="195" height="85" as="geometry" />
+        </mxCell>
+        <mxCell id="s5_stats_card2" value="&lt;b style='font-size:18px;color:#e65100;'&gt;96%&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:12px;'&gt;Traffic Law Quiz Pass Rate&lt;/span&gt;&lt;br&gt;&lt;span style='font-size:10px;color:#666;'&gt;24 of 25 Quizzes Passed&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#ffcc80;fontColor=#333333;align=center;verticalAlign=middle;" parent="screen5_frame" vertex="1">
+          <mxGeometry x="435" y="145" width="205" height="85" as="geometry" />
+        </mxCell>
+
+        <!-- Left Middle: Radar Chart / Skill Competency Matrix -->
+        <mxCell id="s5_radar_box" value="&lt;b style='font-size:14px;color:#1a237e;'&gt;🕸️ Driver Competency Radar Matrix&lt;/b&gt;&lt;hr&gt;&lt;br&gt;&lt;b&gt;1. Traffic Signs &amp;amp; Rules:&lt;/b&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&lt;b style='color:#2e7d32;'&gt;95% (Mastered)&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;b&gt;2. Right-of-Way Compliance:&lt;/b&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&lt;b style='color:#2e7d32;'&gt;88% (Proficient)&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;b&gt;3. Speed &amp;amp; Distance Control:&lt;/b&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&lt;b style='color:#1565c0;'&gt;82% (Good)&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;b&gt;4. Hazard Perception &amp;amp; Reflex:&lt;/b&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&lt;b style='color:#e65100;'&gt;72% (⚠️ Focus Area)&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;b&gt;5. Eco &amp;amp; Defensive Driving:&lt;/b&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&lt;b style='color:#2e7d32;'&gt;85% (Proficient)&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;div style='background-color:#ffebee;padding:6px;border-radius:4px;color:#c62828;font-size:11px;'&gt;&lt;b&gt;⚠️ AI Diagnostic Alert:&lt;/b&gt; Reaction times decrease in simulated rain and night scenarios. Recommended focus on Module 5.&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#cccccc;fontColor=#333333;align=left;verticalAlign=top;spacingTop=10;spacingLeft=12;spacingRight=10;fontSize=12;" parent="screen5_frame" vertex="1">
+          <mxGeometry x="20" y="245" width="300" height="280" as="geometry" />
+        </mxCell>
+
+        <!-- Right Middle: AI Adaptive Curriculum Engine Actions -->
+        <mxCell id="s5_ai_engine_box" value="&lt;b style='font-size:14px;color:#311b92;'&gt;🧠 AI Adaptive Curriculum Log&lt;/b&gt;&lt;hr&gt;&lt;br&gt;&lt;b&gt;How AI is Personalizing Your Journey:&lt;/b&gt;&lt;br&gt;&lt;br&gt;1. &lt;b&gt;Dynamic Difficulty Scaling:&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:11px;color:#555;'&gt;Increased simulation hazard density from 2 to 4 simultaneous vehicles based on your high score in Module 1.&lt;/span&gt;&lt;br&gt;&lt;br&gt;2. &lt;b&gt;Targeted Remediation Quizzes:&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:11px;color:#555;'&gt;Generated a custom 10-question quiz on 'Pedestrian Priority' after Scenario #10 infraction.&lt;/span&gt;&lt;br&gt;&lt;br&gt;3. &lt;b&gt;Instructor/School Synchronization:&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:11px;color:#555;'&gt;Flagged 'Night Driving' as a practice topic for your real-world driving school instructor.&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ede7f6;strokeColor=#d1c4e9;fontColor=#333333;align=left;verticalAlign=top;spacingTop=10;spacingLeft=12;spacingRight=10;fontSize=12;" parent="screen5_frame" vertex="1">
+          <mxGeometry x="340" y="245" width="300" height="280" as="geometry" />
+        </mxCell>
+
+        <!-- Institutional Export & Verification Section -->
+        <mxCell id="s5_export_box" value="&lt;b style='font-size:13px;color:#004d40;'&gt;🏛️ Institutional Verification &amp;amp; Certificate Export (For Driving Schools / LGUs / LTO)&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:11px;'&gt;This AI Readiness Scorecard is cryptographically verified and can be submitted to partnered Driving Schools or Local Government Units (LGUs) as proof of theoretical compliance and defensive driving simulation completion.&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e0f2f1;strokeColor=#80cbc4;fontColor=#004d40;align=left;verticalAlign=middle;spacingLeft=15;spacingRight=15;" parent="screen5_frame" vertex="1">
+          <mxGeometry x="20" y="540" width="620" height="70" as="geometry" />
+        </mxCell>
+
+        <!-- Export Buttons -->
+        <mxCell id="s5_dl_cert_btn" value="📥 Download Official AI Readiness Certificate (PDF)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#00897b;strokeColor=#004d40;fontColor=#ffffff;fontStyle=1;fontSize=12;cursor=pointer;" parent="screen5_frame" vertex="1">
+          <mxGeometry x="20" y="625" width="320" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="s5_send_school_btn" value="🏫 Send Scorecard to My Driving School / LGU" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1565c0;strokeColor=#0d47a1;fontColor=#ffffff;fontStyle=1;fontSize=12;cursor=pointer;" parent="screen5_frame" vertex="1">
+          <mxGeometry x="350" y="625" width="290" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="s5_print_btn" value="🖨️ Print Diagnostic Report" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#546e7a;strokeColor=#37474f;fontColor=#ffffff;fontStyle=1;fontSize=12;cursor=pointer;" parent="screen5_frame" vertex="1">
+          <mxGeometry x="20" y="680" width="620" height="35" as="geometry" />
+        </mxCell>
+
+
+        <!-- ================================================================= -->
+        <!-- INTER-SCREEN FLOW CONNECTORS (THE USER JOURNEY ARROWS)         -->
+        <!-- ================================================================= -->
+
+        <!-- Flow 1: Dashboard AI Recommendation -> Launch Simulation (Screen 1 to Screen 2) -->
+        <mxCell id="flow1" value="&lt;b style='background-color:#ffffff;padding:2px 4px;border-radius:3px;'&gt;1. Launch Recommended Sim&lt;/b&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#6200ea;strokeWidth=3;endArrow=block;endFill=1;fontStyle=1;fontSize=12;fontColor=#311b92;exitX=1;exitY=0.25;exitDx=0;exitDy=0;entryX=0;entryY=0.25;entryDx=0;entryDy=0;" parent="1" source="screen1_frame" target="screen2_frame" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Flow 2: Simulation Submit Decision -> AI Instant Feedback (Screen 2 to Screen 3) -->
+        <mxCell id="flow2" value="&lt;b style='background-color:#ffffff;padding:2px 4px;border-radius:3px;'&gt;2. Submit Decision &amp;amp; Evaluate&lt;/b&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#2e7d32;strokeWidth=3;endArrow=block;endFill=1;fontStyle=1;fontSize=12;fontColor=#1b5e20;exitX=1;exitY=0.75;exitDx=0;exitDy=0;entryX=0;entryY=0.75;entryDx=0;entryDy=0;" parent="1" source="screen2_frame" target="screen3_frame" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Flow 3: AI Feedback -> Return to Dashboard/Curriculum (Screen 3 to Screen 1) -->
+        <mxCell id="flow3" value="&lt;b style='background-color:#ffffff;padding:2px 4px;border-radius:3px;'&gt;3. Update Study Queue &amp;amp; XP&lt;/b&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1565c0;strokeWidth=2;dashed=1;endArrow=block;endFill=1;fontStyle=1;fontSize=12;fontColor=#0d47a1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" parent="1" source="screen3_frame" target="screen1_frame" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="2010" y="880" />
+              <mxPoint x="410" y="880" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Flow 4: Dashboard Gamification Card -> Gamification Hub (Screen 1 to Screen 4) -->
+        <mxCell id="flow4" value="&lt;b style='background-color:#ffffff;padding:2px 4px;border-radius:3px;'&gt;4. View Leaderboards &amp;amp; Badges&lt;/b&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#e65100;strokeWidth=3;endArrow=block;endFill=1;fontStyle=1;fontSize=12;fontColor=#bf360c;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="screen1_frame" target="screen4_frame" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Flow 5: Dashboard Analytics Card -> AI Diagnostic Scorecard (Screen 1 to Screen 5) -->
+        <mxCell id="flow5" value="&lt;b style='background-color:#ffffff;padding:2px 4px;border-radius:3px;'&gt;5. Deep Dive Driver Diagnostics&lt;/b&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#00897b;strokeWidth=3;endArrow=block;endFill=1;fontStyle=1;fontSize=12;fontColor=#004d40;exitX=0.85;exitY=1;exitDx=0;exitDy=0;entryX=0.2;entryY=0;entryDx=0;entryDy=0;" parent="1" source="screen1_frame" target="screen5_frame" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
