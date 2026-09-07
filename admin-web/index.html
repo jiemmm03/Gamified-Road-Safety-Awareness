@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RoadSafe AI — Admin Command Center</title>
-    <meta name="description" content="Complete Administrative and Cloud Monitoring Counterpart for the RoadSafe AI Mobile Application.">
+    <title>RoadSafe AI — PNP Highway Patrol & Traffic Safety Command Center</title>
+    <meta name="description" content="Official Philippine National Police (PNP) & Highway Patrol Group AI Road Safety and Traffic Education Command Center.">
 
     <!-- Primary Font: Inter (Google Fonts) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
     <!-- Material Icons Rounded -->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
@@ -25,92 +25,113 @@
 </head>
 <body>
 
+    <!-- ═══════════════════════ SPLASH SCREEN (PNP STAR EMBLEM) ═══════════════════════ -->
+    <div id="admin-splash-screen" class="splash-screen">
+        <div class="splash-content">
+            <div class="splash-logo-wrap">
+                <img src="logo.png" alt="PNP RoadSafe AI Emblem" class="splash-logo">
+                <div class="splash-pulse-ring"></div>
+            </div>
+            <div class="pnp-station-tag" style="margin-bottom:8px;">PHILIPPINE NATIONAL POLICE · HPG</div>
+            <h1 class="splash-title font-h1">RoadSafe AI</h1>
+            <p class="splash-subtitle">Traffic Safety &amp; Driver Education Command Center</p>
+            <div class="splash-loader">
+                <div class="splash-loader-bar"></div>
+            </div>
+            <span class="splash-status font-caption" id="splash-status-text">Connecting to Secure Police Cloud...</span>
+        </div>
+    </div>
+
     <!-- ═══════════════════════ SIDEBAR ═══════════════════════ -->
     <aside class="sidebar" id="sidebar">
         <div class="sidebar-header">
             <div class="logo-container">
-                <img src="logo.png" alt="RoadSafe AI Logo" class="logo-icon">
+                <img src="logo.png" alt="PNP RoadSafe AI Seal" class="logo-icon">
                 <div class="logo-text">
                     <span class="logo-title font-h3">RoadSafe AI</span>
-                    <span class="logo-subtitle font-caption">Admin Command Center</span>
+                    <span class="logo-subtitle">PNP Command Unit</span>
                 </div>
+            </div>
+            <div style="margin-top:10px;display:flex;align-items:center;justify-content:space-between;">
+                <span class="pnp-station-tag"><span class="material-icons-round" style="font-size:12px;">local_police</span> HPG-HQ-01</span>
+                <span class="font-caption" style="color:var(--text-muted);font-size:10px;">HQ MANILA</span>
             </div>
         </div>
 
         <nav class="sidebar-nav" aria-label="Main Navigation">
             <button class="nav-item active font-navigation" data-tab="dashboard" id="nav-dashboard">
                 <span class="material-icons-round">dashboard</span>
-                <span class="nav-label">Dashboard</span>
+                <span class="nav-label">Command Dashboard</span>
             </button>
             <button class="nav-item font-navigation" data-tab="users" id="nav-users">
                 <span class="material-icons-round">manage_accounts</span>
-                <span class="nav-label">User Management</span>
+                <span class="nav-label">Cadet Management</span>
                 <span class="nav-badge font-badge" id="badge-users">0</span>
             </button>
             <button class="nav-item font-navigation" data-tab="modules" id="nav-modules">
                 <span class="material-icons-round">menu_book</span>
-                <span class="nav-label">Modules</span>
+                <span class="nav-label">Traffic Curriculum</span>
                 <span class="nav-badge font-badge" id="badge-modules">3</span>
             </button>
             <button class="nav-item font-navigation" data-tab="quizzes" id="nav-quizzes">
-                <span class="material-icons-round">quiz</span>
-                <span class="nav-label">Quiz Bank & Results</span>
+                <span class="material-icons-round">assignment_turned_in</span>
+                <span class="nav-label">Driver Assessment Bank</span>
                 <span class="nav-badge font-badge" id="badge-quizzes">0</span>
             </button>
             <button class="nav-item font-navigation" data-tab="scenarios" id="nav-scenarios">
                 <span class="material-icons-round">alt_route</span>
-                <span class="nav-label">Driver Decisions</span>
+                <span class="nav-label">Hazard Decision Trials</span>
                 <span class="nav-badge font-badge" id="badge-scenarios">5</span>
             </button>
             <button class="nav-item font-navigation" data-tab="gamification" id="nav-gamification">
                 <span class="material-icons-round">military_tech</span>
-                <span class="nav-label">Gamification & Ranks</span>
+                <span class="nav-label">Police Ranks &amp; Medals</span>
             </button>
             <button class="nav-item font-navigation" data-tab="ai-activity" id="nav-ai-activity">
                 <span class="material-icons-round">smart_toy</span>
-                <span class="nav-label">AI Road Tutor</span>
+                <span class="nav-label">AI Traffic Tutor</span>
                 <span class="nav-badge font-badge" id="badge-ai">0</span>
             </button>
             <button class="nav-item font-navigation" data-tab="devices" id="nav-devices">
                 <span class="material-icons-round">phone_android</span>
-                <span class="nav-label">Device Fleet</span>
+                <span class="nav-label">Patrol Device Fleet</span>
                 <span class="nav-badge font-badge" id="badge-devices">0</span>
             </button>
             <button class="nav-item font-navigation" data-tab="logins" id="nav-logins">
                 <span class="material-icons-round">history</span>
-                <span class="nav-label">Activity History</span>
+                <span class="nav-label">Access &amp; Patrol Logs</span>
                 <span class="nav-badge font-badge" id="badge-logins">0</span>
             </button>
             <button class="nav-item font-navigation" data-tab="analytics" id="nav-analytics">
                 <span class="material-icons-round">insights</span>
-                <span class="nav-label">Analytics & Reports</span>
+                <span class="nav-label">Enforcement Analytics</span>
             </button>
             <button class="nav-item font-navigation" data-tab="audit" id="nav-audit">
                 <span class="material-icons-round">admin_panel_settings</span>
-                <span class="nav-label">Security Audit</span>
+                <span class="nav-label">Security Audit Ledger</span>
                 <span class="nav-badge font-badge" id="badge-audit">0</span>
             </button>
             <button class="nav-item font-navigation" data-tab="settings" id="nav-settings">
                 <span class="material-icons-round">settings</span>
-                <span class="nav-label">Settings</span>
+                <span class="nav-label">System Protocols</span>
             </button>
         </nav>
 
         <div class="sidebar-footer">
             <div class="admin-session-box" id="admin-session-box">
                 <div class="admin-avatar-mini">
-                    <span class="material-icons-round">shield</span>
+                    <span class="material-icons-round">local_police</span>
                 </div>
                 <div class="admin-info-mini">
-                    <span class="admin-role-title font-caption">Active Admin</span>
+                    <span class="admin-role-title font-caption">Commanding Officer</span>
                     <span class="admin-username font-body-sm" id="current-admin-name">admin</span>
                 </div>
             </div>
             <div class="connection-status" id="connection-status">
                 <span class="status-dot pulse"></span>
-                <span class="status-text font-caption">Connected to Firestore</span>
+                <span class="status-text font-caption">Secure Cloud Node Active</span>
             </div>
-            <div class="sidebar-version font-caption">v3.0 · Full Mirror Edition</div>
+            <div class="sidebar-version font-caption">PNP HPG Edition · v4.0 Official</div>
         </div>
     </aside>
 
@@ -123,17 +144,17 @@
                 <span class="material-icons-round">menu</span>
             </button>
             <div class="top-bar-title">
-                <h1 class="page-title font-h1" id="page-title">Dashboard</h1>
-                <span class="top-bar-subtitle font-body-sm" id="page-subtitle">Real-Time System Overview</span>
+                <h1 class="page-title font-h1" id="page-title">Command Dashboard</h1>
+                <span class="top-bar-subtitle font-body-sm" id="page-subtitle">PNP Highway Patrol Group · Live Enforcement Telemetry</span>
             </div>
             <div class="top-bar-actions">
                 <button class="btn btn-download-apk font-button" onclick="showAppInstallModal()" title="Install RoadSafe AI Mobile App">
-                    <span class="material-icons-round">android</span>
-                    <span class="btn-text">Install Mobile App</span>
+                    <span class="material-icons-round">local_police</span>
+                    <span class="btn-text">Cadet Mobile Portal</span>
                 </button>
                 <div class="live-indicator">
                     <span class="live-dot pulse"></span>
-                    <span class="live-text font-badge">LIVE</span>
+                    <span class="live-text font-badge">DISPATCH LIVE</span>
                 </div>
                 <button class="refresh-btn" id="refresh-btn" title="Refresh Live Data">
                     <span class="material-icons-round">refresh</span>
@@ -727,13 +748,16 @@
         </div>
     </div>
 
-    <!-- ═══════════ INSTALL MOBILE APP MODAL ═══════════ -->
+    <!-- ═══════════ INSTALL MOBILE APP MODAL (PNP CADET PORTAL) ═══════════ -->
     <div class="modal-overlay" id="install-modal-overlay">
-        <div class="modal" id="install-modal" style="max-width:620px;">
+        <div class="modal" id="install-modal" style="max-width:640px;">
             <div class="modal-header">
                 <div style="display:flex;align-items:center;gap:10px;">
-                    <span class="material-icons-round" style="color:var(--emerald-green);font-size:24px;">qr_code_scanner</span>
-                    <h3 class="font-h3">Mobile App Installation &amp; QR Code</h3>
+                    <span class="material-icons-round" style="color:var(--pnp-badge-gold-bright);font-size:26px;">local_police</span>
+                    <div>
+                        <h3 class="font-h3" style="color:#FFFFFF;margin:0;">PNP Cadet Mobile App Portal</h3>
+                        <span class="font-caption" style="color:var(--pnp-badge-gold);font-size:10px;text-transform:uppercase;letter-spacing:1px;">Official Road Safety Driver Training Client</span>
+                    </div>
                 </div>
                 <button class="modal-close" id="install-modal-close"><span class="material-icons-round">close</span></button>
             </div>
@@ -742,59 +766,63 @@
                 <div class="qr-install-container">
                     <div class="qr-code-box">
                         <img id="install-qr-image" src="" alt="App Download QR Code">
-                        <span class="qr-code-caption">Scan with Phone Camera</span>
+                        <span class="qr-code-caption">PNP Mobile Secure QR</span>
                     </div>
                     <div class="qr-install-info">
-                        <h4 class="font-h4" style="color:var(--text-primary);margin-bottom:4px;">Scan to Download APK</h4>
-                        <div style="display:flex;gap:6px;margin:8px 0;">
-                            <button type="button" id="btn-qr-mode-public" class="btn font-button" style="padding:4px 10px;font-size:11px;background:var(--emerald-green);color:#fff;border:none;">🌐 Public (Worldwide)</button>
-                            <button type="button" id="btn-qr-mode-local" class="btn font-button" style="padding:4px 10px;font-size:11px;background:var(--navy-card);color:var(--text-secondary);border:1px solid var(--navy-card-border);">📶 Local Wi-Fi</button>
+                        <div style="display:flex;align-items:center;gap:6px;">
+                            <span class="pnp-station-tag" style="font-size:9px;">VERIFIED BUILD</span>
+                            <span class="font-caption" style="color:var(--emerald-green);font-weight:700;">● Signed APK Release</span>
                         </div>
-                        <p class="font-body-sm" id="qr-desc-text" style="color:var(--text-secondary);">
-                            Point your Android camera at this code to open the public download page on any phone worldwide.
+                        <h4 class="font-h4" style="color:#FFFFFF;margin-bottom:2px;font-size:1.05rem;">Scan to Download Cadet App</h4>
+                        <div style="display:flex;gap:6px;margin:6px 0;">
+                            <button type="button" id="btn-qr-mode-public" class="btn font-button" style="padding:4px 12px;font-size:11px;background:var(--pnp-patrol-blue);color:#fff;border:1px solid var(--pnp-badge-gold-border);">🌐 Public Portal</button>
+                            <button type="button" id="btn-qr-mode-local" class="btn font-button" style="padding:4px 12px;font-size:11px;background:#0A1424;color:var(--text-secondary);border:1px solid var(--border-card);">📶 Station Wi-Fi</button>
+                        </div>
+                        <p class="font-body-sm" id="qr-desc-text" style="color:var(--text-secondary);font-size:12px;line-height:1.4;">
+                            Scan with your phone camera to download and install the official PNP Road Safety awareness client worldwide.
                         </p>
-                        <div class="modal-section-title font-label" style="margin-top:4px;">Download URL</div>
+                        <div class="modal-section-title font-label" style="margin-top:2px;">Cadet Portal Link</div>
                         <div class="qr-url-input-wrap">
                             <input type="text" id="install-qr-url-input" class="form-input font-body-sm" value="https://jiemmm03.github.io/Gamified-Road-Safety-Awareness/" readonly>
                             <button class="btn btn-secondary font-button" id="btn-copy-qr-url" title="Copy Download Link">
                                 <span class="material-icons-round">content_copy</span>
                             </button>
                         </div>
-                        <div style="display:flex;gap:8px;margin-top:4px;flex-wrap:wrap;">
-                            <button class="btn btn-primary font-button" id="btn-download-qr-img" style="font-size:12px;padding:6px 12px;">
+                        <div style="display:flex;gap:8px;margin-top:6px;flex-wrap:wrap;">
+                            <button class="btn btn-primary font-button" id="btn-download-qr-img" style="font-size:12px;padding:7px 14px;">
                                 <span class="material-icons-round" style="font-size:16px;">download</span>
-                                <span>Save QR Image</span>
+                                <span>Save QR Badge</span>
                             </button>
-                            <a href="download.html" target="_blank" id="btn-open-download-page" class="btn btn-secondary font-button" style="font-size:12px;padding:6px 12px;text-decoration:none;display:inline-flex;align-items:center;gap:4px;">
+                            <a href="download.html" target="_blank" id="btn-open-download-page" class="btn btn-secondary font-button" style="font-size:12px;padding:7px 14px;text-decoration:none;display:inline-flex;align-items:center;gap:4px;">
                                 <span class="material-icons-round" style="font-size:16px;">open_in_new</span>
-                                <span>Open Download Page</span>
+                                <span>Public Cadet Portal</span>
                             </a>
-                            <a href="https://github.com/jiemmm03/Gamified-Road-Safety-Awareness/releases/download/v1.0.0/RoadSafe-AI.apk" target="_blank" class="btn btn-secondary font-button" style="font-size:12px;padding:6px 12px;text-decoration:none;display:inline-flex;align-items:center;gap:4px;color:var(--emerald-green);border-color:rgba(16,185,129,0.3);">
-                                <span class="material-icons-round" style="font-size:16px;">cloud_download</span>
-                                <span>GitHub Release APK</span>
+                            <a href="https://github.com/jiemmm03/Gamified-Road-Safety-Awareness/releases/download/v1.0.0/RoadSafe-AI.apk" target="_blank" class="btn btn-secondary font-button" style="font-size:12px;padding:7px 14px;text-decoration:none;display:inline-flex;align-items:center;gap:4px;color:var(--pnp-badge-gold-bright);border-color:var(--pnp-badge-gold-border);">
+                                <span class="material-icons-round" style="font-size:16px;">shield</span>
+                                <span>Direct APK Download</span>
                             </a>
                         </div>
                     </div>
                 </div>
 
-                <div class="modal-section-title font-label">Public GitHub Release &amp; Local APK</div>
+                <div class="modal-section-title font-label">Direct Secure Download Repository</div>
                 <div class="modal-detail-row" style="flex-direction:column;align-items:flex-start;gap:6px;word-break:break-all;">
-                    <div style="font-size:11px;color:var(--text-muted);">Direct Public URL (Anyone worldwide):</div>
-                    <code class="font-body-sm" style="color:var(--emerald-green);background:var(--navy-card);padding:6px 10px;border-radius:6px;width:100%;font-size:11px;">
+                    <div style="font-size:11px;color:var(--text-muted);">Verified Package URI:</div>
+                    <code class="font-body-sm" style="color:#93C5FD;background:#060B14;border:1px solid rgba(0,56,168,0.4);padding:8px 12px;border-radius:6px;width:100%;font-size:11px;">
                         https://github.com/jiemmm03/Gamified-Road-Safety-Awareness/releases/download/v1.0.0/RoadSafe-AI.apk
                     </code>
                 </div>
 
-                <div class="modal-section-title font-label" style="margin-top:16px;">Step-by-Step Mobile Installation</div>
-                <ol class="font-body-sm" style="color:var(--text-secondary);padding-left:20px;line-height:1.7;">
-                    <li>Scan the QR code above or transfer <strong>app-debug.apk</strong> to your Android phone.</li>
-                    <li>Tap the APK file in your phone's <em>Downloads</em> or file manager.</li>
-                    <li>Select <strong>"Install"</strong> (enable <em>"Allow from this source"</em> if prompted by Android security).</li>
-                    <li>Open the app and log in — live analytics and quiz attempts will stream directly to this dashboard!</li>
+                <div class="modal-section-title font-label" style="margin-top:16px;">Cadet Mobile App Setup Protocol</div>
+                <ol class="font-body-sm" style="color:var(--text-secondary);padding-left:20px;line-height:1.7;font-size:13px;">
+                    <li>Scan the official QR code or download <strong>RoadSafe-AI.apk</strong> to your Android smartphone.</li>
+                    <li>Open your file manager or browser notifications and tap the downloaded APK file.</li>
+                    <li>Select <strong>"Install"</strong> (allow installation from this browser/source when prompted).</li>
+                    <li>Launch the app to begin driver safety modules, interactive quizzes, and decision simulators — your progress syncs live to this Command Center!</li>
                 </ol>
             </div>
             <div class="modal-actions">
-                <button class="btn btn-secondary font-button" id="btn-close-install-modal">Close</button>
+                <button class="btn btn-secondary font-button" id="btn-close-install-modal">Dismiss</button>
             </div>
         </div>
     </div>
@@ -802,6 +830,6 @@
     <!-- ═══════════ TOAST NOTIFICATION CONTAINER ═══════════ -->
     <div class="toast-container" id="toast-container"></div>
 
-    <script src="app.js?v=3.3"></script>
+    <script src="app.js?v=4.0"></script>
 </body>
 </html>

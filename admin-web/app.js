@@ -1660,8 +1660,23 @@ DOM.menuToggle.addEventListener('click', () => {
 });
 
 // ═══════════════════════════════════════════════════════════════
-// 19. BOOTSTRAP INITIALIZATION
+// 19. BOOTSTRAP INITIALIZATION & SPLASH SCREEN
 // ═══════════════════════════════════════════════════════════════
+
+function dismissSplashScreen() {
+    const splash = $('admin-splash-screen');
+    const statusText = $('splash-status-text');
+    if (!splash) return;
+
+    if (statusText) statusText.textContent = 'Command Center Ready';
+
+    setTimeout(() => {
+        splash.classList.add('fade-out');
+        setTimeout(() => {
+            splash.style.display = 'none';
+        }, 500);
+    }, 450);
+}
 
 document.addEventListener('DOMContentLoaded', () => {
     console.log('🛡️ RoadSafe AI — Complete Mirror Platform v3.0');
@@ -1670,4 +1685,7 @@ document.addEventListener('DOMContentLoaded', () => {
     renderQuestionsList();
     renderScenariosList();
     renderBadgesCatalogList();
+    
+    // Smooth splash screen reveal
+    setTimeout(dismissSplashScreen, 600);
 });
