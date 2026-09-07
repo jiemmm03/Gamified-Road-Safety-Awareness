@@ -1,0 +1,41 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // User profiles & active online presence
+    match /users/{userId} {
+      allow read: if true;
+      allow write: if true;
+    }
+
+    // User login, logout, and failed authentication activity timeline
+    match /user_logins/{loginId} {
+      allow read: if true;
+      allow create, write: if true;
+    }
+
+    // Learner progress, XP, levels, and streak records
+    match /user_progress/{userId} {
+      allow read: if true;
+      allow write: if true;
+    }
+
+    // Completed quiz attempts, answers, and scores
+    match /quiz_attempts/{attemptId} {
+      allow read: if true;
+      allow create, write: if true;
+    }
+
+    // Administrative security audit trail
+    match /audit_logs/{logId} {
+      allow read: if true;
+      allow create, write: if true;
+    }
+
+    // Default match
+    match /{document=**} {
+      allow read, write: if true;
+    }
+  }
+}

@@ -2,114 +2,138 @@ package com.example.gamifiedroadsafetyawareness.ui.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
+import com.example.gamifiedroadsafetyawareness.R
+
+val Inter = FontFamily(
+    Font(R.font.inter_regular, FontWeight.Normal),
+    Font(R.font.inter_medium, FontWeight.Medium),
+    Font(R.font.inter_semibold, FontWeight.SemiBold),
+    Font(R.font.inter_bold, FontWeight.Bold)
+)
 
 val Typography = Typography(
+    // XP/Score Numbers (hero) — score counters, avatar initials, brand title
     displayLarge = TextStyle(
-        fontFamily = FontFamily.SansSerif,
+        fontFamily = Inter,
         fontWeight = FontWeight.Bold,
-        fontSize = 57.sp,
-        lineHeight = 64.sp,
+        fontSize = 30.sp,
+        lineHeight = 36.sp,
         letterSpacing = (-0.25).sp
     ),
+    // Secondary hero tier (available for future use)
     displayMedium = TextStyle(
-        fontFamily = FontFamily.SansSerif,
+        fontFamily = Inter,
         fontWeight = FontWeight.Bold,
-        fontSize = 45.sp,
-        lineHeight = 52.sp,
-        letterSpacing = 0.sp
-    ),
-    displaySmall = TextStyle(
-        fontFamily = FontFamily.SansSerif,
-        fontWeight = FontWeight.Bold,
-        fontSize = 36.sp,
-        lineHeight = 44.sp,
-        letterSpacing = 0.sp
-    ),
-    headlineLarge = TextStyle(
-        fontFamily = FontFamily.SansSerif,
-        fontWeight = FontWeight.SemiBold,
-        fontSize = 32.sp,
-        lineHeight = 40.sp,
-        letterSpacing = 0.sp
-    ),
-    headlineMedium = TextStyle(
-        fontFamily = FontFamily.SansSerif,
-        fontWeight = FontWeight.SemiBold,
         fontSize = 28.sp,
-        lineHeight = 36.sp,
-        letterSpacing = 0.sp
+        lineHeight = 34.sp,
+        letterSpacing = (-0.15).sp
     ),
-    headlineSmall = TextStyle(
-        fontFamily = FontFamily.SansSerif,
-        fontWeight = FontWeight.SemiBold,
+    // Big stat number (e.g. progress screen)
+    displaySmall = TextStyle(
+        fontFamily = Inter,
+        fontWeight = FontWeight.Bold,
         fontSize = 24.sp,
-        lineHeight = 32.sp,
+        lineHeight = 30.sp,
         letterSpacing = 0.sp
     ),
-    titleLarge = TextStyle(
-        fontFamily = FontFamily.SansSerif,
-        fontWeight = FontWeight.SemiBold,
+    // Large Heading
+    headlineLarge = TextStyle(
+        fontFamily = Inter,
+        fontWeight = FontWeight.Bold,
         fontSize = 22.sp,
         lineHeight = 28.sp,
         letterSpacing = 0.sp
     ),
+    // Gamification "LEVEL 10"-style numbers
+    headlineMedium = TextStyle(
+        fontFamily = Inter,
+        fontWeight = FontWeight.Bold,
+        fontSize = 20.sp,
+        lineHeight = 26.sp,
+        letterSpacing = 0.sp
+    ),
+    // Quiz question text — comfortable multi-line reading
+    headlineSmall = TextStyle(
+        fontFamily = Inter,
+        fontWeight = FontWeight.SemiBold,
+        fontSize = 19.sp,
+        lineHeight = 26.sp,
+        letterSpacing = 0.sp
+    ),
+    // Screen Title
+    titleLarge = TextStyle(
+        fontFamily = Inter,
+        fontWeight = FontWeight.Bold,
+        fontSize = 22.sp,
+        lineHeight = 28.sp,
+        letterSpacing = (-0.15).sp
+    ),
+    // Section Heading / AI Assistant title
     titleMedium = TextStyle(
-        fontFamily = FontFamily.SansSerif,
+        fontFamily = Inter,
         fontWeight = FontWeight.SemiBold,
-        fontSize = 16.sp,
+        fontSize = 18.sp,
         lineHeight = 24.sp,
-        letterSpacing = 0.15.sp
+        letterSpacing = 0.sp
     ),
+    // Card Title / gamification labels ("12 DAY STREAK")
     titleSmall = TextStyle(
-        fontFamily = FontFamily.SansSerif,
+        fontFamily = Inter,
         fontWeight = FontWeight.SemiBold,
-        fontSize = 14.sp,
-        lineHeight = 20.sp,
-        letterSpacing = 0.1.sp
+        fontSize = 17.sp,
+        lineHeight = 22.sp,
+        letterSpacing = 0.sp
     ),
+    // Body Text / Scenario Text / Explanation
     bodyLarge = TextStyle(
-        fontFamily = FontFamily.SansSerif,
-        fontWeight = FontWeight.Medium,
+        fontFamily = Inter,
+        fontWeight = FontWeight.Normal,
         fontSize = 16.sp,
         lineHeight = 24.sp,
-        letterSpacing = 0.5.sp
+        letterSpacing = 0.sp
     ),
+    // Body Text (secondary) / AI responses / Explanation
     bodyMedium = TextStyle(
-        fontFamily = FontFamily.SansSerif,
-        fontWeight = FontWeight.Medium,
-        fontSize = 14.sp,
-        lineHeight = 20.sp,
-        letterSpacing = 0.25.sp
-    ),
-    bodySmall = TextStyle(
-        fontFamily = FontFamily.SansSerif,
-        fontWeight = FontWeight.Medium,
-        fontSize = 12.sp,
-        lineHeight = 16.sp,
-        letterSpacing = 0.4.sp
-    ),
-    labelLarge = TextStyle(
-        fontFamily = FontFamily.SansSerif,
+        fontFamily = Inter,
         fontWeight = FontWeight.Normal,
         fontSize = 14.sp,
         lineHeight = 20.sp,
         letterSpacing = 0.1.sp
     ),
+    // Form Label / AI Assistant user messages
+    bodySmall = TextStyle(
+        fontFamily = Inter,
+        fontWeight = FontWeight.Medium,
+        fontSize = 13.sp,
+        lineHeight = 18.sp,
+        letterSpacing = 0.1.sp
+    ),
+    // Button Text / Quiz & Scenario Answer Choices
+    labelLarge = TextStyle(
+        fontFamily = Inter,
+        fontWeight = FontWeight.SemiBold,
+        fontSize = 15.sp,
+        lineHeight = 20.sp,
+        letterSpacing = 0.1.sp
+    ),
+    // Navigation Labels / Question Number / AI suggested questions
     labelMedium = TextStyle(
-        fontFamily = FontFamily.SansSerif,
-        fontWeight = FontWeight.Normal,
+        fontFamily = Inter,
+        fontWeight = FontWeight.Medium,
+        fontSize = 13.sp,
+        lineHeight = 16.sp,
+        letterSpacing = 0.1.sp
+    ),
+    // Caption/Metadata, supporting info
+    labelSmall = TextStyle(
+        fontFamily = Inter,
+        fontWeight = FontWeight.Medium,
         fontSize = 12.sp,
         lineHeight = 16.sp,
-        letterSpacing = 0.5.sp
-    ),
-    labelSmall = TextStyle(
-        fontFamily = FontFamily.SansSerif,
-        fontWeight = FontWeight.Normal,
-        fontSize = 11.sp,
-        lineHeight = 16.sp,
-        letterSpacing = 0.5.sp
+        letterSpacing = 0.1.sp
     )
 )

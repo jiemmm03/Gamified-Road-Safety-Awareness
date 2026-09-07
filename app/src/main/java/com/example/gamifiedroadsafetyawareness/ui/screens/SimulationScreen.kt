@@ -1,32 +1,41 @@
 package com.example.gamifiedroadsafetyawareness.ui.screens
 
+import androidx.activity.compose.BackHandler
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Info
-import androidx.compose.material.icons.filled.Warning
+import androidx.compose.material.icons.automirrored.rounded.ArrowBack
+import androidx.compose.material.icons.rounded.Check
+import androidx.compose.material.icons.rounded.SmartToy
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.example.gamifiedroadsafetyawareness.model.DecisionOption
 import com.example.gamifiedroadsafetyawareness.model.MockData
+import com.example.gamifiedroadsafetyawareness.ui.components.AppButton
+import com.example.gamifiedroadsafetyawareness.ui.components.AppCard
+import com.example.gamifiedroadsafetyawareness.ui.components.ConfirmActionDialog
+import com.example.gamifiedroadsafetyawareness.ui.theme.AmberYellow
+import com.example.gamifiedroadsafetyawareness.ui.theme.AppTypeScale
+import com.example.gamifiedroadsafetyawareness.ui.theme.EmeraldGreen
+import com.example.gamifiedroadsafetyawareness.ui.theme.TrafficRed
 import kotlinx.coroutines.delay
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SimulationScreen(
     onSubmitDecision: (DecisionOption) -> Unit,
@@ -34,8 +43,15 @@ fun SimulationScreen(
     modifier: Modifier = Modifier
 ) {
     val scenario = MockData.activeScenario
+    var timeLeft by remember { mutableStateOf(scenario.timeLimitSeconds) }
     var selectedOption by remember { mutableStateOf<DecisionOption?>(null) }
-    var timeLeft by remember { mutableIntStateOf(scenario.timeLimitSeconds) }
+    var showExitConfirm by remember { mutableStateOf(false) }
+
+    fun requestExit() {
+        if (selectedOption != null) showExitConfirm = true else onBackClick()
+    }
+
+    BackHandler { requestExit() }
 
     LaunchedEffect(key1 = timeLeft) {
         if (timeLeft > 0) {
@@ -44,332 +60,230 @@ fun SimulationScreen(
         }
     }
 
-    val bgColor = Color(0xFF0B0E1A)
-    val textPrimary = Color(0xFFF0F0F5)
-    val textSecondary = Color(0xFF8E93A6)
-    val coral = Color(0xFFFF5252)
-    val violet = Color(0xFF7C4DFF)
-    val cyan = Color(0xFF00E5FF)
-    val emerald = Color(0xFF00E676)
-    val amber = Color(0xFFFFC107)
+    val progress by animateFloatAsState(
+        targetValue = timeLeft.toFloat() / scenario.timeLimitSeconds.toFloat(),
+        label = "timeProgress"
+    )
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text("Simulation", color = textPrimary) },
-                navigationIcon = {
-                    IconButton(onClick = onBackClick) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Back",
-                            tint = textPrimary
-                        )
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color.Transparent
-                )
-            )
-        },
-        containerColor = bgColor,
+    val timerColor = when {
+        timeLeft > 5 -> EmeraldGreen
+        timeLeft > 2 -> AmberYellow
+        else -> TrafficRed
+    }
+
+    Box(
         modifier = modifier
-    ) { paddingValues ->
-        LazyColumn(
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background)
+    ) {
+        Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(paddingValues)
-                .padding(horizontal = 16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+                .verticalScroll(rememberScrollState())
+                .padding(16.dp)
         ) {
-            // Top Scenario Bar
-            item {
+            // Top Bar
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                IconButton(
+                    onClick = { requestExit() },
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(12.dp))
+                        .background(MaterialTheme.colorScheme.surface)
+                ) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
+                        contentDescription = "Back",
+                        tint = MaterialTheme.colorScheme.onSurface
+                    )
+                }
+
                 Box(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .clip(RoundedCornerShape(20.dp))
-                        .background(
-                            brush = Brush.verticalGradient(
-                                colors = listOf(Color(0xFF1A1F35), Color(0xFF0B0E1A))
+                        .clip(RoundedCornerShape(16.dp))
+                        .background(timerColor.copy(alpha = 0.1f))
+                        .border(1.dp, timerColor.copy(alpha = 0.3f), RoundedCornerShape(16.dp))
+                        .padding(horizontal = 16.dp, vertical = 8.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = "T-${timeLeft}s",
+                        color = timerColor,
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+            }
+            
+            Spacer(modifier = Modifier.height(12.dp))
+            
+            LinearProgressIndicator(
+                progress = { progress },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(4.dp)
+                    .clip(RoundedCornerShape(2.dp)),
+                color = timerColor,
+                trackColor = MaterialTheme.colorScheme.surfaceVariant
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Simulated HUD View
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(180.dp)
+                    .clip(RoundedCornerShape(16.dp))
+                    .background(
+                        Brush.verticalGradient(
+                            colors = listOf(
+                                MaterialTheme.colorScheme.primary,
+                                MaterialTheme.colorScheme.secondary
                             )
                         )
-                        .padding(16.dp)
-                ) {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Column(modifier = Modifier.weight(1f)) {
-                            Text(
-                                text = "Scenario ${scenario.scenarioNumber}",
-                                color = textSecondary,
-                                fontSize = 14.sp
-                            )
-                            Spacer(modifier = Modifier.height(4.dp))
-                            Text(
-                                text = scenario.title,
-                                color = textPrimary,
-                                fontSize = 18.sp,
-                                fontWeight = FontWeight.Bold
-                            )
-                        }
-                        Text(
-                            text = String.format("00:%02d", timeLeft),
-                            color = coral,
-                            fontSize = 24.sp,
-                            fontWeight = FontWeight.Bold
-                        )
-                    }
+                    ),
+                contentAlignment = Alignment.Center
+            ) {
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Text(
+                        text = "HUD / CAMERA VIEW",
+                        style = AppTypeScale.eyebrowLabel,
+                        color = Color.White.copy(alpha = 0.8f)
+                    )
+                    Text(
+                        text = "Awaiting decision...",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = Color.White.copy(alpha = 0.6f)
+                    )
                 }
-            }
-
-            // Indicators
-            item {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    // AI Mode indicator
-                    Box(
-                        modifier = Modifier
-                            .clip(RoundedCornerShape(10.dp))
-                            .background(violet)
-                            .padding(horizontal = 12.dp, vertical = 6.dp)
-                    ) {
-                        Text(
-                            text = "AI: ${scenario.aiMode}",
-                            color = Color.White,
-                            fontSize = 12.sp,
-                            fontWeight = FontWeight.Medium
-                        )
-                    }
-
-                    // Weather indicator
-                    Box(
-                        modifier = Modifier
-                            .clip(RoundedCornerShape(10.dp))
-                            .background(Color(0xFF1E2A3A))
-                            .padding(horizontal = 12.dp, vertical = 6.dp)
-                    ) {
-                        Text(
-                            text = "Weather: ${scenario.weather}",
-                            color = cyan,
-                            fontSize = 12.sp,
-                            fontWeight = FontWeight.Medium
-                        )
-                    }
-                }
-            }
-
-            // Viewport
-            item {
-                Card(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .border(1.dp, Color(0xFF1A2332), RoundedCornerShape(20.dp)),
-                    shape = RoundedCornerShape(20.dp),
-                    colors = CardDefaults.cardColors(containerColor = Color(0xFF0D1117))
-                ) {
-                    Column(
-                        modifier = Modifier.padding(16.dp)
-                    ) {
-                        Text(
-                            text = scenario.description,
-                            color = textPrimary,
-                            fontSize = 16.sp,
-                            lineHeight = 24.sp
-                        )
-                        Spacer(modifier = Modifier.height(16.dp))
-                        
-                        Text(
-                            text = "Detected Hazards:",
-                            color = textSecondary,
-                            fontSize = 14.sp,
-                            fontWeight = FontWeight.Medium
-                        )
-                        Spacer(modifier = Modifier.height(8.dp))
-                        
-                        Row(
-                            horizontalArrangement = Arrangement.spacedBy(8.dp),
-                            modifier = Modifier.fillMaxWidth()
-                        ) {
-                            scenario.hazards.forEach { hazard ->
-                                val hazardTextColor = when {
-                                    hazard.contains("car", ignoreCase = true) -> cyan
-                                    hazard.contains("ambulance", ignoreCase = true) -> Color.White // coral background, white text stands out better, but keeping to specs
-                                    hazard.contains("pedestrian", ignoreCase = true) -> amber
-                                    hazard.contains("traffic light", ignoreCase = true) -> Color.Yellow
-                                    else -> Color.White
-                                }
-                                Box(
-                                    modifier = Modifier
-                                        .clip(RoundedCornerShape(10.dp))
-                                        .background(Brush.horizontalGradient(listOf(coral, Color(0xFFD50000))))
-                                        .padding(horizontal = 10.dp, vertical = 4.dp)
-                                ) {
-                                    Text(
-                                        text = hazard,
-                                        color = if (hazardTextColor == Color.White) Color.White else hazardTextColor,
-                                        fontSize = 12.sp,
-                                        fontWeight = FontWeight.Bold
-                                    )
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-
-            // Decision Prompt
-            item {
-                Card(
-                    modifier = Modifier.fillMaxWidth(),
-                    shape = RoundedCornerShape(20.dp),
-                    colors = CardDefaults.cardColors(containerColor = Color(0xFF141829))
-                ) {
-                    Column(
-                        modifier = Modifier.padding(16.dp)
-                    ) {
-                        Text(
-                            text = "Action Required",
-                            color = coral,
-                            fontSize = 14.sp,
-                            fontWeight = FontWeight.Bold
-                        )
-                        Spacer(modifier = Modifier.height(8.dp))
-                        Text(
-                            text = scenario.prompt,
-                            color = textPrimary,
-                            fontSize = 18.sp,
-                            fontWeight = FontWeight.Medium
-                        )
-                    }
-                }
-            }
-
-            // Options
-            items(scenario.options) { option ->
-                val isSelected = selectedOption == option
-                val borderColor = if (isSelected) emerald else Color(0xFF2A2F45)
-                val optionBgColor = if (isSelected) emerald.copy(alpha = 0.08f) else Color(0xFF141829)
                 
-                Card(
+                Box(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .border(2.dp, borderColor, RoundedCornerShape(20.dp))
-                        .clickable { selectedOption = option },
-                    shape = RoundedCornerShape(20.dp),
-                    colors = CardDefaults.cardColors(containerColor = optionBgColor)
+                        .align(Alignment.TopEnd)
+                        .padding(16.dp)
+                        .size(48.dp)
+                        .clip(RoundedCornerShape(8.dp))
+                        .background(Color.White)
+                        .border(3.dp, TrafficRed, RoundedCornerShape(8.dp)),
+                    contentAlignment = Alignment.Center
                 ) {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(16.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        RadioButton(
-                            selected = isSelected,
-                            onClick = { selectedOption = option },
-                            colors = RadioButtonDefaults.colors(
-                                selectedColor = emerald,
-                                unselectedColor = textSecondary
-                            )
-                        )
-                        Spacer(modifier = Modifier.width(12.dp))
-                        Column {
-                            Text(
-                                text = option.label,
-                                color = textPrimary,
-                                fontSize = 16.sp,
-                                fontWeight = FontWeight.SemiBold
-                            )
-                            if (option.description.isNotBlank()) {
-                                Spacer(modifier = Modifier.height(4.dp))
-                                Text(
-                                    text = option.description,
-                                    color = textSecondary,
-                                    fontSize = 14.sp
-                                )
-                            }
-                        }
-                    }
+                    Text(
+                        text = "60",
+                        color = Color.Black,
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold
+                    )
                 }
             }
 
-            // Telemetry Banner
-            item {
-                Card(
-                    modifier = Modifier.fillMaxWidth(),
-                    shape = RoundedCornerShape(16.dp),
-                    colors = CardDefaults.cardColors(containerColor = violet.copy(alpha = 0.1f)),
-                    border = BorderStroke(1.dp, violet.copy(alpha = 0.3f))
-                ) {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(12.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Scenario Panel
+            AppCard(modifier = Modifier.fillMaxWidth()) {
+                Column(modifier = Modifier.padding(20.dp)) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
                         Icon(
-                            imageVector = Icons.Default.Info,
-                            contentDescription = "Telemetry",
-                            tint = violet,
-                            modifier = Modifier.size(20.dp)
+                            imageVector = Icons.Rounded.SmartToy,
+                            contentDescription = "AI Analyzer",
+                            tint = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier.size(24.dp)
                         )
                         Spacer(modifier = Modifier.width(8.dp))
                         Text(
-                            text = "Grip Reduction: ${scenario.roadGripReduction} | XP Reward: ${scenario.xpReward}",
-                            color = textSecondary,
-                            fontSize = 12.sp
+                            text = "AI TRAFFIC ANALYZER",
+                            color = MaterialTheme.colorScheme.primary,
+                            style = AppTypeScale.eyebrowLabel
                         )
                     }
+                    
+                    Spacer(modifier = Modifier.height(12.dp))
+                    
+                    Text(
+                        text = scenario.description,
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                    
+                    Spacer(modifier = Modifier.height(16.dp))
+                    
+                    // Options
+                    for (option in scenario.options) {
+                        val isSelected = selectedOption == option
+                        val borderColor = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outline
+                        val bgColor = if (isSelected) MaterialTheme.colorScheme.primary.copy(alpha = 0.1f) else MaterialTheme.colorScheme.surface
+
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(bottom = 12.dp)
+                                .clip(RoundedCornerShape(16.dp))
+                                .background(bgColor)
+                                .border(1.dp, borderColor, RoundedCornerShape(16.dp))
+                                .clickable { selectedOption = option }
+                                .padding(16.dp)
+                        ) {
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Text(
+                                    text = option.label,
+                                    style = MaterialTheme.typography.bodyLarge,
+                                    color = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface,
+                                    fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
+                                    modifier = Modifier.weight(1f)
+                                )
+                                if (isSelected) {
+                                    Spacer(modifier = Modifier.width(8.dp))
+                                    Box(
+                                        modifier = Modifier
+                                            .size(20.dp)
+                                            .clip(CircleShape)
+                                            .background(MaterialTheme.colorScheme.primary),
+                                        contentAlignment = Alignment.Center
+                                    ) {
+                                        Icon(
+                                            imageVector = Icons.Rounded.Check,
+                                            contentDescription = "Selected",
+                                            tint = Color.White,
+                                            modifier = Modifier.size(12.dp)
+                                        )
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    AppButton(
+                        text = "Execute Decision",
+                        onClick = {
+                            selectedOption?.let { onSubmitDecision(it) }
+                        },
+                        enabled = selectedOption != null
+                    )
                 }
-            }
-
-            // Actions
-            item {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(12.dp)
-                ) {
-                    OutlinedButton(
-                        onClick = { /* Hint Action */ },
-                        modifier = Modifier
-                            .weight(1f)
-                            .height(56.dp),
-                        shape = RoundedCornerShape(14.dp),
-                        border = BorderStroke(1.dp, amber),
-                        colors = ButtonDefaults.outlinedButtonColors(contentColor = amber)
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Warning,
-                            contentDescription = "AI Hint",
-                            modifier = Modifier.size(20.dp)
-                        )
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Text("AI Hint", fontWeight = FontWeight.Bold)
-                    }
-
-                    Button(
-                        onClick = { selectedOption?.let { onSubmitDecision(it) } },
-                        enabled = selectedOption != null,
-                        modifier = Modifier
-                            .weight(1f)
-                            .height(56.dp),
-                        shape = RoundedCornerShape(14.dp),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = emerald,
-                            disabledContainerColor = emerald.copy(alpha = 0.3f)
-                        )
-                    ) {
-                        Text("Confirm", fontWeight = FontWeight.Bold, color = Color(0xFF0B0E1A))
-                    }
-                }
-            }
-
-            item {
-                Spacer(modifier = Modifier.height(32.dp))
             }
         }
+    }
+
+    if (showExitConfirm) {
+        ConfirmActionDialog(
+            title = "Leave Simulation?",
+            message = "Are you sure you want to go back? Your current progress may not be saved.",
+            confirmLabel = "Leave",
+            destructive = true,
+            onConfirm = {
+                showExitConfirm = false
+                onBackClick()
+            },
+            onDismiss = { showExitConfirm = false }
+        )
     }
 }

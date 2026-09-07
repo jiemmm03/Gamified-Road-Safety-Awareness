@@ -24,9 +24,33 @@ data class LearningModule(
     val title: String,
     val description: String,
     val progressPercentage: Float, // 0f to 1f
-    val status: String, // "In Progress", "Up Next", "Completed"
-    val aiDifficulty: String, // "Easy", "Medium", "Hard ⚠️"
-    val isRecommended: Boolean = false
+    val status: String, // "In Progress", "Up Next", "Completed", "Locked"
+    val isRecommended: Boolean = false,
+    val moduleType: ModuleType = ModuleType.EASY,
+    val xpReward: Int = 100,
+    val levelRequirement: Int = 1,
+    val isLocked: Boolean = false,
+    val lockReason: String = "",
+    val xpEarned: Int = 0,
+    val hasQuiz: Boolean = false
+)
+
+data class QuizQuestion(
+    val id: Int,
+    val question: String,
+    val options: List<String>,
+    val correctAnswerIndex: Int = 0, // By default, 0 since the answer key maps to A
+    // Bilingual support: natural Filipino translations shown as secondary text under the
+    // English original (never replacing it). Same order/meaning as `question`/`options`.
+    val questionFil: String = "",
+    val optionsFil: List<String> = emptyList()
+)
+
+data class Quiz(
+    val id: String,
+    val title: String,
+    val moduleType: ModuleType = ModuleType.EASY,
+    val questions: List<QuizQuestion>
 )
 
 data class DecisionOption(
@@ -35,7 +59,9 @@ data class DecisionOption(
     val description: String,
     val isCorrect: Boolean,
     val riskLevel: String, // "High Risk", "Moderate Risk", "Safe Choice"
-    val explanation: String
+    val explanation: String,
+    val tier: SimulationTier = SimulationTier.SAFE_DECISION, // only meaningful when isCorrect is true
+    val aiRecommended: Boolean = false
 )
 
 data class SimulationScenario(
@@ -51,17 +77,6 @@ data class SimulationScenario(
     val options: List<DecisionOption>,
     val timeLimitSeconds: Int,
     val xpReward: Int
-)
-
-data class LeaderboardEntry(
-    val rank: Int,
-    val name: String,
-    val level: Int,
-    val xp: Int,
-    val streak: Int,
-    val complianceRate: String,
-    val leagueTag: String,
-    val isCurrentUser: Boolean = false
 )
 
 data class BadgeItem(
@@ -80,6 +95,19 @@ data class CompetencyMetric(
     val isFocusArea: Boolean = false
 )
 
+data class UserAccount(
+    val username: String,
+    val passwordHash: String,
+    val role: String, // "USER" or "ADMIN"
+    val displayName: String,
+    val permissions: Set<com.example.gamifiedroadsafetyawareness.auth.Permission>,
+    val createdAt: Long = System.currentTimeMillis(),
+    val isActive: Boolean = true,
+    val gender: String = "", // "MALE" or "FEMALE"
+    val age: Int? = null,
+    val contactNumber: String = ""
+)
+
 object MockData {
     val currentUser = UserProfile(
         name = "Juan D.",
@@ -95,31 +123,42 @@ object MockData {
         totalQuizzes = 25
     )
 
+    /**
+     * Three difficulty-based quiz modules, each containing 20 questions.
+     */
     val learningModules = listOf(
         LearningModule(
-            id = "mod_2",
-            title = "Module 2: Traffic Signs & Pavement Markings",
-            description = "Master international regulatory, warning, and guide signs under LTO guidelines.",
-            progressPercentage = 0.75f,
-            status = "In Progress",
-            aiDifficulty = "Medium"
-        ),
-        LearningModule(
-            id = "mod_3",
-            title = "Module 3: Speed Limits & Overtaking Laws",
-            description = "Defensive positioning, highway speed regulations, and blind spot management.",
+            id = "mod_easy_quiz",
+            title = "🟢 Easy Quiz",
+            description = "20 questions covering road safety basics, traffic lights, signs, seat belts, and fundamental driving rules.",
             progressPercentage = 0.0f,
             status = "Up Next",
-            aiDifficulty = "Hard ⚠️"
+            moduleType = ModuleType.EASY,
+            xpReward = 100,
+            levelRequirement = 1,
+            hasQuiz = true
         ),
         LearningModule(
-            id = "mod_4",
-            title = "Module 4: Intersection & Right-of-Way Priority",
-            description = "Targeted lesson recommended by AI based on recent quiz telemetry.",
-            progressPercentage = 0.20f,
-            status = "AI Recommended",
-            aiDifficulty = "Adaptive",
-            isRecommended = true
+            id = "mod_medium_quiz",
+            title = "🟡 Medium Quiz",
+            description = "20 scenario-based questions on lane changes, rain driving, overtaking rules, and defensive driving techniques.",
+            progressPercentage = 0.0f,
+            status = "Up Next",
+            moduleType = ModuleType.MEDIUM,
+            xpReward = 200,
+            levelRequirement = 1,
+            hasQuiz = true
+        ),
+        LearningModule(
+            id = "mod_hard_quiz",
+            title = "🔴 Hard Quiz",
+            description = "20 advanced situational questions on right-of-way, night driving, skid control, and multi-hazard intersections.",
+            progressPercentage = 0.0f,
+            status = "Up Next",
+            moduleType = ModuleType.HARD,
+            xpReward = 300,
+            levelRequirement = 1,
+            hasQuiz = true
         )
     )
 
@@ -160,43 +199,36 @@ object MockData {
                 description = "Come to a smooth, complete stop before the crosswalk line, yielding right-of-way to both the ambulance and the pedestrian.",
                 isCorrect = true,
                 riskLevel = "Safe Choice (0% Collision Probability)",
-                explanation = "Under Philippine Traffic Laws (RA 4136) and International Road Safety standards, emergency vehicles with active sirens have absolute right-of-way. Stopping before the crosswalk protects vulnerable pedestrians."
+                explanation = "Under Philippine Traffic Laws (RA 4136) and International Road Safety standards, emergency vehicles with active sirens have absolute right-of-way. Stopping before the crosswalk protects vulnerable pedestrians.",
+                tier = SimulationTier.PERFECT_SIMULATION,
+                aiRecommended = true
             )
         ),
         timeLimitSeconds = 15,
         xpReward = 150
     )
 
-    val leaderboardEntries = listOf(
-        LeaderboardEntry(1, "Maria Santos", 15, 14200, 14, "99% Compliance", "Quezon City LGU"),
-        LeaderboardEntry(2, "Carlos Reyes", 14, 13850, 12, "97% Compliance", "Smart Driving School"),
-        LeaderboardEntry(3, "Elena Gomez", 12, 11400, 9, "95% Compliance", "QC Youth Safety Group"),
-        LeaderboardEntry(4, "Juan D. (You)", 8, 2450, 7, "92% Compliance", "Quezon City LGU", isCurrentUser = true),
-        LeaderboardEntry(5, "Pedro Penduko", 7, 2100, 5, "88% Compliance", "Smart Driving School"),
-        LeaderboardEntry(6, "Ana Mercado", 6, 1850, 4, "90% Compliance", "Makati Traffic League")
-    )
-
     val badges = listOf(
-        BadgeItem("b1", "Hazard Hunter", "🛡️", "Successfully avoided 50 sudden pedestrian hazards in simulations.", true, "Unlocked (50/50)"),
-        BadgeItem("b2", "Right-of-Way Pro", "🛑", "Achieved 100% accuracy on intersection priority quizzes.", true, "Unlocked (100%)"),
-        BadgeItem("b3", "Night Owl Driver", "🌙", "Completed 10 nighttime low-visibility driving lessons.", true, "Unlocked (10/10)"),
-        BadgeItem("b4", "Emergency Responder", "🚑", "Properly yield right-of-way to emergency vehicles in 5 scenarios.", false, "In Progress (4/5 Scenarios)"),
-        BadgeItem("b5", "Law Master", "⚖️", "Score 95%+ on the official LTO Mock Theoretical Exam.", false, "Locked (Req: Lvl 10)"),
-        BadgeItem("b6", "Zero Collision", "✨", "Complete 20 consecutive simulations with 0 infractions.", false, "Locked (Req: 15/20)")
+        BadgeItem("b1", "NEURAL HUNTER", "🎯", "Successfully identified and avoided 50 sudden pedestrian anomalies in simulations.", true, "UNLOCKED (50/50)"),
+        BadgeItem("b2", "PRIORITY NODE PRO", "🛑", "Achieved 100% accuracy on intersection algorithmic priority quizzes.", true, "UNLOCKED (100%)"),
+        BadgeItem("b3", "NIGHT VISION DRIVER", "🌙", "Completed 10 nighttime low-visibility sensor calibration lessons.", true, "UNLOCKED (10/10)"),
+        BadgeItem("b4", "EMERGENCY OVERRIDE", "🚑", "Properly yield right-of-way to emergency vehicles in 5 scenarios.", false, "IN PROGRESS (4/5)"),
+        BadgeItem("b5", "LAW MASTER (AI)", "⚖️", "Score 95%+ on the official System Architecture Mock Exam.", false, "LOCKED (REQ: LVL 10)"),
+        BadgeItem("b6", "ZERO COLLISION RUN", "✨", "Complete 20 consecutive simulation loops with 0 infractions.", false, "LOCKED (REQ: 15/20)")
     )
 
     val competencyMetrics = listOf(
-        CompetencyMetric("Traffic Signs & Rules", 95, "Mastered"),
-        CompetencyMetric("Right-of-Way Compliance", 88, "Proficient"),
-        CompetencyMetric("Speed & Distance Control", 82, "Good"),
-        CompetencyMetric("Hazard Perception & Reflex", 72, "⚠️ AI Focus Area", isFocusArea = true),
-        CompetencyMetric("Eco & Defensive Driving", 85, "Proficient")
+        CompetencyMetric("Signs & Regulations", 95, "Mastered"),
+        CompetencyMetric("Algorithmic Right-of-Way", 88, "Proficient"),
+        CompetencyMetric("Speed & Velocity Control", 82, "Good"),
+        CompetencyMetric("Hazard Perception Latency", 72, "⚠️ DIAGNOSTIC FOCUS", isFocusArea = true),
+        CompetencyMetric("Eco & Cyber-Defensive Driving", 85, "Proficient")
     )
 
     val aiCurriculumLogs = listOf(
-        "Dynamic Difficulty Scaling: Increased simulation hazard density from 2 to 4 simultaneous vehicles based on your high score in Module 1.",
-        "Targeted Remediation Quizzes: Generated a custom 10-question quiz on 'Pedestrian Priority' after Scenario #10 infraction.",
-        "Instructor/School Synchronization: Flagged 'Night Driving' as a practice topic for your real-world driving school instructor.",
-        "Reflex Diagnostic: Noted 0.6s hesitation before braking on slippery road; inserted 5-min mini-lesson on Wet Weather Braking."
+        "Dynamic Difficulty Scaling: Increased simulation hazard density from 2 to 4 simultaneous vehicles based on neural efficiency in Module 1.",
+        "Targeted Remediation Quizzes: Generated a custom 10-question matrix on 'Pedestrian Priority' after Scenario #10 infraction.",
+        "Instructor/School Synchronization: Flagged 'Night Driving' as a priority focus area for your physical driving instructor.",
+        "Reflex Diagnostic: Noted 0.6s latency before braking on slippery road; inserted 5-min cyber-lesson on Wet Weather Braking."
     )
 }

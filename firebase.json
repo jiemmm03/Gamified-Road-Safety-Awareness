@@ -1,0 +1,25 @@
+{
+  "hosting": {
+    "public": "admin-web",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**",
+      "**/*.bat",
+      "**/*.exe",
+      "**/*.cmd"
+    ],
+    "cleanUrls": true,
+    "headers": [
+      {
+        "source": "**/*.@(js|css)",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "max-age=3600"
+          }
+        ]
+      }
+    ]
+  }
+}

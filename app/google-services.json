@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "470220431881",
+    "project_id": "gamifiedroadsafetyawareness",
+    "storage_bucket": "gamifiedroadsafetyawareness.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:470220431881:android:858033be446e818a838ed8",
+        "android_client_info": {
+          "package_name": "com.johnmark.roadsafety"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBoTVh2Ug2bMa4Ojkg8EOHmv1yrE-6EJWg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:470220431881:android:858033be446e818a838ed8",
+        "android_client_info": {
+          "package_name": "com.example.gamifiedroadsafetyawareness"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBoTVh2Ug2bMa4Ojkg8EOHmv1yrE-6EJWg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

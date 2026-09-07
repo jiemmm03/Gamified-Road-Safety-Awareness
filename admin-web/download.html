@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Install RoadSafe AI — Mobile App</title>
+    <meta name="description" content="Download and install RoadSafe AI gamified road safety application on your Android phone.">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-dark: #0B132B;
+            --surface-dark: #1C2541;
+            --card-dark: #222E50;
+            --primary-accent: #3A86FF;
+            --emerald-green: #10B981;
+            --emerald-hover: #059669;
+            --badge-gold: #F59E0B;
+            --danger-red: #EF4444;
+            --text-primary: #FFFFFF;
+            --text-secondary: #94A3B8;
+            --text-muted: #64748B;
+            --border-subtle: rgba(255, 255, 255, 0.08);
+            --border-glow: rgba(16, 185, 129, 0.3);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 24px 16px 40px;
+            overflow-x: hidden;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 480px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        /* App Icon & Badge */
+        .app-hero {
+            margin-top: 16px;
+            margin-bottom: 24px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .app-icon-wrapper {
+            width: 96px;
+            height: 96px;
+            background: linear-gradient(135deg, #1C2541, #222E50);
+            border: 2px solid var(--border-glow);
+            border-radius: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4), 0 0 20px rgba(16, 185, 129, 0.2);
+            margin-bottom: 16px;
+            position: relative;
+        }
+
+        .app-icon-wrapper img {
+            width: 72px;
+            height: 72px;
+            object-fit: contain;
+        }
+
+        .app-title {
+            font-size: 26px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+
+        .app-subtitle {
+            font-size: 14px;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .app-badge-row {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .tag-badge {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-secondary);
+            font-size: 11px;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .tag-badge.android {
+            color: var(--emerald-green);
+            background: rgba(16, 185, 129, 0.1);
+            border-color: rgba(16, 185, 129, 0.2);
+        }
+
+        /* Status Banner */
+        .status-banner {
+            width: 100%;
+            padding: 10px 16px;
+            border-radius: 12px;
+            font-size: 13px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .status-banner.ready {
+            background: rgba(16, 185, 129, 0.12);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            color: var(--emerald-green);
+        }
+
+        .status-banner.error {
+            background: rgba(239, 68, 68, 0.12);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: var(--danger-red);
+        }
+
+        .status-banner .material-icons-round {
+            font-size: 18px;
+        }
+
+        /* Big Download CTA */
+        .download-card {
+            width: 100%;
+            background: var(--surface-dark);
+            border: 1px solid var(--border-subtle);
+            border-radius: 20px;
+            padding: 24px 20px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+            margin-bottom: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .btn-download-apk {
+            width: 100%;
+            background: linear-gradient(135deg, var(--emerald-green), var(--emerald-hover));
+            color: #ffffff;
+            border: none;
+            border-radius: 14px;
+            padding: 16px 20px;
+            font-size: 17px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            cursor: pointer;
+            text-decoration: none;
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.35);
+            transition: all 0.2s ease;
+        }
+
+        .btn-download-apk:active {
+            transform: scale(0.98);
+            box-shadow: 0 2px 10px rgba(16, 185, 129, 0.25);
+        }
+
+        .btn-download-apk.disabled {
+            background: linear-gradient(135deg, #4B5563, #374151);
+            box-shadow: none;
+            pointer-events: none;
+            opacity: 0.6;
+        }
+
+        .download-info {
+            font-size: 12px;
+            color: var(--text-muted);
+            display: flex;
+            justify-content: space-between;
+            padding: 0 4px;
+        }
+
+        /* Progress Bar */
+        .download-progress {
+            display: none;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .download-progress.active {
+            display: flex;
+        }
+
+        .progress-bar-track {
+            width: 100%;
+            height: 6px;
+            background: rgba(255,255,255,0.08);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--emerald-green), var(--primary-accent));
+            border-radius: 3px;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .progress-text {
+            font-size: 11px;
+            color: var(--text-secondary);
+            text-align: center;
+        }
+
+        /* QR Code for PC Viewers */
+        .qr-section {
+            width: 100%;
+            background: var(--surface-dark);
+            border: 1px solid var(--border-subtle);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 24px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .qr-section h3 {
+            font-size: 15px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .qr-section p {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-bottom: 14px;
+        }
+
+        .qr-box {
+            background: #ffffff;
+            padding: 10px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+        }
+
+        .qr-box img {
+            width: 180px;
+            height: 180px;
+            display: block;
+        }
+
+        .qr-url-display {
+            margin-top: 10px;
+            font-size: 11px;
+            color: var(--text-muted);
+            word-break: break-all;
+            background: rgba(255,255,255,0.04);
+            padding: 6px 10px;
+            border-radius: 6px;
+            max-width: 100%;
+        }
+
+        /* 3-Step Installation Guide */
+        .guide-section {
+            width: 100%;
+            text-align: left;
+            margin-bottom: 24px;
+        }
+
+        .guide-title {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-primary);
+        }
+
+        .guide-title .material-icons-round {
+            color: var(--badge-gold);
+            font-size: 20px;
+        }
+
+        .step-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .step-item {
+            background: var(--surface-dark);
+            border: 1px solid var(--border-subtle);
+            border-radius: 14px;
+            padding: 14px 16px;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .step-num {
+            width: 28px;
+            height: 28px;
+            background: rgba(58, 134, 255, 0.15);
+            color: var(--primary-accent);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .step-text h4 {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 2px;
+        }
+
+        .step-text p {
+            font-size: 12px;
+            color: var(--text-secondary);
+            line-height: 1.4;
+        }
+
+        /* App Highlights */
+        .features-grid {
+            width: 100%;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 24px;
+        }
+
+        .feature-card {
+            background: var(--surface-dark);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            padding: 12px;
+            text-align: left;
+        }
+
+        .feature-card .material-icons-round {
+            font-size: 22px;
+            color: var(--emerald-green);
+            margin-bottom: 6px;
+        }
+
+        .feature-card h5 {
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+
+        .feature-card p {
+            font-size: 11px;
+            color: var(--text-secondary);
+            line-height: 1.3;
+        }
+
+        /* Footer */
+        .footer {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-top: 10px;
+        }
+
+        /* Pulse animation */
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 6px 20px rgba(16, 185, 129, 0.35); }
+            50% { box-shadow: 0 6px 30px rgba(16, 185, 129, 0.55), 0 0 40px rgba(16, 185, 129, 0.2); }
+        }
+
+        .btn-download-apk:not(.disabled) {
+            animation: pulse-glow 2s infinite;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        
+        <!-- App Header Hero -->
+        <div class="app-hero">
+            <div class="app-icon-wrapper">
+                <img src="logo.png" alt="RoadSafe AI Logo" onerror="this.src='https://cdn-icons-png.flaticon.com/512/2991/2991148.png'">
+            </div>
+            <h1 class="app-title">RoadSafe AI</h1>
+            <p class="app-subtitle">Gamified Road Safety &amp; Driver Training</p>
+            <div class="app-badge-row">
+                <span class="tag-badge android">
+                    <span class="material-icons-round" style="font-size:14px;">android</span>
+                    Android APK
+                </span>
+                <span class="tag-badge">v3.0 Official</span>
+                <span class="tag-badge">Cloud Sync Ready</span>
+            </div>
+        </div>
+
+        <!-- Connection Status Banner -->
+        <div class="status-banner ready" id="status-banner">
+            <span class="material-icons-round">check_circle</span>
+            <span id="status-text">Checking APK availability...</span>
+        </div>
+
+        <!-- Direct Download Button Card -->
+        <div class="download-card">
+            <a href="app-debug.apk" class="btn-download-apk" id="btn-download-apk" download="RoadSafeAI-v3.0.apk">
+                <span class="material-icons-round">file_download</span>
+                <span id="btn-download-text">Download APK Now</span>
+            </a>
+
+            <!-- Progress indicator -->
+            <div class="download-progress" id="download-progress">
+                <div class="progress-bar-track">
+                    <div class="progress-bar-fill" id="progress-fill"></div>
+                </div>
+                <div class="progress-text" id="progress-text">Preparing download...</div>
+            </div>
+
+            <div class="download-info">
+                <span>Package: <strong id="apk-filename">RoadSafeAI-v3.0.apk</strong></span>
+                <span>Requires Android 8.0+</span>
+            </div>
+        </div>
+
+        <!-- Live QR Code Card (Scan with another phone) -->
+        <div class="qr-section" id="qr-section">
+            <div style="display:flex;align-items:center;gap:6px;margin-bottom:2px;">
+                <span class="material-icons-round" style="color:var(--emerald-green);font-size:18px;">qr_code_scanner</span>
+                <h3>Share to Another Phone</h3>
+            </div>
+            <p>Scan this QR code from another phone to download the app</p>
+            <div class="qr-box">
+                <img id="qr-img" src="" alt="Download QR Code">
+            </div>
+            <div class="qr-url-display" id="qr-url-display"></div>
+        </div>
+
+        <!-- 3-Step Simple Install Guide -->
+        <div class="guide-section">
+            <div class="guide-title">
+                <span class="material-icons-round">help_outline</span>
+                <span>How to Install in 3 Steps</span>
+            </div>
+            <div class="step-list">
+                <div class="step-item">
+                    <div class="step-num">1</div>
+                    <div class="step-text">
+                        <h4>Tap "Download APK Now"</h4>
+                        <p>When the browser alerts <em>"File might be harmful"</em>, tap <strong>Download anyway</strong>.</p>
+                    </div>
+                </div>
+                <div class="step-item">
+                    <div class="step-num">2</div>
+                    <div class="step-text">
+                        <h4>Open Downloaded File</h4>
+                        <p>Tap <strong>Open</strong> from your notifications or open <code>RoadSafeAI-v3.0.apk</code> from your <em>Downloads</em> folder.</p>
+                    </div>
+                </div>
+                <div class="step-item">
+                    <div class="step-num">3</div>
+                    <div class="step-text">
+                        <h4>Tap "Install"</h4>
+                        <p>If prompted by Android, tap <strong>Settings ➔ Allow from this source</strong>, then tap <strong>Install</strong>.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Features Grid -->
+        <div class="features-grid">
+            <div class="feature-card">
+                <span class="material-icons-round">quiz</span>
+                <h5>Interactive Quizzes</h5>
+                <p>Easy, Medium &amp; Hard road safety questions with instant feedback.</p>
+            </div>
+            <div class="feature-card">
+                <span class="material-icons-round">military_tech</span>
+                <h5>XP &amp; Leaderboards</h5>
+                <p>Earn rank badges, level up, and maintain daily learning streaks.</p>
+            </div>
+            <div class="feature-card">
+                <span class="material-icons-round">alt_route</span>
+                <h5>Driver Scenarios</h5>
+                <p>Practical decision-making simulations for everyday traffic hazards.</p>
+            </div>
+            <div class="feature-card">
+                <span class="material-icons-round">cloud_sync</span>
+                <h5>Real-Time Telemetry</h5>
+                <p>Automatic background synchronization with the Admin Command Center.</p>
+            </div>
+        </div>
+
+        <div class="footer">
+            RoadSafe AI Platform &copy; 2026 · Gamified Driver Safety Training
+        </div>
+
+    </div>
+
+    <script>
+        // ─── Determine download URL ───
+        // The APK file is served from the same directory as this page
+        const baseUrl = window.location.origin + window.location.pathname.replace(/\/[^\/]*$/, '');
+        const apkUrl = baseUrl + '/app-debug.apk';
+        const downloadPageUrl = window.location.href;
+
+        const downloadBtn = document.getElementById('btn-download-apk');
+        const downloadBtnText = document.getElementById('btn-download-text');
+        const statusBanner = document.getElementById('status-banner');
+        const statusText = document.getElementById('status-text');
+        const qrImg = document.getElementById('qr-img');
+        const qrUrlDisplay = document.getElementById('qr-url-display');
+        const progressDiv = document.getElementById('download-progress');
+        const progressFill = document.getElementById('progress-fill');
+        const progressText = document.getElementById('progress-text');
+
+        // ─── Generate QR code pointing to THIS download page ───
+        // When someone scans this, they get this same page on their phone
+        if (qrImg) {
+            qrImg.src = 'https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=' + encodeURIComponent(downloadPageUrl);
+        }
+        if (qrUrlDisplay) {
+            qrUrlDisplay.textContent = downloadPageUrl;
+        }
+
+        // ─── Check APK availability ───
+        function checkApkAvailability() {
+            fetch(apkUrl, { method: 'HEAD' })
+                .then(response => {
+                    if (response.ok) {
+                        const size = response.headers.get('Content-Length');
+                        const sizeMB = size ? (parseInt(size) / (1024 * 1024)).toFixed(1) : '~25';
+
+                        statusBanner.className = 'status-banner ready';
+                        statusText.innerHTML = `<strong>APK Ready</strong> — ${sizeMB} MB available for download`;
+
+                        downloadBtn.href = apkUrl;
+                        downloadBtn.classList.remove('disabled');
+                        downloadBtnText.textContent = `Download APK (${sizeMB} MB)`;
+                    } else {
+                        showApkNotFound();
+                    }
+                })
+                .catch(() => {
+                    showApkNotFound();
+                });
+        }
+
+        function showApkNotFound() {
+            statusBanner.className = 'status-banner error';
+            statusText.innerHTML = '<strong>APK not found</strong> — Build the app in Android Studio first, then re-run start-share.bat';
+            downloadBtn.classList.add('disabled');
+            downloadBtnText.textContent = 'APK Not Available';
+        }
+
+        // ─── Download click handler with progress feedback ───
+        if (downloadBtn) {
+            downloadBtn.addEventListener('click', function(e) {
+                if (this.classList.contains('disabled')) {
+                    e.preventDefault();
+                    return;
+                }
+
+                // Show progress feedback
+                progressDiv.classList.add('active');
+                progressText.textContent = 'Starting download...';
+
+                let progress = 0;
+                const progressInterval = setInterval(() => {
+                    progress += Math.random() * 15;
+                    if (progress > 95) progress = 95;
+                    progressFill.style.width = progress + '%';
+                    progressText.textContent = `Downloading... ${Math.round(progress)}%`;
+                }, 300);
+
+                // Complete after a reasonable time
+                setTimeout(() => {
+                    clearInterval(progressInterval);
+                    progressFill.style.width = '100%';
+                    progressText.textContent = '✅ Download complete! Check your Downloads folder.';
+
+                    setTimeout(() => {
+                        progressDiv.classList.remove('active');
+                        progressFill.style.width = '0%';
+                    }, 5000);
+                }, 4000);
+            });
+        }
+
+        // Run check on load
+        checkApkAvailability();
+    </script>
+</body>
+</html>

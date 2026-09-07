@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RoadSafe AI — Admin Command Center</title>
+    <meta name="description" content="Complete Administrative and Cloud Monitoring Counterpart for the RoadSafe AI Mobile Application.">
+
+    <!-- Primary Font: Inter (Google Fonts) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Material Icons Rounded -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+
+    <!-- Firebase Compat SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <!-- ═══════════════════════ SIDEBAR ═══════════════════════ -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo-container">
+                <img src="logo.png" alt="RoadSafe AI Logo" class="logo-icon">
+                <div class="logo-text">
+                    <span class="logo-title font-h3">RoadSafe AI</span>
+                    <span class="logo-subtitle font-caption">Admin Command Center</span>
+                </div>
+            </div>
+        </div>
+
+        <nav class="sidebar-nav" aria-label="Main Navigation">
+            <button class="nav-item active font-navigation" data-tab="dashboard" id="nav-dashboard">
+                <span class="material-icons-round">dashboard</span>
+                <span class="nav-label">Dashboard</span>
+            </button>
+            <button class="nav-item font-navigation" data-tab="users" id="nav-users">
+                <span class="material-icons-round">manage_accounts</span>
+                <span class="nav-label">User Management</span>
+                <span class="nav-badge font-badge" id="badge-users">0</span>
+            </button>
+            <button class="nav-item font-navigation" data-tab="modules" id="nav-modules">
+                <span class="material-icons-round">menu_book</span>
+                <span class="nav-label">Modules</span>
+                <span class="nav-badge font-badge" id="badge-modules">3</span>
+            </button>
+            <button class="nav-item font-navigation" data-tab="quizzes" id="nav-quizzes">
+                <span class="material-icons-round">quiz</span>
+                <span class="nav-label">Quiz Bank & Results</span>
+                <span class="nav-badge font-badge" id="badge-quizzes">0</span>
+            </button>
+            <button class="nav-item font-navigation" data-tab="scenarios" id="nav-scenarios">
+                <span class="material-icons-round">alt_route</span>
+                <span class="nav-label">Driver Decisions</span>
+                <span class="nav-badge font-badge" id="badge-scenarios">5</span>
+            </button>
+            <button class="nav-item font-navigation" data-tab="gamification" id="nav-gamification">
+                <span class="material-icons-round">military_tech</span>
+                <span class="nav-label">Gamification & Ranks</span>
+            </button>
+            <button class="nav-item font-navigation" data-tab="ai-activity" id="nav-ai-activity">
+                <span class="material-icons-round">smart_toy</span>
+                <span class="nav-label">AI Road Tutor</span>
+                <span class="nav-badge font-badge" id="badge-ai">0</span>
+            </button>
+            <button class="nav-item font-navigation" data-tab="devices" id="nav-devices">
+                <span class="material-icons-round">phone_android</span>
+                <span class="nav-label">Device Fleet</span>
+                <span class="nav-badge font-badge" id="badge-devices">0</span>
+            </button>
+            <button class="nav-item font-navigation" data-tab="logins" id="nav-logins">
+                <span class="material-icons-round">history</span>
+                <span class="nav-label">Activity History</span>
+                <span class="nav-badge font-badge" id="badge-logins">0</span>
+            </button>
+            <button class="nav-item font-navigation" data-tab="analytics" id="nav-analytics">
+                <span class="material-icons-round">insights</span>
+                <span class="nav-label">Analytics & Reports</span>
+            </button>
+            <button class="nav-item font-navigation" data-tab="audit" id="nav-audit">
+                <span class="material-icons-round">admin_panel_settings</span>
+                <span class="nav-label">Security Audit</span>
+                <span class="nav-badge font-badge" id="badge-audit">0</span>
+            </button>
+            <button class="nav-item font-navigation" data-tab="settings" id="nav-settings">
+                <span class="material-icons-round">settings</span>
+                <span class="nav-label">Settings</span>
+            </button>
+        </nav>
+
+        <div class="sidebar-footer">
+            <div class="admin-session-box" id="admin-session-box">
+                <div class="admin-avatar-mini">
+                    <span class="material-icons-round">shield</span>
+                </div>
+                <div class="admin-info-mini">
+                    <span class="admin-role-title font-caption">Active Admin</span>
+                    <span class="admin-username font-body-sm" id="current-admin-name">admin</span>
+                </div>
+            </div>
+            <div class="connection-status" id="connection-status">
+                <span class="status-dot pulse"></span>
+                <span class="status-text font-caption">Connected to Firestore</span>
+            </div>
+            <div class="sidebar-version font-caption">v3.0 · Full Mirror Edition</div>
+        </div>
+    </aside>
+
+    <!-- ═══════════════════════ MAIN CONTENT ═══════════════════════ -->
+    <main class="main-content" id="main-content">
+
+        <!-- Top Header Bar -->
+        <header class="top-bar">
+            <button class="menu-toggle" id="menu-toggle" aria-label="Toggle Navigation Menu">
+                <span class="material-icons-round">menu</span>
+            </button>
+            <div class="top-bar-title">
+                <h1 class="page-title font-h1" id="page-title">Dashboard</h1>
+                <span class="top-bar-subtitle font-body-sm" id="page-subtitle">Real-Time System Overview</span>
+            </div>
+            <div class="top-bar-actions">
+                <button class="btn btn-download-apk font-button" onclick="showAppInstallModal()" title="Install RoadSafe AI Mobile App">
+                    <span class="material-icons-round">android</span>
+                    <span class="btn-text">Install Mobile App</span>
+                </button>
+                <div class="live-indicator">
+                    <span class="live-dot pulse"></span>
+                    <span class="live-text font-badge">LIVE</span>
+                </div>
+                <button class="refresh-btn" id="refresh-btn" title="Refresh Live Data">
+                    <span class="material-icons-round">refresh</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- ═══════════ TAB 1: DASHBOARD ═══════════ -->
+        <section class="tab-content active" id="tab-dashboard">
+            <div class="metrics-grid">
+                <div class="metric-card metric-online">
+                    <div class="metric-icon-wrap"><span class="material-icons-round">wifi</span></div>
+                    <div class="metric-info">
+                        <span class="metric-value font-statistic" id="metric-online">0</span>
+                        <span class="metric-label font-label">Online Now</span>
+                        <span class="metric-caption font-caption">Active in last 5 mins</span>
+                    </div>
+                </div>
+                <div class="metric-card metric-devices">
+                    <div class="metric-icon-wrap"><span class="material-icons-round">people</span></div>
+                    <div class="metric-info">
+                        <span class="metric-value font-statistic" id="metric-total-devices">0</span>
+                        <span class="metric-label font-label">Total Cadets</span>
+                        <span class="metric-caption font-caption">Registered driver accounts</span>
+                    </div>
+                </div>
+                <div class="metric-card metric-quizzes">
+                    <div class="metric-icon-wrap"><span class="material-icons-round">quiz</span></div>
+                    <div class="metric-info">
+                        <span class="metric-value font-statistic" id="metric-total-quizzes">0</span>
+                        <span class="metric-label font-label">Quiz Attempts</span>
+                        <span class="metric-caption font-caption">Assessments completed</span>
+                    </div>
+                </div>
+                <div class="metric-card metric-alerts">
+                    <div class="metric-icon-wrap"><span class="material-icons-round">star</span></div>
+                    <div class="metric-info">
+                        <span class="metric-value font-statistic" id="metric-total-xp">0</span>
+                        <span class="metric-label font-label">Total XP Distributed</span>
+                        <span class="metric-caption font-caption">Across all learner ranks</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="dashboard-body">
+                <div class="card chart-card">
+                    <div class="card-header">
+                        <h3 class="font-h3"><span class="material-icons-round">bar_chart</span> Quiz Performance & Passing Rate</h3>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="quizChart"></canvas>
+                    </div>
+                </div>
+                <div class="card recent-card">
+                    <div class="card-header">
+                        <h3 class="font-h3"><span class="material-icons-round">bolt</span> Live Activity Stream</h3>
+                    </div>
+                    <div class="activity-feed" id="activity-feed">
+                        <div class="empty-state mini">
+                            <span class="material-icons-round">hourglass_empty</span>
+                            <p class="font-body">Waiting for real-time data…</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ═══════════ TAB 2: USER MANAGEMENT ═══════════ -->
+        <section class="tab-content" id="tab-users">
+            <div class="tab-toolbar">
+                <div class="search-box">
+                    <span class="material-icons-round">search</span>
+                    <input type="text" id="search-users" class="font-body" placeholder="Search by name, username, email, contact, or device…">
+                </div>
+                <div class="filter-chips" id="users-filter-chips">
+                    <button class="chip active font-button" data-filter="all">All Users</button>
+                    <button class="chip font-button" data-filter="online">🟢 Online</button>
+                    <button class="chip font-button" data-filter="offline">⚪ Offline</button>
+                    <button class="chip font-button" data-filter="admin">🛡️ Admins</button>
+                    <button class="chip font-button" data-filter="cadet">🚗 Cadets</button>
+                    <button class="chip font-button" data-filter="male">♂️ Male</button>
+                    <button class="chip font-button" data-filter="female">♀️ Female</button>
+                </div>
+            </div>
+            <div class="data-list" id="users-list"></div>
+        </section>
+
+        <!-- ═══════════ TAB 3: MODULE MANAGEMENT ═══════════ -->
+        <section class="tab-content" id="tab-modules">
+            <div class="module-controls-header">
+                <p class="font-body-sm" style="color:var(--text-secondary);margin-bottom:20px;">
+                    Control which modules &amp; quizzes are available to learners
+                </p>
+            </div>
+            <div class="mobile-modules-list" id="mobile-modules-list">
+                <div class="mobile-module-card" id="card-mod_easy_quiz">
+                    <div class="mobile-module-info">
+                        <div class="mobile-module-title font-h3">
+                            🟢 Easy Quiz
+                        </div>
+                        <div class="mobile-module-desc font-body">
+                            20 questions covering road safety basics, traffic lights, signs, seat belts, and fundamental driving rules.
+                        </div>
+                        <div class="mobile-module-badges">
+                            <span class="tag-badge blue font-badge">EASY MODULE</span>
+                            <span class="tag-badge gold font-badge">+100 XP</span>
+                        </div>
+                    </div>
+                    <label class="switch" title="Toggle module availability to mobile users">
+                        <input type="checkbox" checked onchange="toggleMobileModule('mod_easy_quiz', this.checked)">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+
+                <div class="mobile-module-card" id="card-mod_medium_quiz">
+                    <div class="mobile-module-info">
+                        <div class="mobile-module-title font-h3">
+                            🟡 Medium Quiz
+                        </div>
+                        <div class="mobile-module-desc font-body">
+                            20 scenario-based questions on lane changes, rain driving, overtaking rules, and defensive driving techniques.
+                        </div>
+                        <div class="mobile-module-badges">
+                            <span class="tag-badge blue font-badge">MEDIUM MODULE</span>
+                            <span class="tag-badge gold font-badge">+200 XP</span>
+                        </div>
+                    </div>
+                    <label class="switch" title="Toggle module availability to mobile users">
+                        <input type="checkbox" checked onchange="toggleMobileModule('mod_medium_quiz', this.checked)">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+
+                <div class="mobile-module-card" id="card-mod_hard_quiz">
+                    <div class="mobile-module-info">
+                        <div class="mobile-module-title font-h3">
+                            🔴 Hard Quiz
+                        </div>
+                        <div class="mobile-module-desc font-body">
+                            20 advanced situational questions on right-of-way, night driving, skid control, and multi-hazard intersections.
+                        </div>
+                        <div class="mobile-module-badges">
+                            <span class="tag-badge blue font-badge">HARD MODULE</span>
+                            <span class="tag-badge gold font-badge">+300 XP</span>
+                        </div>
+                    </div>
+                    <label class="switch" title="Toggle module availability to mobile users">
+                        <input type="checkbox" checked onchange="toggleMobileModule('mod_hard_quiz', this.checked)">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+            </div>
+        </section>
+
+        <!-- ═══════════ TAB 4: QUIZ BANK & RESULTS ═══════════ -->
+        <section class="tab-content" id="tab-quizzes">
+            <div class="sub-nav-tabs">
+                <button class="sub-tab-btn active font-button" data-subtab="quiz-attempts" id="subtab-attempts-btn">
+                    <span class="material-icons-round">rate_review</span> Quiz Submissions Stream
+                </button>
+                <button class="sub-tab-btn font-button" data-subtab="quiz-bank" id="subtab-bank-btn">
+                    <span class="material-icons-round">inventory_2</span> Question Bank Repository
+                </button>
+            </div>
+
+            <!-- Subtab A: Quiz Attempts Stream -->
+            <div class="sub-tab-content active" id="sub-tab-quiz-attempts">
+                <div class="tab-toolbar">
+                    <div class="search-box">
+                        <span class="material-icons-round">search</span>
+                        <input type="text" id="search-quizzes" class="font-body" placeholder="Search quiz attempts by user or topic…">
+                    </div>
+                    <div class="filter-chips">
+                        <button class="chip active font-button" data-filter="all">All Attempts</button>
+                        <button class="chip font-button" data-filter="passed">✅ Passed (≥70%)</button>
+                        <button class="chip font-button" data-filter="failed">❌ Failed (&lt;70%)</button>
+                    </div>
+                </div>
+                <div class="data-list" id="quizzes-list"></div>
+            </div>
+
+            <!-- Subtab B: Question Bank -->
+            <div class="sub-tab-content" id="sub-tab-quiz-bank">
+                <div class="tab-toolbar">
+                    <div class="search-box">
+                        <span class="material-icons-round">search</span>
+                        <input type="text" id="search-questions" class="font-body" placeholder="Search questions in question bank…">
+                    </div>
+                    <div class="filter-chips">
+                        <button class="chip active font-button" data-filter="all">All Questions</button>
+                        <button class="chip font-button" data-filter="Easy">Easy</button>
+                        <button class="chip font-button" data-filter="Medium">Medium</button>
+                        <button class="chip font-button" data-filter="Hard">Hard</button>
+                    </div>
+                    <button class="btn btn-primary font-button" onclick="openQuestionEditor()" style="margin-left:auto;">
+                        <span class="material-icons-round">add_circle</span>
+                        <span>Add Question</span>
+                    </button>
+                </div>
+                <div class="data-list" id="questions-list"></div>
+            </div>
+        </section>
+
+        <!-- ═══════════ TAB 5: DRIVER DECISION SCENARIOS ═══════════ -->
+        <section class="tab-content" id="tab-scenarios">
+            <div class="tab-toolbar">
+                <div class="search-box">
+                    <span class="material-icons-round">search</span>
+                    <input type="text" id="search-scenarios" class="font-body" placeholder="Search simulation scenarios & decisions…">
+                </div>
+                <div class="filter-chips">
+                    <button class="chip active font-button" data-filter="all">All Scenarios</button>
+                    <button class="chip font-button" data-filter="pedestrian">Pedestrian</button>
+                    <button class="chip font-button" data-filter="intersection">Intersection</button>
+                    <button class="chip font-button" data-filter="emergency">Emergency</button>
+                    <button class="chip font-button" data-filter="weather">Weather / Grip</button>
+                </div>
+            </div>
+            <div class="data-list" id="scenarios-list"></div>
+        </section>
+
+        <!-- ═══════════ TAB 6: GAMIFICATION & RANKS ═══════════ -->
+        <section class="tab-content" id="tab-gamification">
+            <div class="sub-nav-tabs">
+                <button class="sub-tab-btn active font-button" data-subtab="gamif-leaderboard" id="subtab-leaderboard-btn">
+                    <span class="material-icons-round">leaderboard</span> Live Cadet Leaderboard
+                </button>
+                <button class="sub-tab-btn font-button" data-subtab="gamif-badges" id="subtab-badges-btn">
+                    <span class="material-icons-round">military_tech</span> Badges & Achievements Catalog
+                </button>
+                <button class="sub-tab-btn font-button" data-subtab="gamif-ranks" id="subtab-ranks-btn">
+                    <span class="material-icons-round">trending_up</span> Rank Movement History
+                </button>
+            </div>
+
+            <!-- Leaderboard -->
+            <div class="sub-tab-content active" id="sub-tab-gamif-leaderboard">
+                <div class="tab-toolbar">
+                    <div class="search-box">
+                        <span class="material-icons-round">search</span>
+                        <input type="text" id="search-progress" class="font-body" placeholder="Search cadet leaderboard…">
+                    </div>
+                </div>
+                <div class="data-list" id="progress-list"></div>
+            </div>
+
+            <!-- Badges Catalog -->
+            <div class="sub-tab-content" id="sub-tab-gamif-badges">
+                <div class="badges-grid" id="badges-catalog-list"></div>
+            </div>
+
+            <!-- Rank History -->
+            <div class="sub-tab-content" id="sub-tab-gamif-ranks">
+                <div class="data-list" id="rank-history-list"></div>
+            </div>
+        </section>
+
+        <!-- ═══════════ TAB 7: AI ROAD TUTOR ═══════════ -->
+        <section class="tab-content" id="tab-ai-activity">
+            <div class="tab-toolbar">
+                <div class="search-box">
+                    <span class="material-icons-round">search</span>
+                    <input type="text" id="search-ai" class="font-body" placeholder="Search AI tutor queries, questions, or road topics…">
+                </div>
+                <div class="filter-chips">
+                    <button class="chip active font-button" data-filter="all">All Queries</button>
+                    <button class="chip font-button" data-filter="explanation">Explanations</button>
+                    <button class="chip font-button" data-filter="rules">Rules Q&A</button>
+                    <button class="chip font-button" data-filter="scenario">Scenario Advice</button>
+                </div>
+            </div>
+            <div class="data-list" id="ai-activity-list"></div>
+        </section>
+
+        <!-- ═══════════ TAB 8: DEVICE FLEET ═══════════ -->
+        <section class="tab-content" id="tab-devices">
+            <div class="tab-toolbar">
+                <div class="search-box">
+                    <span class="material-icons-round">search</span>
+                    <input type="text" id="search-devices" class="font-body" placeholder="Search devices by hardware model, name, or OS…">
+                </div>
+                <div class="filter-chips">
+                    <button class="chip active font-button" data-filter="all">All Devices</button>
+                    <button class="chip font-button" data-filter="online">🟢 Online</button>
+                    <button class="chip font-button" data-filter="offline">⚪ Offline</button>
+                </div>
+            </div>
+            <div class="data-list" id="devices-list"></div>
+        </section>
+
+        <!-- ═══════════ TAB 9: ACTIVITY HISTORY ═══════════ -->
+        <section class="tab-content" id="tab-logins">
+            <div class="tab-toolbar">
+                <div class="search-box">
+                    <span class="material-icons-round">search</span>
+                    <input type="text" id="search-logins" class="font-body" placeholder="Search activity stream by user, event, or device…">
+                </div>
+                <div class="filter-chips">
+                    <button class="chip active font-button" data-filter="all">All Events</button>
+                    <button class="chip font-button" data-filter="login">🔑 Login</button>
+                    <button class="chip font-button" data-filter="logout">🚪 Logout</button>
+                    <button class="chip font-button" data-filter="failed">🚨 Failed</button>
+                </div>
+            </div>
+            <div class="data-list" id="logins-list"></div>
+        </section>
+
+        <!-- ═══════════ TAB 10: ANALYTICS & REPORTS ═══════════ -->
+        <section class="tab-content" id="tab-analytics">
+            <div class="analytics-grid">
+                <div class="card">
+                    <div class="card-header"><h3 class="font-h3"><span class="material-icons-round">pie_chart</span> Learner Level Distribution</h3></div>
+                    <div class="chart-container" style="height:260px;"><canvas id="levelDistChart"></canvas></div>
+                </div>
+                <div class="card">
+                    <div class="card-header"><h3 class="font-h3"><span class="material-icons-round">category</span> Road Safety Topics Mastery</h3></div>
+                    <div class="chart-container" style="height:260px;"><canvas id="topicMasteryChart"></canvas></div>
+                </div>
+            </div>
+            <div class="card" style="margin-top:20px;">
+                <div class="card-header" style="display:flex;justify-content:space-between;align-items:center;">
+                    <h3 class="font-h3"><span class="material-icons-round">description</span> Executive System Summary Report</h3>
+                    <button class="btn btn-secondary font-button" onclick="exportSystemReport()">
+                        <span class="material-icons-round">download</span>
+                        <span>Export CSV Summary</span>
+                    </button>
+                </div>
+                <div class="card-body" style="padding:20px;" id="analytics-summary-table"></div>
+            </div>
+        </section>
+
+        <!-- ═══════════ TAB 11: SECURITY AUDIT ═══════════ -->
+        <section class="tab-content" id="tab-audit">
+            <div class="tab-toolbar">
+                <div class="search-box">
+                    <span class="material-icons-round">search</span>
+                    <input type="text" id="search-audit" class="font-body" placeholder="Search security audit logs…">
+                </div>
+                <div class="filter-chips">
+                    <button class="chip active font-button" data-filter="all">All Events</button>
+                    <button class="chip font-button" data-filter="high">🔴 High Risk</button>
+                    <button class="chip font-button" data-filter="medium">🟡 Medium</button>
+                    <button class="chip font-button" data-filter="low">🟢 Low</button>
+                </div>
+            </div>
+            <div class="data-list" id="audit-list"></div>
+        </section>
+
+        <!-- ═══════════ TAB 12: SYSTEM SETTINGS ═══════════ -->
+        <section class="tab-content" id="tab-settings">
+            <div class="settings-container">
+                <div class="card" style="margin-bottom:20px;">
+                    <div class="card-header"><h3 class="font-h3"><span class="material-icons-round">tune</span> Examination & Passing Standards</h3></div>
+                    <div class="card-body" style="padding:20px;display:flex;flex-direction:column;gap:16px;">
+                        <div class="form-row">
+                            <label class="font-label">Quiz Passing Score Threshold (%)</label>
+                            <input type="number" id="setting-pass-score" class="form-input font-body" value="70" min="50" max="100">
+                        </div>
+                        <div class="form-row">
+                            <label class="font-label">Base XP Awarded per Passed Quiz</label>
+                            <input type="number" id="setting-quiz-xp" class="form-input font-body" value="100" min="10" max="1000">
+                        </div>
+                        <div class="form-row">
+                            <label class="font-label">Daily Streak Bonus Multiplier</label>
+                            <select id="setting-streak-mult" class="form-input font-body">
+                                <option value="1.0">1.0x (Standard)</option>
+                                <option value="1.25" selected>1.25x (Recommended)</option>
+                                <option value="1.5">1.5x (Double XP Weekend)</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header"><h3 class="font-h3"><span class="material-icons-round">security</span> Administrator Access & Permissions</h3></div>
+                    <div class="card-body" style="padding:20px;display:flex;flex-direction:column;gap:12px;">
+                        <div class="modal-detail-row">
+                            <span class="font-label">Active Admin Role:</span>
+                            <span class="role-tag admin font-badge">SUPER ADMIN</span>
+                        </div>
+                        <div class="modal-detail-row">
+                            <span class="font-label">Firebase Cloud Project:</span>
+                            <span class="font-body-sm" style="color:var(--info-blue);">gamifiedroadsafetyawareness</span>
+                        </div>
+                        <div class="modal-detail-row">
+                            <span class="font-label">Data Deletion Policy:</span>
+                            <span class="font-body-sm" style="color:var(--emerald-green);">Multi-Collection Atomic Cleanup Active</span>
+                        </div>
+                        <button class="btn btn-primary font-button" onclick="saveSettings()" style="margin-top:10px;align-self:flex-start;">
+                            <span class="material-icons-round">save</span>
+                            <span>Save System Preferences</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ═══════════ MULTI-TAB USER PROFILE MODAL ═══════════ -->
+    <div class="modal-overlay" id="profile-modal-overlay">
+        <div class="modal modal-large" id="profile-modal">
+            <div class="modal-header">
+                <div style="display:flex;align-items:center;gap:12px;">
+                    <div class="data-avatar user-avatar" id="modal-profile-avatar">
+                        <span class="material-icons-round">person</span>
+                    </div>
+                    <div>
+                        <h3 class="font-h3" id="modal-profile-name">User Profile</h3>
+                        <span class="font-caption" id="modal-profile-handle">@username</span>
+                    </div>
+                </div>
+                <button class="modal-close" id="profile-modal-close" aria-label="Close modal">
+                    <span class="material-icons-round">close</span>
+                </button>
+            </div>
+
+            <!-- Profile Sub-Navigation Tabs -->
+            <div class="profile-sub-tabs">
+                <button class="profile-tab-btn active font-button" data-ptab="p-overview">Overview</button>
+                <button class="profile-tab-btn font-button" data-ptab="p-learning">Learning Progress</button>
+                <button class="profile-tab-btn font-button" data-ptab="p-quizzes">Quiz History</button>
+                <button class="profile-tab-btn font-button" data-ptab="p-gamif">Badges & XP</button>
+                <button class="profile-tab-btn font-button" data-ptab="p-activity">Activity History</button>
+            </div>
+
+            <div class="modal-body" id="modal-profile-body">
+                <!-- Dynamically Rendered by JS per Tab -->
+            </div>
+
+            <div class="modal-actions" id="modal-profile-actions">
+                <button class="btn btn-secondary font-button" id="btn-close-profile-modal">Close</button>
+                <button class="btn btn-danger font-button" id="btn-profile-delete-user">
+                    <span class="material-icons-round">delete_forever</span>
+                    <span>Delete User</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══════════ MODULE EDITOR MODAL ═══════════ -->
+    <div class="modal-overlay" id="module-modal-overlay">
+        <div class="modal" id="module-modal">
+            <div class="modal-header">
+                <h3 class="font-h3" id="module-modal-title">Create Road Safety Module</h3>
+                <button class="modal-close" id="module-modal-close"><span class="material-icons-round">close</span></button>
+            </div>
+            <div class="modal-body">
+                <div class="form-row">
+                    <label class="font-label">Module Title</label>
+                    <input type="text" id="module-input-title" class="form-input font-body" placeholder="e.g., Pedestrian Safety & Crosswalk Rules">
+                </div>
+                <div class="form-row" style="margin-top:12px;">
+                    <label class="font-label">Category / Safety Topic</label>
+                    <select id="module-input-topic" class="form-input font-body">
+                        <option value="RIGHT_OF_WAY">Right-of-Way</option>
+                        <option value="TRAFFIC_SIGNS">Traffic Signs & Signals</option>
+                        <option value="SPEED_MANAGEMENT">Speed Management</option>
+                        <option value="FOLLOWING_DISTANCE">Following Distance</option>
+                        <option value="PEDESTRIAN_SAFETY">Pedestrian Safety</option>
+                        <option value="OVERTAKING">Overtaking</option>
+                        <option value="MOTORCYCLE_SAFETY">Motorcycle Safety</option>
+                        <option value="IMPAIRED_OR_DISTRACTED">Impaired & Distracted Driving</option>
+                        <option value="EMERGENCY_PROCEDURES">Emergency Procedures</option>
+                        <option value="ROAD_COURTESY">Road Courtesy & Driver Responsibility</option>
+                    </select>
+                </div>
+                <div class="form-row" style="margin-top:12px;">
+                    <label class="font-label">Difficulty Level</label>
+                    <select id="module-input-difficulty" class="form-input font-body">
+                        <option value="Beginner">Beginner</option>
+                        <option value="Intermediate">Intermediate</option>
+                        <option value="Advanced">Advanced</option>
+                    </select>
+                </div>
+                <div class="form-row" style="margin-top:12px;">
+                    <label class="font-label">Learning Description</label>
+                    <textarea id="module-input-desc" class="form-input font-body" rows="3" placeholder="Key educational takeaways for drivers..."></textarea>
+                </div>
+                <div class="form-row" style="margin-top:12px;">
+                    <label class="font-label">Key Safety Tip</label>
+                    <input type="text" id="module-input-tip" class="form-input font-body" placeholder="e.g., Look both ways and yield before entering crosswalks.">
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-secondary font-button" id="btn-cancel-module">Cancel</button>
+                <button class="btn btn-primary font-button" id="btn-save-module">
+                    <span class="material-icons-round">save</span>
+                    <span>Save Module</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══════════ QUESTION EDITOR MODAL ═══════════ -->
+    <div class="modal-overlay" id="question-modal-overlay">
+        <div class="modal" id="question-modal">
+            <div class="modal-header">
+                <h3 class="font-h3" id="question-modal-title">Add Question to Bank</h3>
+                <button class="modal-close" id="question-modal-close"><span class="material-icons-round">close</span></button>
+            </div>
+            <div class="modal-body">
+                <div class="form-row">
+                    <label class="font-label">Question Text</label>
+                    <textarea id="q-input-text" class="form-input font-body" rows="2" placeholder="What should a driver do when approaching a flashing yellow light?"></textarea>
+                </div>
+                <div class="form-row" style="margin-top:10px;">
+                    <label class="font-label">Option A</label>
+                    <input type="text" id="q-input-opt-a" class="form-input font-body" placeholder="Option A text">
+                </div>
+                <div class="form-row" style="margin-top:8px;">
+                    <label class="font-label">Option B</label>
+                    <input type="text" id="q-input-opt-b" class="form-input font-body" placeholder="Option B text">
+                </div>
+                <div class="form-row" style="margin-top:8px;">
+                    <label class="font-label">Option C</label>
+                    <input type="text" id="q-input-opt-c" class="form-input font-body" placeholder="Option C text">
+                </div>
+                <div class="form-row" style="margin-top:8px;">
+                    <label class="font-label">Option D</label>
+                    <input type="text" id="q-input-opt-d" class="form-input font-body" placeholder="Option D text">
+                </div>
+                <div class="form-row" style="margin-top:10px;display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                    <div>
+                        <label class="font-label">Correct Answer</label>
+                        <select id="q-input-correct" class="form-input font-body">
+                            <option value="0">Option A</option>
+                            <option value="1">Option B</option>
+                            <option value="2">Option C</option>
+                            <option value="3">Option D</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="font-label">Difficulty</label>
+                        <select id="q-input-diff" class="form-input font-body">
+                            <option value="Easy">Easy (10 XP)</option>
+                            <option value="Medium">Medium (20 XP)</option>
+                            <option value="Hard">Hard (30 XP)</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row" style="margin-top:10px;">
+                    <label class="font-label">Answer Explanation (Educational Feedback)</label>
+                    <textarea id="q-input-exp" class="form-input font-body" rows="2" placeholder="Explain why this option is correct based on traffic rules..."></textarea>
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-secondary font-button" id="btn-cancel-question">Cancel</button>
+                <button class="btn btn-primary font-button" id="btn-save-question">
+                    <span class="material-icons-round">save</span>
+                    <span>Save Question</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══════════ DELETE USER CONFIRMATION MODAL ═══════════ -->
+    <div class="modal-overlay modal-overlay-danger" id="delete-modal-overlay">
+        <div class="modal modal-danger" id="delete-modal">
+            <div class="modal-header modal-header-danger">
+                <div class="danger-header-title">
+                    <span class="material-icons-round danger-icon-pulse">warning</span>
+                    <h3 class="font-h3">Delete User?</h3>
+                </div>
+                <button class="modal-close" id="delete-modal-close"><span class="material-icons-round">close</span></button>
+            </div>
+            <div class="modal-body">
+                <div class="danger-banner">
+                    <p class="danger-warning-text font-body">
+                        <strong>Are you sure you want to permanently delete this user?</strong>
+                        This action will permanently remove the user's account, learning progress, quiz attempts, and activity history from the cloud database.
+                    </p>
+                </div>
+                <div class="delete-user-preview" id="delete-user-preview"></div>
+                <div class="self-delete-warning" id="self-delete-warning" style="display:none;">
+                    <span class="material-icons-round">shield</span>
+                    <p class="font-body-sm"><strong>Self-Deletion Prohibited:</strong> You cannot delete your own administrator account from this page.</p>
+                </div>
+                <div class="delete-loading-indicator" id="delete-loading-indicator" style="display:none;">
+                    <div class="spinner"></div>
+                    <span class="loading-label font-body-sm">Deleting User &amp; Purging Associated Data...</span>
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-secondary font-button" id="btn-cancel-delete">Cancel</button>
+                <button class="btn btn-danger font-button" id="btn-confirm-delete">
+                    <span class="material-icons-round">delete_forever</span>
+                    <span class="btn-text">Delete User</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══════════ INSTALL MOBILE APP MODAL ═══════════ -->
+    <div class="modal-overlay" id="install-modal-overlay">
+        <div class="modal" id="install-modal" style="max-width:620px;">
+            <div class="modal-header">
+                <div style="display:flex;align-items:center;gap:10px;">
+                    <span class="material-icons-round" style="color:var(--emerald-green);font-size:24px;">qr_code_scanner</span>
+                    <h3 class="font-h3">Mobile App Installation &amp; QR Code</h3>
+                </div>
+                <button class="modal-close" id="install-modal-close"><span class="material-icons-round">close</span></button>
+            </div>
+            <div class="modal-body">
+                <!-- QR Code & Quick Scan Container -->
+                <div class="qr-install-container">
+                    <div class="qr-code-box">
+                        <img id="install-qr-image" src="" alt="App Download QR Code">
+                        <span class="qr-code-caption">Scan with Phone Camera</span>
+                    </div>
+                    <div class="qr-install-info">
+                        <h4 class="font-h4" style="color:var(--text-primary);margin-bottom:4px;">Scan to Download APK</h4>
+                        <p class="font-body-sm" style="color:var(--text-secondary);">
+                            Point your Android camera or QR scanner at this code to open the <strong>RoadSafe AI</strong> download page on any phone connected to the same Wi-Fi.
+                        </p>
+                        <div class="modal-section-title font-label" style="margin-top:4px;">Download Page URL</div>
+                        <div class="qr-url-input-wrap">
+                            <input type="text" id="install-qr-url-input" class="form-input font-body-sm" value="" placeholder="Auto-detected download URL..." readonly>
+                            <button class="btn btn-secondary font-button" id="btn-copy-qr-url" title="Copy Download Link">
+                                <span class="material-icons-round">content_copy</span>
+                            </button>
+                        </div>
+                        <div style="display:flex;gap:8px;margin-top:4px;flex-wrap:wrap;">
+                            <button class="btn btn-primary font-button" id="btn-download-qr-img" style="font-size:12px;padding:6px 12px;">
+                                <span class="material-icons-round" style="font-size:16px;">download</span>
+                                <span>Save QR Image</span>
+                            </button>
+                            <a href="download.html" target="_blank" id="btn-open-download-page" class="btn btn-secondary font-button" style="font-size:12px;padding:6px 12px;text-decoration:none;display:inline-flex;align-items:center;gap:4px;">
+                                <span class="material-icons-round" style="font-size:16px;">open_in_new</span>
+                                <span>Open Mobile Download Page</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-section-title font-label">Local APK File on this PC</div>
+                <div class="modal-detail-row" style="flex-direction:column;align-items:flex-start;gap:4px;word-break:break-all;">
+                    <code class="font-body-sm" style="color:var(--badge-gold);background:var(--navy-card);padding:8px 12px;border-radius:6px;width:100%;">
+                        app\build\outputs\apk\debug\app-debug.apk
+                    </code>
+                </div>
+
+                <div class="modal-section-title font-label" style="margin-top:16px;">Step-by-Step Mobile Installation</div>
+                <ol class="font-body-sm" style="color:var(--text-secondary);padding-left:20px;line-height:1.7;">
+                    <li>Scan the QR code above or transfer <strong>app-debug.apk</strong> to your Android phone.</li>
+                    <li>Tap the APK file in your phone's <em>Downloads</em> or file manager.</li>
+                    <li>Select <strong>"Install"</strong> (enable <em>"Allow from this source"</em> if prompted by Android security).</li>
+                    <li>Open the app and log in — live analytics and quiz attempts will stream directly to this dashboard!</li>
+                </ol>
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-secondary font-button" id="btn-close-install-modal">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══════════ TOAST NOTIFICATION CONTAINER ═══════════ -->
+    <div class="toast-container" id="toast-container"></div>
+
+    <script src="app.js?v=3.3"></script>
+</body>
+</html>
