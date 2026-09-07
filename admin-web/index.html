@@ -65,7 +65,7 @@
             </button>
             <button class="nav-item font-navigation" data-tab="users" id="nav-users">
                 <span class="material-icons-round">manage_accounts</span>
-                <span class="nav-label">Cadet Management</span>
+                <span class="nav-label">User Management</span>
                 <span class="nav-badge font-badge" id="badge-users">0</span>
             </button>
             <button class="nav-item font-navigation" data-tab="modules" id="nav-modules">
@@ -150,7 +150,7 @@
             <div class="top-bar-actions">
                 <button class="btn btn-download-apk font-button" onclick="showAppInstallModal()" title="Install RoadSafe AI Mobile App">
                     <span class="material-icons-round">local_police</span>
-                    <span class="btn-text">Cadet Mobile Portal</span>
+                    <span class="btn-text">Mobile App Portal</span>
                 </button>
                 <div class="live-indicator">
                     <span class="live-dot pulse"></span>
@@ -177,7 +177,7 @@
                     <div class="metric-icon-wrap"><span class="material-icons-round">people</span></div>
                     <div class="metric-info">
                         <span class="metric-value font-statistic" id="metric-total-devices">0</span>
-                        <span class="metric-label font-label">Total Cadets</span>
+                        <span class="metric-label font-label">Total Users</span>
                         <span class="metric-caption font-caption">Registered driver accounts</span>
                     </div>
                 </div>
@@ -234,7 +234,7 @@
                     <button class="chip font-button" data-filter="online">🟢 Online</button>
                     <button class="chip font-button" data-filter="offline">⚪ Offline</button>
                     <button class="chip font-button" data-filter="admin">🛡️ Admins</button>
-                    <button class="chip font-button" data-filter="cadet">🚗 Cadets</button>
+                    <button class="chip font-button" data-filter="user">🚗 Users</button>
                     <button class="chip font-button" data-filter="male">♂️ Male</button>
                     <button class="chip font-button" data-filter="female">♀️ Female</button>
                 </div>
@@ -380,7 +380,7 @@
         <section class="tab-content" id="tab-gamification">
             <div class="sub-nav-tabs">
                 <button class="sub-tab-btn active font-button" data-subtab="gamif-leaderboard" id="subtab-leaderboard-btn">
-                    <span class="material-icons-round">leaderboard</span> Live Cadet Leaderboard
+                    <span class="material-icons-round">leaderboard</span> Live Leaderboard
                 </button>
                 <button class="sub-tab-btn font-button" data-subtab="gamif-badges" id="subtab-badges-btn">
                     <span class="material-icons-round">military_tech</span> Badges & Achievements Catalog
@@ -395,7 +395,7 @@
                 <div class="tab-toolbar">
                     <div class="search-box">
                         <span class="material-icons-round">search</span>
-                        <input type="text" id="search-progress" class="font-body" placeholder="Search cadet leaderboard…">
+                        <input type="text" id="search-progress" class="font-body" placeholder="Search leaderboard…">
                     </div>
                 </div>
                 <div class="data-list" id="progress-list"></div>
@@ -748,14 +748,14 @@
         </div>
     </div>
 
-    <!-- ═══════════ INSTALL MOBILE APP MODAL (PNP CADET PORTAL) ═══════════ -->
+    <!-- ═══════════ INSTALL MOBILE APP MODAL (PNP MOBILE PORTAL) ═══════════ -->
     <div class="modal-overlay" id="install-modal-overlay">
         <div class="modal" id="install-modal" style="max-width:640px;">
             <div class="modal-header">
                 <div style="display:flex;align-items:center;gap:10px;">
                     <span class="material-icons-round" style="color:var(--pnp-badge-gold-bright);font-size:26px;">local_police</span>
                     <div>
-                        <h3 class="font-h3" style="color:#FFFFFF;margin:0;">PNP Cadet Mobile App Portal</h3>
+                        <h3 class="font-h3" style="color:#FFFFFF;margin:0;">PNP Mobile App Portal</h3>
                         <span class="font-caption" style="color:var(--pnp-badge-gold);font-size:10px;text-transform:uppercase;letter-spacing:1px;">Official Road Safety Driver Training Client</span>
                     </div>
                 </div>
@@ -773,7 +773,7 @@
                             <span class="pnp-station-tag" style="font-size:9px;">VERIFIED BUILD</span>
                             <span class="font-caption" style="color:var(--emerald-green);font-weight:700;">● Signed APK Release</span>
                         </div>
-                        <h4 class="font-h4" style="color:#FFFFFF;margin-bottom:2px;font-size:1.05rem;">Scan to Download Cadet App</h4>
+                        <h4 class="font-h4" style="color:#FFFFFF;margin-bottom:2px;font-size:1.05rem;">Scan to Download Mobile App</h4>
                         <div style="display:flex;gap:6px;margin:6px 0;">
                             <button type="button" id="btn-qr-mode-public" class="btn font-button" style="padding:4px 12px;font-size:11px;background:var(--pnp-patrol-blue);color:#fff;border:1px solid var(--pnp-badge-gold-border);">🌐 Public Portal</button>
                             <button type="button" id="btn-qr-mode-local" class="btn font-button" style="padding:4px 12px;font-size:11px;background:#0A1424;color:var(--text-secondary);border:1px solid var(--border-card);">📶 Station Wi-Fi</button>
@@ -781,7 +781,7 @@
                         <p class="font-body-sm" id="qr-desc-text" style="color:var(--text-secondary);font-size:12px;line-height:1.4;">
                             Scan with your phone camera to download and install the official PNP Road Safety awareness client worldwide.
                         </p>
-                        <div class="modal-section-title font-label" style="margin-top:2px;">Cadet Portal Link</div>
+                        <div class="modal-section-title font-label" style="margin-top:2px;">Mobile Portal Link</div>
                         <div class="qr-url-input-wrap">
                             <input type="text" id="install-qr-url-input" class="form-input font-body-sm" value="https://jiemmm03.github.io/Gamified-Road-Safety-Awareness/" readonly>
                             <button class="btn btn-secondary font-button" id="btn-copy-qr-url" title="Copy Download Link">
@@ -795,7 +795,7 @@
                             </button>
                             <a href="download.html" target="_blank" id="btn-open-download-page" class="btn btn-secondary font-button" style="font-size:12px;padding:7px 14px;text-decoration:none;display:inline-flex;align-items:center;gap:4px;">
                                 <span class="material-icons-round" style="font-size:16px;">open_in_new</span>
-                                <span>Public Cadet Portal</span>
+                                <span>Public Driver Portal</span>
                             </a>
                             <a href="https://github.com/jiemmm03/Gamified-Road-Safety-Awareness/releases/download/v1.0.0/RoadSafe-AI.apk" target="_blank" class="btn btn-secondary font-button" style="font-size:12px;padding:7px 14px;text-decoration:none;display:inline-flex;align-items:center;gap:4px;color:var(--pnp-badge-gold-bright);border-color:var(--pnp-badge-gold-border);">
                                 <span class="material-icons-round" style="font-size:16px;">shield</span>
@@ -813,7 +813,7 @@
                     </code>
                 </div>
 
-                <div class="modal-section-title font-label" style="margin-top:16px;">Cadet Mobile App Setup Protocol</div>
+                <div class="modal-section-title font-label" style="margin-top:16px;">Mobile App Setup Protocol</div>
                 <ol class="font-body-sm" style="color:var(--text-secondary);padding-left:20px;line-height:1.7;font-size:13px;">
                     <li>Scan the official QR code or download <strong>RoadSafe-AI.apk</strong> to your Android smartphone.</li>
                     <li>Open your file manager or browser notifications and tap the downloaded APK file.</li>

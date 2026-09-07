@@ -1187,7 +1187,6 @@ body {
     border: 1px solid var(--pnp-badge-gold);
     box-shadow: 0 0 8px rgba(212, 175, 55, 0.25);
 }
-.role-tag.cadet,
 .role-tag.user {
     background: rgba(0, 56, 168, 0.2);
     color: #93C5FD;

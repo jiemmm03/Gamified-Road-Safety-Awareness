@@ -442,8 +442,8 @@ fun CloudMonitoringScreen(
                             onTestPing = {
                                 scope.launch {
                                     syncManager.recordUserLogin(
-                                        username = "test_cadet",
-                                        displayName = "Cadet Officer",
+                                        username = "test_user",
+                                        displayName = "Officer",
                                         role = "USER",
                                         isSuccess = true
                                     )

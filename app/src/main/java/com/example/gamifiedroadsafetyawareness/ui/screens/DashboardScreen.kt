@@ -167,7 +167,7 @@ fun DashboardScreen(
                             }
                             Spacer(modifier = Modifier.height(3.dp))
                             Text(
-                                text = userName.ifBlank { "Officer Cadet" },
+                                text = userName.ifBlank { "Officer" },
                                 color = MaterialTheme.colorScheme.onSurface,
                                 style = MaterialTheme.typography.titleLarge.copy(
                                     fontWeight = FontWeight.Bold,

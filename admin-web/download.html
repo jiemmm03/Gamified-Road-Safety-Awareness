@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>PNP RoadSafe AI — Official Cadet Driver Training APK</title>
+    <title>PNP RoadSafe AI — Official Driver Training APK</title>
     <meta name="description" content="Download and install the official Philippine National Police (PNP) Highway Patrol Group RoadSafe AI Driver Training Application for Android.">
 
     <!-- Google Fonts & Material Icons -->
@@ -490,7 +490,7 @@
         <!-- Official Heraldic Header Badge -->
         <div class="pnp-badge-header">
             <span class="material-icons-round">local_police</span>
-            <span>PNP HPG Cadet Portal · Official Build</span>
+            <span>PNP HPG Driver Portal · Official Build</span>
         </div>
 
         <!-- App Header Hero -->
@@ -523,7 +523,7 @@
         <div class="download-card">
             <a href="app-debug.apk" class="btn-download-apk" id="btn-download-apk" download="RoadSafeAI-v3.0.apk">
                 <span class="material-icons-round">file_download</span>
-                <span id="btn-download-text">Download Cadet APK Now</span>
+                <span id="btn-download-text">Download APK Now</span>
             </a>
 
             <!-- Progress indicator -->
@@ -546,7 +546,7 @@
                 <span class="material-icons-round" style="color:var(--pnp-gold-bright);font-size:18px;">qr_code_scanner</span>
                 <h3>Direct Mobile Scanner</h3>
             </div>
-            <p>Scan with any Android phone to install the cadet training app</p>
+            <p>Scan with any Android phone to install the driver training app</p>
             <div class="qr-box">
                 <img id="qr-img" src="" alt="Download QR Code">
             </div>
@@ -557,13 +557,13 @@
         <div class="guide-section">
             <div class="guide-title">
                 <span class="material-icons-round">help_outline</span>
-                <span>Cadet Installation Protocol</span>
+                <span>Installation Protocol</span>
             </div>
             <div class="step-list">
                 <div class="step-item">
                     <div class="step-num">1</div>
                     <div class="step-text">
-                        <h4>Tap "Download Cadet APK"</h4>
+                        <h4>Tap "Download APK"</h4>
                         <p>When the browser alerts <em>"File might be harmful"</em>, tap <strong>Download anyway</strong>.</p>
                     </div>
                 </div>
@@ -588,7 +588,7 @@
         <div class="features-grid">
             <div class="feature-card">
                 <span class="material-icons-round">quiz</span>
-                <h5>Cadet Quizzes</h5>
+                <h5>Interactive Quizzes</h5>
                 <p>Easy, Medium &amp; Hard road safety assessments with instant feedback.</p>
             </div>
             <div class="feature-card">
@@ -610,7 +610,7 @@
 
         <div class="footer">
             Philippine National Police — Highway Patrol Group Driver Awareness Initiative<br>
-            RoadSafe AI Platform &copy; 2026 · Official Public Cadet Portal
+            RoadSafe AI Platform &copy; 2026 · Official Public Portal
         </div>
 
     </div>
@@ -654,7 +654,7 @@
 
                         downloadBtn.href = apkUrl;
                         downloadBtn.classList.remove('disabled');
-                        downloadBtnText.textContent = `Download Cadet APK (${sizeMB} MB)`;
+                        downloadBtnText.textContent = `Download APK (${sizeMB} MB)`;
                     } else {
                         useGitHubFallback();
                     }
@@ -682,7 +682,7 @@
 
                 // Show progress feedback
                 progressDiv.classList.add('active');
-                progressText.textContent = 'Initiating cadet APK download...';
+                progressText.textContent = 'Initiating APK download...';
 
                 let progress = 0;
                 const progressInterval = setInterval(() => {

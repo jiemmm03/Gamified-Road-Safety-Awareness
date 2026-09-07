@@ -363,8 +363,8 @@ const TAB_TITLES = {
     'modules': { title: 'Road Safety Modules', subtitle: 'Educational Curriculum & Topic Manager' },
     'quizzes': { title: 'Quiz Bank & Submissions', subtitle: 'Questions Repository & Real-Time Exam Results' },
     'scenarios': { title: 'Driver Decisions', subtitle: 'Simulation Scenarios & Risk Assessment' },
-    'gamification': { title: 'Gamification & Ranks', subtitle: 'Cadet Leaderboard, Badges & Rank Movements' },
-    'ai-activity': { title: 'AI Road Tutor', subtitle: 'Cadet Queries & Educational Assistant Analytics' },
+    'gamification': { title: 'Gamification & Ranks', subtitle: 'Live Leaderboard, Badges & Rank Movements' },
+    'ai-activity': { title: 'AI Road Tutor', subtitle: 'User Queries & Educational Assistant Analytics' },
     'devices': { title: 'Device Fleet', subtitle: 'Connected Mobile Telemetry & Hardware' },
     'logins': { title: 'Activity History', subtitle: 'Global Authentication & System Event Stream' },
     'analytics': { title: 'Analytics & Reports', subtitle: 'System Performance & Educational Insights' },
@@ -435,7 +435,7 @@ function renderUsersList() {
     if (State.userFilter === 'online') list = list.filter(u => u.isOnline);
     else if (State.userFilter === 'offline') list = list.filter(u => !u.isOnline);
     else if (State.userFilter === 'admin') list = list.filter(u => (u.role || '').toLowerCase() === 'admin');
-    else if (State.userFilter === 'cadet') list = list.filter(u => (u.role || '').toLowerCase() !== 'admin');
+    else if (State.userFilter === 'user') list = list.filter(u => (u.role || '').toLowerCase() !== 'admin');
     else if (State.userFilter === 'male') list = list.filter(u => (u.gender || '').toLowerCase() === 'male');
     else if (State.userFilter === 'female') list = list.filter(u => (u.gender || '').toLowerCase() === 'female');
 
@@ -452,7 +452,7 @@ function renderUsersList() {
 
     DOM.usersList.innerHTML = list.map(u => {
         const isOnline = !!u.isOnline;
-        const role = (u.role || 'Cadet').toUpperCase();
+        const role = (u.role || 'User').toUpperCase();
         const progress = State.progress.find(p => p.userId === u.username || p.userId === u.id) || {};
         const xp = progress.totalXp || progress.xp || u.xp || 0;
         const level = progress.currentLevel || progress.level || u.level || 1;
@@ -471,7 +471,7 @@ function renderUsersList() {
                     </div>
                 </div>
                 <div class="data-meta-cell">
-                    <span class="role-tag ${role === 'ADMIN' ? 'admin' : 'cadet'} font-badge">${role}</span>
+                    <span class="role-tag ${role === 'ADMIN' ? 'admin' : 'user'} font-badge">${role}</span>
                     <span class="status-badge ${isOnline ? 'online' : 'offline'} font-badge">
                         <span class="badge-dot"></span>${isOnline ? 'Online' : 'Offline'}
                     </span>
@@ -537,7 +537,7 @@ function renderProfileTab(tab) {
             <div class="modal-section-title font-label">Account Details</div>
             <div class="modal-detail-row"><span class="modal-detail-label font-caption">Gender:</span><span class="modal-detail-value font-body-sm">${user.gender || 'Not specified'}</span></div>
             <div class="modal-detail-row"><span class="modal-detail-label font-caption">Hardware Device:</span><span class="modal-detail-value font-body-sm">${user.deviceModel || 'Mobile Device'}</span></div>
-            <div class="modal-detail-row"><span class="modal-detail-label font-caption">Account Role:</span><span class="role-tag ${user.role === 'admin' ? 'admin' : 'cadet'} font-badge">${(user.role || 'Cadet').toUpperCase()}</span></div>
+            <div class="modal-detail-row"><span class="modal-detail-label font-caption">Account Role:</span><span class="role-tag ${user.role === 'admin' ? 'admin' : 'user'} font-badge">${(user.role || 'User').toUpperCase()}</span></div>
         `;
     } else if (tab === 'p-learning') {
         const completed = (progress.completedModules || 'Traffic Signs, Right-of-Way').split(',').map(s => s.trim()).filter(Boolean);
@@ -682,7 +682,7 @@ function renderModulesList() {
                 </div>
             </div>
             <div class="module-footer">
-                <span class="font-caption" style="color:var(--text-secondary);">👥 ${m.completions || 0} Cadets Completed</span>
+                <span class="font-caption" style="color:var(--text-secondary);">👥 ${m.completions || 0} Users Completed</span>
                 <div style="display:flex;gap:6px;">
                     <button class="btn btn-secondary font-button" onclick="toggleModulePublish('${m.id}')" title="Publish/Unpublish">
                         <span class="material-icons-round">${m.status === 'published' ? 'visibility_off' : 'visibility'}</span>
@@ -787,7 +787,7 @@ function renderQuizzesList() {
             <div class="data-main-info">
                 <div class="data-title font-body">${escapeHtml(q.topic || 'Traffic Rules Quiz')}</div>
                 <div class="data-subtitle font-body-sm">
-                    <span>Cadet: @${escapeHtml(q.userId || q.username || 'cadet')}</span>
+                    <span>User: @${escapeHtml(q.userId || q.username || 'user')}</span>
                     <span>· Score: ${q.score}/${q.totalQuestions || 5} (${q.percentage || Math.round(q.score/5*100)}%)</span>
                 </div>
             </div>
@@ -835,7 +835,7 @@ function renderQuestionsList() {
         <div class="question-card">
             <div class="question-header">
                 <div class="question-text"><strong>Q${idx + 1}:</strong> ${escapeHtml(q.text)}</div>
-                <span class="role-tag cadet font-badge">${q.difficulty} (${q.points} XP)</span>
+                <span class="role-tag user font-badge">${q.difficulty} (${q.points} XP)</span>
             </div>
             <div class="question-options-grid">
                 ${q.options.map((opt, oIdx) => `
@@ -924,7 +924,7 @@ function renderScenariosList() {
         <div class="scenario-card">
             <div class="scenario-header">
                 <h3 class="font-h3"><span class="material-icons-round" style="color:var(--badge-gold);">alt_route</span> Scenario ${idx + 1}: ${escapeHtml(s.title)}</h3>
-                <span class="role-tag cadet font-badge">Speed: ${s.speed} · ${s.weather}</span>
+                <span class="role-tag user font-badge">Speed: ${s.speed} · ${s.weather}</span>
             </div>
             <p class="scenario-prompt">${escapeHtml(s.prompt)}</p>
             <div class="decision-options-list">
@@ -960,7 +960,7 @@ function renderProgressList() {
     const leaderboard = State.users.map(u => {
         const p = State.progress.find(pr => pr.userId === u.username || pr.userId === u.id) || {};
         return {
-            user: u.username || u.name || 'cadet',
+            user: u.username || u.name || 'user',
             name: u.name || u.username,
             xp: p.totalXp || p.xp || u.xp || 0,
             level: p.currentLevel || p.level || u.level || 1,
@@ -969,7 +969,7 @@ function renderProgressList() {
     }).sort((a, b) => b.xp - a.xp);
 
     if (leaderboard.length === 0) {
-        DOM.progressList.innerHTML = `<div class="empty-state"><p class="font-body">No cadet standings recorded yet.</p></div>`;
+        DOM.progressList.innerHTML = `<div class="empty-state"><p class="font-body">No leaderboard standings recorded yet.</p></div>`;
         return;
     }
 
@@ -987,7 +987,7 @@ function renderProgressList() {
             </div>
             <div class="data-meta-cell">
                 <span class="font-statistic" style="font-size:20px;color:var(--emerald-green);">${l.xp.toLocaleString()} XP</span>
-                <span class="role-tag cadet font-badge">LEVEL ${l.level}</span>
+                <span class="role-tag user font-badge">LEVEL ${l.level}</span>
             </div>
         </div>
     `).join('');
@@ -1069,8 +1069,8 @@ function renderAiActivityList() {
     DOM.aiActivityList.innerHTML = list.map(q => `
         <div class="ai-query-card">
             <div class="ai-query-header">
-                <span class="font-body-sm font-weight-semibold">👤 Cadet @${escapeHtml(q.userId || 'user')} asked:</span>
-                <span class="role-tag cadet font-badge">${escapeHtml(q.topic || 'General Safety')}</span>
+                <span class="font-body-sm font-weight-semibold">👤 User @${escapeHtml(q.userId || 'user')} asked:</span>
+                <span class="role-tag user font-badge">${escapeHtml(q.topic || 'General Safety')}</span>
             </div>
             <div class="ai-prompt-box">
                 "${escapeHtml(q.prompt || q.question || '')}"
@@ -1117,7 +1117,7 @@ function renderDevicesList() {
             <div class="data-main-info">
                 <div class="data-title font-body">${escapeHtml(u.deviceModel || 'Android Mobile Device')}</div>
                 <div class="data-subtitle font-body-sm">
-                    <span>Assigned Cadet: @${escapeHtml(u.username || u.id)} (${escapeHtml(u.name || 'User')})</span>
+                    <span>Assigned User: @${escapeHtml(u.username || u.id)} (${escapeHtml(u.name || 'User')})</span>
                     <span>· OS: Android</span>
                 </div>
             </div>
@@ -1206,7 +1206,7 @@ function renderAuditList() {
                 </div>
             </div>
             <div class="data-meta-cell">
-                <span class="role-tag ${a.riskLevel === 'HIGH' ? 'admin' : 'cadet'} font-badge">${a.riskLevel || 'LOW'} RISK</span>
+                <span class="role-tag ${a.riskLevel === 'HIGH' ? 'admin' : 'user'} font-badge">${a.riskLevel || 'LOW'} RISK</span>
                 <span class="font-caption">${formatRelativeTime(a.timestamp)}</span>
             </div>
         </div>
@@ -1287,7 +1287,7 @@ function updateLevelDistChart() {
     levelDistChartInstance = new Chart(canvas, {
         type: 'doughnut',
         data: {
-            labels: ['Level 1 (Novice)', 'Level 2 (Cadet)', 'Level 3 (Scholar)', 'Level 4+ (Master)'],
+            labels: ['Level 1 (Novice)', 'Level 2 (Patrol)', 'Level 3 (Scholar)', 'Level 4+ (Master)'],
             datasets: [{
                 data: [3, 1, 0, 0],
                 backgroundColor: ['#3B82F6', '#10B981', '#F59E0B', '#8B5CF6']
@@ -1306,7 +1306,7 @@ function updateTopicMasteryChart() {
         data: {
             labels: ['Right-of-Way', 'Traffic Signs', 'Speed Mgmt', 'Pedestrian Safety', 'Overtaking'],
             datasets: [{
-                label: 'Cadet Mastery %',
+                label: 'Driver Mastery %',
                 data: [85, 90, 75, 95, 60],
                 backgroundColor: 'rgba(212, 168, 67, 0.2)',
                 borderColor: '#D4A843'
@@ -1321,7 +1321,7 @@ function renderSummaryTable() {
     DOM.analyticsSummaryTable.innerHTML = `
         <div style="display:grid;grid-template-columns:repeat(3, 1fr);gap:16px;">
             <div class="modal-detail-row" style="flex-direction:column;align-items:flex-start;">
-                <span class="font-caption">Total Registered Cadets</span>
+                <span class="font-caption">Total Registered Users</span>
                 <span class="font-statistic" style="font-size:24px;color:var(--text-primary);">${State.users.length}</span>
             </div>
             <div class="modal-detail-row" style="flex-direction:column;align-items:flex-start;">
@@ -1341,7 +1341,7 @@ function renderSummaryTable() {
 window.exportSystemReport = function() {
     const csvContent = "data:text/csv;charset=utf-8," +
         "Category,Metric,Value\n" +
-        `Users,Total Cadets,${State.users.length}\n` +
+        `Users,Total Users,${State.users.length}\n` +
         `Quizzes,Attempts,${State.quizzes.length}\n` +
         `Modules,Active Modules,${State.modules.length}\n` +
         `Security,Audit Logs Recorded,${State.audit.length}\n`;
@@ -1371,7 +1371,7 @@ window.openDeleteModal = function(userId) {
     $('delete-user-preview').innerHTML = `
         <div class="preview-row"><span class="preview-label font-caption">Name:</span><span class="preview-value font-body-sm">${escapeHtml(user.name || user.username)}</span></div>
         <div class="preview-row"><span class="preview-label font-caption">Username:</span><span class="preview-value font-body-sm">@${escapeHtml(user.username || user.id)}</span></div>
-        <div class="preview-row"><span class="preview-label font-caption">Role:</span><span class="preview-value font-body-sm">${(user.role || 'Cadet').toUpperCase()}</span></div>
+        <div class="preview-row"><span class="preview-label font-caption">Role:</span><span class="preview-value font-body-sm">${(user.role || 'User').toUpperCase()}</span></div>
     `;
 
     DOM.deleteModalOverlay.classList.add('visible');

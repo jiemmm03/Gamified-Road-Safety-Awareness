@@ -330,7 +330,7 @@ class FirebaseSyncManager {
                 CloudLeaderboardEntry(
                     rank = index + 1,
                     userId = doc.getString("userId") ?: "Anonymous",
-                    displayName = doc.getString("displayName") ?: doc.getString("userId") ?: "Cadet",
+                    displayName = doc.getString("displayName") ?: doc.getString("userId") ?: "User",
                     totalXp = doc.getLong("totalXp")?.toInt() ?: 0,
                     currentLevel = doc.getLong("currentLevel")?.toInt() ?: 1,
                     streak = doc.getLong("currentStreak")?.toInt() ?: 0
