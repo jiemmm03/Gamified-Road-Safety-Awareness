@@ -52,6 +52,9 @@ const State = {
     userFilter: 'all',
     deviceFilter: 'all',
     quizFilter: 'all',
+    questionFilter: 'all',
+    scenarioFilter: 'all',
+    aiFilter: 'all',
     loginFilter: 'all',
     auditFilter: 'all',
     searchQuery: '',
@@ -414,13 +417,17 @@ function renderUsersList() {
     let list = [...State.users];
 
     // Search filter
-    const q = (State.searchQuery || '').toLowerCase();
+    const searchInput = $('search-users');
+    const q = (searchInput ? searchInput.value : State.searchQuery || '').toLowerCase().trim();
     if (q) {
         list = list.filter(u =>
             (u.name || '').toLowerCase().includes(q) ||
             (u.username || '').toLowerCase().includes(q) ||
             (u.email || '').toLowerCase().includes(q) ||
-            (u.deviceModel || '').toLowerCase().includes(q)
+            (u.contact || '').toLowerCase().includes(q) ||
+            (u.deviceModel || '').toLowerCase().includes(q) ||
+            (u.role || '').toLowerCase().includes(q) ||
+            (u.gender || '').toLowerCase().includes(q)
         );
     }
 
@@ -437,7 +444,7 @@ function renderUsersList() {
             <div class="empty-state">
                 <span class="material-icons-round">person_search</span>
                 <h3 class="font-h3">No Users Found</h3>
-                <p class="font-body">No registered users match your criteria.</p>
+                <p class="font-body">No registered users match your selected filter (${State.userFilter}).</p>
             </div>
         `;
         return;
@@ -745,6 +752,17 @@ $('btn-save-module').addEventListener('click', () => {
 function renderQuizzesList() {
     if (!DOM.quizzesList) return;
     let list = [...State.quizzes];
+
+    const searchInput = $('search-quizzes');
+    const q = (searchInput ? searchInput.value : '').toLowerCase().trim();
+    if (q) {
+        list = list.filter(quiz =>
+            (quiz.topic || '').toLowerCase().includes(q) ||
+            (quiz.userId || '').toLowerCase().includes(q) ||
+            (quiz.username || '').toLowerCase().includes(q)
+        );
+    }
+
     if (State.quizFilter === 'passed') list = list.filter(q => q.passed);
     else if (State.quizFilter === 'failed') list = list.filter(q => !q.passed);
 
@@ -752,8 +770,8 @@ function renderQuizzesList() {
         DOM.quizzesList.innerHTML = `
             <div class="empty-state">
                 <span class="material-icons-round">rate_review</span>
-                <h3 class="font-h3">No Quiz Submissions Yet</h3>
-                <p class="font-body">When learners complete quizzes in the mobile app, submissions stream here in real time.</p>
+                <h3 class="font-h3">No Quiz Submissions Found</h3>
+                <p class="font-body">No quiz attempts match your criteria (${State.quizFilter}).</p>
             </div>
         `;
         return;
@@ -781,13 +799,39 @@ function renderQuizzesList() {
             </div>
         </div>
     `).join('');
-
-    renderQuestionsList();
 }
 
 function renderQuestionsList() {
     if (!DOM.questionsList) return;
-    DOM.questionsList.innerHTML = State.questions.map((q, idx) => `
+    let list = [...State.questions];
+
+    const searchInput = $('search-questions');
+    const q = (searchInput ? searchInput.value : '').toLowerCase().trim();
+    if (q) {
+        list = list.filter(question =>
+            (question.text || '').toLowerCase().includes(q) ||
+            (question.exp || '').toLowerCase().includes(q) ||
+            (question.difficulty || '').toLowerCase().includes(q) ||
+            (question.options || []).some(opt => (opt || '').toLowerCase().includes(q))
+        );
+    }
+
+    if (State.questionFilter && State.questionFilter !== 'all') {
+        list = list.filter(question => (question.difficulty || '').toLowerCase() === State.questionFilter.toLowerCase());
+    }
+
+    if (list.length === 0) {
+        DOM.questionsList.innerHTML = `
+            <div class="empty-state">
+                <span class="material-icons-round">quiz</span>
+                <h3 class="font-h3">No Questions Found</h3>
+                <p class="font-body">No questions match your search or difficulty filter.</p>
+            </div>
+        `;
+        return;
+    }
+
+    DOM.questionsList.innerHTML = list.map((q, idx) => `
         <div class="question-card">
             <div class="question-header">
                 <div class="question-text"><strong>Q${idx + 1}:</strong> ${escapeHtml(q.text)}</div>
@@ -843,7 +887,40 @@ $('btn-save-question').addEventListener('click', () => {
 
 function renderScenariosList() {
     if (!DOM.scenariosList) return;
-    DOM.scenariosList.innerHTML = State.scenarios.map((s, idx) => `
+    let list = [...State.scenarios];
+
+    const searchInput = $('search-scenarios');
+    const q = (searchInput ? searchInput.value : '').toLowerCase().trim();
+    if (q) {
+        list = list.filter(s =>
+            (s.title || '').toLowerCase().includes(q) ||
+            (s.prompt || '').toLowerCase().includes(q) ||
+            (s.weather || '').toLowerCase().includes(q) ||
+            (s.optimalAction || '').toLowerCase().includes(q)
+        );
+    }
+
+    if (State.scenarioFilter && State.scenarioFilter !== 'all') {
+        const sf = State.scenarioFilter.toLowerCase();
+        list = list.filter(s =>
+            (s.title || '').toLowerCase().includes(sf) ||
+            (s.prompt || '').toLowerCase().includes(sf) ||
+            (s.weather || '').toLowerCase().includes(sf)
+        );
+    }
+
+    if (list.length === 0) {
+        DOM.scenariosList.innerHTML = `
+            <div class="empty-state">
+                <span class="material-icons-round">alt_route</span>
+                <h3 class="font-h3">No Scenarios Found</h3>
+                <p class="font-body">No driving scenarios match your filter (${State.scenarioFilter}).</p>
+            </div>
+        `;
+        return;
+    }
+
+    DOM.scenariosList.innerHTML = list.map((s, idx) => `
         <div class="scenario-card">
             <div class="scenario-header">
                 <h3 class="font-h3"><span class="material-icons-round" style="color:var(--badge-gold);">alt_route</span> Scenario ${idx + 1}: ${escapeHtml(s.title)}</h3>
@@ -957,18 +1034,39 @@ function renderRankHistoryList() {
 
 function renderAiActivityList() {
     if (!DOM.aiActivityList) return;
-    if (State.aiQueries.length === 0) {
+    let list = [...State.aiQueries];
+
+    const searchInput = $('search-ai');
+    const q = (searchInput ? searchInput.value : '').toLowerCase().trim();
+    if (q) {
+        list = list.filter(a =>
+            (a.userId || '').toLowerCase().includes(q) ||
+            (a.topic || '').toLowerCase().includes(q) ||
+            (a.prompt || a.question || '').toLowerCase().includes(q) ||
+            (a.response || a.answer || '').toLowerCase().includes(q)
+        );
+    }
+
+    if (State.aiFilter && State.aiFilter !== 'all') {
+        const af = State.aiFilter.toLowerCase();
+        list = list.filter(a =>
+            (a.topic || '').toLowerCase().includes(af) ||
+            (a.prompt || a.question || '').toLowerCase().includes(af)
+        );
+    }
+
+    if (list.length === 0) {
         DOM.aiActivityList.innerHTML = `
             <div class="empty-state">
                 <span class="material-icons-round">smart_toy</span>
-                <h3 class="font-h3">No AI Interactions Yet</h3>
-                <p class="font-body">When cadets ask the AI Road Tutor questions in the mobile app, conversations stream here.</p>
+                <h3 class="font-h3">No AI Interactions Found</h3>
+                <p class="font-body">No AI road safety queries match your search or filter.</p>
             </div>
         `;
         return;
     }
 
-    DOM.aiActivityList.innerHTML = State.aiQueries.map(q => `
+    DOM.aiActivityList.innerHTML = list.map(q => `
         <div class="ai-query-card">
             <div class="ai-query-header">
                 <span class="font-body-sm font-weight-semibold">👤 Cadet @${escapeHtml(q.userId || 'user')} asked:</span>
@@ -994,11 +1092,22 @@ function renderAiActivityList() {
 function renderDevicesList() {
     if (!DOM.devicesList) return;
     let list = [...State.users];
+
+    const searchInput = $('search-devices');
+    const q = (searchInput ? searchInput.value : '').toLowerCase().trim();
+    if (q) {
+        list = list.filter(u =>
+            (u.deviceModel || '').toLowerCase().includes(q) ||
+            (u.name || '').toLowerCase().includes(q) ||
+            (u.username || '').toLowerCase().includes(q)
+        );
+    }
+
     if (State.deviceFilter === 'online') list = list.filter(u => u.isOnline);
     else if (State.deviceFilter === 'offline') list = list.filter(u => !u.isOnline);
 
     if (list.length === 0) {
-        DOM.devicesList.innerHTML = `<div class="empty-state"><p class="font-body">No device fleet records found.</p></div>`;
+        DOM.devicesList.innerHTML = `<div class="empty-state"><p class="font-body">No device fleet records found matching filter (${State.deviceFilter}).</p></div>`;
         return;
     }
 
@@ -1008,7 +1117,7 @@ function renderDevicesList() {
             <div class="data-main-info">
                 <div class="data-title font-body">${escapeHtml(u.deviceModel || 'Android Mobile Device')}</div>
                 <div class="data-subtitle font-body-sm">
-                    <span>Assigned Cadet: @${escapeHtml(u.username || u.id)}</span>
+                    <span>Assigned Cadet: @${escapeHtml(u.username || u.id)} (${escapeHtml(u.name || 'User')})</span>
                     <span>· OS: Android</span>
                 </div>
             </div>
@@ -1024,12 +1133,24 @@ function renderDevicesList() {
 function renderLoginsList() {
     if (!DOM.loginsList) return;
     let list = [...State.logins];
+
+    const searchInput = $('search-logins');
+    const q = (searchInput ? searchInput.value : '').toLowerCase().trim();
+    if (q) {
+        list = list.filter(l =>
+            (l.userId || l.username || '').toLowerCase().includes(q) ||
+            (l.action || '').toLowerCase().includes(q) ||
+            (l.deviceModel || '').toLowerCase().includes(q) ||
+            (l.ip || '').toLowerCase().includes(q)
+        );
+    }
+
     if (State.loginFilter === 'login') list = list.filter(l => (l.action || '').toLowerCase().includes('login'));
     else if (State.loginFilter === 'logout') list = list.filter(l => (l.action || '').toLowerCase().includes('logout'));
     else if (State.loginFilter === 'failed') list = list.filter(l => (l.action || '').toLowerCase().includes('fail'));
 
     if (list.length === 0) {
-        DOM.loginsList.innerHTML = `<div class="empty-state"><p class="font-body">No activity stream logs.</p></div>`;
+        DOM.loginsList.innerHTML = `<div class="empty-state"><p class="font-body">No activity stream logs found.</p></div>`;
         return;
     }
 
@@ -1053,12 +1174,24 @@ function renderLoginsList() {
 function renderAuditList() {
     if (!DOM.auditList) return;
     let list = [...State.audit];
+
+    const searchInput = $('search-audit');
+    const q = (searchInput ? searchInput.value : '').toLowerCase().trim();
+    if (q) {
+        list = list.filter(a =>
+            (a.action || '').toLowerCase().includes(q) ||
+            (a.adminId || '').toLowerCase().includes(q) ||
+            (a.targetUser || '').toLowerCase().includes(q) ||
+            (a.details || '').toLowerCase().includes(q)
+        );
+    }
+
     if (State.auditFilter === 'high') list = list.filter(a => a.riskLevel === 'HIGH');
     else if (State.auditFilter === 'medium') list = list.filter(a => a.riskLevel === 'MEDIUM');
     else if (State.auditFilter === 'low') list = list.filter(a => a.riskLevel === 'LOW');
 
     if (list.length === 0) {
-        DOM.auditList.innerHTML = `<div class="empty-state"><p class="font-body">No security audit records.</p></div>`;
+        DOM.auditList.innerHTML = `<div class="empty-state"><p class="font-body">No security audit records found.</p></div>`;
         return;
     }
 
@@ -1438,11 +1571,68 @@ function showToast(msg, type = 'info', duration = 3500) {
     }, duration);
 }
 
-// Global search inputs
+// ═══════════════════════════════════════════════════════════════
+// FILTER CHIPS & SEARCH EVENT HANDLERS
+// ═══════════════════════════════════════════════════════════════
+
+// Universal Filter Chips Handler across all tabs
+document.querySelectorAll('.filter-chips').forEach(container => {
+    container.addEventListener('click', e => {
+        const chip = e.target.closest('.chip');
+        if (!chip) return;
+
+        // Update active class within this chip group
+        container.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+        chip.classList.add('active');
+
+        const filterVal = chip.dataset.filter || 'all';
+        const tabContent = chip.closest('.tab-content, .sub-tab-content');
+        if (!tabContent) return;
+
+        const tabId = tabContent.id;
+        if (tabId === 'tab-users') {
+            State.userFilter = filterVal;
+            renderUsersList();
+        } else if (tabId === 'sub-tab-quiz-attempts') {
+            State.quizFilter = filterVal;
+            renderQuizzesList();
+        } else if (tabId === 'sub-tab-quiz-bank') {
+            State.questionFilter = filterVal;
+            renderQuestionsList();
+        } else if (tabId === 'tab-scenarios') {
+            State.scenarioFilter = filterVal;
+            renderScenariosList();
+        } else if (tabId === 'tab-ai-activity') {
+            State.aiFilter = filterVal;
+            renderAiActivityList();
+        } else if (tabId === 'tab-devices') {
+            State.deviceFilter = filterVal;
+            renderDevicesList();
+        } else if (tabId === 'tab-logins') {
+            State.loginFilter = filterVal;
+            renderLoginsList();
+        } else if (tabId === 'tab-audit') {
+            State.auditFilter = filterVal;
+            renderAuditList();
+        }
+    });
+});
+
+// Tab-Specific Live Search Inputs
 document.querySelectorAll('input[id^="search-"]').forEach(input => {
     input.addEventListener('input', e => {
+        const id = input.id;
         State.searchQuery = e.target.value;
-        renderUsersList();
+        if (id === 'search-users') renderUsersList();
+        else if (id === 'search-quizzes') renderQuizzesList();
+        else if (id === 'search-questions') renderQuestionsList();
+        else if (id === 'search-scenarios') renderScenariosList();
+        else if (id === 'search-progress') renderProgressList();
+        else if (id === 'search-ai') renderAiActivityList();
+        else if (id === 'search-devices') renderDevicesList();
+        else if (id === 'search-logins') renderLoginsList();
+        else if (id === 'search-audit') renderAuditList();
+        else renderUsersList();
     });
 });
 
@@ -1454,8 +1644,13 @@ DOM.refreshBtn.addEventListener('click', () => {
     renderUsersList();
     renderModulesList();
     renderQuizzesList();
+    renderQuestionsList();
     renderScenariosList();
     renderProgressList();
+    renderAiActivityList();
+    renderDevicesList();
+    renderLoginsList();
+    renderAuditList();
     showToast('Real-time data refreshed.', 'info', 2000);
 });
 
