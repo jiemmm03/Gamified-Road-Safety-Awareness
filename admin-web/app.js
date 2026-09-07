@@ -1307,33 +1307,61 @@ if (installModalClose) installModalClose.addEventListener('click', () => DOM.ins
 const btnCloseInstallModal = $('btn-close-install-modal');
 if (btnCloseInstallModal) btnCloseInstallModal.addEventListener('click', () => DOM.installModalOverlay.classList.remove('visible'));
 
-// Dynamic QR Code generation - auto-detect local download page URL
+// Dynamic QR Code generation - auto-detect local & public download page URLs
 const qrUrlInput = $('install-qr-url-input');
 const qrImg = $('install-qr-image');
 const btnCopyQrUrl = $('btn-copy-qr-url');
 const btnDownloadQrImg = $('btn-download-qr-img');
 const btnOpenDownloadPage = $('btn-open-download-page');
+const btnQrModePublic = $('btn-qr-mode-public');
+const btnQrModeLocal = $('btn-qr-mode-local');
+const qrDescText = $('qr-desc-text');
 
-// Build the download page URL from the current page origin
-const downloadPageUrl = window.location.origin + window.location.pathname.replace(/\/[^\/]*$/, '') + '/download.html';
+const PUBLIC_PAGE_URL = 'https://jiemmm03.github.io/Gamified-Road-Safety-Awareness/';
+const localDownloadPageUrl = window.location.origin + window.location.pathname.replace(/\/[^\/]*$/, '') + '/download.html';
+
+let currentQrUrl = PUBLIC_PAGE_URL;
 
 function updateQrCode(url) {
     if (!qrImg) return;
-    const targetUrl = url && url.trim() ? url.trim() : downloadPageUrl;
+    const targetUrl = url && url.trim() ? url.trim() : PUBLIC_PAGE_URL;
+    currentQrUrl = targetUrl;
     qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(targetUrl)}`;
+    if (qrUrlInput) qrUrlInput.value = targetUrl;
+    if (btnOpenDownloadPage) btnOpenDownloadPage.href = targetUrl;
 }
 
-// Initialize QR code with the auto-detected download page URL
-updateQrCode(downloadPageUrl);
+// Default to Public GitHub URL for reliable mobile scanning anywhere
+updateQrCode(PUBLIC_PAGE_URL);
 
-// Set the URL input to show the auto-detected URL
-if (qrUrlInput) {
-    qrUrlInput.value = downloadPageUrl;
+if (btnQrModePublic) {
+    btnQrModePublic.addEventListener('click', () => {
+        btnQrModePublic.style.background = 'var(--emerald-green)';
+        btnQrModePublic.style.color = '#fff';
+        btnQrModePublic.style.border = 'none';
+        if (btnQrModeLocal) {
+            btnQrModeLocal.style.background = 'var(--navy-card)';
+            btnQrModeLocal.style.color = 'var(--text-secondary)';
+            btnQrModeLocal.style.border = '1px solid var(--navy-card-border)';
+        }
+        if (qrDescText) qrDescText.textContent = 'Point your Android camera at this code to open the public download page on any phone worldwide.';
+        updateQrCode(PUBLIC_PAGE_URL);
+    });
 }
 
-// Update the "Open Download Page" button href
-if (btnOpenDownloadPage) {
-    btnOpenDownloadPage.href = downloadPageUrl;
+if (btnQrModeLocal) {
+    btnQrModeLocal.addEventListener('click', () => {
+        btnQrModeLocal.style.background = 'var(--electric-blue)';
+        btnQrModeLocal.style.color = '#fff';
+        btnQrModeLocal.style.border = 'none';
+        if (btnQrModePublic) {
+            btnQrModePublic.style.background = 'var(--navy-card)';
+            btnQrModePublic.style.color = 'var(--text-secondary)';
+            btnQrModePublic.style.border = '1px solid var(--navy-card-border)';
+        }
+        if (qrDescText) qrDescText.textContent = 'Point your Android camera at this code to download directly over local Wi-Fi (phone must be on same network).';
+        updateQrCode(localDownloadPageUrl);
+    });
 }
 
 if (btnCopyQrUrl) {

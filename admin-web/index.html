@@ -746,12 +746,16 @@
                     </div>
                     <div class="qr-install-info">
                         <h4 class="font-h4" style="color:var(--text-primary);margin-bottom:4px;">Scan to Download APK</h4>
-                        <p class="font-body-sm" style="color:var(--text-secondary);">
-                            Point your Android camera or QR scanner at this code to open the <strong>RoadSafe AI</strong> download page on any phone connected to the same Wi-Fi.
+                        <div style="display:flex;gap:6px;margin:8px 0;">
+                            <button type="button" id="btn-qr-mode-public" class="btn font-button" style="padding:4px 10px;font-size:11px;background:var(--emerald-green);color:#fff;border:none;">🌐 Public (Worldwide)</button>
+                            <button type="button" id="btn-qr-mode-local" class="btn font-button" style="padding:4px 10px;font-size:11px;background:var(--navy-card);color:var(--text-secondary);border:1px solid var(--navy-card-border);">📶 Local Wi-Fi</button>
+                        </div>
+                        <p class="font-body-sm" id="qr-desc-text" style="color:var(--text-secondary);">
+                            Point your Android camera at this code to open the public download page on any phone worldwide.
                         </p>
-                        <div class="modal-section-title font-label" style="margin-top:4px;">Download Page URL</div>
+                        <div class="modal-section-title font-label" style="margin-top:4px;">Download URL</div>
                         <div class="qr-url-input-wrap">
-                            <input type="text" id="install-qr-url-input" class="form-input font-body-sm" value="" placeholder="Auto-detected download URL..." readonly>
+                            <input type="text" id="install-qr-url-input" class="form-input font-body-sm" value="https://jiemmm03.github.io/Gamified-Road-Safety-Awareness/" readonly>
                             <button class="btn btn-secondary font-button" id="btn-copy-qr-url" title="Copy Download Link">
                                 <span class="material-icons-round">content_copy</span>
                             </button>
