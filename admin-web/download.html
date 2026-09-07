@@ -535,8 +535,9 @@
     </div>
 
     <script>
+        const GITHUB_RELEASE_APK = 'https://github.com/jiemmm03/Gamified-Road-Safety-Awareness/releases/download/v1.0.0/RoadSafe-AI.apk';
+
         // ─── Determine download URL ───
-        // The APK file is served from the same directory as this page
         const baseUrl = window.location.origin + window.location.pathname.replace(/\/[^\/]*$/, '');
         const apkUrl = baseUrl + '/app-debug.apk';
         const downloadPageUrl = window.location.href;
@@ -552,7 +553,6 @@
         const progressText = document.getElementById('progress-text');
 
         // ─── Generate QR code pointing to THIS download page ───
-        // When someone scans this, they get this same page on their phone
         if (qrImg) {
             qrImg.src = 'https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=' + encodeURIComponent(downloadPageUrl);
         }
@@ -566,28 +566,29 @@
                 .then(response => {
                     if (response.ok) {
                         const size = response.headers.get('Content-Length');
-                        const sizeMB = size ? (parseInt(size) / (1024 * 1024)).toFixed(1) : '~25';
+                        const sizeMB = size ? (parseInt(size) / (1024 * 1024)).toFixed(1) : '25.1';
 
                         statusBanner.className = 'status-banner ready';
-                        statusText.innerHTML = `<strong>APK Ready</strong> — ${sizeMB} MB available for download`;
+                        statusText.innerHTML = `<strong>APK Ready</strong> — ${sizeMB} MB available (Local Server &amp; GitHub Release)`;
 
                         downloadBtn.href = apkUrl;
                         downloadBtn.classList.remove('disabled');
                         downloadBtnText.textContent = `Download APK (${sizeMB} MB)`;
                     } else {
-                        showApkNotFound();
+                        useGitHubFallback();
                     }
                 })
                 .catch(() => {
-                    showApkNotFound();
+                    useGitHubFallback();
                 });
         }
 
-        function showApkNotFound() {
-            statusBanner.className = 'status-banner error';
-            statusText.innerHTML = '<strong>APK not found</strong> — Build the app in Android Studio first, then re-run start-share.bat';
-            downloadBtn.classList.add('disabled');
-            downloadBtnText.textContent = 'APK Not Available';
+        function useGitHubFallback() {
+            statusBanner.className = 'status-banner ready';
+            statusText.innerHTML = '<strong>APK Ready</strong> — Official GitHub Release v1.0.0 (25.1 MB)';
+            downloadBtn.href = GITHUB_RELEASE_APK;
+            downloadBtn.classList.remove('disabled');
+            downloadBtnText.textContent = 'Download APK from GitHub (25.1 MB)';
         }
 
         // ─── Download click handler with progress feedback ───
