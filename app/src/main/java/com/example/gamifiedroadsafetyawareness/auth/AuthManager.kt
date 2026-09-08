@@ -174,17 +174,32 @@ class AuthManager(context: Context) {
             .apply()
     }
 
-    fun isRememberMe(): Boolean = prefs.getBoolean(KEY_REMEMBER_ME, false)
+    fun isRememberMe(): Boolean = prefs.getBoolean(KEY_REMEMBER_ME, true)
 
     fun setRememberMe(value: Boolean) {
         prefs.edit().putBoolean(KEY_REMEMBER_ME, value).apply()
     }
 
+    fun hasActiveSession(): Boolean {
+        val user = prefs.getString(KEY_LOGGED_IN_USER, null) ?: return false
+        val hash = userPrefs.getString("${user}_hash", null) ?: return false
+        return userPrefs.getBoolean("${user}_active", true)
+    }
+
     fun getSavedSession(): LoginResult? {
-        if (!isRememberMe()) return null
         val user = prefs.getString(KEY_LOGGED_IN_USER, null) ?: return null
         val role = prefs.getString(KEY_LOGGED_IN_ROLE, null) ?: return null
-        if (!userPrefs.getBoolean("${user}_active", true)) return null
+        val hash = userPrefs.getString("${user}_hash", null)
+        if (hash == null) {
+            // Account was deleted externally or credentials purged
+            logout()
+            return null
+        }
+        if (!userPrefs.getBoolean("${user}_active", true)) {
+            // Account deactivated
+            logout()
+            return LoginResult.AccountDeactivated
+        }
         val displayName = userPrefs.getString("${user}_display", user) ?: user
         val userRole = if (role == "ADMIN") UserRole.ADMIN else UserRole.USER
         val permissions = getUserPermissions(user, userRole)
@@ -403,6 +418,20 @@ class AuthManager(context: Context) {
         )
 
         return true
+    }
+
+    fun registerAndLogin(
+        username: String,
+        password: String,
+        role: UserRole,
+        displayName: String,
+        gender: String = "",
+        age: Int? = null,
+        contactNumber: String = ""
+    ): LoginResult {
+        val created = registerAccount(username, password, role, displayName, gender, age, contactNumber)
+        if (!created) return LoginResult.InvalidCredentials
+        return login(username, password)
     }
 
     fun deleteAccount(username: String): Boolean {

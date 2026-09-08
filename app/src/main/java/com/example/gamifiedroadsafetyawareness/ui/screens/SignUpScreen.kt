@@ -125,7 +125,7 @@ private fun validateAge(value: String, s: SignUpValidationStrings): String? {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SignUpScreen(
-    onSignUpSuccess: () -> Unit,
+    onSignUpSuccess: (UserRole, String, Set<com.example.gamifiedroadsafetyawareness.auth.Permission>) -> Unit,
     onNavigateToLogin: () -> Unit,
     authManager: AuthManager,
     modifier: Modifier = Modifier
@@ -226,7 +226,7 @@ fun SignUpScreen(
             showError = true; triggerShake(); return
         }
 
-        val success = authManager.registerAccount(
+        val loginResult = authManager.registerAndLogin(
             username = trimmedUser,
             password = password,
             role = UserRole.USER,
@@ -236,11 +236,14 @@ fun SignUpScreen(
             contactNumber = contactNumber.trim()
         )
 
-        if (success) {
-            showSuccess = true
-        } else {
-            errorMessage = errorRegistrationFailed
-            showError = true; triggerShake()
+        when (loginResult) {
+            is com.example.gamifiedroadsafetyawareness.auth.LoginResult.Success -> {
+                onSignUpSuccess(loginResult.role, loginResult.displayName, loginResult.permissions)
+            }
+            else -> {
+                errorMessage = errorRegistrationFailed
+                showError = true; triggerShake()
+            }
         }
     }
 
@@ -331,7 +334,7 @@ fun SignUpScreen(
                                 Spacer(modifier = Modifier.height(16.dp))
                                 AppButton(
                                     text = stringResource(R.string.signup_go_to_login),
-                                    onClick = onSignUpSuccess,
+                                    onClick = { onSignUpSuccess(UserRole.USER, fullName.trim(), emptySet()) },
                                     containerColor = MaterialTheme.colorScheme.tertiary
                                 )
                             }

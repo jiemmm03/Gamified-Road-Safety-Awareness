@@ -155,6 +155,10 @@
                 <button class="refresh-btn" id="refresh-btn" title="Refresh Live Data">
                     <span class="material-icons-round">refresh</span>
                 </button>
+                <button class="btn btn-secondary font-button" id="btn-admin-logout" onclick="openAdminLogoutModal()" title="Sign Out of Command Center" style="padding:7px 12px;font-size:12px;border-color:rgba(206,17,38,0.4);color:#FCA5A5;gap:4px;">
+                    <span class="material-icons-round" style="font-size:16px;color:#EF4444;">logout</span>
+                    <span class="btn-text">Log Out</span>
+                </button>
             </div>
         </header>
 
@@ -819,6 +823,66 @@
             </div>
             <div class="modal-actions">
                 <button class="btn btn-secondary font-button" id="btn-close-install-modal">Dismiss</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══════════ ADMIN AUTHENTICATION GATE MODAL ═══════════ -->
+    <div class="modal-overlay" id="admin-auth-overlay" style="z-index:99999;background:rgba(6,11,20,0.96);backdrop-filter:blur(16px);display:none;">
+        <div class="modal" style="max-width:420px;border:1px solid var(--pnp-badge-gold);box-shadow:0 16px 48px rgba(0,0,0,0.8),0 0 30px rgba(0,56,168,0.3);">
+            <div class="modal-header" style="flex-direction:column;align-items:center;text-align:center;padding:24px 20px 16px;border-bottom:1px solid var(--border-brass);">
+                <div style="width:64px;height:64px;border-radius:20px;background:linear-gradient(135deg,#0A162B,#0F1F38);border:2px solid var(--pnp-gold);display:flex;align-items:center;justify-content:center;box-shadow:0 0 20px rgba(212,175,55,0.3);margin-bottom:12px;">
+                    <span class="material-icons-round" style="color:var(--pnp-gold-bright);font-size:36px;">local_police</span>
+                </div>
+                <h2 class="font-h2" style="color:#FFFFFF;margin-bottom:4px;font-size:1.35rem;">PNP Command Center</h2>
+                <span class="font-caption" style="color:var(--pnp-gold-bright);letter-spacing:1px;font-weight:700;">RESTRICTED ADMINISTRATIVE GATE</span>
+            </div>
+            <form id="admin-login-form" onsubmit="handleAdminLogin(event)" style="padding:20px 24px;">
+                <div id="admin-auth-error" style="display:none;background:rgba(206,17,38,0.15);border:1px solid rgba(206,17,38,0.4);color:#FCA5A5;padding:10px 14px;border-radius:8px;font-size:12px;margin-bottom:14px;align-items:center;gap:8px;">
+                    <span class="material-icons-round" style="font-size:16px;color:#EF4444;">error_outline</span>
+                    <span id="admin-auth-error-text">Invalid administrator credentials.</span>
+                </div>
+                <div class="form-group" style="margin-bottom:14px;">
+                    <label class="font-label" for="admin-auth-user" style="color:var(--text-secondary);margin-bottom:6px;display:block;">Officer Username</label>
+                    <div style="position:relative;">
+                        <span class="material-icons-round" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--text-muted);font-size:18px;">badge</span>
+                        <input type="text" id="admin-auth-user" class="form-input font-body" placeholder="admin" required style="padding-left:38px;width:100%;background:#0A1424;border:1px solid var(--border-subtle);color:#fff;border-radius:10px;">
+                    </div>
+                </div>
+                <div class="form-group" style="margin-bottom:20px;">
+                    <label class="font-label" for="admin-auth-pass" style="color:var(--text-secondary);margin-bottom:6px;display:block;">Access Passcode</label>
+                    <div style="position:relative;">
+                        <span class="material-icons-round" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--text-muted);font-size:18px;">lock</span>
+                        <input type="password" id="admin-auth-pass" class="form-input font-body" placeholder="••••••••" required style="padding-left:38px;width:100%;background:#0A1424;border:1px solid var(--border-subtle);color:#fff;border-radius:10px;">
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary font-button" style="width:100%;justify-content:center;padding:12px;font-size:14px;font-weight:800;background:linear-gradient(135deg,#0038A8,#002266 60%,#D4AF37 140%);border-color:var(--border-brass);">
+                    <span class="material-icons-round" style="font-size:18px;">vpn_key</span>
+                    <span>Authenticate Officer</span>
+                </button>
+                <div style="text-align:center;margin-top:14px;font-size:11px;color:var(--text-muted);">
+                    Authorized Law Enforcement &amp; HQ Personnel Only
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ═══════════ ADMIN LOGOUT CONFIRMATION MODAL ═══════════ -->
+    <div class="modal-overlay" id="admin-logout-overlay" style="z-index:99998;display:none;">
+        <div class="modal" style="max-width:380px;text-align:center;padding:24px;">
+            <div style="width:52px;height:52px;border-radius:50%;background:rgba(206,17,38,0.15);border:1px solid rgba(206,17,38,0.4);display:flex;align-items:center;justify-content:center;margin:0 auto 14px;">
+                <span class="material-icons-round" style="color:#EF4444;font-size:28px;">logout</span>
+            </div>
+            <h3 class="font-h3" style="color:#FFFFFF;margin-bottom:6px;">Sign Out of Command Center?</h3>
+            <p class="font-body-sm" style="color:var(--text-secondary);margin-bottom:20px;font-size:13px;line-height:1.4;">
+                Are you sure you want to log out? Your administrative session will be terminated.
+            </p>
+            <div style="display:flex;gap:10px;justify-content:center;">
+                <button class="btn btn-secondary font-button" onclick="closeAdminLogoutModal()" style="flex:1;justify-content:center;">Cancel</button>
+                <button class="btn btn-danger font-button" onclick="confirmAdminLogout()" style="flex:1;justify-content:center;background:#CE1126;border-color:rgba(206,17,38,0.6);">
+                    <span class="material-icons-round" style="font-size:16px;">logout</span>
+                    <span>Log Out</span>
+                </button>
             </div>
         </div>
     </div>

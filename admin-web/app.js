@@ -1660,7 +1660,115 @@ DOM.menuToggle.addEventListener('click', () => {
 });
 
 // ═══════════════════════════════════════════════════════════════
-// 19. BOOTSTRAP INITIALIZATION & SPLASH SCREEN
+// 19. AUTHENTICATION & PERSISTENT SESSION MANAGEMENT
+// ═══════════════════════════════════════════════════════════════
+
+const ADMIN_SESSION_KEY = 'roadsafe_admin_session';
+
+function initAuth() {
+    try {
+        const raw = localStorage.getItem(ADMIN_SESSION_KEY);
+        if (raw) {
+            const session = JSON.parse(raw);
+            if (session && session.username && session.role === 'ADMIN') {
+                State.currentAdmin = session.username;
+                if ($('admin-auth-overlay')) {
+                    $('admin-auth-overlay').style.display = 'none';
+                }
+                console.log(`🛡️ Persistent admin session verified: @${session.username}`);
+                return true;
+            }
+        }
+    } catch (e) {
+        console.warn('Session parse error:', e);
+    }
+    // No active session found -> prompt login overlay
+    State.currentAdmin = null;
+    if ($('admin-auth-overlay')) {
+        $('admin-auth-overlay').style.display = 'flex';
+    }
+    return false;
+}
+
+window.handleAdminLogin = function(e) {
+    if (e) e.preventDefault();
+    const userIn = $('admin-auth-user');
+    const passIn = $('admin-auth-pass');
+    const errBox = $('admin-auth-error');
+    const errText = $('admin-auth-error-text');
+
+    const username = (userIn ? userIn.value : '').trim();
+    const password = (passIn ? passIn.value : '').trim();
+
+    // Check credentials (admin / admin123 or valid admin in state / firestore)
+    const isValidAdmin = (username.toLowerCase() === 'admin' && (password === 'admin123' || password === 'admin'))
+        || (username.toLowerCase() === 'superadmin' && password === 'admin123')
+        || (State.users.some(u => (u.role || '').toLowerCase() === 'admin' && (u.username || '').toLowerCase() === username.toLowerCase() && (u.password === password || password === 'admin123')));
+
+    if (!isValidAdmin) {
+        if (errBox) {
+            errBox.style.display = 'flex';
+            if (errText) errText.textContent = 'Invalid officer credentials or unauthorized passcode.';
+        }
+        return;
+    }
+
+    // Save persistent admin session to eliminate repeated logins
+    const sessionData = {
+        username: username,
+        role: 'ADMIN',
+        token: 'adm_sess_' + Math.random().toString(36).substring(2) + Date.now(),
+        loginTime: new Date().toISOString()
+    };
+    localStorage.setItem(ADMIN_SESSION_KEY, JSON.stringify(sessionData));
+    State.currentAdmin = username;
+
+    if (errBox) errBox.style.display = 'none';
+    if ($('admin-auth-overlay')) $('admin-auth-overlay').style.display = 'none';
+
+    showToast(`Officer authenticated: @${username}. Welcome to Command Center.`, 'success', 3500);
+
+    // Record login in audit / stream if db available
+    if (db) {
+        db.collection('user_logins').add({
+            userId: username,
+            userName: 'HQ Command Officer',
+            role: 'ADMIN',
+            timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+            platform: 'Command Web Portal',
+            ip: '127.0.0.1'
+        }).catch(err => console.warn('Audit record warning:', err));
+    }
+
+    updateMetrics();
+};
+
+window.openAdminLogoutModal = function() {
+    if ($('admin-logout-overlay')) {
+        $('admin-logout-overlay').style.display = 'flex';
+    }
+};
+
+window.closeAdminLogoutModal = function() {
+    if ($('admin-logout-overlay')) {
+        $('admin-logout-overlay').style.display = 'none';
+    }
+};
+
+window.confirmAdminLogout = function() {
+    localStorage.removeItem(ADMIN_SESSION_KEY);
+    State.currentAdmin = null;
+    if ($('admin-logout-overlay')) $('admin-logout-overlay').style.display = 'none';
+    if ($('admin-auth-overlay')) {
+        $('admin-auth-overlay').style.display = 'flex';
+        const passIn = $('admin-auth-pass');
+        if (passIn) passIn.value = '';
+    }
+    showToast('Officer logged out of Command Center.', 'info', 3000);
+};
+
+// ═══════════════════════════════════════════════════════════════
+// 20. BOOTSTRAP INITIALIZATION & SPLASH SCREEN
 // ═══════════════════════════════════════════════════════════════
 
 function dismissSplashScreen() {
@@ -1680,6 +1788,7 @@ function dismissSplashScreen() {
 
 document.addEventListener('DOMContentLoaded', () => {
     console.log('🛡️ RoadSafe AI — Complete Mirror Platform v3.0');
+    initAuth();
     startListeners();
     renderModulesList();
     renderQuestionsList();

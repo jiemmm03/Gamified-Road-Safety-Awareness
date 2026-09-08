@@ -2,6 +2,7 @@ package com.example.gamifiedroadsafetyawareness.ui
 
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.navigationBarsPadding
@@ -154,10 +155,10 @@ fun RoadSafetyApp() {
     val languageManager = remember { LanguageManager(context) }
     var languageCode by remember { mutableStateOf(languageManager.getLanguage()) }
 
-    // Real back-navigation history. currentScreen is always the top of this stack — no more
-    // hardcoded "back always goes to X" per screen; goBack() pops whatever is actually beneath.
+    // Real back-navigation history.
     val screenStack = remember { mutableStateListOf<Screen>(Screen.Login) }
     val currentScreen: Screen = screenStack.last()
+    var isCheckingSession by remember { mutableStateOf(true) }
     // Bumped on every login/logout so a new session never resumes a previous session's
     // retained screen state (see SaveableStateProvider key below).
     var sessionId by remember { mutableIntStateOf(0) }
@@ -173,6 +174,49 @@ fun RoadSafetyApp() {
     var xpManagementPreselectUsername by remember { mutableStateOf<String?>(null) }
     var historyFilterAccount by remember { mutableStateOf<UserAccount?>(null) }
     val coroutineScope = rememberCoroutineScope()
+
+    fun homeScreen(): Screen = when (currentUserRole) {
+        UserRole.ADMIN -> Screen.AdminDashboard
+        UserRole.USER -> Screen.Dashboard
+    }
+
+    /** Clears history and starts fresh at [screen] — for terminal transitions (login, logout,
+     *  sign-up success) where "go back into what came before" isn't meaningful. */
+    fun resetStackTo(screen: Screen) {
+        screenStack.clear()
+        screenStack.add(screen)
+    }
+
+    fun performLogout() {
+        authManager.logout()
+        currentUserRole = UserRole.USER
+        currentUserPermissions = emptySet()
+        loggedInDisplayName = ""
+        loggedInUsername = ""
+        sessionId++
+        resetStackTo(Screen.Login)
+    }
+
+    LaunchedEffect(Unit) {
+        val saved = authManager.getSavedSession()
+        if (saved is com.example.gamifiedroadsafetyawareness.auth.LoginResult.Success) {
+            currentUserRole = saved.role
+            loggedInDisplayName = saved.displayName
+            currentUserPermissions = saved.permissions
+            loggedInUsername = authManager.getLoggedInUsername() ?: ""
+            sessionId++
+            val startScreen = when (saved.role) {
+                UserRole.ADMIN -> Screen.AdminDashboard
+                UserRole.USER -> Screen.Dashboard
+            }
+            screenStack.clear()
+            screenStack.add(startScreen)
+        } else {
+            screenStack.clear()
+            screenStack.add(Screen.Login)
+        }
+        isCheckingSession = false
+    }
 
     val userProgress by remember(loggedInUsername) {
         if (loggedInUsername.isNotBlank()) xpManager.observeProgress(loggedInUsername) else flowOf(null)
@@ -197,18 +241,6 @@ fun RoadSafetyApp() {
             description = description,
             riskLevel = riskLevel
         )
-    }
-
-    fun homeScreen(): Screen = when (currentUserRole) {
-        UserRole.ADMIN -> Screen.AdminDashboard
-        UserRole.USER -> Screen.Dashboard
-    }
-
-    /** Clears history and starts fresh at [screen] — for terminal transitions (login, logout,
-     *  sign-up success) where "go back into what came before" isn't meaningful. */
-    fun resetStackTo(screen: Screen) {
-        screenStack.clear()
-        screenStack.add(screen)
     }
 
     fun navigateTo(screen: Screen) {
@@ -294,8 +326,24 @@ fun RoadSafetyApp() {
             && currentScreen != Screen.SignUp
             && primaryScreens.contains(currentScreen)
 
+    if (isCheckingSession) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background),
+            contentAlignment = Alignment.Center
+        ) {
+            CircularProgressIndicator(color = BadgeGold)
+        }
+        return
+    }
+
     when (currentScreen) {
         Screen.Login -> {
+            if (authManager.hasActiveSession() && loggedInUsername.isNotBlank()) {
+                resetStackTo(homeScreen())
+                return
+            }
             LoginScreen(
                 onLoginSuccess = { role, displayName, permissions ->
                     currentUserRole = role
@@ -312,7 +360,14 @@ fun RoadSafetyApp() {
         }
         Screen.SignUp -> {
             SignUpScreen(
-                onSignUpSuccess = { resetStackTo(Screen.Login) },
+                onSignUpSuccess = { role, displayName, permissions ->
+                    currentUserRole = role
+                    loggedInDisplayName = displayName
+                    currentUserPermissions = permissions
+                    loggedInUsername = authManager.getLoggedInUsername() ?: ""
+                    sessionId++
+                    resetStackTo(homeScreen())
+                },
                 onNavigateToLogin = { resetStackTo(Screen.Login) },
                 authManager = authManager
             )
@@ -354,9 +409,7 @@ fun RoadSafetyApp() {
                 onLogout = {
                     coroutineScope.launch {
                         drawerState.close()
-                        authManager.logout()
-                        sessionId++
-                        resetStackTo(Screen.Login)
+                        performLogout()
                     }
                 },
                 onClose = {
@@ -627,11 +680,7 @@ fun RoadSafetyApp() {
                         onDisplayNameChanged = { loggedInDisplayName = it },
                         onNavigateToAccountSecurity = { navigateTo(Screen.AccountSecurity) },
                         onNavigateToSettings = { navigateTo(Screen.Settings) },
-                        onLogout = {
-                            authManager.logout()
-                            sessionId++
-                            resetStackTo(Screen.Login)
-                        },
+                        onLogout = { performLogout() },
                         modifier = Modifier.padding(innerPadding)
                     )
                 }
@@ -643,16 +692,10 @@ fun RoadSafetyApp() {
                             languageCode = code
                         },
                         onNavigateToAccountSecurity = { navigateTo(Screen.AccountSecurity) },
-                        onLogout = {
-                            authManager.logout()
-                            sessionId++
-                            resetStackTo(Screen.Login)
-                        },
+                        onLogout = { performLogout() },
                         onDeleteAccount = {
                             authManager.deleteAccount(loggedInUsername)
-                            authManager.logout()
-                            sessionId++
-                            resetStackTo(Screen.Login)
+                            performLogout()
                         },
                         onBackClick = { goBack() },
                         modifier = Modifier.padding(innerPadding)
@@ -663,11 +706,7 @@ fun RoadSafetyApp() {
                         currentDisplayName = loggedInDisplayName,
                         authManager = authManager,
                         username = loggedInUsername,
-                        onLogout = {
-                            authManager.logout()
-                            sessionId++
-                            resetStackTo(Screen.Login)
-                        },
+                        onLogout = { performLogout() },
                         onBackClick = { goBack() },
                         modifier = Modifier.padding(innerPadding)
                     )
@@ -678,11 +717,7 @@ fun RoadSafetyApp() {
                         authManager = authManager,
                         xpManager = xpManager,
                         auditManager = auditManager,
-                        onLogout = {
-                            authManager.logout()
-                            sessionId++
-                            resetStackTo(Screen.Login)
-                        },
+                        onLogout = { performLogout() },
                         onNavigateToAudit = {
                             historyFilterAccount = null
                             navigateTo(Screen.AuditDashboard)
