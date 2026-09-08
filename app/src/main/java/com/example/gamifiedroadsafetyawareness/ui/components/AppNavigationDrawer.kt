@@ -8,6 +8,7 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -15,6 +16,8 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.ui.res.painterResource
+import com.example.gamifiedroadsafetyawareness.R
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowForward
 import androidx.compose.material.icons.automirrored.rounded.HelpOutline
@@ -126,23 +129,14 @@ fun AppNavigationDrawer(
                                 verticalAlignment = Alignment.CenterVertically,
                                 horizontalArrangement = Arrangement.spacedBy(10.dp)
                             ) {
-                                // Police/Security Badge Emblem
-                                Box(
+                                // Police/Security Badge Emblem Logo
+                                Image(
+                                    painter = painterResource(id = R.drawable.logo),
+                                    contentDescription = "RoadSafe AI Official Logo",
                                     modifier = Modifier
-                                        .size(40.dp)
+                                        .size(42.dp)
                                         .clip(RoundedCornerShape(10.dp))
-                                        .background(
-                                            Brush.linearGradient(listOf(BadgeGold, AmberYellow))
-                                        ),
-                                    contentAlignment = Alignment.Center
-                                ) {
-                                    Icon(
-                                        imageVector = Icons.Rounded.Shield,
-                                        contentDescription = "Police Shield Logo",
-                                        tint = NavyPrimary,
-                                        modifier = Modifier.size(24.dp)
-                                    )
-                                }
+                                )
 
                                 Column {
                                     Text(
