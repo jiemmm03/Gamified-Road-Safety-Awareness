@@ -827,41 +827,63 @@
         </div>
     </div>
 
-    <!-- ═══════════ ADMIN AUTHENTICATION GATE MODAL ═══════════ -->
-    <div class="modal-overlay" id="admin-auth-overlay" style="z-index:99999;background:rgba(6,11,20,0.96);backdrop-filter:blur(16px);display:none;">
-        <div class="modal" style="max-width:420px;border:1px solid var(--pnp-badge-gold);box-shadow:0 16px 48px rgba(0,0,0,0.8),0 0 30px rgba(0,56,168,0.3);">
-            <div class="modal-header" style="flex-direction:column;align-items:center;text-align:center;padding:24px 20px 16px;border-bottom:1px solid var(--border-brass);">
-                <div style="width:72px;height:72px;border-radius:20px;background:linear-gradient(135deg,#0A162B,#0F1F38);border:2px solid var(--pnp-gold);display:flex;align-items:center;justify-content:center;box-shadow:0 0 20px rgba(212,175,55,0.3);margin-bottom:12px;overflow:hidden;padding:4px;">
-                    <img src="logo.png" alt="RoadSafe AI Official Emblem" style="width:100%;height:100%;object-fit:contain;border-radius:16px;">
-                </div>
-                <h2 class="font-h2" style="color:#FFFFFF;margin-bottom:4px;font-size:1.35rem;">PNP Command Center</h2>
-                <span class="font-caption" style="color:var(--pnp-gold-bright);letter-spacing:1px;font-weight:700;">RESTRICTED ADMINISTRATIVE GATE</span>
+    <!-- ═══════════ SUPER ADMIN & POLICE AUTHENTICATION GATE (DAGAMI BACKGROUND) ═══════════ -->
+    <div class="admin-auth-overlay" id="admin-auth-overlay" style="display:none;">
+        <div class="admin-auth-topbar">
+            <div class="admin-auth-station-pill">
+                <span class="material-icons-round" style="color:var(--pnp-gold-bright);font-size:16px;">account_balance</span>
+                <span>Municipality of Dagami · Police Traffic Unit</span>
             </div>
-            <form id="admin-login-form" onsubmit="handleAdminLogin(event)" style="padding:20px 24px;">
-                <div id="admin-auth-error" style="display:none;background:rgba(206,17,38,0.15);border:1px solid rgba(206,17,38,0.4);color:#FCA5A5;padding:10px 14px;border-radius:8px;font-size:12px;margin-bottom:14px;align-items:center;gap:8px;">
-                    <span class="material-icons-round" style="font-size:16px;color:#EF4444;">error_outline</span>
+            <div class="admin-auth-station-pill" style="border-color:rgba(0,56,168,0.5);">
+                <span class="live-dot pulse"></span>
+                <span>HQ Dispatch Active</span>
+            </div>
+        </div>
+
+        <div class="admin-auth-card">
+            <div class="admin-auth-logo-frame">
+                <img src="logo.png" alt="RoadSafe AI Official Emblem">
+            </div>
+            
+            <div class="admin-auth-municipality">Republic of the Philippines · Leyte</div>
+            <h2 class="admin-auth-title">RoadSafe AI</h2>
+            <div class="admin-auth-subtitle">Super Admin &amp; Police Traffic Command Center</div>
+            
+            <div class="admin-auth-badge-tag">
+                <span class="material-icons-round" style="font-size:14px;color:var(--pnp-gold-bright);">verified_user</span>
+                <span>Dagami Municipal Command Gate</span>
+            </div>
+
+            <form id="admin-login-form" onsubmit="handleAdminLogin(event)">
+                <div id="admin-auth-error" style="display:none;background:rgba(206,17,38,0.18);border:1px solid rgba(206,17,38,0.5);color:#FCA5A5;padding:10px 14px;border-radius:10px;font-size:12px;margin-bottom:14px;align-items:center;gap:8px;text-align:left;">
+                    <span class="material-icons-round" style="font-size:16px;color:#EF4444;flex-shrink:0;">error_outline</span>
                     <span id="admin-auth-error-text">Invalid administrator credentials.</span>
                 </div>
-                <div class="form-group" style="margin-bottom:14px;">
-                    <label class="font-label" for="admin-auth-user" style="color:var(--text-secondary);margin-bottom:6px;display:block;">Officer Username</label>
-                    <div style="position:relative;">
-                        <span class="material-icons-round" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--text-muted);font-size:18px;">badge</span>
-                        <input type="text" id="admin-auth-user" class="form-input font-body" placeholder="admin" required style="padding-left:38px;width:100%;background:#0A1424;border:1px solid var(--border-subtle);color:#fff;border-radius:10px;">
+
+                <div class="admin-auth-input-group">
+                    <label for="admin-auth-user">Officer / Super Admin Username</label>
+                    <div class="admin-auth-input-wrap">
+                        <span class="material-icons-round">badge</span>
+                        <input type="text" id="admin-auth-user" class="admin-auth-input" placeholder="admin or superadmin" required autocomplete="username">
                     </div>
                 </div>
-                <div class="form-group" style="margin-bottom:20px;">
-                    <label class="font-label" for="admin-auth-pass" style="color:var(--text-secondary);margin-bottom:6px;display:block;">Access Passcode</label>
-                    <div style="position:relative;">
-                        <span class="material-icons-round" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--text-muted);font-size:18px;">lock</span>
-                        <input type="password" id="admin-auth-pass" class="form-input font-body" placeholder="••••••••" required style="padding-left:38px;width:100%;background:#0A1424;border:1px solid var(--border-subtle);color:#fff;border-radius:10px;">
+
+                <div class="admin-auth-input-group">
+                    <label for="admin-auth-pass">Access Security Passcode</label>
+                    <div class="admin-auth-input-wrap">
+                        <span class="material-icons-round">lock</span>
+                        <input type="password" id="admin-auth-pass" class="admin-auth-input" placeholder="••••••••" required autocomplete="current-password">
                     </div>
                 </div>
-                <button type="submit" class="btn btn-primary font-button" style="width:100%;justify-content:center;padding:12px;font-size:14px;font-weight:800;background:linear-gradient(135deg,#0038A8,#002266 60%,#D4AF37 140%);border-color:var(--border-brass);">
+
+                <button type="submit" class="admin-auth-submit-btn">
                     <span class="material-icons-round" style="font-size:18px;">vpn_key</span>
-                    <span>Authenticate Officer</span>
+                    <span>Authenticate Super Admin</span>
                 </button>
-                <div style="text-align:center;margin-top:14px;font-size:11px;color:var(--text-muted);">
-                    Authorized Law Enforcement &amp; HQ Personnel Only
+
+                <div class="admin-auth-footer-text">
+                    Protected by Philippine National Police Security Protocols<br>
+                    Municipal Government of Dagami · Highway Patrol Unit
                 </div>
             </form>
         </div>

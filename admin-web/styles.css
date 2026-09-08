@@ -2598,3 +2598,251 @@ input:checked + .slider:before {
     letter-spacing: var(--letter-spacing-wide);
 }
 
+/* ═══════════════════════════════════════════════════════════════
+   23. SUPER ADMIN & POLICE AUTHENTICATION GATEWAY (DAGAMI BACKGROUND)
+   ═══════════════════════════════════════════════════════════════ */
+.admin-auth-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 99999;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background-image:
+        radial-gradient(ellipse at 50% 10%, rgba(0, 56, 168, 0.45) 0%, transparent 65%),
+        radial-gradient(ellipse at 80% 80%, rgba(212, 175, 55, 0.15) 0%, transparent 50%),
+        linear-gradient(135deg, rgba(6, 11, 20, 0.82) 0%, rgba(0, 34, 102, 0.72) 45%, rgba(6, 11, 20, 0.92) 100%),
+        url('background-dagami.jpg');
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+    overflow-y: auto;
+    animation: auth-bg-fadein 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes auth-bg-fadein {
+    from {
+        opacity: 0;
+        transform: scale(1.02);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.admin-auth-topbar {
+    position: absolute;
+    top: 20px;
+    left: 24px;
+    right: 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    pointer-events: none;
+}
+
+.admin-auth-station-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    background: rgba(10, 20, 38, 0.85);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(212, 175, 55, 0.35);
+    border-radius: 999px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+    color: #FFFFFF;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+}
+
+.admin-auth-card {
+    position: relative;
+    width: 100%;
+    max-width: 440px;
+    background: rgba(10, 20, 38, 0.88);
+    backdrop-filter: blur(28px);
+    -webkit-backdrop-filter: blur(28px);
+    border: 1px solid rgba(212, 175, 55, 0.45);
+    border-radius: 24px;
+    box-shadow:
+        0 24px 64px rgba(0, 0, 0, 0.9),
+        0 0 50px rgba(0, 56, 168, 0.35),
+        inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    padding: 32px 28px;
+    text-align: center;
+    overflow: hidden;
+    animation: auth-card-slideup 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes auth-card-slideup {
+    from {
+        opacity: 0;
+        transform: translateY(24px) scale(0.96);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.admin-auth-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #0038A8 0%, #D4AF37 50%, #CE1126 100%);
+}
+
+.admin-auth-logo-frame {
+    position: relative;
+    width: 84px;
+    height: 84px;
+    margin: 0 auto 16px;
+    border-radius: 24px;
+    background: linear-gradient(135deg, #060B14 0%, #0F1F38 100%);
+    border: 2px solid var(--pnp-badge-gold);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px;
+    box-shadow: 0 0 30px rgba(212, 175, 55, 0.4);
+}
+
+.admin-auth-logo-frame img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    border-radius: 16px;
+}
+
+.admin-auth-municipality {
+    font-size: 11px;
+    font-weight: 800;
+    color: var(--pnp-badge-gold-bright);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+}
+
+.admin-auth-title {
+    font-size: 24px;
+    font-weight: 900;
+    color: #FFFFFF;
+    letter-spacing: -0.5px;
+    margin-bottom: 4px;
+}
+
+.admin-auth-subtitle {
+    font-size: 12px;
+    color: var(--text-secondary);
+    font-weight: 500;
+    margin-bottom: 20px;
+}
+
+.admin-auth-badge-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 12px;
+    background: rgba(212, 175, 55, 0.12);
+    border: 1px solid rgba(212, 175, 55, 0.35);
+    border-radius: 999px;
+    color: var(--pnp-badge-gold-bright);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    margin-bottom: 18px;
+}
+
+.admin-auth-input-group {
+    margin-bottom: 16px;
+    text-align: left;
+}
+
+.admin-auth-input-group label {
+    display: block;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--text-secondary);
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+}
+
+.admin-auth-input-wrap {
+    position: relative;
+}
+
+.admin-auth-input-wrap .material-icons-round {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 18px;
+    color: var(--text-muted);
+}
+
+.admin-auth-input {
+    width: 100%;
+    padding: 12px 14px 12px 42px;
+    background: rgba(6, 11, 20, 0.85);
+    border: 1px solid rgba(212, 175, 55, 0.25);
+    border-radius: 12px;
+    color: #FFFFFF;
+    font-size: 14px;
+    font-weight: 500;
+    outline: none;
+    transition: all 0.2s ease;
+}
+
+.admin-auth-input:focus {
+    border-color: var(--pnp-badge-gold);
+    box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.2), 0 0 16px rgba(0, 56, 168, 0.4);
+    background: rgba(10, 20, 38, 0.95);
+}
+
+.admin-auth-submit-btn {
+    width: 100%;
+    padding: 13px;
+    margin-top: 8px;
+    border: 1px solid var(--pnp-badge-gold);
+    border-radius: 12px;
+    background: linear-gradient(135deg, #0038A8 0%, #002266 50%, #D4AF37 130%);
+    color: #FFFFFF;
+    font-size: 14px;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    box-shadow: 0 8px 24px rgba(0, 56, 168, 0.4), 0 0 15px rgba(212, 175, 55, 0.2);
+    transition: all 0.2s ease;
+}
+
+.admin-auth-submit-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 12px 28px rgba(0, 56, 168, 0.6), 0 0 25px rgba(212, 175, 55, 0.35);
+}
+
+.admin-auth-submit-btn:active {
+    transform: translateY(1px);
+}
+
+.admin-auth-footer-text {
+    margin-top: 18px;
+    font-size: 11px;
+    color: var(--text-muted);
+    font-weight: 500;
+    line-height: 1.4;
+}
+
