@@ -358,63 +358,6 @@ fun LoginScreen(
                                 modifier = Modifier.clickable { onNavigateToSignUp() }
                             )
                         }
-                        
-                        Spacer(modifier = Modifier.height(Dimens.spacingLarge))
-                        HorizontalDivider(color = MaterialTheme.colorScheme.outline.copy(alpha = 0.5f), thickness = 1.dp)
-                        Spacer(modifier = Modifier.height(Dimens.spacingMedium))
-
-                        Text(
-                            text = stringResource(R.string.login_quick_access).uppercase(),
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            style = AppTypeScale.eyebrowLabel,
-                            modifier = Modifier.padding(bottom = Dimens.spacingSmall)
-                        )
-
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.spacedBy(Dimens.spacingMedium)
-                        ) {
-                            Box(
-                                modifier = Modifier
-                                    .weight(1f)
-                                    .height(40.dp)
-                                    .clip(RoundedCornerShape(Dimens.cornerRadiusMedium))
-                                    .background(MaterialTheme.colorScheme.surfaceVariant)
-                                    .clickable {
-                                        username = AuthManager.DEFAULT_USER_USER
-                                        password = AuthManager.DEFAULT_USER_PASS
-                                        showError = false
-                                    },
-                                contentAlignment = Alignment.Center
-                            ) {
-                                Text(
-                                    text = stringResource(R.string.login_quick_user).uppercase(),
-                                    style = MaterialTheme.typography.labelMedium,
-                                    color = MaterialTheme.colorScheme.onSurface,
-                                    fontWeight = FontWeight.Bold
-                                )
-                            }
-                            Box(
-                                modifier = Modifier
-                                    .weight(1f)
-                                    .height(40.dp)
-                                    .clip(RoundedCornerShape(Dimens.cornerRadiusMedium))
-                                    .background(MaterialTheme.colorScheme.secondaryContainer)
-                                    .clickable {
-                                        username = AuthManager.DEFAULT_ADMIN_USER
-                                        password = AuthManager.DEFAULT_ADMIN_PASS
-                                        showError = false
-                                    },
-                                contentAlignment = Alignment.Center
-                            ) {
-                                Text(
-                                    text = stringResource(R.string.login_quick_admin).uppercase(),
-                                    style = MaterialTheme.typography.labelMedium,
-                                    color = MaterialTheme.colorScheme.secondary,
-                                    fontWeight = FontWeight.Bold
-                                )
-                            }
-                        }
                     }
                 }
             }

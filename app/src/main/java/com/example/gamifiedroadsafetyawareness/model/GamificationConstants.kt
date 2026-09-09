@@ -47,6 +47,9 @@ object GamificationConstants {
     // The live content model is 1 module = 1 quiz (e.g. mod_easy_quiz -> quiz_easy), so a
     // single flag per module id covers both "Module Management" and "Quiz Management".
     object ContentSettings {
+        private val _moduleSettingsFlow = kotlinx.coroutines.flow.MutableStateFlow<Map<String, Boolean>>(emptyMap())
+        val moduleSettingsFlow: kotlinx.coroutines.flow.StateFlow<Map<String, Boolean>> = _moduleSettingsFlow
+
         private val DEFAULT_ENABLED = mapOf(
             "mod_easy_quiz" to true,
             "mod_medium_quiz" to true,
@@ -54,10 +57,21 @@ object GamificationConstants {
         )
 
         fun isModuleEnabled(moduleId: String): Boolean =
-            prefs?.getBoolean("module_enabled_$moduleId", DEFAULT_ENABLED[moduleId] ?: true) ?: true
+            _moduleSettingsFlow.value[moduleId] ?: (prefs?.getBoolean("module_enabled_$moduleId", DEFAULT_ENABLED[moduleId] ?: true) ?: (DEFAULT_ENABLED[moduleId] ?: true))
 
         fun setModuleEnabled(moduleId: String, enabled: Boolean) {
             prefs?.edit()?.putBoolean("module_enabled_$moduleId", enabled)?.apply()
+            val current = _moduleSettingsFlow.value.toMutableMap()
+            current[moduleId] = enabled
+            _moduleSettingsFlow.value = current
+        }
+
+        fun getAllSettings(): Map<String, Boolean> {
+            val all = mutableMapOf<String, Boolean>()
+            DEFAULT_ENABLED.keys.forEach { id ->
+                all[id] = isModuleEnabled(id)
+            }
+            return all
         }
     }
 

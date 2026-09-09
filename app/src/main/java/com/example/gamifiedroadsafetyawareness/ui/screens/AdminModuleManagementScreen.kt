@@ -77,6 +77,8 @@ fun AdminModuleManagementScreen(
                     module = module,
                     onToggle = { enabled ->
                         GamificationConstants.ContentSettings.setModuleEnabled(module.id, enabled)
+                        com.example.gamifiedroadsafetyawareness.firebase.FirebaseSyncManager.getInstance()
+                            .syncModuleSetting(module.id, enabled)
                         auditManager.logAction(
                             userId = currentAdminUsername,
                             fullName = currentAdminUsername,

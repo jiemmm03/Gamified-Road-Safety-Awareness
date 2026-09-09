@@ -533,19 +533,37 @@ class FirebaseSyncManager {
                 .addSnapshotListener { snapshot, error ->
                     if (error != null || snapshot == null || !snapshot.exists()) return@addSnapshotListener
                     val data = snapshot.data ?: return@addSnapshotListener
-                    data["mod_easy_quiz"]?.let {
-                        if (it is Boolean) com.example.gamifiedroadsafetyawareness.model.GamificationConstants.ContentSettings.setModuleEnabled("mod_easy_quiz", it)
+                    data.forEach { (key, value) ->
+                        if (value is Boolean) {
+                            com.example.gamifiedroadsafetyawareness.model.GamificationConstants.ContentSettings.setModuleEnabled(key, value)
+                        }
                     }
-                    data["mod_medium_quiz"]?.let {
-                        if (it is Boolean) com.example.gamifiedroadsafetyawareness.model.GamificationConstants.ContentSettings.setModuleEnabled("mod_medium_quiz", it)
-                    }
-                    data["mod_hard_quiz"]?.let {
-                        if (it is Boolean) com.example.gamifiedroadsafetyawareness.model.GamificationConstants.ContentSettings.setModuleEnabled("mod_hard_quiz", it)
-                    }
-                    Log.d(tag, "Synced module availability settings from cloud.")
+                    Log.d(tag, "Synced module availability settings from cloud: $data")
                 }
         } catch (e: Exception) {
             Log.w(tag, "Failed to attach module settings listener: ${e.message}")
+        }
+    }
+
+    /**
+     * Updates module availability setting in Firestore to synchronize across all clients.
+     */
+    fun syncModuleSetting(moduleId: String, enabled: Boolean) {
+        try {
+            val payload = mapOf(
+                moduleId to enabled,
+                "updatedAt" to com.google.firebase.Timestamp.now()
+            )
+            firestore.collection("system_settings").document("modules")
+                .set(payload, com.google.firebase.firestore.SetOptions.merge())
+                .addOnSuccessListener {
+                    Log.d(tag, "Module $moduleId availability set to $enabled in cloud.")
+                }
+                .addOnFailureListener { e ->
+                    Log.w(tag, "Failed to sync module setting to cloud: ${e.message}")
+                }
+        } catch (e: Exception) {
+            Log.w(tag, "Error syncing module setting: ${e.message}")
         }
     }
 

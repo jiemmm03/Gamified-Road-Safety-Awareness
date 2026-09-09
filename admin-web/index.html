@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RoadSafe AI — PNP Highway Patrol & Traffic Safety Command Center</title>
-    <meta name="description" content="Official Philippine National Police (PNP) & Highway Patrol Group AI Road Safety and Traffic Education Command Center.">
+    <title>RoadSafe AI — Highway Patrol & Traffic Safety Command Center</title>
+    <meta name="description" content="Official Highway Patrol Group AI Road Safety and Traffic Education Command Center.">
 
     <!-- Primary Font: Inter (Google Fonts) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -21,18 +21,18 @@
     <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
 
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles.css?v=4.2">
 </head>
 <body>
 
-    <!-- ═══════════════════════ SPLASH SCREEN (PNP STAR EMBLEM) ═══════════════════════ -->
+    <!-- ═══════════════════════ SPLASH SCREEN ═══════════════════════ -->
     <div id="admin-splash-screen" class="splash-screen">
         <div class="splash-content">
             <div class="splash-logo-wrap">
-                <img src="logo.png" alt="PNP RoadSafe AI Emblem" class="splash-logo">
+                <img src="logo.png" alt="RoadSafe AI Emblem" class="splash-logo">
                 <div class="splash-pulse-ring"></div>
             </div>
-            <div class="pnp-station-tag" style="margin-bottom:8px;">PHILIPPINE NATIONAL POLICE · HPG</div>
+            <div class="pnp-station-tag" style="margin-bottom:8px;">HIGHWAY PATROL GROUP · DAGAMI LEYTE</div>
             <h1 class="splash-title font-h1">RoadSafe AI</h1>
             <p class="splash-subtitle">Traffic Safety &amp; Driver Education Command Center</p>
             <div class="splash-loader">
@@ -46,10 +46,10 @@
     <aside class="sidebar" id="sidebar">
         <div class="sidebar-header">
             <div class="logo-container">
-                <img src="logo.png" alt="PNP RoadSafe AI Seal" class="logo-icon">
+                <img src="logo.png" alt="RoadSafe AI Seal" class="logo-icon">
                 <div class="logo-text">
                     <span class="logo-title font-h3">RoadSafe AI</span>
-                    <span class="logo-subtitle">PNP Command Unit</span>
+                    <span class="logo-subtitle">Dagami Leyte</span>
                 </div>
             </div>
         </div>
@@ -127,7 +127,7 @@
                 <span class="status-dot pulse"></span>
                 <span class="status-text font-caption">Secure Cloud Node Active</span>
             </div>
-            <div class="sidebar-version font-caption">PNP HPG Edition · v4.0 Official</div>
+            <div class="sidebar-version font-caption">Highway Patrol Edition · v4.0 Official</div>
         </div>
     </aside>
 
@@ -141,12 +141,12 @@
             </button>
             <div class="top-bar-title">
                 <h1 class="page-title font-h1" id="page-title">Command Dashboard</h1>
-                <span class="top-bar-subtitle font-body-sm" id="page-subtitle">PNP Highway Patrol Group · Live Enforcement Telemetry</span>
+                <span class="top-bar-subtitle font-body-sm" id="page-subtitle">Highway Patrol Group · Live Enforcement Telemetry</span>
             </div>
             <div class="top-bar-actions">
                 <button class="btn btn-download-apk font-button" onclick="showAppInstallModal()" title="Install RoadSafe AI Mobile App">
-                    <span class="material-icons-round">local_police</span>
-                    <span class="btn-text">Mobile App Portal</span>
+                    <span class="material-icons-round">install_mobile</span>
+                    <span class="btn-text">Install Mobile App</span>
                 </button>
                 <div class="live-indicator">
                     <span class="live-dot pulse"></span>
@@ -748,14 +748,14 @@
         </div>
     </div>
 
-    <!-- ═══════════ INSTALL MOBILE APP MODAL (PNP MOBILE PORTAL) ═══════════ -->
+    <!-- ═══════════ INSTALL MOBILE APP MODAL (MOBILE PORTAL) ═══════════ -->
     <div class="modal-overlay" id="install-modal-overlay">
         <div class="modal" id="install-modal" style="max-width:640px;">
             <div class="modal-header">
                 <div style="display:flex;align-items:center;gap:12px;">
                     <img src="logo.png" alt="RoadSafe AI Official Emblem" style="width:36px;height:36px;object-fit:contain;border-radius:10px;">
                     <div>
-                        <h3 class="font-h3" style="color:#FFFFFF;margin:0;">PNP Mobile App Portal</h3>
+                        <h3 class="font-h3" style="color:#FFFFFF;margin:0;">Mobile App Portal</h3>
                         <span class="font-caption" style="color:var(--pnp-badge-gold);font-size:10px;text-transform:uppercase;letter-spacing:1px;">Official Road Safety Driver Training Client</span>
                     </div>
                 </div>
@@ -766,7 +766,7 @@
                 <div class="qr-install-container">
                     <div class="qr-code-box">
                         <img id="install-qr-image" src="" alt="App Download QR Code">
-                        <span class="qr-code-caption">PNP Mobile Secure QR</span>
+                        <span class="qr-code-caption">Mobile Secure QR</span>
                     </div>
                     <div class="qr-install-info">
                         <div style="display:flex;align-items:center;gap:6px;">
@@ -779,7 +779,7 @@
                             <button type="button" id="btn-qr-mode-local" class="btn font-button" style="padding:4px 12px;font-size:11px;background:#0A1424;color:var(--text-secondary);border:1px solid var(--border-card);">📶 Station Wi-Fi</button>
                         </div>
                         <p class="font-body-sm" id="qr-desc-text" style="color:var(--text-secondary);font-size:12px;line-height:1.4;">
-                            Scan with your phone camera to download and install the official PNP Road Safety awareness client worldwide.
+                            Scan with your phone camera to download and install the official Road Safety awareness client worldwide.
                         </p>
                         <div class="modal-section-title font-label" style="margin-top:2px;">Mobile Portal Link</div>
                         <div class="qr-url-input-wrap">
@@ -828,7 +828,7 @@
     </div>
 
     <!-- ═══════════ SUPER ADMIN & POLICE AUTHENTICATION GATE (DAGAMI BACKGROUND) ═══════════ -->
-    <div class="admin-auth-overlay" id="admin-auth-overlay" style="display:none;">
+    <div class="admin-auth-overlay" id="admin-auth-overlay" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;width:100vw;height:100vh;z-index:99999;background-color:#060B14;">
         <div class="admin-auth-topbar">
             <div class="admin-auth-station-pill">
                 <span class="material-icons-round" style="color:var(--pnp-gold-bright);font-size:16px;">account_balance</span>
@@ -841,8 +841,8 @@
         </div>
 
         <div class="admin-auth-card">
-            <div class="admin-auth-logo-frame">
-                <img src="logo.png" alt="RoadSafe AI Official Emblem">
+            <div class="admin-auth-logo-frame" style="width:84px;height:84px;margin:0 auto 16px;display:flex;align-items:center;justify-content:center;">
+                <img src="logo.png" alt="RoadSafe AI Official Emblem" style="max-width:68px;max-height:68px;object-fit:contain;display:block;">
             </div>
             
             <div class="admin-auth-municipality">Republic of the Philippines · Leyte</div>
@@ -912,6 +912,6 @@
     <!-- ═══════════ TOAST NOTIFICATION CONTAINER ═══════════ -->
     <div class="toast-container" id="toast-container"></div>
 
-    <script src="app.js?v=4.0"></script>
+    <script src="app.js?v=4.2"></script>
 </body>
 </html>

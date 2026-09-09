@@ -2602,9 +2602,14 @@ input:checked + .slider:before {
    23. SUPER ADMIN & POLICE AUTHENTICATION GATEWAY (DAGAMI BACKGROUND)
    ═══════════════════════════════════════════════════════════════ */
 .admin-auth-overlay {
-    position: fixed;
-    inset: 0;
-    z-index: 99999;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    z-index: 99999 !important;
     display: flex;
     flex-direction: column;
     align-items: center;

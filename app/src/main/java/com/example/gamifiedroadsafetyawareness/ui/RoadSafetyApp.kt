@@ -198,6 +198,7 @@ fun RoadSafetyApp() {
     }
 
     LaunchedEffect(Unit) {
+        com.example.gamifiedroadsafetyawareness.firebase.FirebaseSyncManager.getInstance().listenToModuleSettings()
         val saved = authManager.getSavedSession()
         if (saved is com.example.gamifiedroadsafetyawareness.auth.LoginResult.Success) {
             currentUserRole = saved.role
@@ -534,8 +535,12 @@ fun RoadSafetyApp() {
                         xpManager = xpManager,
                         onLaunchSimulation = { navigateTo(Screen.Simulation) },
                         onStartQuiz = { moduleId ->
-                            activeQuizModuleId = moduleId
-                            navigateTo(Screen.QuizTaking)
+                            if (!com.example.gamifiedroadsafetyawareness.model.GamificationConstants.ContentSettings.isModuleEnabled(moduleId)) {
+                                Toast.makeText(context, "This module is currently disabled by the administrator.", Toast.LENGTH_SHORT).show()
+                            } else {
+                                activeQuizModuleId = moduleId
+                                navigateTo(Screen.QuizTaking)
+                            }
                         },
                         onModuleComplete = { module ->
                             coroutineScope.launch {

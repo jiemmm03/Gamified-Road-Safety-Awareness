@@ -42,6 +42,7 @@ fun AssessmentScreen(
 ) {
     val modules = MockData.learningModules.sortedBy { it.moduleType.ordinal }
     var moduleUnlockStatus by remember { mutableStateOf<Map<String, Pair<Boolean, String>>>(emptyMap()) }
+    val moduleSettingsState by GamificationConstants.ContentSettings.moduleSettingsFlow.collectAsState()
 
     LaunchedEffect(username, xpManager) {
         val manager = xpManager ?: return@LaunchedEffect
