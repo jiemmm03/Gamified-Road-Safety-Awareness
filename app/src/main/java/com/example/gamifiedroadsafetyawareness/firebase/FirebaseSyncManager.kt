@@ -297,17 +297,21 @@ class FirebaseSyncManager {
                 .get()
                 .await()
 
-            snapshot.documents.map { doc ->
-                CloudLoginEntry(
-                    username = doc.getString("username") ?: "",
-                    displayName = doc.getString("displayName") ?: "",
-                    role = doc.getString("role") ?: "USER",
-                    eventType = doc.getString("eventType") ?: "LOGIN",
-                    status = doc.getString("status") ?: "SUCCESS",
-                    failureReason = doc.getString("failureReason"),
-                    deviceInfo = doc.getString("deviceInfo") ?: "",
-                    timestamp = doc.getLong("timestamp") ?: 0L
-                )
+            snapshot.documents.mapNotNull { doc ->
+                try {
+                    CloudLoginEntry(
+                        username = doc.safeString("username"),
+                        displayName = doc.safeString("displayName"),
+                        role = doc.safeString("role", "USER"),
+                        eventType = doc.safeString("eventType", "LOGIN"),
+                        status = doc.safeString("status", "SUCCESS"),
+                        failureReason = doc.getString("failureReason"),
+                        deviceInfo = doc.safeString("deviceInfo"),
+                        timestamp = doc.safeLong("timestamp", 0L)
+                    )
+                } catch (e: Exception) {
+                    null
+                }
             }
         } catch (e: Exception) {
             Log.w(tag, "Could not fetch cloud login entries: ${e.message}")
@@ -326,15 +330,19 @@ class FirebaseSyncManager {
                 .get()
                 .await()
 
-            snapshot.documents.mapIndexed { index, doc ->
-                CloudLeaderboardEntry(
-                    rank = index + 1,
-                    userId = doc.getString("userId") ?: "Anonymous",
-                    displayName = doc.getString("displayName") ?: doc.getString("userId") ?: "User",
-                    totalXp = doc.getLong("totalXp")?.toInt() ?: 0,
-                    currentLevel = doc.getLong("currentLevel")?.toInt() ?: 1,
-                    streak = doc.getLong("currentStreak")?.toInt() ?: 0
-                )
+            snapshot.documents.mapIndexedNotNull { index, doc ->
+                try {
+                    CloudLeaderboardEntry(
+                        rank = index + 1,
+                        userId = doc.safeString("userId", "Anonymous"),
+                        displayName = doc.safeString("displayName", doc.safeString("userId", "User")),
+                        totalXp = doc.safeInt("totalXp", 0),
+                        currentLevel = doc.safeInt("currentLevel", 1),
+                        streak = doc.safeInt("currentStreak", 0)
+                    )
+                } catch (e: Exception) {
+                    null
+                }
             }
         } catch (e: Exception) {
             Log.w(tag, "Could not fetch cloud leaderboard: ${e.message}")
@@ -351,17 +359,21 @@ class FirebaseSyncManager {
                 .get()
                 .await()
 
-            snapshot.documents.map { doc ->
-                CloudUserStatus(
-                    username = doc.getString("username") ?: doc.id,
-                    displayName = doc.getString("displayName") ?: doc.id,
-                    role = doc.getString("role") ?: "USER",
-                    isOnline = doc.getBoolean("isOnline") ?: false,
-                    lastLoginAt = doc.getLong("lastLoginAt") ?: 0L,
-                    lastLogoutAt = doc.getLong("lastLogoutAt") ?: 0L,
-                    deviceInfo = doc.getString("deviceInfo") ?: "",
-                    loginCount = doc.getLong("loginCount")?.toInt() ?: 0
-                )
+            snapshot.documents.mapNotNull { doc ->
+                try {
+                    CloudUserStatus(
+                        username = doc.safeString("username", doc.id),
+                        displayName = doc.safeString("displayName", doc.id),
+                        role = doc.safeString("role", "USER"),
+                        isOnline = doc.safeBoolean("isOnline", false),
+                        lastLoginAt = doc.safeLong("lastLoginAt", 0L),
+                        lastLogoutAt = doc.safeLong("lastLogoutAt", 0L),
+                        deviceInfo = doc.safeString("deviceInfo", ""),
+                        loginCount = doc.safeInt("loginCount", 0)
+                    )
+                } catch (e: Exception) {
+                    null
+                }
             }.sortedByDescending { it.lastLoginAt }
         } catch (e: Exception) {
             Log.w(tag, "Could not fetch cloud users: ${e.message}")
@@ -382,17 +394,21 @@ class FirebaseSyncManager {
                     return@addSnapshotListener
                 }
                 if (snapshot != null) {
-                    val users = snapshot.documents.map { doc ->
-                        CloudUserStatus(
-                            username = doc.getString("username") ?: doc.id,
-                            displayName = doc.getString("displayName") ?: doc.id,
-                            role = doc.getString("role") ?: "USER",
-                            isOnline = doc.getBoolean("isOnline") ?: false,
-                            lastLoginAt = doc.getLong("lastLoginAt") ?: 0L,
-                            lastLogoutAt = doc.getLong("lastLogoutAt") ?: 0L,
-                            deviceInfo = doc.getString("deviceInfo") ?: "",
-                            loginCount = doc.getLong("loginCount")?.toInt() ?: 0
-                        )
+                    val users = snapshot.documents.mapNotNull { doc ->
+                        try {
+                            CloudUserStatus(
+                                username = doc.safeString("username", doc.id),
+                                displayName = doc.safeString("displayName", doc.id),
+                                role = doc.safeString("role", "USER"),
+                                isOnline = doc.safeBoolean("isOnline", false),
+                                lastLoginAt = doc.safeLong("lastLoginAt", 0L),
+                                lastLogoutAt = doc.safeLong("lastLogoutAt", 0L),
+                                deviceInfo = doc.safeString("deviceInfo", ""),
+                                loginCount = doc.safeInt("loginCount", 0)
+                            )
+                        } catch (e: Exception) {
+                            null
+                        }
                     }.sortedByDescending { it.lastLoginAt }
                     trySend(users)
                 }
@@ -414,17 +430,21 @@ class FirebaseSyncManager {
                     return@addSnapshotListener
                 }
                 if (snapshot != null) {
-                    val logins = snapshot.documents.map { doc ->
-                        CloudLoginEntry(
-                            username = doc.getString("username") ?: "",
-                            displayName = doc.getString("displayName") ?: "",
-                            role = doc.getString("role") ?: "USER",
-                            eventType = doc.getString("eventType") ?: "LOGIN",
-                            status = doc.getString("status") ?: "SUCCESS",
-                            failureReason = doc.getString("failureReason"),
-                            deviceInfo = doc.getString("deviceInfo") ?: "",
-                            timestamp = doc.getLong("timestamp") ?: 0L
-                        )
+                    val logins = snapshot.documents.mapNotNull { doc ->
+                        try {
+                            CloudLoginEntry(
+                                username = doc.safeString("username"),
+                                displayName = doc.safeString("displayName"),
+                                role = doc.safeString("role", "USER"),
+                                eventType = doc.safeString("eventType", "LOGIN"),
+                                status = doc.safeString("status", "SUCCESS"),
+                                failureReason = doc.getString("failureReason"),
+                                deviceInfo = doc.safeString("deviceInfo"),
+                                timestamp = doc.safeLong("timestamp", 0L)
+                            )
+                        } catch (e: Exception) {
+                            null
+                        }
                     }
                     trySend(logins)
                 }
@@ -446,17 +466,21 @@ class FirebaseSyncManager {
                     return@addSnapshotListener
                 }
                 if (snapshot != null) {
-                    val attempts = snapshot.documents.map { doc ->
-                        CloudQuizAttemptEntry(
-                            userId = doc.getString("userId") ?: "",
-                            quizId = doc.getString("quizId") ?: "",
-                            score = doc.getLong("score")?.toInt() ?: 0,
-                            totalQuestions = doc.getLong("totalQuestions")?.toInt() ?: 0,
-                            percentage = doc.getLong("percentage")?.toInt() ?: 0,
-                            passed = doc.getBoolean("passed") ?: false,
-                            timeSpentSeconds = doc.getLong("timeSpentSeconds")?.toInt() ?: 0,
-                            timestamp = doc.getLong("timestamp") ?: 0L
-                        )
+                    val attempts = snapshot.documents.mapNotNull { doc ->
+                        try {
+                            CloudQuizAttemptEntry(
+                                userId = doc.safeString("userId"),
+                                quizId = doc.safeString("quizId"),
+                                score = doc.safeInt("score", 0),
+                                totalQuestions = doc.safeInt("totalQuestions", 0),
+                                percentage = doc.safeInt("percentage", 0),
+                                passed = doc.safeBoolean("passed", false),
+                                timeSpentSeconds = doc.safeInt("timeSpentSeconds", 0),
+                                timestamp = doc.safeLong("timestamp", 0L)
+                            )
+                        } catch (e: Exception) {
+                            null
+                        }
                     }
                     trySend(attempts)
                 }
@@ -475,17 +499,21 @@ class FirebaseSyncManager {
                 .get()
                 .await()
 
-            snapshot.documents.map { doc ->
-                CloudQuizAttemptEntry(
-                    userId = doc.getString("userId") ?: "",
-                    quizId = doc.getString("quizId") ?: "",
-                    score = doc.getLong("score")?.toInt() ?: 0,
-                    totalQuestions = doc.getLong("totalQuestions")?.toInt() ?: 0,
-                    percentage = doc.getLong("percentage")?.toInt() ?: 0,
-                    passed = doc.getBoolean("passed") ?: false,
-                    timeSpentSeconds = doc.getLong("timeSpentSeconds")?.toInt() ?: 0,
-                    timestamp = doc.getLong("timestamp") ?: 0L
-                )
+            snapshot.documents.mapNotNull { doc ->
+                try {
+                    CloudQuizAttemptEntry(
+                        userId = doc.safeString("userId"),
+                        quizId = doc.safeString("quizId"),
+                        score = doc.safeInt("score", 0),
+                        totalQuestions = doc.safeInt("totalQuestions", 0),
+                        percentage = doc.safeInt("percentage", 0),
+                        passed = doc.safeBoolean("passed", false),
+                        timeSpentSeconds = doc.safeInt("timeSpentSeconds", 0),
+                        timestamp = doc.safeLong("timestamp", 0L)
+                    )
+                } catch (e: Exception) {
+                    null
+                }
             }
         } catch (e: Exception) {
             Log.w(tag, "Could not fetch cloud quiz attempts: ${e.message}")
@@ -503,17 +531,17 @@ class FirebaseSyncManager {
                 @Suppress("UNCHECKED_CAST")
                 val badges = (doc.get("unlockedBadges") as? List<String>) ?: emptyList()
                 CloudUserProgressDetail(
-                    userId = doc.getString("userId") ?: userId,
-                    displayName = doc.getString("displayName") ?: userId,
-                    currentXp = doc.getLong("currentXp")?.toInt() ?: 0,
-                    totalXp = doc.getLong("totalXp")?.toInt() ?: 0,
-                    currentLevel = doc.getLong("currentLevel")?.toInt() ?: 1,
-                    currentStreak = doc.getLong("currentStreak")?.toInt() ?: 0,
-                    quizzesCompleted = doc.getLong("quizzesCompleted")?.toInt() ?: 0,
-                    perfectQuizCount = doc.getLong("perfectQuizCount")?.toInt() ?: 0,
+                    userId = doc.safeString("userId", userId),
+                    displayName = doc.safeString("displayName", userId),
+                    currentXp = doc.safeInt("currentXp", 0),
+                    totalXp = doc.safeInt("totalXp", 0),
+                    currentLevel = doc.safeInt("currentLevel", 1),
+                    currentStreak = doc.safeInt("currentStreak", 0),
+                    quizzesCompleted = doc.safeInt("quizzesCompleted", 0),
+                    perfectQuizCount = doc.safeInt("perfectQuizCount", 0),
                     unlockedBadges = badges,
-                    lastActivityDate = doc.getString("lastActivityDate") ?: "",
-                    lastSyncedTimestamp = doc.getLong("lastSyncedTimestamp") ?: 0L
+                    lastActivityDate = doc.safeString("lastActivityDate", ""),
+                    lastSyncedTimestamp = doc.safeLong("lastSyncedTimestamp", 0L)
                 )
             } else {
                 null
@@ -654,3 +682,39 @@ data class CloudUserProgressDetail(
     val lastActivityDate: String,
     val lastSyncedTimestamp: Long
 )
+
+// ── DocumentSnapshot Type-Safe Helper Extensions ──────────────────────────────
+private fun com.google.firebase.firestore.DocumentSnapshot.safeLong(field: String, default: Long = 0L): Long {
+    val raw = this.get(field) ?: return default
+    return when (raw) {
+        is Number -> raw.toLong()
+        is com.google.firebase.Timestamp -> raw.toDate().time
+        is java.util.Date -> raw.time
+        is String -> raw.toLongOrNull() ?: default
+        else -> default
+    }
+}
+
+private fun com.google.firebase.firestore.DocumentSnapshot.safeInt(field: String, default: Int = 0): Int {
+    val raw = this.get(field) ?: return default
+    return when (raw) {
+        is Number -> raw.toInt()
+        is String -> raw.toIntOrNull() ?: default
+        else -> default
+    }
+}
+
+private fun com.google.firebase.firestore.DocumentSnapshot.safeBoolean(field: String, default: Boolean = false): Boolean {
+    val raw = this.get(field) ?: return default
+    return when (raw) {
+        is Boolean -> raw
+        is String -> raw.toBooleanStrictOrNull() ?: default
+        is Number -> raw.toInt() != 0
+        else -> default
+    }
+}
+
+private fun com.google.firebase.firestore.DocumentSnapshot.safeString(field: String, default: String = ""): String {
+    val raw = this.get(field) ?: return default
+    return raw.toString()
+}

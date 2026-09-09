@@ -33,7 +33,9 @@ import androidx.compose.ui.unit.sp
 import com.example.gamifiedroadsafetyawareness.firebase.*
 import com.example.gamifiedroadsafetyawareness.ui.theme.*
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
@@ -58,32 +60,54 @@ fun CloudMonitoringScreen(
     var userProgressDetail by remember { mutableStateOf<CloudUserProgressDetail?>(null) }
     var isLoadingUserDetail by remember { mutableStateOf(false) }
 
-    // Live real-time listener from Firestore
+    // Live real-time listener from Firestore with auto-recovery
     LaunchedEffect(Unit) {
         // 1. Observe Users stream
         launch {
-            syncManager.observeCloudUsers()
-                .catch { isLoading = false }
-                .collect { users ->
-                    cloudUsers = users
+            while (isActive) {
+                try {
+                    syncManager.observeCloudUsers()
+                        .catch { 
+                            isLoading = false
+                            delay(3000)
+                        }
+                        .collect { users ->
+                            cloudUsers = users
+                            isLoading = false
+                        }
+                } catch (e: Exception) {
                     isLoading = false
+                    delay(3000)
                 }
+            }
         }
         // 2. Observe Login Activity stream
         launch {
-            syncManager.observeRecentCloudLogins(limit = 100)
-                .catch { }
-                .collect { logins ->
-                    cloudLogins = logins
+            while (isActive) {
+                try {
+                    syncManager.observeRecentCloudLogins(limit = 100)
+                        .catch { delay(3000) }
+                        .collect { logins ->
+                            cloudLogins = logins
+                        }
+                } catch (e: Exception) {
+                    delay(3000)
                 }
+            }
         }
         // 3. Observe Quiz Attempts stream
         launch {
-            syncManager.observeCloudQuizAttempts(limit = 50)
-                .catch { }
-                .collect { attempts ->
-                    cloudQuizzes = attempts
+            while (isActive) {
+                try {
+                    syncManager.observeCloudQuizAttempts(limit = 50)
+                        .catch { delay(3000) }
+                        .collect { attempts ->
+                            cloudQuizzes = attempts
+                        }
+                } catch (e: Exception) {
+                    delay(3000)
                 }
+            }
         }
     }
 
