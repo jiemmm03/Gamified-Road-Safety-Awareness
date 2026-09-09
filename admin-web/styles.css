@@ -1532,44 +1532,58 @@ body {
 /* ═══════════════════════════════════════════════════════════════
    4E. PART B: ADMIN DASHBOARD STYLES (MONITOR, ANALYZE, MANAGE)
    ═══════════════════════════════════════════════════════════════ */
+.admin-portal-view {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
 .admin-overview-header {
     margin-bottom: 18px;
+    clear: both;
 }
 
 .admin-system-metrics-grid {
-    display: grid;
-    grid-template-columns: repeat(6, minmax(0, 1fr));
-    gap: 14px;
-    margin-bottom: 24px;
+    display: grid !important;
+    grid-template-columns: repeat(6, minmax(0, 1fr)) !important;
+    gap: 16px !important;
+    margin-bottom: 24px !important;
+    width: 100% !important;
+    clear: both;
 }
 
 .admin-quick-grid-card {
     margin-bottom: 24px;
+    width: 100%;
+    clear: both;
 }
 
 .admin-features-grid {
-    display: grid;
-    grid-template-columns: repeat(7, minmax(0, 1fr));
-    gap: 12px;
-    padding: 16px 20px;
+    display: grid !important;
+    grid-template-columns: repeat(7, minmax(0, 1fr)) !important;
+    gap: 12px !important;
+    padding: 16px 20px !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
 }
 
 .admin-feature-tile {
     position: relative;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
     text-align: center;
     min-height: 90px;
-    padding: 12px 8px;
-    background: rgba(6, 11, 20, 0.65);
-    border: 1px solid rgba(212, 175, 55, 0.2);
+    padding: 14px 10px !important;
+    background: rgba(10, 20, 38, 0.85) !important;
+    border: 1px solid rgba(212, 175, 55, 0.25) !important;
     border-radius: var(--radius-md);
-    color: var(--text-secondary);
+    color: var(--text-primary) !important;
     cursor: pointer;
     transition: all 0.2s ease;
-    width: 100%;
+    width: 100% !important;
+    box-sizing: border-box !important;
 }
 
 .admin-feature-tile:hover {
