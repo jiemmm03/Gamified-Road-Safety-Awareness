@@ -64,19 +64,30 @@ data class DecisionOption(
     val aiRecommended: Boolean = false
 )
 
+enum class SimulationDifficulty(val label: String) {
+    EASY("Easy"),
+    MEDIUM("Medium"),
+    HARD("Hard")
+}
+
 data class SimulationScenario(
     val id: String,
     val scenarioNumber: Int,
     val title: String,
-    val weather: String,
-    val roadGripReduction: String,
-    val aiMode: String,
+    val weather: String = "Clear",
+    val roadGripReduction: String = "0% Grip Loss",
+    val aiMode: String = "Defensive Driving AI Active",
     val description: String,
-    val hazards: List<String>,
-    val prompt: String,
+    val hazards: List<String> = emptyList(),
+    val prompt: String = "What would you do?",
     val options: List<DecisionOption>,
-    val timeLimitSeconds: Int,
-    val xpReward: Int
+    val timeLimitSeconds: Int = 20,
+    val xpReward: Int = 100,
+    val difficulty: SimulationDifficulty = if (scenarioNumber <= 5) SimulationDifficulty.EASY else if (scenarioNumber <= 15) SimulationDifficulty.MEDIUM else SimulationDifficulty.HARD,
+    val hazardIdentified: String = "",
+    val safetyPrinciple: String = "",
+    val recommendedAction: String = "",
+    val topicTag: String = ""
 )
 
 data class BadgeItem(

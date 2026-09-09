@@ -27,7 +27,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import com.example.gamifiedroadsafetyawareness.ui.theme.BadgeGold
 import com.example.gamifiedroadsafetyawareness.ui.theme.NavyPrimary
-import com.example.gamifiedroadsafetyawareness.ui.theme.PnpTacticalNavy
+import com.example.gamifiedroadsafetyawareness.ui.theme.TacticalNavy
 import com.example.gamifiedroadsafetyawareness.ui.theme.PoliceBlue
 import com.example.gamifiedroadsafetyawareness.ui.theme.PureWhite
 
@@ -51,14 +51,14 @@ fun AppCard(
 }
 
 /**
- * Official Philippine Police / HPG Shield Insignia Badge
+ * Official Driver Safety Shield Insignia Badge
  */
 @Composable
 fun PoliceBadgeInsignia(
     modifier: Modifier = Modifier,
     size: androidx.compose.ui.unit.Dp = 48.dp,
     badgeColor: Color = BadgeGold,
-    baseColor: Color = PnpTacticalNavy
+    baseColor: Color = TacticalNavy
 ) {
     Box(
         modifier = modifier
@@ -89,7 +89,7 @@ fun OfficerRankChip(
 ) {
     Surface(
         shape = RoundedCornerShape(10.dp),
-        color = if (isDarkNavy) PnpTacticalNavy.copy(alpha = 0.85f) else BadgeGold.copy(alpha = 0.15f),
+        color = if (isDarkNavy) TacticalNavy.copy(alpha = 0.85f) else BadgeGold.copy(alpha = 0.15f),
         border = BorderStroke(1.dp, BadgeGold.copy(alpha = 0.5f)),
         modifier = modifier
     ) {

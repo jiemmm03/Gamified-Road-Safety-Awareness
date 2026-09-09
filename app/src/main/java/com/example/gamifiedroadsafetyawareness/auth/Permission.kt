@@ -49,6 +49,21 @@ object RolePermissions {
             Permission.EXPORT_DATA,
             Permission.VIEW_GAMIFICATION,
             Permission.VIEW_AUDIT_LOGS
+        ),
+        UserRole.SUPER_ADMIN to setOf(
+            Permission.VIEW_DASHBOARD,
+            Permission.LAUNCH_SIMULATION,
+            Permission.VIEW_ASSESSMENT,
+            Permission.VIEW_GAMIFICATION,
+            Permission.VIEW_ANALYTICS,
+            Permission.VIEW_PROFILE,
+            Permission.VIEW_ADMIN_PANEL,
+            Permission.MANAGE_USERS,
+            Permission.MANAGE_CONTENT,
+            Permission.MANAGE_SETTINGS,
+            Permission.VIEW_SYSTEM_OVERVIEW,
+            Permission.EXPORT_DATA,
+            Permission.VIEW_AUDIT_LOGS
         )
     )
 

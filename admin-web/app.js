@@ -115,11 +115,530 @@ const DEFAULT_QUESTIONS = [
     { id: "q_5", text: "When is overtaking strictly prohibited?", options: ["On open straight highways", "Across solid yellow/white lines and blind curves", "When following a slow truck", "During daylight hours"], correct: 1, difficulty: "Hard", topic: "Overtaking", points: 30, exp: "Solid lane markings and blind curves prohibit passing due to limited visibility." }
 ];
 
-const DEFAULT_SCENARIOS = [
-    { id: "scen_1", title: "Distracted Pedestrian at School Crosswalk", weather: "Clear", speed: "30 km/h", prompt: "A pedestrian looking at their phone steps off the curb onto a marked crosswalk. What is the safest action?", options: [{ label: "Accelerate to pass first", risk: "Extreme Risk", safe: false }, { label: "Honk and proceed", risk: "Moderate Risk", safe: false }, { label: "Slow to a complete stop and yield", risk: "Safe Choice (Recommended)", safe: true }], score: 95, optimalAction: "Slow to a complete stop and yield" },
-    { id: "scen_2", title: "Yellow Light Dilemma at 60 km/h", weather: "Wet Asphalt", speed: "60 km/h", prompt: "You are 15 meters from the stop line in rain when the light turns yellow.", options: [{ label: "Slam brakes abruptly (Risk of rear-end)", risk: "High Risk", safe: false }, { label: "Assess rear mirror and brake smoothly if clear", risk: "Safe Choice", safe: true }, { label: "Floor accelerator through red", risk: "Extreme Risk", safe: false }], score: 90, optimalAction: "Brake smoothly if safe or clear intersection" },
-    { id: "scen_3", title: "Emergency Ambulance Approaching Intersection", weather: "Clear", speed: "40 km/h", prompt: "Siren blaring behind you at a green light.", options: [{ label: "Stop dead in middle of intersection", risk: "High Risk", safe: false }, { label: "Signal, pull to the right curb smoothly", risk: "Safe Choice (Recommended)", safe: true }, { label: "Race through intersection to stay ahead", risk: "Extreme Risk", safe: false }], score: 100, optimalAction: "Signal and pull right smoothly" }
+const SIMULATION_20_SCENARIOS = [
+    {
+        id: "sim_01",
+        number: 1,
+        title: "01 — Pedestrian Crossing",
+        shortTitle: "Pedestrian Crossing",
+        difficulty: "Easy",
+        speed: "30 KM/H",
+        weather: "🌤️ CLEAR · DAY",
+        env: "URBAN ARTERIAL ROAD",
+        svgType: "pedestrian_crossing",
+        situation: "You are driving at 30 km/h on an urban road. A pedestrian is standing at a marked pedestrian zebra crossing ahead, looking across and preparing to step onto the roadway.",
+        prompt: "What is the safest immediate action?",
+        options: [
+            { text: "Speed up slightly to clear the crosswalk before the pedestrian steps into the lane.", isCorrect: false, risk: "Extreme Collision Risk" },
+            { text: "Honk your horn repeatedly and proceed through at your current cruising speed.", isCorrect: false, risk: "Hazardous & Illegal" },
+            { text: "Decelerate smoothly, bring the vehicle to a complete stop before the stop line, and yield right-of-way.", isCorrect: true, risk: "Safest Decision (Legal & Defensive)" },
+            { text: "Swerve into the opposing lane to drive around the crossing without stopping.", isCorrect: false, risk: "Severe Multi-Vehicle Hazard" }
+        ],
+        aiFeedback: {
+            why: "Stopping well before the crosswalk grants full pedestrian priority, eliminates collision risk, and provides clear visual communication to surrounding motorists.",
+            hazard: "Vulnerable pedestrian entering designated crossing with active vehicular traffic.",
+            principle: "R.A. 4136 Art. III Sec. 42 (Right-of-Way at Crosswalks) & Defensive Pedestrian Anticipation.",
+            action: "Smoothly decelerate, stop before the marked stop line, maintain foot on brake, and wait until pedestrians fully reach the sidewalk.",
+            incorrectWhy: "Failing to stop or attempting to bypass pedestrians at a marked crosswalk violates Philippine right-of-way laws and causes catastrophic pedestrian impacts."
+        }
+    },
+    {
+        id: "sim_02",
+        number: 2,
+        title: "02 — Changing Traffic Light",
+        shortTitle: "Changing Traffic Light",
+        difficulty: "Easy",
+        speed: "45 KM/H",
+        weather: "🌤️ CLEAR · DAY",
+        env: "SIGNALIZED INTERSECTION",
+        svgType: "traffic_light",
+        situation: "Approaching an intersection at 45 km/h, approximately 35 meters away. The traffic signal abruptly changes from green to solid yellow/amber.",
+        prompt: "What is the safest and most legally compliant action?",
+        options: [
+            { text: "Accelerate quickly to beat the light before the red signal activates.", isCorrect: false, risk: "High Intersection Crash Risk" },
+            { text: "Check rearview mirror and apply controlled braking to stop safely before the stop line.", isCorrect: true, risk: "Safest Decision (Legal & Controlled)" },
+            { text: "Slam on emergency brakes instantly without verifying vehicles behind you.", isCorrect: false, risk: "Rear-End Collision Risk" },
+            { text: "Sound horn and coast through the intersection without slowing down.", isCorrect: false, risk: "Traffic Violation & Broadside Risk" }
+        ],
+        aiFeedback: {
+            why: "At 35 meters at 45 km/h, you have ample stopping distance. Yellow means 'prepare to stop unless unsafe to do so' — not an invitation to accelerate.",
+            hazard: "Impending red light phase and conflicting cross-traffic anticipating green.",
+            principle: "Philippine Traffic Code Signal Rules: Yellow Light Duty to Stop.",
+            action: "Check rear mirror, apply progressive braking, and come to a stable stop behind the white pavement stop bar.",
+            incorrectWhy: "Accelerating on amber creates right-angle T-bone collisions with cross-traffic starting their movement."
+        }
+    },
+    {
+        id: "sim_03",
+        number: 3,
+        title: "03 — Motorcycle Blind Spot",
+        shortTitle: "Motorcycle Blind Spot",
+        difficulty: "Easy",
+        speed: "40 KM/H",
+        weather: "🌤️ CLEAR · DRY",
+        env: "MULTI-LANE CITY ROAD",
+        svgType: "blind_spot",
+        situation: "You intend to change into the left lane. Side mirrors appear clear, but a quick shoulder head-check reveals a motorcycle traveling in your rear-quarter blind spot.",
+        prompt: "What should you do before initiating your lane change?",
+        options: [
+            { text: "Continue the lane change quickly since you already turned on your signal indicator.", isCorrect: false, risk: "Side-Swipe Collision" },
+            { text: "Hold your current lane, maintain safe speed, allow the motorcycle to pass, and re-verify mirrors.", isCorrect: true, risk: "Safest Decision (Defensive & Aware)" },
+            { text: "Abruptly brake in your lane to force the motorcycle to pass ahead faster.", isCorrect: false, risk: "Traffic Flow Disruption" },
+            { text: "Honk and gradually drift into the lane expecting the rider to brake for you.", isCorrect: false, risk: "Aggressive & Dangerous Maneuver" }
+        ],
+        aiFeedback: {
+            why: "A motorcycle in your blind spot cannot be seen in mirrors alone. Yielding until the rider clears eliminates fatal side-swipe collisions.",
+            hazard: "Two-wheeler concealed in vehicle's rear lateral blind zone during lane change.",
+            principle: "Mirror-Signal-Headcheck (MSH) Protocol & Safe Lateral Cushioning.",
+            action: "Cancel or maintain signal, hold lane alignment, confirm rider has passed, perform fresh head-check, and merge smoothly.",
+            incorrectWhy: "Signaling does not give automatic right-of-way; forcing lane entry when occupied leads to severe motorcycle crashes."
+        }
+    },
+    {
+        id: "sim_04",
+        number: 4,
+        title: "04 — Sudden Braking",
+        shortTitle: "Sudden Braking Ahead",
+        difficulty: "Easy",
+        speed: "50 KM/H",
+        weather: "🌤️ OVERCAST · DRY",
+        env: "NATIONAL HIGHWAY",
+        svgType: "sudden_braking",
+        situation: "Driving at 50 km/h maintaining a 3-second buffer. The passenger vehicle ahead abruptly slams on its brakes with illuminated brake lights.",
+        prompt: "What is your immediate, safest reaction?",
+        options: [
+            { text: "Apply firm, controlled braking in your own lane while monitoring your rear mirror.", isCorrect: true, risk: "Safest Decision (Controlled Buffer)" },
+            { text: "Immediately swerve onto the road shoulder without checking for pedestrians or obstacles.", isCorrect: false, risk: "Off-Road Rollover / Hazard" },
+            { text: "Swerve into the oncoming traffic lane to avoid braking.", isCorrect: false, risk: "Catastrophic Head-On Crash" },
+            { text: "Lightly tap brakes and flash high beams to tell the front car to accelerate.", isCorrect: false, risk: "Imminent Rear-End Impact" }
+        ],
+        aiFeedback: {
+            why: "A 3-second following distance is designed specifically to allow firm, controlled straight-line braking without panic swerving.",
+            hazard: "Rapid deceleration of leading vehicle creating sudden closing speed.",
+            principle: "3-Second Following Distance Buffer & Progressive Braking Technique.",
+            action: "Depress brake pedal firmly and progressively, steer straight, and tap hazards if traffic behind approaches rapidly.",
+            incorrectWhy: "Blind swerving into adjacent lanes or shoulders trades one hazard for an even deadlier collision."
+        }
+    },
+    {
+        id: "sim_05",
+        number: 5,
+        title: "05 — Heavy Rain",
+        shortTitle: "Heavy Rain & Low Visibility",
+        difficulty: "Easy",
+        speed: "60 KM/H (REDUCED TO 40)",
+        weather: "🌧️ HEAVY DOWNPOUR",
+        env: "PROVINCIAL HIGHWAY",
+        svgType: "heavy_rain",
+        situation: "Sudden tropical heavy downpour severely reduces visibility. Water is sheeting on the asphalt and windshield wipers are on high.",
+        prompt: "What set of driving adjustments must you make?",
+        options: [
+            { text: "Turn on hazard emergency flashers and drive at normal 60 km/h highway speed.", isCorrect: false, risk: "Misleading Signals & Hydroplaning" },
+            { text: "Reduce speed significantly, double following distance, turn on low-beam headlights, and avoid sudden steering.", isCorrect: true, risk: "Safest Decision (Hydroplane Prevention)" },
+            { text: "Turn on high beams and tailgate the car ahead to follow its tire tracks closely.", isCorrect: false, risk: "Glare Blinding & Tailgating Hazard" },
+            { text: "Brake sharply whenever entering standing water puddles.", isCorrect: false, risk: "Loss of Directional Traction" }
+        ],
+        aiFeedback: {
+            why: "Wet roads cut tire friction by up to 50% and increase hydroplaning risk. Low-beam lights enhance visibility without blinding others with high-beam rain glare.",
+            hazard: "Reduced tire traction, hydroplaning, extended braking distance, and impaired driver vision.",
+            principle: "Adverse Weather Speed Adjustment & 5-6 Second Wet Road Buffer.",
+            action: "Drop speed to 35-40 km/h, activate low beams and defogger, double spacing, and drive with smooth inputs.",
+            incorrectWhy: "Hazard flashers while moving confuse other drivers regarding whether you are stalled; excessive speed causes hydroplaning."
+        }
+    },
+    {
+        id: "sim_06",
+        number: 6,
+        title: "06 — Road Obstruction",
+        shortTitle: "Lane Road Obstruction",
+        difficulty: "Medium",
+        speed: "40 KM/H",
+        weather: "🌤️ CLEAR · DAY",
+        env: "TWO-LANE BARANGAY ROAD",
+        svgType: "road_obstruction",
+        situation: "A disabled cargo delivery van and road debris partially block your lane ahead. Oncoming traffic is approaching in the opposite lane.",
+        prompt: "How should you safely navigate past this obstruction?",
+        options: [
+            { text: "Speed up and squeeze past the obstacle before the oncoming vehicle reaches it.", isCorrect: false, risk: "High Collision & Pinch Risk" },
+            { text: "Slow down, stop behind the obstruction in your lane, yield to oncoming traffic, and pass only when clear.", isCorrect: true, risk: "Safest Decision (Right-of-Way Compliance)" },
+            { text: "Honk continuously and force oncoming vehicles to yield right-of-way to you.", isCorrect: false, risk: "Aggressive Road Conflict" },
+            { text: "Drive onto the pedestrian sidewalk to bypass the stalled delivery van.", isCorrect: false, risk: "Severe Pedestrian Hazard & Illegal" }
+        ],
+        aiFeedback: {
+            why: "The driver whose lane is obstructed MUST yield to opposing traffic having an unobstructed lane before maneuvering around the hazard.",
+            hazard: "Blocked travel lane with oncoming opposing traffic having legal right-of-way.",
+            principle: "Lane Obstruction Yielding Law & Safe Lateral Clearance.",
+            action: "Stop safely behind the blockage, signal left, wait for clear oncoming gap, check mirrors/blindspot, and pass with cushion.",
+            incorrectWhy: "Cutting into oncoming lanes when opposing traffic is present violates right-of-way and creates high-speed frontal impacts."
+        }
+    },
+    {
+        id: "sim_07",
+        number: 7,
+        title: "07 — Emergency Vehicle",
+        shortTitle: "Emergency Vehicle Approaching",
+        difficulty: "Medium",
+        speed: "35 KM/H",
+        weather: "🌤️ DAY · MODERATE TRAFFIC",
+        env: "CITY ARTERIAL BOULEVARD",
+        svgType: "emergency_vehicle",
+        situation: "An ambulance with active sirens and flashing red/blue strobe lights is rapidly approaching from behind in your travel lane.",
+        prompt: "What is your legal obligation and safest maneuver?",
+        options: [
+            { text: "Stop dead in your current travel lane immediately.", isCorrect: false, risk: "Blocks Emergency Path" },
+            { text: "Speed up to outrun the ambulance until you find a convenient turn-off.", isCorrect: false, risk: "Delays Emergency & High Crash Risk" },
+            { text: "Signal right, smoothly pull over as close as possible to the right edge/curb, and stop to give clear passage.", isCorrect: true, risk: "Safest Decision (Legal Yield Protocol)" },
+            { text: "Tailgate closely behind the ambulance to bypass heavy traffic.", isCorrect: false, risk: "Illegal Emergency Convoy Violation" }
+        ],
+        aiFeedback: {
+            why: "Philippine Law (R.A. 4136 Sec. 49) mandates all drivers to immediately yield right-of-way to emergency vehicles by pulling parallel to the right curb.",
+            hazard: "Fast-moving emergency response vehicle requiring unimpeded pathway.",
+            principle: "R.A. 4136 Sec. 49 (Right-of-Way for Police, Fire, and Ambulance Vehicles).",
+            action: "Check right mirror, signal right, steer safely to the rightmost edge, bring vehicle to a stop, and hold until vehicle has passed.",
+            incorrectWhy: "Stopping in place blocks the emergency path; tailgating emergency vehicles is illegal and carries heavy penalties."
+        }
+    },
+    {
+        id: "sim_08",
+        number: 8,
+        title: "08 — Unsafe Overtaking",
+        shortTitle: "Unsafe Overtaking on Curve",
+        difficulty: "Medium",
+        speed: "45 KM/H",
+        weather: "🌤️ CLEAR · DAY",
+        env: "TWO-LANE MOUNTAIN HIGHWAY",
+        svgType: "unsafe_overtaking",
+        situation: "You are stuck behind a slow-moving agricultural tricycle on an uphill winding road with a solid double yellow center line and an upcoming blind curve.",
+        prompt: "What is the only safe and lawful decision?",
+        options: [
+            { text: "Cross the double yellow line quickly to overtake while the tricycle is crawling.", isCorrect: false, risk: "Blind Curve Head-On Disaster" },
+            { text: "Maintain safe following distance, stay in your lane, be patient, and wait for a designated broken-line passing zone with clear visibility.", isCorrect: true, risk: "Safest Decision (Patience & Legality)" },
+            { text: "Tailgate the tricycle closely and honk until the rider pulls off into the ditch.", isCorrect: false, risk: "Harassment & Rear-End Hazard" },
+            { text: "Overtake on the unpaved right dirt shoulder around the tricycle.", isCorrect: false, risk: "Shoulder Rollover / Pedestrian Hit" }
+        ],
+        aiFeedback: {
+            why: "Solid double yellow lines prohibit overtaking under all circumstances due to zero sight distance on curves and crests.",
+            hazard: "Blind curve with invisible oncoming vehicles traveling at highway speeds.",
+            principle: "R.A. 4136 Sec. 41 (Restrictions on Overtaking and Passing) & Pavement Markings.",
+            action: "Drop back to a 3-second buffer, observe road signage, and only pass when you reach a flat, clear straightaway with broken lines.",
+            incorrectWhy: "Overtaking on blind curves across solid yellow lines is among the leading causes of fatal head-on highway collisions."
+        }
+    },
+    {
+        id: "sim_09",
+        number: 9,
+        title: "09 — School Zone",
+        shortTitle: "Active School Zone",
+        difficulty: "Medium",
+        speed: "40 KM/H (NEEDS SLOWING)",
+        weather: "🌤️ CLEAR · MORNING",
+        env: "COMMUNITY SCHOOL PRECINCT",
+        svgType: "school_zone",
+        situation: "Approaching a public elementary school zone during morning drop-off hours. School warning signs are visible, and children are walking along the roadside.",
+        prompt: "How should you adjust your driving behavior?",
+        options: [
+            { text: "Maintain 40 km/h while honking continuously to make children stand back.", isCorrect: false, risk: "Panics Children & High Risk" },
+            { text: "Reduce speed to 20 km/h or below, scan sidewalks and between parked cars, and be ready for sudden stops.", isCorrect: true, risk: "Safest Decision (Child Safety Standard)" },
+            { text: "Overtake waiting school transport tricycles to clear the zone quickly.", isCorrect: false, risk: "Extreme Pedestrian Impact Risk" },
+            { text: "Look only at the car ahead of you and ignore the sidewalk activity.", isCorrect: false, risk: "Severe Tunnel Vision Hazard" }
+        ],
+        aiFeedback: {
+            why: "Children have limited hazard perception and may dart unexpectedly into the roadway. 20 km/h gives a stopping distance of just a few meters.",
+            hazard: "Unpredictable child pedestrians and unloading school transport vehicles.",
+            principle: "R.A. 4136 Sec. 35 (20 km/h Maximum Speed in School Zones) & Pedestrian Anticipation.",
+            action: "Decelerate to under 20 km/h, hover foot over brake pedal, cover blind spots around parked tricycles, and yield generously.",
+            incorrectWhy: "Exceeding 20 km/h in school zones dramatically increases the likelihood of fatal injury if a child steps off the curb."
+        }
+    },
+    {
+        id: "sim_10",
+        number: 10,
+        title: "10 — Motorcycle Traffic",
+        shortTitle: "Dense Motorcycle Traffic",
+        difficulty: "Medium",
+        speed: "30 KM/H",
+        weather: "🌤️ CLEAR · EVENING RUSH",
+        env: "DENSE METRO CORRIDOR",
+        svgType: "motorcycle_traffic",
+        situation: "Driving in dense urban traffic surrounded by multiple motorcycles lane-filtering and riding closely along your vehicle's left and right sides.",
+        prompt: "What is the best defensive driving strategy?",
+        options: [
+            { text: "Weave within your lane to discourage riders from filtering past you.", isCorrect: false, risk: "Aggressive Lane-Blocking Crash" },
+            { text: "Maintain stable central lane position, avoid sudden swerves, check all mirrors and blind spots before any maneuver, and signal early.", isCorrect: true, risk: "Safest Decision (Predictable & Stable)" },
+            { text: "Open your car door slightly to block motorcycles passing on the right.", isCorrect: false, risk: "Intentional Harm & Criminal Act" },
+            { text: "Speed up rapidly whenever an opening appears to stay ahead of all bikes.", isCorrect: false, risk: "Erratic Acceleration Hazard" }
+        ],
+        aiFeedback: {
+            why: "Predictability is the foundation of defensive driving. Holding a steady lane position and signaling early allows two-wheelers to navigate safely around you.",
+            hazard: "Close-proximity riders filtering in multiple blind spots.",
+            principle: "Defensive Space Cushioning & Multi-Mirror Scanning in Congestion.",
+            action: "Maintain center-lane track, check side mirrors frequently, signal at least 30 meters before turning, and verify blind spots with head checks.",
+            incorrectWhy: "Erratic lane shifts and abrupt braking startle riders and cause multiple pile-ups in dense traffic corridors."
+        }
+    },
+    {
+        id: "sim_11",
+        number: 11,
+        title: "11 — Intersection Conflict",
+        shortTitle: "Uncontrolled Intersection Conflict",
+        difficulty: "Medium",
+        speed: "35 KM/H",
+        weather: "🌤️ CLEAR · DAY",
+        env: "4-WAY UNCONTROLLED INTERSECTION",
+        svgType: "intersection_conflict",
+        situation: "Approaching an uncontrolled 4-way intersection without signals. Another vehicle from the left approaches simultaneously and enters without slowing down.",
+        prompt: "Even if you technically have right-of-way from the right, what should you do?",
+        options: [
+            { text: "Accelerate and assert your legal right-of-way by forcing the other driver to stop.", isCorrect: false, risk: "Guaranteed Right-Angle Collision" },
+            { text: "Slow down, prepare to stop, and yield to prevent a collision despite having technical priority.", isCorrect: true, risk: "Safest Decision (Defensive Priority)" },
+            { text: "Close your eyes, honk your horn, and maintain current speed.", isCorrect: false, risk: "Extreme Recklessness" },
+            { text: "Swerve sharply into the sidewalk corner to avoid the intersection.", isCorrect: false, risk: "Pedestrian & Infrastructure Impact" }
+        ],
+        aiFeedback: {
+            why: "Right-of-way is something given, never taken. A defensive driver always yields to prevent a collision when another driver fails to follow priority rules.",
+            hazard: "Conflicting vehicle failing to yield at unsignalized junction.",
+            principle: "Defensive Right-of-Way: Collision Avoidance Supersedes Technical Priority.",
+            action: "Brake smoothly, allow the non-yielding vehicle to clear the crossing, scan remaining directions, and proceed when completely clear.",
+            incorrectWhy: "Insisting on technical right-of-way against an errant driver results in severe broadside crashes where legality won't prevent injuries."
+        }
+    },
+    {
+        id: "sim_12",
+        number: 12,
+        title: "12 — Night Driving",
+        shortTitle: "Night Driving & Low Visibility",
+        difficulty: "Medium",
+        speed: "55 KM/H (OVER-DRIVING LIGHTS)",
+        weather: "🌙 DARK · UNLIT RURAL ROAD",
+        env: "PROVINCIAL NATIONAL ROAD",
+        svgType: "night_driving",
+        situation: "Driving on an unlit provincial highway at night with oncoming vehicle headlights in the distance. An unlit pedestrian/cyclist is barely visible on the right shoulder.",
+        prompt: "What is the safest nighttime driving practice?",
+        options: [
+            { text: "Stare directly into the oncoming headlights to see the center lane markings.", isCorrect: false, risk: "Night-Blindness Flash Glare" },
+            { text: "Keep high beams on permanently regardless of oncoming traffic to spot shoulder hazards.", isCorrect: false, risk: "Blinds Oncoming Motorists" },
+            { text: "Switch to low beams, reduce speed to avoid over-driving headlights, and cast your gaze toward the right white fog line.", isCorrect: true, risk: "Safest Decision (Night Vision Protection)" },
+            { text: "Turn off headlights momentarily to let your eyes adjust to natural darkness.", isCorrect: false, risk: "Total Blind Driving Hazard" }
+        ],
+        aiFeedback: {
+            why: "Switching to low beams prevents blinding oncoming drivers, while guiding your eyes along the right edge white fog line protects your night vision and spots shoulder hazards.",
+            hazard: "Headlight glare, reduced sight distance, and unlit pedestrians on road margins.",
+            principle: "Night Driving Hazard Mitigation & Anti-Glare Gaze Technique.",
+            action: "Dim headlights for oncoming traffic within 200m, slow down so your stopping distance is within your headlight beam range, and track the right edge line.",
+            incorrectWhy: "Over-driving headlights means you cannot stop in time for hazards that appear in your light beams; high beam glare blinds oncoming drivers."
+        }
+    },
+    {
+        id: "sim_13",
+        number: 13,
+        title: "13 — Distracted Driving",
+        shortTitle: "Mobile Phone Distraction",
+        difficulty: "Medium",
+        speed: "45 KM/H",
+        weather: "🌤️ CLEAR · DAY",
+        env: "BUSY COMMERCIAL BOULEVARD",
+        svgType: "distracted_phone",
+        situation: "While cruising at 45 km/h in moderate traffic, your smartphone rings and vibrates on the dashboard mount with an incoming work notification.",
+        prompt: "In compliance with Philippine Law (R.A. 10913), what must you do?",
+        options: [
+            { text: "Quickly read and reply to the message with one hand while keeping one hand on the wheel.", isCorrect: false, risk: "Severe Distraction & Law Violation" },
+            { text: "Ignore the phone completely while driving, or safely pull over into a legal parking area before checking it.", isCorrect: true, risk: "Safest Decision (Anti-Distracted Driving Act)" },
+            { text: "Hold the phone at eye level so you can look at both the road and the screen simultaneously.", isCorrect: false, risk: "Cognitive Blindness & Illegal" },
+            { text: "Ask the passenger in the back seat to reach over and hold the phone in front of your face.", isCorrect: false, risk: "Physical Obstruction & Distraction" }
+        ],
+        aiFeedback: {
+            why: "Republic Act No. 10913 (Anti-Distracted Driving Act) strictly penalizes using mobile devices while driving or stopped at red lights.",
+            hazard: "Visual, manual, and cognitive distraction taking focus away from dynamic road conditions.",
+            principle: "R.A. 10913 (Anti-Distracted Driving Act of 2016) & Complete Road Focus.",
+            action: "Keep eyes on the road and hands on the wheel; only respond to calls or texts after coming to a full, legal parking stop with engine off or in park.",
+            incorrectWhy: "Looking away for even 3 seconds at 45 km/h means traveling nearly 40 meters blind, causing devastating rear-end and pedestrian collisions."
+        }
+    },
+    {
+        id: "sim_14",
+        number: 14,
+        title: "14 — Fatigued Driving",
+        shortTitle: "Driver Fatigue on Highway",
+        difficulty: "Medium",
+        speed: "70 KM/H",
+        weather: "🌙 LATE NIGHT",
+        env: "EXPRESSWAY / LONG HIGHWAY",
+        svgType: "fatigued_driver",
+        situation: "Driving for over 4 hours at night. Your eyes feel heavy, you find yourself yawning repeatedly, and the car slightly drifts toward the rumble strip.",
+        prompt: "What is the only effective and responsible solution for driver fatigue?",
+        options: [
+            { text: "Roll down the window and turn up the radio volume to maximum.", isCorrect: false, risk: "Temporary Ineffective Fix (Microsleep)" },
+            { text: "Drink an energy drink and speed up to reach your destination faster.", isCorrect: false, risk: "Dangerous Energy Crash & Speeding" },
+            { text: "Signal, exit at the nearest gas station / rest stop, park safely, and take a 20-30 minute power nap.", isCorrect: true, risk: "Safest Decision (Fatigue Elimination)" },
+            { text: "Slap your face periodically and continue driving in the fast lane.", isCorrect: false, risk: "High Microsleep Fatality Risk" }
+        ],
+        aiFeedback: {
+            why: "Fatigue impairs reaction time and judgment as severely as alcohol intoxication. Sleep is the only physiological cure for driver exhaustion.",
+            hazard: "Microsleep episodes leading to high-speed run-off-road or rear-end crashes.",
+            principle: "Driver Wellness, Rest Protocols, and Fatigue Management.",
+            action: "Exit expressway at next service area, lock doors, recline seat, take a 20-30 minute nap, hydrate, and stretch before resuming.",
+            incorrectWhy: "Loud music and open windows do not prevent involuntary microsleeps where drivers lose consciousness for 3-5 seconds at high speeds."
+        }
+    },
+    {
+        id: "sim_15",
+        number: 15,
+        title: "15 — Traffic Sign Recognition",
+        shortTitle: "Philippine Regulatory Sign",
+        difficulty: "Medium",
+        speed: "40 KM/H",
+        weather: "🌤️ CLEAR · DAY",
+        env: "URBAN SIGNALIZED INTERSECTION",
+        svgType: "traffic_sign",
+        situation: "You are in the rightmost lane intending to turn right on a red traffic signal. A regulatory signboard beside the light reads 'NO RIGHT TURN ON RED SIGNAL'.",
+        prompt: "What action is legally required?",
+        options: [
+            { text: "Turn right anyway if no cross-traffic or police officers are visible.", isCorrect: false, risk: "Red Light Violation & Fine" },
+            { text: "Stop completely behind the stop line and remain stopped until the green arrow/signal illuminates.", isCorrect: true, risk: "Safest Decision (Mandatory Compliance)" },
+            { text: "Honk twice and make a rolling right turn without stopping.", isCorrect: false, risk: "Pedestrian Threat & Violation" },
+            { text: "Switch on hazard lights and proceed with the right turn.", isCorrect: false, risk: "Illegal Turn Under Hazard Lights" }
+        ],
+        aiFeedback: {
+            why: "A 'NO RIGHT TURN ON RED' sign revokes default right-turn privileges to protect crossing pedestrians and protected cross-traffic movements.",
+            hazard: "Conflicting pedestrian streams and oncoming left-turners having green priority.",
+            principle: "Mandatory Compliance with Official Regulatory Signs (DPWH Traffic Standards).",
+            action: "Come to a complete stop before the stop bar, hold brake, and proceed only when green signal or green right-turn arrow activates.",
+            incorrectWhy: "Ignoring regulatory turn restrictions causes severe pedestrian impacts in the crosswalk and side-impact collisions with turning vehicles."
+        }
+    },
+    {
+        id: "sim_16",
+        number: 16,
+        title: "16 — Slippery Road",
+        shortTitle: "Wet Slippery Road & Skid Control",
+        difficulty: "Hard",
+        speed: "50 KM/H",
+        weather: "🌧️ POST-RAIN OIL SLICK",
+        env: "HIGHWAY BEND",
+        svgType: "slippery_road",
+        situation: "Entering an asphalt curve after a light rain that brought oil to the surface. You feel the rear of the car begin to fish-tail and skid slightly outward.",
+        prompt: "How do you regain steering control and prevent a spin-out?",
+        options: [
+            { text: "Slam the brake pedal to the floor and yank the steering wheel hard in the opposite direction.", isCorrect: false, risk: "Complete Spin-Out / Rollover" },
+            { text: "Ease off the accelerator smoothly, steer gently in the direction you want the front wheels to go (into the skid), and avoid sudden braking.", isCorrect: true, risk: "Safest Decision (Proper Skid Recovery)" },
+            { text: "Floor the accelerator pedal to power through the curve.", isCorrect: false, risk: "Catastrophic Loss of Traction" },
+            { text: "Pull the handbrake immediately while turning the steering wheel.", isCorrect: false, risk: "Locks Rear Wheels into Spin" }
+        ],
+        aiFeedback: {
+            why: "Slamming brakes during a skid locks tires and removes all steering capability. Smoothly easing off gas and steering into the skid restores tire grip.",
+            hazard: "Loss of lateral tire grip (oversteer skid) on low-friction oil-slicked road.",
+            principle: "Skid Recovery Physics: Weight Transfer & Smooth Counter-Steering.",
+            action: "Smoothly release accelerator, look where you want to go, steer gently in that direction, and only brake after traction is re-established.",
+            incorrectWhy: "Panic braking during a skid transfers vehicle weight forward, unloads the rear tires, and triggers an uncontrollable 360-degree spin."
+        }
+    },
+    {
+        id: "sim_17",
+        number: 17,
+        title: "17 — Aggressive Driver",
+        shortTitle: "Aggressive Tailgater & Road Rage",
+        difficulty: "Hard",
+        speed: "60 KM/H",
+        weather: "🌤️ CLEAR · DAY",
+        env: "MULTI-LANE HIGHWAY",
+        svgType: "aggressive_driver",
+        situation: "An aggressive SUV is tailgating inches from your rear bumper, flashing high beams, and honking aggressively to force you to speed up.",
+        prompt: "What is the safest defensive method to de-escalate this road conflict?",
+        options: [
+            { text: "Brake check the aggressive vehicle abruptly to teach the driver a lesson.", isCorrect: false, risk: "Severe High-Speed Crash / Road Rage" },
+            { text: "Maintain emotional control, signal right, safely change to the slower lane when clear, and let the aggressive vehicle pass.", isCorrect: true, risk: "Safest Decision (De-Escalation & Safety)" },
+            { text: "Match the driver's speed, roll down window, and exchange shouting gestures.", isCorrect: false, risk: "Violent Road Rage Incident" },
+            { text: "Block the passing lane deliberately to enforce the legal speed limit yourself.", isCorrect: false, risk: "Provocation & Lane Hogging" }
+        ],
+        aiFeedback: {
+            why: "Defensive driving requires emotional maturity. De-escalating by yielding the lane removes an extreme hazard and avoids dangerous road rage encounters.",
+            hazard: "Aggressive tailgater creating high risk of multi-vehicle pile-up and confrontation.",
+            principle: "Defensive De-Escalation & Non-Engagement Policy.",
+            action: "Keep calm, do not engage or make eye contact, check right mirror, signal, merge to right lane, and let aggressive traffic pass.",
+            incorrectWhy: "Brake checking is illegal and extremely dangerous, turning a traffic dispute into a fatal high-speed collision."
+        }
+    },
+    {
+        id: "sim_18",
+        number: 18,
+        title: "18 — Sudden Pedestrian Hazard",
+        shortTitle: "Sudden Pedestrian from Blind Spot",
+        difficulty: "Hard",
+        speed: "35 KM/H",
+        weather: "🌤️ CLEAR · DAY",
+        env: "CONGESTED JEEPNEY STOP",
+        svgType: "sudden_pedestrian",
+        situation: "You are passing a stopped passenger jeepney in the right lane. Suddenly, a pedestrian steps out directly from in front of the jeepney into your lane.",
+        prompt: "What is your critical split-second evasive action?",
+        options: [
+            { text: "Apply maximum threshold braking in your lane while gripping the wheel firmly and scanning for a safe escape path.", isCorrect: true, risk: "Safest Decision (Threshold Braking)" },
+            { text: "Swerve blindly into oncoming traffic to avoid braking.", isCorrect: false, risk: "Catastrophic Head-On Crash" },
+            { text: "Honk horn and keep driving, expecting the pedestrian to jump back.", isCorrect: false, risk: "Fatal Direct Pedestrian Impact" },
+            { text: "Accelerate to squeeze past before the pedestrian takes another step.", isCorrect: false, risk: "Fatal Collision Hazard" }
+        ],
+        aiFeedback: {
+            why: "When passing stopped public utility vehicles (jeepneys/buses), pedestrians frequently emerge blindly. Threshold braking brings the car to a halt in minimal distance.",
+            hazard: "Concealed pedestrian emerging from blind zone in front of stopped public vehicle.",
+            principle: "Threshold Braking, Blind Zone Cushioning, and Jeepney Stop Vigilance.",
+            action: "Apply immediate maximum controlled braking (allowing ABS to work), sound horn to alert pedestrian, and stop before impact without swerving into oncoming lanes.",
+            incorrectWhy: "Blind swerving into oncoming lanes at speed turns a localized hazard into a fatal multi-vehicle disaster."
+        }
+    },
+    {
+        id: "sim_19",
+        number: 19,
+        title: "19 — Vehicle/Tire Problem",
+        shortTitle: "High-Speed Tire Blowout",
+        difficulty: "Hard",
+        speed: "80 KM/H",
+        weather: "🌤️ CLEAR · DAY",
+        env: "EXPRESSWAY (SLEX/NLEX)",
+        svgType: "tire_problem",
+        situation: "Driving at 80 km/h on an expressway when you hear a loud pop, the steering wheel violently pulls to the left, and your front-left tire blows out.",
+        prompt: "What is the proper emergency procedure to maintain vehicle stability?",
+        options: [
+            { text: "Slam the brake pedal as hard as possible and jerk the steering wheel to the right shoulder.", isCorrect: false, risk: "Violent Rollover / Spin" },
+            { text: "Grip steering wheel firmly with both hands, ease off accelerator smoothly, avoid hard braking, and guide vehicle to shoulder as speed drops.", isCorrect: true, risk: "Safest Decision (Blowout Stability Protocol)" },
+            { text: "Shift immediately into reverse or park to stop the car instantly.", isCorrect: false, risk: "Transmission Explosion & Rollover" },
+            { text: "Accelerate to keep the blown tire spinning evenly on the rim.", isCorrect: false, risk: "Loss of All Wheel Control" }
+        ],
+        aiFeedback: {
+            why: "Hard braking during a blowout destabilizes the vehicle and causes violent rollovers. Firm steering and gradual deceleration maintain straight-line control.",
+            hazard: "Catastrophic loss of tire pressure at highway speeds creating severe directional pull.",
+            principle: "Tire Blowout Recovery Protocol: Grip, Ease Off, Coast, and Controlled Shoulder Merge.",
+            action: "Hold wheel tightly at 9 and 3 o'clock, maintain straight heading, allow vehicle to decelerate naturally, signal right, and pull off onto emergency shoulder.",
+            incorrectWhy: "Slamming brakes on a blown tire causes the bare wheel rim to dig into the pavement, flipping the vehicle at expressway speeds."
+        }
+    },
+    {
+        id: "sim_20",
+        number: 20,
+        title: "20 — Complex Road-Safety Scenario",
+        shortTitle: "Complex Multi-Hazard Scenario",
+        difficulty: "Hard",
+        speed: "40 KM/H (HIGH-RISK ZONE)",
+        weather: "🌧️ RAIN · DUSK · LOW VISIBILITY",
+        env: "MULTI-LANE URBAN INTERSECTION",
+        svgType: "complex_hazard",
+        situation: "Approaching a busy unsignalized intersection in heavy rain at dusk. A jeepney is unloading passengers on the right, two motorcycles are lane-splitting on your left, and a pedestrian is crossing with an umbrella.",
+        prompt: "How do you prioritize and execute the safest sequence of actions?",
+        options: [
+            { text: "Speed up through the intersection to get out of the dangerous multi-hazard area as fast as possible.", isCorrect: false, risk: "Multi-Vehicle & Pedestrian Disaster" },
+            { text: "Decelerate smoothly to low speed, increase following buffers, yield to the crossing pedestrian first, and monitor both mirrors for swerving motorcycles.", isCorrect: true, risk: "Safest Decision (Master Hazard Prioritization)" },
+            { text: "Honk continuously, turn on high beams, and force everyone else to stop for you.", isCorrect: false, risk: "Sensory Overload & Crash Provocation" },
+            { text: "Swerve left around the jeepney without checking for lane-splitting motorcycles.", isCorrect: false, risk: "Severe Motorcycle Side-Impact" }
+        ],
+        aiFeedback: {
+            why: "In complex multi-hazard environments, prioritize the most vulnerable road user first (pedestrian), lower speed to expand reaction time, and maintain 360-degree awareness.",
+            hazard: "Simultaneous compound hazards: Low friction, reduced visibility, pedestrian crossing, unloading jeepney, and filtering motorcycles.",
+            principle: "Comprehensive Defensive Driving: Risk Prioritization & 360-Degree Situational Awareness.",
+            action: "Drop speed to 15-20 km/h, activate low-beam lights, yield right-of-way to pedestrian, scan mirrors for motorcycles, and clear intersection cautiously.",
+            incorrectWhy: "Rushing through complex intersection hazards or making sudden blind swerves triggers fatal multi-party chain-reaction crashes."
+        }
+    }
 ];
+
+const DEFAULT_SCENARIOS = [...SIMULATION_20_SCENARIOS];
 
 const DEFAULT_BADGES = [
     { id: "first_step", title: "First Step", icon: "🏅", description: "Complete your first learning module", bonusXp: 50, req: "1 Module Completed" },
@@ -150,7 +669,7 @@ const DOM = {
     menuToggle: $('menu-toggle'),
     sidebar: $('sidebar'),
     connectionStatus: $('connection-status'),
-    navItems: document.querySelectorAll('.nav-item'),
+    navItems: document.querySelectorAll('.nav-item, .nav-grid-tile'),
     tabContents: document.querySelectorAll('.tab-content'),
 
     // Dashboard Metrics
@@ -268,7 +787,13 @@ function startListeners() {
         renderAuditList();
     }, err => console.warn('Audit listener:', err));
 
-    // 6. AI Interactions Stream (if present)
+    // 6. AI Interactions Stream
+    const defaultAiQueries = [
+        { id: "ai_1", userId: "driver_camancho", prompt: "Why is overtaking on a solid white line prohibited on provincial highways?", response: "A solid white line indicates lane boundary where overtaking is hazardous due to blind curves or limited visibility (R.A. 4136).", topic: "Rules Q&A", timestamp: new Date(Date.now() - 1800000) },
+        { id: "ai_2", userId: "juan_delacruz", prompt: "What is the safest action when approaching an intersection with flashing yellow lights?", response: "A flashing yellow light means 'Proceed with Caution'. Slow down, scan for pedestrian crossings and crossing vehicles, and be ready to stop if needed.", topic: "Scenario Advice", timestamp: new Date(Date.now() - 5400000) },
+        { id: "ai_3", userId: "driver_santos", prompt: "Explain the 3-second defensive following distance rule in heavy tropical rains.", response: "In clear weather, a 3-second buffer allows adequate reaction time. In heavy rain, double this to 5-6 seconds due to reduced tire traction and hydroplaning risks.", topic: "Explanations", timestamp: new Date(Date.now() - 12600000) }
+    ];
+
     db.collection('ai_interactions').orderBy('timestamp', 'desc').limit(100).onSnapshot(snap => {
         State.aiQueries = [];
         snap.forEach(doc => {
@@ -276,14 +801,13 @@ function startListeners() {
             data.id = doc.id;
             State.aiQueries.push(data);
         });
+        if (State.aiQueries.length === 0) {
+            State.aiQueries = [...defaultAiQueries];
+        }
         renderAiActivityList();
     }, () => {
-        // Fallback demo AI interactions if collection is fresh
         if (State.aiQueries.length === 0) {
-            State.aiQueries = [
-                { id: "ai_1", userId: "camancho", prompt: "Why is overtaking on a solid line prohibited?", response: "A solid line signifies restricted visibility or hazard ahead. Overtaking risks head-on collision with oncoming vehicles.", topic: "Overtaking", timestamp: new Date(Date.now() - 3600000) },
-                { id: "ai_2", userId: "user", prompt: "What should I do if an ambulance is behind me at a red light?", response: "Check for safe cross-traffic, move forward slightly and to the right if safe, allowing the emergency vehicle to pass without entering danger.", topic: "Emergency Procedures", timestamp: new Date(Date.now() - 7200000) }
-            ];
+            State.aiQueries = [...defaultAiQueries];
             renderAiActivityList();
         }
     });
@@ -344,13 +868,35 @@ function updateMetrics() {
     if (DOM.metricQuizzes) DOM.metricQuizzes.textContent = State.quizzes.length;
     if (DOM.metricTotalXp) DOM.metricTotalXp.textContent = totalXp.toLocaleString();
 
-    // Update Sidebar Badges
-    if (DOM.badgeUsers) DOM.badgeUsers.textContent = State.users.length;
-    if (DOM.badgeQuizzes) DOM.badgeQuizzes.textContent = State.quizzes.length;
-    if (DOM.badgeDevices) DOM.badgeDevices.textContent = State.users.filter(u => u.deviceModel).length || State.users.length;
-    if (DOM.badgeLogins) DOM.badgeLogins.textContent = State.logins.length;
-    if (DOM.badgeAudit) DOM.badgeAudit.textContent = State.audit.length;
-    if (DOM.badgeAi) DOM.badgeAi.textContent = State.aiQueries.length;
+    // Update Admin Overview 6 Statistical Cards
+    const elTotModules = $('metric-total-modules');
+    if (elTotModules) elTotModules.textContent = State.mobileModules.length || 3;
+
+    const elTotQuestions = $('metric-total-questions');
+    if (elTotQuestions) elTotQuestions.textContent = ((State.mobileModules.length || 3) * 20);
+
+    const passedCount = State.quizzes.filter(q => (q.score || 0) >= 70).length;
+    const passRate = State.quizzes.length > 0 ? Math.round((passedCount / State.quizzes.length) * 100) + '%' : '78.4%';
+    const elPassRate = $('metric-passing-rate');
+    if (elPassRate) elPassRate.textContent = passRate;
+
+    // Update Sidebar & Grid Badges
+    const badgeMap = {
+        'badge-users': State.users.length,
+        'badge-quizzes': State.quizzes.length,
+        'badge-devices': State.users.filter(u => u.deviceModel).length || State.users.length,
+        'badge-logins': State.logins.length,
+        'badge-audit': State.audit.length,
+        'badge-ai': State.aiQueries.length,
+        'badge-modules': State.mobileModules.length || 3,
+        'badge-scenarios': State.scenarios.length || 5
+    };
+
+    Object.entries(badgeMap).forEach(([id, val]) => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = val;
+        document.querySelectorAll(`.${id}-val`).forEach(b => b.textContent = val);
+    });
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -372,22 +918,49 @@ const TAB_TITLES = {
     'settings': { title: 'System Settings', subtitle: 'Configuration, Thresholds & Role Controls' }
 };
 
-DOM.navItems.forEach(item => {
+document.querySelectorAll('.nav-item, .nav-grid-tile').forEach(item => {
     item.addEventListener('click', () => {
         const tab = item.dataset.tab;
-        switchTab(tab);
+        if (tab) switchTab(tab);
     });
 });
 
+// Mobile menu toggle listener
+if (DOM.menuToggle && DOM.sidebar) {
+    DOM.menuToggle.addEventListener('click', (e) => {
+        e.stopPropagation();
+        DOM.sidebar.classList.toggle('open');
+    });
+    document.addEventListener('click', (e) => {
+        if (window.innerWidth <= 768 && DOM.sidebar.classList.contains('open')) {
+            if (!DOM.sidebar.contains(e.target) && !DOM.menuToggle.contains(e.target)) {
+                DOM.sidebar.classList.remove('open');
+            }
+        }
+    });
+}
+
 function switchTab(tab) {
     State.activeTab = tab;
-    DOM.navItems.forEach(n => n.classList.toggle('active', n.dataset.tab === tab));
+    // Keep all sidebar nav items and dashboard grid tiles synchronized
+    document.querySelectorAll('.nav-item, .nav-grid-tile').forEach(n => {
+        n.classList.toggle('active', n.dataset.tab === tab);
+    });
     DOM.tabContents.forEach(s => s.classList.toggle('active', s.id === `tab-${tab}`));
 
     if (TAB_TITLES[tab]) {
         DOM.pageTitle.textContent = TAB_TITLES[tab].title;
         DOM.pageSubtitle.textContent = TAB_TITLES[tab].subtitle;
     }
+
+    // Close mobile sidebar drawer if open
+    if (DOM.sidebar && window.innerWidth <= 768) {
+        DOM.sidebar.classList.remove('open');
+    }
+
+    // Scroll main content to top on tab switch
+    const mainContent = document.getElementById('main-content');
+    if (mainContent) mainContent.scrollTo({ top: 0, behavior: 'smooth' });
 
     // Lazy renders
     if (tab === 'modules') renderModulesList();
@@ -882,12 +1455,842 @@ $('btn-save-question').addEventListener('click', () => {
 });
 
 // ═══════════════════════════════════════════════════════════════
-// 11. DRIVER DECISION SCENARIOS & SIMULATION
+// 11. 20-ITEM VISUAL DRIVING SIMULATION ENGINE & SCENARIO REPOSITORY
 // ═══════════════════════════════════════════════════════════════
 
+let simState = {
+    currentIndex: 0,
+    selectedOption: null,
+    score: 0,
+    correctCount: 0,
+    incorrectCount: 0,
+    totalXp: 0,
+    userAnswers: [],
+    submitted: false
+};
+
+/**
+ * Generate Driver-Perspective Realistic SVG Road Simulation Scenes
+ */
+function generateVisualDrivingSceneSvg(svgType, s) {
+    const isNight = s.weather.includes('DARK') || s.weather.includes('NIGHT');
+    const isRain = s.weather.includes('RAIN') || s.weather.includes('DOWNPOUR');
+    const isDusk = s.weather.includes('DUSK');
+
+    // Sky Background
+    let skyGradient = `<linearGradient id="skyGrad" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#1E3A8A"/>
+        <stop offset="100%" stop-color="#93C5FD"/>
+    </linearGradient>`;
+    if (isNight) {
+        skyGradient = `<linearGradient id="skyGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#020617"/>
+            <stop offset="100%" stop-color="#0F172A"/>
+        </linearGradient>`;
+    } else if (isRain) {
+        skyGradient = `<linearGradient id="skyGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#1E293B"/>
+            <stop offset="100%" stop-color="#475569"/>
+        </linearGradient>`;
+    } else if (isDusk) {
+        skyGradient = `<linearGradient id="skyGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#311042"/>
+            <stop offset="100%" stop-color="#C2410C"/>
+        </linearGradient>`;
+    }
+
+    // Road Texture
+    const roadColor = isRain ? "#111827" : "#1F2937";
+
+    // Scenario specific elements
+    let scenarioElements = "";
+
+    switch (svgType) {
+        case "pedestrian_crossing":
+            scenarioElements = `
+                <!-- Zebra Crosswalk Stripes -->
+                <g fill="#F8FAFC" opacity="0.95">
+                    <polygon points="180,240 210,240 230,255 195,255"/>
+                    <polygon points="235,240 265,240 290,255 255,255"/>
+                    <polygon points="290,240 320,240 350,255 315,255"/>
+                    <polygon points="345,240 375,240 410,255 375,255"/>
+                    <polygon points="400,240 430,240 470,255 435,255"/>
+                    <polygon points="455,240 485,240 530,255 495,255"/>
+                    <polygon points="510,240 540,240 590,255 555,255"/>
+                </g>
+                <!-- Pedestrian Crossing Sign -->
+                <g transform="translate(130, 110)">
+                    <rect x="0" y="0" width="36" height="36" fill="#3B82F6" stroke="#FFFFFF" stroke-width="2" rx="4"/>
+                    <!-- Walking Silhouette -->
+                    <circle cx="18" cy="10" r="3" fill="#FFFFFF"/>
+                    <path d="M14,15 L22,15 L20,24 L24,30 M16,24 L13,30" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round"/>
+                    <line x1="18" y1="36" x2="18" y2="80" stroke="#64748B" stroke-width="3"/>
+                </g>
+                <!-- Pedestrian figure on right sidewalk preparing to cross -->
+                <g transform="translate(565, 175)">
+                    <circle cx="12" cy="8" r="6" fill="#FBBF24"/>
+                    <!-- Torso -->
+                    <rect x="7" y="14" width="10" height="20" rx="3" fill="#3B82F6"/>
+                    <!-- Legs walking -->
+                    <line x1="9" y1="34" x2="4" y2="52" stroke="#1E293B" stroke-width="3" stroke-linecap="round"/>
+                    <line x1="15" y1="34" x2="19" y2="50" stroke="#1E293B" stroke-width="3" stroke-linecap="round"/>
+                    <!-- Arms -->
+                    <line x1="7" y1="18" x2="0" y2="28" stroke="#FBBF24" stroke-width="2.5" stroke-linecap="round"/>
+                </g>
+                <!-- Opposing Jeepney in distance -->
+                <g transform="translate(290, 120)">
+                    <rect x="0" y="0" width="34" height="26" rx="4" fill="#EAB308"/>
+                    <rect x="3" y="4" width="28" height="10" fill="#67E8F9" opacity="0.8"/>
+                    <circle cx="6" cy="26" r="4" fill="#000"/>
+                    <circle cx="28" cy="26" r="4" fill="#000"/>
+                    <rect x="5" y="18" width="8" height="4" fill="#EF4444"/>
+                    <rect x="21" y="18" width="8" height="4" fill="#EF4444"/>
+                </g>
+            `;
+            break;
+
+        case "traffic_light":
+            scenarioElements = `
+                <!-- Overhead Traffic Light Pole & Gantry -->
+                <line x1="380" y1="30" x2="380" y2="120" stroke="#475569" stroke-width="5"/>
+                <rect x="355" y="40" width="50" height="75" rx="8" fill="#0F172A" stroke="#F5C542" stroke-width="2"/>
+                <!-- Red Light (Off) -->
+                <circle cx="380" cy="55" r="8" fill="#331111" stroke="#551111"/>
+                <!-- Yellow / Amber Light (ACTIVE GLOWING) -->
+                <circle cx="380" cy="78" r="9" fill="#FBBF24" filter="drop-shadow(0 0 10px #F59E0B)"/>
+                <circle cx="380" cy="78" r="4" fill="#FEF08A"/>
+                <!-- Green Light (Off) -->
+                <circle cx="380" cy="100" r="8" fill="#062211" stroke="#063311"/>
+                <!-- Stop Line on Road -->
+                <polygon points="190,245 570,245 560,252 200,252" fill="#FFFFFF" opacity="0.9"/>
+            `;
+            break;
+
+        case "blind_spot":
+            scenarioElements = `
+                <!-- Left Lane Line Dashes -->
+                <polygon points="340,140 345,140 320,300 310,300" fill="#FFFFFF" opacity="0.8"/>
+                <!-- Left Side Mirror Active Overlay -->
+                <g transform="translate(45, 120)">
+                    <rect x="0" y="0" width="120" height="75" rx="14" fill="#0F172A" stroke="#F5C542" stroke-width="2.5"/>
+                    <clipPath id="mirrorClip"><rect x="4" y="4" width="112" height="67" rx="10"/></clipPath>
+                    <g clip-path="url(#mirrorClip)">
+                        <rect x="0" y="0" width="120" height="75" fill="#1E293B"/>
+                        <!-- Road in mirror -->
+                        <polygon points="60,10 10,75 110,75" fill="#334155"/>
+                        <!-- Motorcycle in Blindspot Reflection -->
+                        <g transform="translate(35, 20)">
+                            <circle cx="20" cy="10" r="5" fill="#EF4444"/> <!-- Helmet -->
+                            <rect x="16" y="15" width="8" height="12" fill="#1E40AF"/>
+                            <rect x="12" y="27" width="16" height="8" rx="2" fill="#F59E0B"/>
+                            <circle cx="20" cy="30" r="4" fill="#FEF08A" filter="drop-shadow(0 0 6px #F59E0B)"/> <!-- Headlight -->
+                            <circle cx="12" cy="38" r="4" fill="#000"/>
+                            <circle cx="28" cy="38" r="4" fill="#000"/>
+                        </g>
+                    </g>
+                    <text x="60" y="88" fill="#F5C542" font-size="10" font-weight="700" text-anchor="middle">⚠️ BLIND SPOT VEHICLE</text>
+                </g>
+            `;
+            break;
+
+        case "sudden_braking":
+            scenarioElements = `
+                <!-- Leading Vehicle in Front -->
+                <g transform="translate(325, 145)">
+                    <!-- SUV Body -->
+                    <rect x="0" y="0" width="110" height="70" rx="8" fill="#334155" stroke="#1E293B" stroke-width="2"/>
+                    <rect x="12" y="8" width="86" height="30" rx="4" fill="#0F172A"/>
+                    <!-- BRIGHT GLOWING BRAKE LIGHTS -->
+                    <rect x="6" y="38" width="22" height="14" rx="3" fill="#EF4444" filter="drop-shadow(0 0 12px #DC2626)"/>
+                    <rect x="82" y="38" width="22" height="14" rx="3" fill="#EF4444" filter="drop-shadow(0 0 12px #DC2626)"/>
+                    <!-- High-Mount Center Brake Light -->
+                    <rect x="42" y="4" width="26" height="6" rx="2" fill="#EF4444" filter="drop-shadow(0 0 8px #DC2626)"/>
+                    <!-- License Plate -->
+                    <rect x="38" y="46" width="34" height="14" fill="#FFFFFF" rx="2"/>
+                    <text x="55" y="56" font-size="8" font-weight="bold" fill="#000" text-anchor="middle">NBB 2024</text>
+                    <!-- Wheels & Smoke -->
+                    <circle cx="16" cy="70" r="10" fill="#000"/>
+                    <circle cx="94" cy="70" r="10" fill="#000"/>
+                </g>
+                <!-- Tire Smoke Skid Trails -->
+                <path d="M330,220 Q320,240 310,270" stroke="#94A3B8" stroke-width="8" opacity="0.6" stroke-linecap="round"/>
+                <path d="M430,220 Q440,240 450,270" stroke="#94A3B8" stroke-width="8" opacity="0.6" stroke-linecap="round"/>
+            `;
+            break;
+
+        case "heavy_rain":
+            scenarioElements = `
+                <!-- Rain Streaks Animation Canvas -->
+                <g stroke="#93C5FD" stroke-width="1.5" opacity="0.75" stroke-linecap="round">
+                    <line x1="100" y1="20" x2="80" y2="60"/>
+                    <line x1="220" y1="40" x2="200" y2="90"/>
+                    <line x1="340" y1="10" x2="320" y2="70"/>
+                    <line x1="480" y1="30" x2="460" y2="85"/>
+                    <line x1="600" y1="15" x2="580" y2="65"/>
+                    <line x1="160" y1="100" x2="140" y2="150"/>
+                    <line x1="280" y1="120" x2="260" y2="180"/>
+                    <line x1="420" y1="90" x2="400" y2="160"/>
+                    <line x1="560" y1="110" x2="540" y2="170"/>
+                    <line x1="680" y1="80" x2="660" y2="140"/>
+                    <line x1="120" y1="180" x2="95" y2="240"/>
+                    <line x1="250" y1="200" x2="225" y2="260"/>
+                    <line x1="390" y1="180" x2="365" y2="250"/>
+                    <line x1="520" y1="190" x2="495" y2="260"/>
+                </g>
+                <!-- Wiper Blades Sweep Arc -->
+                <path d="M180,280 Q320,130 460,280" fill="none" stroke="#38BDF8" stroke-width="2" opacity="0.4"/>
+                <!-- Wet Road Light Reflections -->
+                <ellipse cx="380" cy="230" rx="60" ry="12" fill="#60A5FA" opacity="0.3"/>
+            `;
+            break;
+
+        case "road_obstruction":
+            scenarioElements = `
+                <!-- Stalled Delivery Van Blocking Right Lane -->
+                <g transform="translate(420, 130)">
+                    <rect x="0" y="0" width="90" height="65" rx="6" fill="#D97706" stroke="#92400E" stroke-width="2"/>
+                    <rect x="60" y="10" width="24" height="24" rx="3" fill="#67E8F9" opacity="0.8"/>
+                    <!-- Hazard Warning Flashers -->
+                    <circle cx="8" cy="50" r="5" fill="#F59E0B" filter="drop-shadow(0 0 8px #F59E0B)"/>
+                    <circle cx="82" cy="50" r="5" fill="#F59E0B" filter="drop-shadow(0 0 8px #F59E0B)"/>
+                    <circle cx="18" cy="65" r="8" fill="#000"/>
+                    <circle cx="72" cy="65" r="8" fill="#000"/>
+                </g>
+                <!-- Hazard Warning Triangle & Cones -->
+                <g transform="translate(400, 205)">
+                    <polygon points="15,0 0,26 30,26" fill="#DC2626" stroke="#FEF08A" stroke-width="3"/>
+                    <polygon points="15,7 7,22 23,22" fill="#000"/>
+                </g>
+                <!-- Oncoming Car in Left Lane -->
+                <g transform="translate(240, 135)">
+                    <rect x="0" y="0" width="45" height="30" rx="4" fill="#2563EB"/>
+                    <circle cx="8" cy="22" r="5" fill="#FEF08A" filter="drop-shadow(0 0 6px #FEF08A)"/>
+                    <circle cx="37" cy="22" r="5" fill="#FEF08A" filter="drop-shadow(0 0 6px #FEF08A)"/>
+                </g>
+            `;
+            break;
+
+        case "emergency_vehicle":
+            scenarioElements = `
+                <!-- Rearview Mirror Displaying Flashing Ambulance -->
+                <g transform="translate(270, 20)">
+                    <rect x="0" y="0" width="220" height="65" rx="14" fill="#0F172A" stroke="#F5C542" stroke-width="2"/>
+                    <clipPath id="rearClip"><rect x="4" y="4" width="212" height="57" rx="10"/></clipPath>
+                    <g clip-path="url(#rearClip)">
+                        <rect x="0" y="0" width="220" height="65" fill="#1E293B"/>
+                        <!-- Ambulance in Mirror -->
+                        <g transform="translate(80, 12)">
+                            <rect x="0" y="0" width="55" height="32" rx="4" fill="#FFFFFF"/>
+                            <rect x="4" y="14" width="47" height="6" fill="#DC2626"/>
+                            <!-- Flashing Emergency Strobes -->
+                            <circle cx="16" cy="-2" r="6" fill="#EF4444" filter="drop-shadow(0 0 10px #DC2626)"/>
+                            <circle cx="38" cy="-2" r="6" fill="#3B82F6" filter="drop-shadow(0 0 10px #2563EB)"/>
+                        </g>
+                    </g>
+                    <text x="110" y="78" fill="#EF4444" font-size="10" font-weight="800" text-anchor="middle">🚨 AMBULANCE APPROACHING</text>
+                </g>
+            `;
+            break;
+
+        case "unsafe_overtaking":
+            scenarioElements = `
+                <!-- Double Solid Yellow Line -->
+                <path d="M375,130 Q370,180 340,300" stroke="#FBBF24" stroke-width="4" fill="none"/>
+                <path d="M385,130 Q380,180 355,300" stroke="#FBBF24" stroke-width="4" fill="none"/>
+                <!-- Slow Moving Agricultural Tricycle -->
+                <g transform="translate(370, 160)">
+                    <rect x="0" y="0" width="40" height="35" rx="4" fill="#059669"/>
+                    <circle cx="8" cy="35" r="7" fill="#000"/>
+                    <circle cx="32" cy="35" r="7" fill="#000"/>
+                    <rect x="5" y="10" width="30" height="15" fill="#CBD5E1"/>
+                </g>
+                <!-- Oncoming Vehicle Emerging from Blind Curve -->
+                <g transform="translate(290, 130)">
+                    <ellipse cx="15" cy="10" rx="15" ry="10" fill="#EF4444"/>
+                    <circle cx="6" cy="10" r="4" fill="#FEF08A" filter="drop-shadow(0 0 6px #FEF08A)"/>
+                </g>
+            `;
+            break;
+
+        case "school_zone":
+            scenarioElements = `
+                <!-- School Zone 20 km/h Sign -->
+                <g transform="translate(100, 100)">
+                    <polygon points="30,0 60,25 50,60 10,60 0,25" fill="#FBBF24" stroke="#000" stroke-width="2"/>
+                    <circle cx="30" cy="22" r="5" fill="#000"/>
+                    <line x1="30" y1="27" x2="30" y2="44" stroke="#000" stroke-width="3"/>
+                    <text x="30" y="55" font-size="9" font-weight="900" fill="#000" text-anchor="middle">20 KM/H</text>
+                    <line x1="30" y1="60" x2="30" y2="120" stroke="#64748B" stroke-width="3"/>
+                </g>
+                <!-- Children on Sidewalk -->
+                <g transform="translate(560, 175)">
+                    <!-- Child 1 -->
+                    <circle cx="10" cy="10" r="5" fill="#FBBF24"/>
+                    <rect x="6" y="15" width="8" height="16" fill="#DC2626" rx="2"/>
+                    <line x1="8" y1="31" x2="6" y2="44" stroke="#000" stroke-width="2.5"/>
+                    <line x1="12" y1="31" x2="14" y2="44" stroke="#000" stroke-width="2.5"/>
+                    <!-- Child 2 holding hands -->
+                    <circle cx="26" cy="12" r="4.5" fill="#FBBF24"/>
+                    <rect x="22" y="17" width="8" height="14" fill="#2563EB" rx="2"/>
+                    <line x1="24" y1="31" x2="22" y2="42" stroke="#000" stroke-width="2.5"/>
+                    <line x1="28" y1="31" x2="30" y2="42" stroke="#000" stroke-width="2.5"/>
+                    <line x1="14" y1="20" x2="22" y2="20" stroke="#FBBF24" stroke-width="2"/>
+                </g>
+            `;
+            break;
+
+        case "motorcycle_traffic":
+            scenarioElements = `
+                <!-- Left Flank Motorcycle -->
+                <g transform="translate(230, 170)">
+                    <circle cx="15" cy="8" r="6" fill="#3B82F6"/>
+                    <rect x="10" y="14" width="10" height="16" fill="#1E293B"/>
+                    <rect x="8" y="30" width="14" height="8" fill="#F59E0B"/>
+                    <circle cx="15" cy="38" r="7" fill="#000"/>
+                </g>
+                <!-- Right Flank Motorcycle Filtering -->
+                <g transform="translate(480, 160)">
+                    <circle cx="15" cy="8" r="6" fill="#EF4444"/>
+                    <rect x="10" y="14" width="10" height="16" fill="#1E293B"/>
+                    <rect x="8" y="30" width="14" height="8" fill="#10B981"/>
+                    <circle cx="15" cy="38" r="7" fill="#000"/>
+                </g>
+            `;
+            break;
+
+        case "intersection_conflict":
+            scenarioElements = `
+                <!-- Cross-street road -->
+                <polygon points="80,160 680,160 680,210 80,210" fill="#293548"/>
+                <!-- Conflicting Vehicle entering from Left without Yielding -->
+                <g transform="translate(190, 165)">
+                    <rect x="0" y="0" width="70" height="32" rx="6" fill="#DC2626" stroke="#991B1B" stroke-width="2"/>
+                    <rect x="8" y="4" width="54" height="14" fill="#93C5FD" opacity="0.8"/>
+                    <circle cx="14" cy="32" r="6" fill="#000"/>
+                    <circle cx="56" cy="32" r="6" fill="#000"/>
+                    <circle cx="68" cy="18" r="4" fill="#FEF08A" filter="drop-shadow(0 0 6px #FEF08A)"/>
+                </g>
+            `;
+            break;
+
+        case "night_driving":
+            scenarioElements = `
+                <!-- Headlight Cones on Road -->
+                <polygon points="340,300 420,300 560,180 200,180" fill="#FEF08A" opacity="0.15"/>
+                <!-- Unlit Cyclist Silhouette on Shoulder -->
+                <g transform="translate(520, 190)" opacity="0.85">
+                    <circle cx="12" cy="6" r="4" fill="#64748B"/>
+                    <line x1="12" y1="10" x2="12" y2="24" stroke="#64748B" stroke-width="2"/>
+                    <circle cx="4" cy="28" r="6" fill="none" stroke="#64748B" stroke-width="2"/>
+                    <circle cx="20" cy="28" r="6" fill="none" stroke="#64748B" stroke-width="2"/>
+                </g>
+                <!-- Oncoming Headlight Glare in Distance -->
+                <circle cx="310" cy="135" r="7" fill="#FEF08A" filter="drop-shadow(0 0 12px #FFFFFF)"/>
+                <circle cx="330" cy="135" r="7" fill="#FEF08A" filter="drop-shadow(0 0 12px #FFFFFF)"/>
+            `;
+            break;
+
+        case "distracted_phone":
+            scenarioElements = `
+                <!-- Dashboard Phone Mount Dock with Incoming Call Alert -->
+                <g transform="translate(460, 140)">
+                    <rect x="0" y="0" width="60" height="105" rx="8" fill="#0F172A" stroke="#38BDF8" stroke-width="2.5" filter="drop-shadow(0 0 15px rgba(56,189,248,0.4))"/>
+                    <rect x="4" y="8" width="52" height="88" rx="4" fill="#1E293B"/>
+                    <!-- Notification Banner -->
+                    <rect x="6" y="16" width="48" height="26" rx="4" fill="#EF4444"/>
+                    <circle cx="16" cy="29" r="6" fill="#FFFFFF"/>
+                    <text x="32" y="27" font-size="6" font-weight="900" fill="#FFFFFF">INCOMING</text>
+                    <text x="32" y="36" font-size="6" fill="#FFFFFF">WORK ALERT</text>
+                    <!-- Vibration Waves -->
+                    <path d="M-6,30 Q-10,45 -6,60 M66,30 Q70,45 66,60" stroke="#F5C542" stroke-width="2" fill="none"/>
+                </g>
+            `;
+            break;
+
+        case "fatigued_driver":
+            scenarioElements = `
+                <!-- Heavy Eye Vignette / Tunnel Vision Blur -->
+                <radialGradient id="fatigueGrad">
+                    <stop offset="40%" stop-color="#000000" stop-opacity="0"/>
+                    <stop offset="90%" stop-color="#000000" stop-opacity="0.85"/>
+                </radialGradient>
+                <rect x="0" y="0" width="760" height="340" fill="url(#fatigueGrad)"/>
+                <!-- Rest Stop P Signboard Ahead -->
+                <g transform="translate(520, 95)">
+                    <rect x="0" y="0" width="38" height="38" fill="#2563EB" stroke="#FFFFFF" stroke-width="2" rx="4"/>
+                    <text x="19" y="27" font-size="22" font-weight="900" fill="#FFFFFF" text-anchor="middle">P</text>
+                    <text x="19" y="36" font-size="6" font-weight="700" fill="#FEF08A" text-anchor="middle">500m</text>
+                    <line x1="19" y1="38" x2="19" y2="90" stroke="#64748B" stroke-width="3"/>
+                </g>
+            `;
+            break;
+
+        case "traffic_sign":
+            scenarioElements = `
+                <!-- Official Philippine Regulatory Signboard -->
+                <g transform="translate(480, 75)">
+                    <rect x="0" y="0" width="80" height="90" rx="6" fill="#FFFFFF" stroke="#DC2626" stroke-width="4"/>
+                    <circle cx="40" cy="36" r="24" fill="none" stroke="#DC2626" stroke-width="4"/>
+                    <!-- Right Arrow Crossed Out -->
+                    <path d="M30,42 L42,42 L42,32 L52,42 L42,52 L42,42" fill="#000"/>
+                    <line x1="24" y1="20" x2="56" y2="52" stroke="#DC2626" stroke-width="4"/>
+                    <text x="40" y="72" font-size="7" font-weight="900" fill="#000" text-anchor="middle">NO RIGHT TURN</text>
+                    <text x="40" y="82" font-size="7" font-weight="900" fill="#000" text-anchor="middle">ON RED SIGNAL</text>
+                    <line x1="40" y1="90" x2="40" y2="160" stroke="#64748B" stroke-width="4"/>
+                </g>
+                <!-- Red Traffic Light -->
+                <g transform="translate(420, 65)">
+                    <rect x="0" y="0" width="34" height="60" rx="4" fill="#0F172A" stroke="#F5C542" stroke-width="1.5"/>
+                    <circle cx="17" cy="14" r="7" fill="#EF4444" filter="drop-shadow(0 0 8px #DC2626)"/>
+                    <circle cx="17" cy="30" r="6" fill="#332200"/>
+                    <circle cx="17" cy="46" r="6" fill="#002211"/>
+                </g>
+            `;
+            break;
+
+        case "slippery_road":
+            scenarioElements = `
+                <!-- Warning Yellow Diamond Sign -->
+                <g transform="translate(120, 100)">
+                    <polygon points="25,0 50,25 25,50 0,25" fill="#FBBF24" stroke="#000" stroke-width="2.5"/>
+                    <path d="M15,35 Q22,20 28,32 Q34,18 40,28" stroke="#000" stroke-width="3" fill="none" stroke-linecap="round"/>
+                    <line x1="25" y1="50" x2="25" y2="110" stroke="#64748B" stroke-width="3"/>
+                </g>
+                <!-- Wet Road Sheen & Puddles -->
+                <ellipse cx="380" cy="220" rx="90" ry="14" fill="#38BDF8" opacity="0.35"/>
+                <ellipse cx="280" cy="250" rx="60" ry="10" fill="#38BDF8" opacity="0.35"/>
+            `;
+            break;
+
+        case "aggressive_driver":
+            scenarioElements = `
+                <!-- Rearview Mirror Flooded with Tailgating High Beams -->
+                <g transform="translate(260, 20)">
+                    <rect x="0" y="0" width="240" height="75" rx="14" fill="#0F172A" stroke="#EF4444" stroke-width="3" filter="drop-shadow(0 0 15px rgba(239,68,68,0.5))"/>
+                    <clipPath id="aggClip"><rect x="4" y="4" width="232" height="67" rx="10"/></clipPath>
+                    <g clip-path="url(#aggClip)">
+                        <rect x="0" y="0" width="240" height="75" fill="#1E293B"/>
+                        <!-- Aggressive SUV Grille Close-up -->
+                        <g transform="translate(60, 5)">
+                            <rect x="0" y="0" width="120" height="60" rx="6" fill="#09090B"/>
+                            <!-- Blinding High Beam Glare -->
+                            <circle cx="18" cy="26" r="14" fill="#FEF08A" filter="drop-shadow(0 0 16px #FFFFFF)"/>
+                            <circle cx="102" cy="26" r="14" fill="#FEF08A" filter="drop-shadow(0 0 16px #FFFFFF)"/>
+                        </g>
+                    </g>
+                    <text x="120" y="88" fill="#EF4444" font-size="10" font-weight="900" text-anchor="middle">⚠️ AGGRESSIVE TAILGATER FLASHING BEAMS</text>
+                </g>
+            `;
+            break;
+
+        case "sudden_pedestrian":
+            scenarioElements = `
+                <!-- Stopped Jeepney on Right -->
+                <g transform="translate(430, 110)">
+                    <rect x="0" y="0" width="120" height="90" rx="8" fill="#EAB308" stroke="#CA8A04" stroke-width="2"/>
+                    <rect x="8" y="10" width="104" height="35" rx="4" fill="#38BDF8" opacity="0.75"/>
+                    <circle cx="25" cy="90" r="12" fill="#000"/>
+                    <circle cx="95" cy="90" r="12" fill="#000"/>
+                </g>
+                <!-- Pedestrian Darting Out from Front of Jeepney -->
+                <g transform="translate(385, 170)">
+                    <circle cx="12" cy="8" r="6" fill="#FBBF24"/>
+                    <rect x="6" y="14" width="12" height="22" fill="#DC2626" rx="2"/>
+                    <line x1="8" y1="36" x2="2" y2="54" stroke="#000" stroke-width="3" stroke-linecap="round"/>
+                    <line x1="16" y1="36" x2="22" y2="52" stroke="#000" stroke-width="3" stroke-linecap="round"/>
+                </g>
+            `;
+            break;
+
+        case "tire_problem":
+            scenarioElements = `
+                <!-- Dashboard Warning Instrument Cluster Glowing TPMS -->
+                <g transform="translate(330, 240)">
+                    <rect x="0" y="0" width="100" height="40" rx="6" fill="#0F172A" stroke="#F59E0B" stroke-width="2" filter="drop-shadow(0 0 10px #F59E0B)"/>
+                    <!-- TPMS Icon -->
+                    <circle cx="30" cy="20" r="10" fill="none" stroke="#F59E0B" stroke-width="2.5" stroke-dasharray="3,2"/>
+                    <text x="30" y="25" font-size="14" font-weight="900" fill="#F59E0B" text-anchor="middle">!</text>
+                    <text x="68" y="24" font-size="9" font-weight="800" fill="#FEF08A">TIRE FLAT</text>
+                </g>
+                <!-- Skewed Tire Drift Track -->
+                <path d="M280,300 Q320,240 360,170" stroke="#000" stroke-width="6" opacity="0.5"/>
+            `;
+            break;
+
+        case "complex_hazard":
+        default:
+            scenarioElements = `
+                <!-- Rain, Unloading Jeepney, Pedestrian with Umbrella, and Motorcycle -->
+                <g stroke="#93C5FD" stroke-width="1.2" opacity="0.6">
+                    <line x1="120" y1="30" x2="100" y2="80"/>
+                    <line x1="300" y1="20" x2="280" y2="70"/>
+                    <line x1="500" y1="40" x2="480" y2="90"/>
+                    <line x1="650" y1="25" x2="630" y2="75"/>
+                </g>
+                <!-- Jeepney Unloading on Right -->
+                <g transform="translate(450, 130)">
+                    <rect x="0" y="0" width="100" height="65" rx="6" fill="#EAB308"/>
+                    <rect x="6" y="8" width="88" height="24" fill="#67E8F9" opacity="0.75"/>
+                    <circle cx="20" cy="65" r="8" fill="#000"/>
+                    <circle cx="80" cy="65" r="8" fill="#000"/>
+                </g>
+                <!-- Pedestrian with Umbrella Crossing -->
+                <g transform="translate(360, 160)">
+                    <!-- Umbrella Dome -->
+                    <path d="M0,12 Q16,-4 32,12 Z" fill="#DC2626"/>
+                    <line x1="16" y1="12" x2="16" y2="24" stroke="#000" stroke-width="2"/>
+                    <circle cx="16" cy="18" r="4" fill="#FBBF24"/>
+                    <rect x="12" y="22" width="8" height="16" fill="#1E40AF"/>
+                    <line x1="14" y1="38" x2="11" y2="52" stroke="#000" stroke-width="2.5"/>
+                    <line x1="18" y1="38" x2="21" y2="50" stroke="#000" stroke-width="2.5"/>
+                </g>
+                <!-- Lane-Filtering Motorcycle on Left -->
+                <g transform="translate(250, 170)">
+                    <circle cx="12" cy="6" r="5" fill="#10B981"/>
+                    <rect x="8" y="11" width="8" height="12" fill="#1E293B"/>
+                    <circle cx="12" cy="28" r="5" fill="#000"/>
+                </g>
+            `;
+            break;
+    }
+
+    return `
+    <svg viewBox="0 0 760 340" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" style="border-radius:12px;background:#020617;">
+        <defs>
+            ${skyGradient}
+            <linearGradient id="roadGrad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#334155"/>
+                <stop offset="100%" stop-color="${roadColor}"/>
+            </linearGradient>
+            <linearGradient id="dashGrad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#0F172A"/>
+                <stop offset="100%" stop-color="#020617"/>
+            </linearGradient>
+        </defs>
+
+        <!-- Sky Background -->
+        <rect x="0" y="0" width="760" height="130" fill="url(#skyGrad)"/>
+
+        <!-- Distant City/Mountain Horizon -->
+        <polygon points="0,130 90,95 180,115 280,85 380,120 490,90 600,110 700,80 760,130" fill="#0F172A" opacity="0.7"/>
+
+        <!-- Road Surface (Vanishing Perspective) -->
+        <polygon points="60,340 700,340 440,120 320,120" fill="url(#roadGrad)"/>
+
+        <!-- Road Shoulder Curbs -->
+        <polygon points="20,340 60,340 320,120 300,120" fill="#475569"/>
+        <polygon points="700,340 740,340 460,120 440,120" fill="#475569"/>
+
+        <!-- Center Dashed Lane Markings -->
+        <polygon points="378,130 382,130 384,155 376,155" fill="#FBBF24"/>
+        <polygon points="376,170 384,170 387,205 373,205" fill="#FBBF24"/>
+        <polygon points="373,225 387,225 391,270 369,270" fill="#FBBF24"/>
+
+        <!-- SCENARIO DYNAMIC LAYER -->
+        ${scenarioElements}
+
+        <!-- Windshield Pillar Frames (A-Pillars) -->
+        <polygon points="0,0 45,0 0,340" fill="#0B132B" opacity="0.9"/>
+        <polygon points="760,0 715,0 760,340" fill="#0B132B" opacity="0.9"/>
+
+        <!-- Cockpit Dashboard & Steering Wheel -->
+        <path d="M0,340 Q380,265 760,340 L760,340 L0,340 Z" fill="url(#dashGrad)" stroke="#1E293B" stroke-width="2"/>
+        
+        <!-- Steering Wheel Arc -->
+        <path d="M260,340 Q380,270 500,340" fill="none" stroke="#334155" stroke-width="18" stroke-linecap="round"/>
+        <circle cx="380" cy="340" r="32" fill="#0F172A" stroke="#475569" stroke-width="3"/>
+        <circle cx="380" cy="340" r="12" fill="#F5C542" opacity="0.8"/>
+    </svg>
+    `;
+}
+
+/**
+ * Start Visual Driving Simulation Modal
+ */
+window.startVisualDrivingSimulation = function(startIndex = 0) {
+    simState.currentIndex = Math.max(0, Math.min(startIndex, SIMULATION_20_SCENARIOS.length - 1));
+    simState.selectedOption = null;
+    simState.score = 0;
+    simState.correctCount = 0;
+    simState.incorrectCount = 0;
+    simState.totalXp = 0;
+    simState.userAnswers = [];
+    simState.submitted = false;
+
+    const overlay = $('driving-sim-modal-overlay');
+    if (overlay) {
+        overlay.style.display = 'flex';
+        renderCurrentSimScenario();
+    }
+};
+
+/**
+ * Render Active Scenario in Simulation Modal
+ */
+function renderCurrentSimScenario() {
+    const s = SIMULATION_20_SCENARIOS[simState.currentIndex];
+    if (!s) return;
+
+    // Reset interaction state
+    simState.selectedOption = null;
+    simState.submitted = false;
+
+    // Containers
+    const activeCont = $('sim-active-container');
+    const summaryCont = $('sim-summary-container');
+    if (activeCont) activeCont.style.display = 'block';
+    if (summaryCont) summaryCont.style.display = 'none';
+
+    // HUD Bar
+    if ($('sim-step-badge')) $('sim-step-badge').textContent = `Scenario ${String(s.number).padStart(2, '0')} of 20`;
+    
+    const diffBadge = $('sim-diff-badge');
+    if (diffBadge) {
+        diffBadge.textContent = s.difficulty;
+        diffBadge.className = `sim-diff-badge ${s.difficulty.toLowerCase()}`;
+    }
+
+    if ($('sim-score-display')) $('sim-score-display').textContent = `${simState.correctCount} / ${simState.currentIndex}`;
+    if ($('sim-xp-display')) $('sim-xp-display').textContent = `+${simState.totalXp} XP`;
+
+    const progressPct = ((simState.currentIndex + 1) / 20) * 100;
+    if ($('sim-progress-bar')) $('sim-progress-bar').style.width = `${progressPct}%`;
+
+    // Scenario Title & Situation
+    if ($('sim-title')) $('sim-title').textContent = s.title;
+    if ($('sim-situation-desc')) $('sim-situation-desc').textContent = s.situation;
+    if ($('sim-question-title')) $('sim-question-title').textContent = s.prompt;
+
+    // HUD overlays
+    if ($('sim-hud-speed')) $('sim-hud-speed').textContent = s.speed;
+    if ($('sim-hud-weather')) $('sim-hud-weather').textContent = s.weather;
+    if ($('sim-hud-env')) $('sim-hud-env').textContent = s.env;
+
+    // Render Driver Perspective Visual Scene SVG
+    const canvas = $('sim-visual-canvas');
+    if (canvas) {
+        canvas.innerHTML = generateVisualDrivingSceneSvg(s.svgType, s);
+    }
+
+    // Render 4 Decision Choices
+    const optionsGrid = $('sim-options-grid');
+    if (optionsGrid) {
+        optionsGrid.innerHTML = s.options.map((opt, idx) => `
+            <div class="sim-choice-card" id="sim-choice-${idx}" onclick="selectSimulationOption(${idx})">
+                <div class="sim-choice-letter">${String.fromCharCode(65 + idx)}</div>
+                <div class="sim-choice-text">${escapeHtml(opt.text)}</div>
+            </div>
+        `).join('');
+    }
+
+    // Reset Buttons & Feedback Panel
+    const submitBtn = $('btn-submit-sim-decision');
+    if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.style.display = 'inline-flex';
+    }
+
+    const actionRow = $('sim-action-row');
+    if (actionRow) actionRow.style.display = 'flex';
+
+    const feedbackPanel = $('sim-feedback-panel');
+    if (feedbackPanel) feedbackPanel.style.display = 'none';
+}
+
+/**
+ * Handle Option Selection
+ */
+window.selectSimulationOption = function(idx) {
+    if (simState.submitted) return;
+
+    simState.selectedOption = idx;
+
+    document.querySelectorAll('.sim-choice-card').forEach((el, i) => {
+        el.classList.toggle('selected', i === idx);
+    });
+
+    const submitBtn = $('btn-submit-sim-decision');
+    if (submitBtn) submitBtn.disabled = false;
+};
+
+/**
+ * Submit Driver Decision & Trigger AI Feedback
+ */
+window.submitSimulationDecision = function() {
+    if (simState.selectedOption === null || simState.submitted) return;
+
+    simState.submitted = true;
+    const s = SIMULATION_20_SCENARIOS[simState.currentIndex];
+    const chosen = s.options[simState.selectedOption];
+    const isCorrect = chosen && chosen.isCorrect;
+
+    if (isCorrect) {
+        simState.score += 1;
+        simState.correctCount += 1;
+        simState.totalXp += 10;
+    } else {
+        simState.incorrectCount += 1;
+    }
+
+    simState.userAnswers.push({
+        scenarioId: s.id,
+        scenarioTitle: s.title,
+        chosenOptionIndex: simState.selectedOption,
+        isCorrect: isCorrect,
+        chosenText: chosen.text
+    });
+
+    // Update Score & XP Pills
+    if ($('sim-score-display')) $('sim-score-display').textContent = `${simState.correctCount} / ${simState.currentIndex + 1}`;
+    if ($('sim-xp-display')) $('sim-xp-display').textContent = `+${simState.totalXp} XP`;
+
+    // Highlight Correct vs Incorrect Choices
+    document.querySelectorAll('.sim-choice-card').forEach((el, i) => {
+        if (s.options[i].isCorrect) {
+            el.classList.add('correct-highlight');
+        } else if (i === simState.selectedOption && !isCorrect) {
+            el.classList.add('incorrect-highlight');
+        }
+    });
+
+    // Hide Submit Button
+    const actionRow = $('sim-action-row');
+    if (actionRow) actionRow.style.display = 'none';
+
+    // Populate and Show AI Feedback Panel
+    const fbPanel = $('sim-feedback-panel');
+    const fbHeader = $('sim-feedback-header');
+    const fbIcon = $('sim-feedback-icon');
+    const fbTitle = $('sim-feedback-status-title');
+    const fbXp = $('sim-feedback-xp');
+    const fbWhy = $('sim-fb-why');
+    const fbHazard = $('sim-fb-hazard');
+    const fbPrinciple = $('sim-fb-principle');
+    const fbAction = $('sim-fb-action');
+
+    if (fbPanel && fbTitle) {
+        if (isCorrect) {
+            fbHeader.className = 'sim-feedback-header correct';
+            fbIcon.textContent = 'check_circle';
+            fbIcon.style.color = 'var(--emerald-green)';
+            fbTitle.textContent = '✓ Correct Decision';
+            fbTitle.style.color = 'var(--emerald-green)';
+            if (fbXp) fbXp.textContent = '+10 XP Earned';
+            if (fbWhy) fbWhy.textContent = s.aiFeedback.why;
+        } else {
+            fbHeader.className = 'sim-feedback-header incorrect';
+            fbIcon.textContent = 'warning';
+            fbIcon.style.color = '#EF4444';
+            fbTitle.textContent = '⚠ Review Your Decision';
+            fbTitle.style.color = '#F87171';
+            if (fbXp) fbXp.textContent = '0 XP · Hazard Review';
+            if (fbWhy) fbWhy.textContent = s.aiFeedback.incorrectWhy;
+        }
+
+        if (fbHazard) fbHazard.textContent = s.aiFeedback.hazard;
+        if (fbPrinciple) fbPrinciple.textContent = s.aiFeedback.principle;
+        if (fbAction) fbAction.textContent = s.aiFeedback.action;
+
+        fbPanel.style.display = 'flex';
+        fbPanel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+};
+
+/**
+ * Move to Next Scenario or Finish Simulation
+ */
+window.nextSimulationScenario = function() {
+    if (simState.currentIndex < SIMULATION_20_SCENARIOS.length - 1) {
+        simState.currentIndex++;
+        renderCurrentSimScenario();
+    } else {
+        renderSimulationSummary();
+    }
+};
+
+/**
+ * Render Complete Simulation Performance Results
+ */
+function renderSimulationSummary() {
+    const activeCont = $('sim-active-container');
+    const summaryCont = $('sim-summary-container');
+    if (activeCont) activeCont.style.display = 'none';
+    if (summaryCont) summaryCont.style.display = 'flex';
+
+    const accuracyPct = Math.round((simState.correctCount / 20) * 100);
+
+    if ($('sim-summary-score')) $('sim-summary-score').textContent = `${simState.correctCount} / 20`;
+    if ($('sim-summary-accuracy')) $('sim-summary-accuracy').textContent = `${accuracyPct}%`;
+    if ($('sim-summary-correct')) $('sim-summary-correct').textContent = `${simState.correctCount}`;
+    if ($('sim-summary-incorrect')) $('sim-summary-incorrect').textContent = `${simState.incorrectCount}`;
+    if ($('sim-summary-total-xp')) $('sim-summary-total-xp').textContent = `+${simState.totalXp} XP`;
+
+    // Performance Level Evaluation (90-100% Excellent, 75-89% Good, 50-74% Needs Improvement, <50% Needs More Practice)
+    const perfBadge = $('sim-perf-badge');
+    const perfText = $('sim-perf-level-text');
+    const perfIcon = $('sim-perf-icon');
+    const remediationText = $('sim-ai-remediation-text');
+    const chipsContainer = $('sim-recom-chips-container');
+
+    let levelClass = 'excellent';
+    let levelTitle = 'EXCELLENT (90–100%)';
+    let iconName = 'star';
+    let advice = 'Outstanding hazard recognition and driver decision-making! You demonstrated mastery of Philippine traffic rules, emergency vehicle protocol, and adverse weather buffering.';
+    let chips = ['🚦 Mastery Certified', '🛡️ Defensive Driving Pro'];
+
+    if (accuracyPct < 50) {
+        levelClass = 'needs-practice';
+        levelTitle = 'NEEDS MORE PRACTICE (<50%)';
+        iconName = 'priority_high';
+        advice = 'You encountered difficulty with right-of-way priority, blind spot checks, and skid control physics. Reviewing fundamental traffic regulations is strongly recommended.';
+        chips = ['🛑 R.A. 4136 Right-of-Way', '🚗 Blind Spot & Mirror Scanning', '🌧️ Wet Road Skid Physics'];
+    } else if (accuracyPct < 75) {
+        levelClass = 'needs-improvement';
+        levelTitle = 'NEEDS IMPROVEMENT (50–74%)';
+        iconName = 'trending_up';
+        advice = 'Good baseline awareness! You should focus on improving complex intersection prioritization, night driving headlight habits, and avoiding distracted phone habits.';
+        chips = ['🚦 Intersection Conflicts', '🌙 Night Vision & Anti-Glare', '📱 Anti-Distracted Driving (R.A. 10913)'];
+    } else if (accuracyPct < 90) {
+        levelClass = 'good';
+        levelTitle = 'GOOD (75–89%)';
+        iconName = 'verified';
+        advice = 'Very solid defensive driving response across most hazards! A few minor errors occurred in multi-hazard compound scenarios and emergency blowout recovery.';
+        chips = ['🌪️ High-Speed Blowout Protocol', '⚠️ Compound Multi-Hazard Scenarios'];
+    }
+
+    if (perfBadge && perfText) {
+        perfBadge.className = `sim-perf-badge ${levelClass}`;
+        perfText.textContent = levelTitle;
+        if (perfIcon) perfIcon.textContent = iconName;
+    }
+
+    if (remediationText) remediationText.textContent = advice;
+    if (chipsContainer) {
+        chipsContainer.innerHTML = chips.map(c => `<span class="sim-recom-chip">${escapeHtml(c)}</span>`).join('');
+    }
+}
+
+/**
+ * Restart Simulation
+ */
+window.restartSimulation = function() {
+    startVisualDrivingSimulation(0);
+};
+
+/**
+ * Close Simulation Modal
+ */
+window.closeSimulationModal = function() {
+    const overlay = $('driving-sim-modal-overlay');
+    if (overlay) overlay.style.display = 'none';
+};
+
+/**
+ * Render Scenarios List in Admin Command Tab
+ */
 function renderScenariosList() {
     if (!DOM.scenariosList) return;
-    let list = [...State.scenarios];
+    let list = [...SIMULATION_20_SCENARIOS];
 
     const searchInput = $('search-scenarios');
     const q = (searchInput ? searchInput.value : '').toLowerCase().trim();
@@ -895,17 +2298,17 @@ function renderScenariosList() {
         list = list.filter(s =>
             (s.title || '').toLowerCase().includes(q) ||
             (s.prompt || '').toLowerCase().includes(q) ||
-            (s.weather || '').toLowerCase().includes(q) ||
-            (s.optimalAction || '').toLowerCase().includes(q)
+            (s.situation || '').toLowerCase().includes(q) ||
+            (s.difficulty || '').toLowerCase().includes(q)
         );
     }
 
     if (State.scenarioFilter && State.scenarioFilter !== 'all') {
         const sf = State.scenarioFilter.toLowerCase();
         list = list.filter(s =>
+            (s.difficulty || '').toLowerCase() === sf ||
             (s.title || '').toLowerCase().includes(sf) ||
-            (s.prompt || '').toLowerCase().includes(sf) ||
-            (s.weather || '').toLowerCase().includes(sf)
+            (s.situation || '').toLowerCase().includes(sf)
         );
     }
 
@@ -922,28 +2325,39 @@ function renderScenariosList() {
 
     DOM.scenariosList.innerHTML = list.map((s, idx) => `
         <div class="scenario-card">
-            <div class="scenario-header">
-                <h3 class="font-h3"><span class="material-icons-round" style="color:var(--badge-gold);">alt_route</span> Scenario ${idx + 1}: ${escapeHtml(s.title)}</h3>
-                <span class="role-tag user font-badge">Speed: ${s.speed} · ${s.weather}</span>
+            <div class="scenario-header" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
+                <h3 class="font-h3" style="color:#FFFFFF;margin:0;">
+                    <span class="material-icons-round" style="color:var(--badge-gold-bright);">smart_toy</span>
+                    ${escapeHtml(s.title)}
+                </h3>
+                <div style="display:flex;gap:6px;align-items:center;">
+                    <span class="sim-diff-badge ${s.difficulty.toLowerCase()}">${s.difficulty}</span>
+                    <span class="role-tag user font-badge">${s.speed} · ${s.weather}</span>
+                </div>
             </div>
-            <p class="scenario-prompt">${escapeHtml(s.prompt)}</p>
+            <p class="scenario-prompt" style="color:#CBD5E1;margin:10px 0;font-size:13.5px;line-height:1.5;">${escapeHtml(s.situation)}</p>
             <div class="decision-options-list">
                 ${s.options.map((opt, oIdx) => `
-                    <div class="decision-option-item ${opt.safe ? 'safe' : ''}">
+                    <div class="decision-option-item ${opt.isCorrect ? 'safe' : ''}">
                         <div>
-                            <strong>Option ${String.fromCharCode(65 + oIdx)}:</strong> ${escapeHtml(opt.label)}
+                            <strong>Option ${String.fromCharCode(65 + oIdx)}:</strong> ${escapeHtml(opt.text)}
                         </div>
-                        <span class="status-badge ${opt.safe ? 'online' : 'offline'} font-badge">${opt.risk}</span>
+                        <span class="status-badge ${opt.isCorrect ? 'online' : 'offline'} font-badge">${opt.risk}</span>
                     </div>
                 `).join('')}
             </div>
-            <div style="margin-top:14px;display:flex;justify-content:space-between;align-items:center;">
-                <span class="font-caption" style="color:var(--emerald-green);">🎯 Optimal Decision: ${escapeHtml(s.optimalAction)}</span>
-                <span class="font-caption">Safety Score: <strong>${s.score}%</strong></span>
+            <div style="margin-top:14px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
+                <span class="font-caption" style="color:var(--emerald-green);">🎯 Optimal Action: ${escapeHtml(s.options.find(o => o.isCorrect).text)}</span>
+                <button class="btn btn-primary font-button" onclick="startVisualDrivingSimulation(${s.number - 1})"
+                    style="padding:6px 14px;font-size:12px;background:linear-gradient(135deg, #0038A8 0%, #D4AF37 130%);">
+                    <span class="material-icons-round" style="font-size:15px;">play_arrow</span>
+                    <span>Play Scenario ${String(s.number).padStart(2, '0')}</span>
+                </button>
             </div>
         </div>
     `).join('');
 }
+
 
 // ═══════════════════════════════════════════════════════════════
 // 12. GAMIFICATION, LEADERBOARD, BADGES & RANK HISTORY
@@ -1768,7 +3182,292 @@ window.confirmAdminLogout = function() {
 };
 
 // ═══════════════════════════════════════════════════════════════
-// 20. BOOTSTRAP INITIALIZATION & SPLASH SCREEN
+// 21. DUAL-PORTAL SYSTEM CONTROLLER (USER LEARNING & ADMIN COMMAND)
+// ═══════════════════════════════════════════════════════════════
+
+const PORTAL_MODE_KEY = 'roadsafe_portal_mode';
+let currentPortalMode = localStorage.getItem(PORTAL_MODE_KEY) || 'admin';
+let selectedDailyChallengeOption = null;
+
+window.switchPortalMode = function(mode) {
+    currentPortalMode = mode;
+    localStorage.setItem(PORTAL_MODE_KEY, mode);
+
+    const userPortal = $('user-portal-container');
+    const adminPortal = $('admin-portal-container');
+    const sidebar = $('sidebar');
+    const pageTitle = $('page-title');
+    const pageSubtitle = $('page-subtitle');
+    const btnAdmin = $('btn-portal-admin');
+    const btnUser = $('btn-portal-user');
+
+    if (btnAdmin) btnAdmin.classList.toggle('active', mode === 'admin');
+    if (btnUser) btnUser.classList.toggle('active', mode === 'user');
+
+    if (mode === 'user') {
+        if (userPortal) userPortal.style.display = 'block';
+        if (adminPortal) adminPortal.style.display = 'none';
+        if (sidebar) sidebar.style.display = 'none';
+        const mainContent = document.getElementById('main-content');
+        if (mainContent) mainContent.style.marginLeft = '0';
+
+        if (pageTitle) pageTitle.textContent = 'Driver Learning Dashboard';
+        if (pageSubtitle) pageSubtitle.textContent = 'Philippine Traffic Safety Education & Driver Academy';
+        showToast('Switched to Driver Learning Dashboard.', 'info', 2500);
+    } else {
+        if (userPortal) userPortal.style.display = 'none';
+        if (adminPortal) adminPortal.style.display = 'block';
+        if (sidebar) sidebar.style.display = 'flex';
+        const mainContent = document.getElementById('main-content');
+        if (mainContent && window.innerWidth > 768) mainContent.style.marginLeft = 'var(--sidebar-width)';
+
+        if (pageTitle) pageTitle.textContent = 'Admin Dashboard';
+        if (pageSubtitle) pageSubtitle.textContent = 'Dagami Leyte · Live Safety Telemetry & System Command';
+        showToast('Switched to Admin Command Center.', 'info', 2500);
+    }
+};
+
+// ── User AI Assistant Interactions ──────────────────────────────
+const SAMPLE_AI_ROAD_RULES = {
+    'Ask AI': {
+        ans: "Defensive driving requires anticipating hazards, maintaining a 3-second buffer, and scanning intersections.",
+        why: "Proactive scanning reduces reaction time deficits during sudden braking or pedestrian movements.",
+        tip: "Keep eyes moving every 2-5 seconds rather than fixating on the bumper immediately ahead."
+    },
+    'Explain Traffic Rule': {
+        ans: "Under R.A. 4136, vehicles in a roundabout or rotary have the right-of-way over entering vehicles.",
+        why: "Prioritizing circulating traffic prevents gridlock inside the circular junction.",
+        tip: "Signal right when exiting the roundabout; never stop abruptly inside the circle."
+    },
+    'Identify Traffic Sign': {
+        ans: "Red octagonal 'STOP' sign: Complete stop required before the stop line, even if cross traffic is not visible.",
+        why: "A rolling stop fails to account for fast two-wheelers and pedestrians in blind spots.",
+        tip: "Count 3 full seconds at the stop line before proceeding when safe."
+    },
+    'Analyze Driving Scenario': {
+        ans: "Wet asphalt at 60 km/h: Braking distance doubles. Hydroplaning occurs if tires ride on water film.",
+        why: "Water layer prevents tire tread contact with pavement, causing loss of steering control.",
+        tip: "Ease off accelerator smoothly if steering feels light; do not slam the brake pedal abruptly."
+    },
+    'Practice Decision-Making': {
+        ans: "Ambulance with siren behind you: Signal and pull smoothly to the nearest right curb.",
+        why: "Clear emergency lanes save critical minutes for patients and first responders.",
+        tip: "Never stop in the middle of a live intersection; clear the junction first then pull over."
+    }
+};
+
+window.triggerAiAssistant = function(actionType) {
+    const input = $('user-ai-query-input');
+    const respBox = $('user-ai-response-box');
+    const respText = $('user-ai-response-text');
+
+    if (input) input.value = actionType + ': Philippine road safety guidance';
+
+    const sample = SAMPLE_AI_ROAD_RULES[actionType] || SAMPLE_AI_ROAD_RULES['Ask AI'];
+    if (respText) {
+        respText.innerHTML = `
+            <strong>Answer:</strong> ${sample.ans}<br><br>
+            <strong>Why:</strong> ${sample.why}<br><br>
+            <strong>Safety Tip:</strong> ${sample.tip}
+        `;
+    }
+    if (respBox) respBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    showToast(`AI Assistant focused on: ${actionType}`, 'info', 2000);
+};
+
+window.submitUserAiQuery = function() {
+    const input = $('user-ai-query-input');
+    const query = (input ? input.value : '').trim();
+    if (!query) {
+        showToast('Please type a road safety question or select an action.', 'warning', 2500);
+        return;
+    }
+
+    const respText = $('user-ai-response-text');
+    if (respText) {
+        respText.innerHTML = `
+            <div style="display:flex;align-items:center;gap:8px;color:var(--badge-gold-bright, #F5C542);">
+                <span class="material-icons-round pulse">smart_toy</span>
+                <span>AI Assistant analyzing Philippine road safety regulations…</span>
+            </div>
+        `;
+    }
+
+    setTimeout(() => {
+        if (respText) {
+            const aiAnswer = `According to Philippine LTO & Traffic Safety guidelines (R.A. 4136), safe driving mandates strict adherence to marked lanes, regulated speed limits, and yielding to pedestrians and vulnerable road users.`;
+            respText.innerHTML = `
+                <strong>Answer:</strong> Regarding "<em>${escapeHtml(query)}</em>": ${aiAnswer}<br><br>
+                <strong>Why:</strong> Over 85% of road accidents in urban and provincial corridors stem from preventable driver errors, non-compliance with right-of-way, or distraction.<br><br>
+                <strong>Safety Tip:</strong> Practice the 3-second defensive following rule. In rain or low-light conditions, increase this to 5-6 seconds and switch on low-beam headlights.
+            `;
+            // Log interaction into Admin Telemetry
+            const newAiEntry = {
+                id: 'ai_' + Date.now(),
+                userId: 'juan_delacruz',
+                prompt: query,
+                response: aiAnswer,
+                topic: 'Rules Q&A',
+                timestamp: new Date()
+            };
+            State.aiQueries.unshift(newAiEntry);
+            if (db) {
+                db.collection('ai_interactions').add(newAiEntry).catch(() => {});
+            }
+            renderAiActivityList();
+            updateMetrics();
+        }
+        showToast('AI response generated & logged to Telemetry.', 'success', 2000);
+    }, 600);
+};
+
+// ── Daily Road Safety Challenge ─────────────────────────────────
+window.startDailyChallengeModal = function() {
+    selectedDailyChallengeOption = null;
+    const modal = $('daily-challenge-modal-overlay');
+    const submitBtn = $('btn-submit-daily-challenge');
+    const feedback = $('challenge-feedback-box');
+
+    if (submitBtn) submitBtn.disabled = true;
+    if (feedback) feedback.style.display = 'none';
+
+    document.querySelectorAll('.challenge-opt-btn').forEach(b => b.classList.remove('selected'));
+    if (modal) modal.style.display = 'flex';
+};
+
+window.closeDailyChallengeModal = function() {
+    if ($('daily-challenge-modal-overlay')) $('daily-challenge-modal-overlay').style.display = 'none';
+};
+
+window.selectDailyChallengeOption = function(idx) {
+    selectedDailyChallengeOption = idx;
+    document.querySelectorAll('.challenge-opt-btn').forEach((b, i) => {
+        b.classList.toggle('selected', i === idx);
+    });
+    const submitBtn = $('btn-submit-daily-challenge');
+    if (submitBtn) submitBtn.disabled = false;
+};
+
+window.submitDailyChallenge = function() {
+    if (selectedDailyChallengeOption === null) return;
+
+    const feedback = $('challenge-feedback-box');
+    const isCorrect = (selectedDailyChallengeOption === 1); // Option B is correct
+
+    if (feedback) {
+        feedback.style.display = 'block';
+        if (isCorrect) {
+            feedback.style.background = 'rgba(16, 185, 129, 0.15)';
+            feedback.style.border = '1px solid var(--emerald-green)';
+            feedback.style.color = '#A7F3D0';
+            feedback.innerHTML = `
+                <strong style="color:var(--emerald-green);display:block;margin-bottom:4px;">🎉 Correct Answer! (+50 XP Awarded)</strong>
+                <strong>Why:</strong> Pedestrians at marked or unmarked intersections have absolute legal right-of-way. Slowing to a smooth stop allows safe crossing and prevents rear-end collisions from vehicles behind you.<br>
+                <strong>Safety Tip:</strong> Make eye contact with the pedestrian and do not honk aggressively.
+            `;
+            showToast('Correct! +50 XP awarded to your driver profile!', 'success', 3500);
+
+            // Increase XP in user dashboard view
+            const xpVal = $('u-stat-xp');
+            if (xpVal) xpVal.textContent = '2,500 XP';
+        } else {
+            feedback.style.background = 'rgba(206, 17, 38, 0.15)';
+            feedback.style.border = '1px solid var(--traffic-red)';
+            feedback.style.color = '#FECACA';
+            feedback.innerHTML = `
+                <strong style="color:#EF4444;display:block;margin-bottom:4px;">Incorrect Option</strong>
+                <strong>Correct Choice:</strong> Option B (Slow down to a complete, smooth stop and yield).<br>
+                <strong>Why:</strong> Pedestrian crosswalks mandate yielding. Honking or swerving endangers the pedestrian and oncoming traffic.
+            `;
+        }
+    }
+};
+
+// ── Review Answers Modal ─────────────────────────────────────────
+window.openReviewAnswersModal = function() {
+    const modal = $('review-answers-modal-overlay');
+    const content = $('review-answers-content');
+
+    if (content) {
+        content.innerHTML = `
+            <div style="display:flex;flex-direction:column;gap:16px;">
+                <div style="background:rgba(10,20,38,0.7);border:1px solid var(--border-card);border-radius:12px;padding:16px;">
+                    <span class="tag-badge green font-badge" style="margin-bottom:6px;">QUESTION 1 · RIGHT-OF-WAY</span>
+                    <h4 class="font-h3" style="color:#FFFFFF;margin-bottom:8px;">What is the primary rule at an uncontrolled intersection without traffic signs?</h4>
+                    <p class="font-body-sm" style="color:var(--emerald-green);font-weight:600;margin-bottom:4px;">✓ Correct: The vehicle on the right has right-of-way.</p>
+                    <p class="font-caption" style="color:var(--text-secondary);"><strong>Explanation:</strong> Under Philippine Law (R.A. 4136), at an intersection without lights or signs, the driver on the left must yield to the vehicle approaching from the right.</p>
+                </div>
+
+                <div style="background:rgba(10,20,38,0.7);border:1px solid var(--border-card);border-radius:12px;padding:16px;">
+                    <span class="tag-badge gold font-badge" style="margin-bottom:6px;">QUESTION 2 · TRAFFIC LIGHTS</span>
+                    <h4 class="font-h3" style="color:#FFFFFF;margin-bottom:8px;">What does a flashing yellow traffic signal indicate?</h4>
+                    <p class="font-body-sm" style="color:var(--emerald-green);font-weight:600;margin-bottom:4px;">✓ Correct: Proceed with caution after slowing down.</p>
+                    <p class="font-caption" style="color:var(--text-secondary);"><strong>Explanation:</strong> A flashing yellow light warns drivers of a hazardous crossing and directs them to decelerate and check for cross traffic before proceeding.</p>
+                </div>
+
+                <div style="background:rgba(10,20,38,0.7);border:1px solid var(--border-card);border-radius:12px;padding:16px;">
+                    <span class="tag-badge blue font-badge" style="margin-bottom:6px;">QUESTION 3 · DEFENSIVE DRIVING</span>
+                    <h4 class="font-h3" style="color:#FFFFFF;margin-bottom:8px;">What is the recommended following distance under normal dry conditions?</h4>
+                    <p class="font-body-sm" style="color:var(--emerald-green);font-weight:600;margin-bottom:4px;">✓ Correct: 3 seconds.</p>
+                    <p class="font-caption" style="color:var(--text-secondary);"><strong>Explanation:</strong> The 3-second rule provides adequate perception-reaction time and vehicle stopping distance at any standard highway speed.</p>
+                </div>
+            </div>
+        `;
+    }
+
+    if (modal) modal.style.display = 'flex';
+};
+
+window.closeReviewAnswersModal = function() {
+    if ($('review-answers-modal-overlay')) $('review-answers-modal-overlay').style.display = 'none';
+};
+
+// ── Additional User Helper Actions ───────────────────────────────
+window.startModuleDirectly = function(moduleId) {
+    switchPortalMode('admin');
+    switchTab('quizzes');
+    showToast(`Launching ${moduleId} assessment...`, 'info', 2000);
+};
+
+window.startScenarioTrialDirectly = function() {
+    startVisualDrivingSimulation(0);
+};
+
+window.openAllModulesView = function() {
+    switchPortalMode('admin');
+    switchTab('modules');
+};
+
+window.openAllBadgesModal = function() {
+    switchPortalMode('admin');
+    switchTab('gamification');
+};
+
+window.openLeaderboardModal = function() {
+    switchPortalMode('admin');
+    switchTab('gamification');
+};
+
+window.openUserSettingsModal = function() {
+    showToast('Driver Profile & Preferences: Dagami Leyte Municipality Active', 'info', 2500);
+};
+
+window.showNotificationsModal = function() {
+    showToast('Notifications: Daily Challenge Ready (+50 XP) · 7-Day Streak Active 🔥', 'info', 3000);
+};
+
+window.switchUserTab = function(tabName) {
+    document.querySelectorAll('.bottom-nav-item').forEach(btn => {
+        btn.classList.toggle('active', btn.innerText.toLowerCase().includes(tabName));
+    });
+    if (tabName === 'home') {
+        const userPortal = $('user-portal-container');
+        if (userPortal) userPortal.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+};
+
+// ═══════════════════════════════════════════════════════════════
+// 22. BOOTSTRAP INITIALIZATION & SPLASH SCREEN
 // ═══════════════════════════════════════════════════════════════
 
 function dismissSplashScreen() {
@@ -1787,13 +3486,16 @@ function dismissSplashScreen() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    console.log('🛡️ RoadSafe AI — Complete Mirror Platform v3.0');
+    console.log('🛡️ RoadSafe AI — Complete Dual Portal Platform v3.5');
     initAuth();
     startListeners();
     renderModulesList();
     renderQuestionsList();
     renderScenariosList();
     renderBadgesCatalogList();
+
+    // Initialize portal mode
+    switchPortalMode(currentPortalMode);
     
     // Smooth splash screen reveal
     setTimeout(dismissSplashScreen, 600);

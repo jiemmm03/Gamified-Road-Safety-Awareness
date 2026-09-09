@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>PNP RoadSafe AI — Official Driver Training App</title>
-    <meta name="description" content="Official Philippine National Police (PNP) Highway Patrol Group RoadSafe AI Driver Training Application for Android.">
+    <title>RoadSafe AI — Official Driver Training App</title>
+    <meta name="description" content="Official RoadSafe AI Driver Training Application for Android.">
     
     <!-- Fonts & Icons -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -14,14 +14,14 @@
     
     <style>
         :root {
-            --pnp-blue: #0038A8;
-            --pnp-blue-dark: #002266;
-            --pnp-blue-glow: rgba(0, 56, 168, 0.4);
-            --pnp-gold: #D4AF37;
-            --pnp-gold-bright: #F5C542;
-            --pnp-gold-glow: rgba(212, 175, 55, 0.35);
-            --pnp-red: #CE1126;
-            --pnp-emerald: #10B981;
+            --safety-blue: #0038A8;
+            --safety-blue-dark: #002266;
+            --safety-blue-glow: rgba(0, 56, 168, 0.4);
+            --badge-gold: #D4AF37;
+            --badge-gold-bright: #F5C542;
+            --badge-gold-glow: rgba(212, 175, 55, 0.35);
+            --traffic-red: #CE1126;
+            --safety-emerald: #10B981;
             
             --bg-midnight: #060B14;
             --bg-card: #0F1F38;
@@ -42,7 +42,7 @@
         }
 
         body {
-            background: var(--bg-midnight);
+            background-color: var(--bg-midnight);
             color: var(--text-primary);
             min-height: 100vh;
             display: flex;
@@ -50,9 +50,12 @@
             align-items: center;
             padding: 24px 16px 40px;
             background-image: 
-                radial-gradient(ellipse at 50% 0%, rgba(0, 56, 168, 0.3) 0%, transparent 65%),
-                radial-gradient(ellipse at 80% 80%, rgba(212, 175, 55, 0.08) 0%, transparent 50%),
-                radial-gradient(ellipse at 20% 80%, rgba(206, 17, 38, 0.06) 0%, transparent 50%);
+                linear-gradient(180deg, rgba(6, 11, 20, 0.82) 0%, rgba(6, 11, 20, 0.92) 100%),
+                radial-gradient(ellipse at 50% 0%, rgba(0, 56, 168, 0.35) 0%, transparent 65%),
+                url('background-dagami.jpg');
+            background-size: cover;
+            background-position: center top;
+            background-repeat: no-repeat;
             background-attachment: fixed;
         }
 
@@ -64,14 +67,14 @@
             gap: 18px;
         }
 
-        .pnp-badge-header {
+        .official-badge-header {
             display: inline-flex;
             align-items: center;
             justify-content: center;
             gap: 6px;
             background: linear-gradient(135deg, rgba(212, 175, 55, 0.15), rgba(0, 56, 168, 0.25));
             border: 1px solid var(--border-brass);
-            color: var(--pnp-gold-bright);
+            color: var(--badge-gold-bright);
             font-size: 11px;
             font-weight: 800;
             letter-spacing: 1px;
@@ -79,7 +82,7 @@
             padding: 6px 14px;
             border-radius: 20px;
             margin: 0 auto 4px;
-            box-shadow: 0 0 16px var(--pnp-gold-glow);
+            box-shadow: 0 0 16px var(--badge-gold-glow);
         }
 
         .app-hero {
@@ -95,8 +98,8 @@
             height: 90px;
             border-radius: 24px;
             background: linear-gradient(135deg, #0A162B, #0F1F38);
-            border: 2px solid var(--pnp-gold);
-            box-shadow: 0 12px 32px var(--pnp-blue-glow), 0 0 18px var(--pnp-gold-glow);
+            border: 2px solid var(--badge-gold);
+            box-shadow: 0 12px 32px var(--safety-blue-glow), 0 0 18px var(--badge-gold-glow);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -127,6 +130,7 @@
             letter-spacing: -0.5px;
             background: linear-gradient(135deg, #FFFFFF 30%, #D4AF37 100%);
             -webkit-background-clip: text;
+            background-clip: text;
             -webkit-text-fill-color: transparent;
             margin-bottom: 4px;
         }
@@ -159,7 +163,7 @@
         }
 
         .tag-badge.official {
-            color: var(--pnp-gold-bright);
+            color: var(--badge-gold-bright);
             background: rgba(212, 175, 55, 0.12);
             border-color: var(--border-brass);
         }
@@ -167,7 +171,7 @@
         .tag-badge.android {
             background: rgba(16, 185, 129, 0.12);
             border-color: rgba(16, 185, 129, 0.3);
-            color: var(--pnp-emerald);
+            color: var(--safety-emerald);
         }
 
         .download-card {
@@ -197,14 +201,14 @@
             gap: 10px;
             text-decoration: none;
             cursor: pointer;
-            box-shadow: 0 6px 20px var(--pnp-blue-glow);
+            box-shadow: 0 6px 20px var(--safety-blue-glow);
             transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
             animation: pulse-glow 2.5s infinite;
         }
 
         @keyframes pulse-glow {
-            0%, 100% { box-shadow: 0 6px 20px var(--pnp-blue-glow); }
-            50% { box-shadow: 0 6px 30px rgba(0, 56, 168, 0.7), 0 0 25px var(--pnp-gold-glow); }
+            0%, 100% { box-shadow: 0 6px 20px var(--safety-blue-glow); }
+            50% { box-shadow: 0 6px 30px rgba(0, 56, 168, 0.7), 0 0 25px var(--badge-gold-glow); }
         }
 
         .btn-download-apk:active {
@@ -221,7 +225,7 @@
         }
 
         .download-info strong {
-            color: var(--pnp-gold-bright);
+            color: var(--badge-gold-bright);
         }
 
         .guide-section {
@@ -242,7 +246,7 @@
         }
 
         .guide-title .material-icons-round {
-            color: var(--pnp-gold-bright);
+            color: var(--badge-gold-bright);
             font-size: 18px;
         }
 
@@ -264,7 +268,7 @@
             border-radius: 8px;
             background: linear-gradient(135deg, rgba(0, 56, 168, 0.4), rgba(212, 175, 55, 0.2));
             border: 1px solid var(--border-brass);
-            color: var(--pnp-gold-bright);
+            color: var(--badge-gold-bright);
             font-size: 12px;
             font-weight: 800;
             display: flex;
@@ -301,7 +305,7 @@
         }
 
         .feature-card .material-icons-round {
-            color: var(--pnp-gold-bright);
+            color: var(--badge-gold-bright);
             font-size: 22px;
             margin-bottom: 6px;
         }
@@ -330,11 +334,6 @@
 </head>
 <body>
     <div class="container">
-        
-        <div class="pnp-badge-header">
-            <span class="material-icons-round" style="font-size:14px;">local_police</span>
-            <span>PNP HPG Driver Portal</span>
-        </div>
 
         <div class="app-hero">
             <div class="app-icon-wrapper">
@@ -416,12 +415,12 @@
             <div class="feature-card">
                 <span class="material-icons-round">cloud_sync</span>
                 <h5>Command Telemetry</h5>
-                <p>Synchronized live stats with the PNP Admin Command Center.</p>
+                <p>Synchronized live stats with the Admin Command Center.</p>
             </div>
         </div>
 
         <div class="footer">
-            Philippine National Police — Highway Patrol Group Driver Safety Initiative<br>
+            Philippine National Police — Driver Safety Initiative<br>
             RoadSafe AI Platform &copy; 2026 · Official Driver Portal
         </div>
     </div>

@@ -3,26 +3,24 @@ package com.example.gamifiedroadsafetyawareness.ui.theme
 import androidx.compose.ui.graphics.Color
 
 // ══════════════════════════════════════════════════════════════════════════
-// 🇵🇭 PHILIPPINE POLICE & LAW ENFORCEMENT COMMAND IDENTITY PALETTE
-// Inspired by Philippine National Police (PNP) & Highway Patrol Group (HPG)
+// 🇵🇭 PHILIPPINE TRAFFIC & DRIVER SAFETY COMMAND IDENTITY PALETTE
 // ══════════════════════════════════════════════════════════════════════════
 
 // ── Primary Authority Navy ──
-val PnpTacticalNavy = Color(0xFF091931)     // Institutional PNP dark navy — command presence & authority
-val PnpCommandNavy = Color(0xFF0E2344)      // Deep precinct command navy — cards & top app bars
-val NavyPrimary = PnpTacticalNavy           // Primary identity anchor
+val TacticalNavy = Color(0xFF091931)        // Institutional dark navy — command presence & authority
+val CommandNavy = Color(0xFF0E2344)         // Deep precinct command navy — cards & top app bars
+val NavyPrimary = TacticalNavy              // Primary identity anchor
 val GraphiteInk = Color(0xFF0C1424)         // High-contrast deep slate text base
 
-// ── Secondary Law-Enforcement Blue ──
-val HpgPatrolBlue = Color(0xFF1B3D78)       // HPG highway patrol blue — secondary & interactive highlights
-val PoliceBlue = HpgPatrolBlue              // Police royal blue
-val PoliceLightBlue = Color(0xFF2563EB)     // Bright law enforcement accent for indicators & links
+// ── Secondary Safety Blue ──
+val PatrolBlue = Color(0xFF1B3D78)          // Safety patrol blue — secondary & interactive highlights
+val PoliceBlue = PatrolBlue                 // Royal safety blue
+val PoliceLightBlue = Color(0xFF2563EB)     // Bright safety accent for indicators & links
 val GuardianIndigo = NavyPrimary
 val WarmCoral = PoliceBlue
 
 // ── Official Brass Badge Gold & Rank Metals ──
-val PnpBadgeGold = Color(0xFFD4AF37)        // Official Philippine brass police badge gold
-val BadgeGold = PnpBadgeGold                // Status highlight, ranks, officer stars & XP
+val BadgeGold = Color(0xFFD4AF37)           // Official brass safety badge gold
 val GoldMetallic = Color(0xFFE5B83B)        // Highlight shimmer & star emblems
 val BrassBronze = Color(0xFF9A7B2C)         // Subdued official brass borders
 

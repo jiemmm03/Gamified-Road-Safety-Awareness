@@ -2,6 +2,7 @@ package com.example.gamifiedroadsafetyawareness.ui
 
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -10,6 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.graphics.Color
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.AdminPanelSettings
@@ -176,7 +178,7 @@ fun RoadSafetyApp() {
     val coroutineScope = rememberCoroutineScope()
 
     fun homeScreen(): Screen = when (currentUserRole) {
-        UserRole.ADMIN -> Screen.AdminDashboard
+        UserRole.ADMIN, UserRole.SUPER_ADMIN -> Screen.AdminDashboard
         UserRole.USER -> Screen.Dashboard
     }
 
@@ -207,7 +209,7 @@ fun RoadSafetyApp() {
             loggedInUsername = authManager.getLoggedInUsername() ?: ""
             sessionId++
             val startScreen = when (saved.role) {
-                UserRole.ADMIN -> Screen.AdminDashboard
+                UserRole.ADMIN, UserRole.SUPER_ADMIN -> Screen.AdminDashboard
                 UserRole.USER -> Screen.Dashboard
             }
             screenStack.clear()
@@ -320,82 +322,80 @@ fun RoadSafetyApp() {
 
     val primaryScreens = when (currentUserRole) {
         UserRole.USER -> userPrimaryScreens
-        UserRole.ADMIN -> adminPrimaryScreens
+        UserRole.ADMIN, UserRole.SUPER_ADMIN -> adminPrimaryScreens
     }
 
     val showTopBar = currentScreen != Screen.Login
             && currentScreen != Screen.SignUp
-            && primaryScreens.contains(currentScreen)
-
-    if (isCheckingSession) {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(MaterialTheme.colorScheme.background),
-            contentAlignment = Alignment.Center
-        ) {
-            CircularProgressIndicator(color = BadgeGold)
-        }
-        return
-    }
-
-    when (currentScreen) {
-        Screen.Login -> {
-            if (authManager.hasActiveSession() && loggedInUsername.isNotBlank()) {
-                resetStackTo(homeScreen())
-                return
-            }
-            LoginScreen(
-                onLoginSuccess = { role, displayName, permissions ->
-                    currentUserRole = role
-                    loggedInDisplayName = displayName
-                    currentUserPermissions = permissions
-                    loggedInUsername = authManager.getLoggedInUsername() ?: ""
-                    sessionId++
-                    resetStackTo(homeScreen())
-                },
-                onNavigateToSignUp = { navigateTo(Screen.SignUp) },
-                authManager = authManager
-            )
-            return
-        }
-        Screen.SignUp -> {
-            SignUpScreen(
-                onSignUpSuccess = { role, displayName, permissions ->
-                    currentUserRole = role
-                    loggedInDisplayName = displayName
-                    currentUserPermissions = permissions
-                    loggedInUsername = authManager.getLoggedInUsername() ?: ""
-                    sessionId++
-                    resetStackTo(homeScreen())
-                },
-                onNavigateToLogin = { resetStackTo(Screen.Login) },
-                authManager = authManager
-            )
-            return
-        }
-        else -> { /* Post-auth — handled below with scaffold */ }
-    }
-
-    if (!RolePermissions.hasPermission(currentUserRole, currentScreen.requiredPermission)) {
-        AccessDeniedScreen(
-            userRole = currentUserRole,
-            requiredPermission = currentScreen.requiredPermission,
-            onNavigateBack = { resetStackTo(homeScreen()) }
-        )
-        return
-    }
-
     ProvideLocalizedContext(languageCode = languageCode) {
-    ModalNavigationDrawer(
-        drawerState = drawerState,
-        gesturesEnabled = currentScreen != Screen.Login && currentScreen != Screen.SignUp,
-        drawerContent = {
-            AppNavigationDrawer(
-                currentScreen = currentScreen,
-                currentUserRole = currentUserRole,
-                displayName = loggedInDisplayName,
-                username = loggedInUsername,
+        if (isCheckingSession) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(MaterialTheme.colorScheme.background),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator(color = BadgeGold)
+            }
+            return@ProvideLocalizedContext
+        }
+
+        when (currentScreen) {
+            Screen.Login -> {
+                if (authManager.hasActiveSession() && loggedInUsername.isNotBlank()) {
+                    resetStackTo(homeScreen())
+                    return@ProvideLocalizedContext
+                }
+                LoginScreen(
+                    onLoginSuccess = { role, displayName, permissions ->
+                        currentUserRole = role
+                        loggedInDisplayName = displayName
+                        currentUserPermissions = permissions
+                        loggedInUsername = authManager.getLoggedInUsername() ?: ""
+                        sessionId++
+                        resetStackTo(homeScreen())
+                    },
+                    onNavigateToSignUp = { navigateTo(Screen.SignUp) },
+                    authManager = authManager
+                )
+                return@ProvideLocalizedContext
+            }
+            Screen.SignUp -> {
+                SignUpScreen(
+                    onSignUpSuccess = { role, displayName, permissions ->
+                        currentUserRole = role
+                        loggedInDisplayName = displayName
+                        currentUserPermissions = permissions
+                        loggedInUsername = authManager.getLoggedInUsername() ?: ""
+                        sessionId++
+                        resetStackTo(homeScreen())
+                    },
+                    onNavigateToLogin = { resetStackTo(Screen.Login) },
+                    authManager = authManager
+                )
+                return@ProvideLocalizedContext
+            }
+            else -> { /* Post-auth — handled below with scaffold */ }
+        }
+
+        if (!RolePermissions.hasPermission(currentUserRole, currentScreen.requiredPermission)) {
+            AccessDeniedScreen(
+                userRole = currentUserRole,
+                requiredPermission = currentScreen.requiredPermission,
+                onNavigateBack = { resetStackTo(homeScreen()) }
+            )
+            return@ProvideLocalizedContext
+        }
+
+        ModalNavigationDrawer(
+            drawerState = drawerState,
+            gesturesEnabled = currentScreen != Screen.Login && currentScreen != Screen.SignUp,
+            drawerContent = {
+                AppNavigationDrawer(
+                    currentScreen = currentScreen,
+                    currentUserRole = currentUserRole,
+                    displayName = loggedInDisplayName,
+                    username = loggedInUsername,
                 userProgress = userProgress,
                 onNavigateTo = { screen ->
                     coroutineScope.launch {
@@ -452,6 +452,88 @@ fun RoadSafetyApp() {
                 )
             }
         },
+        bottomBar = {
+            if (showTopBar && currentUserRole == UserRole.USER) {
+                Surface(
+                    shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
+                    color = MaterialTheme.colorScheme.surface,
+                    border = BorderStroke(1.dp, BadgeGold.copy(alpha = 0.2f)),
+                    shadowElevation = 8.dp
+                ) {
+                    NavigationBar(
+                        containerColor = Color.Transparent,
+                        tonalElevation = 0.dp,
+                        modifier = Modifier.navigationBarsPadding()
+                    ) {
+                        NavigationBarItem(
+                            selected = currentScreen == Screen.Dashboard,
+                            onClick = { navigateToTab(Screen.Dashboard) },
+                            icon = { Icon(Icons.Rounded.Home, contentDescription = "Home") },
+                            label = { Text("Home", style = MaterialTheme.typography.labelSmall) },
+                            colors = NavigationBarItemDefaults.colors(
+                                selectedIconColor = BadgeGold,
+                                selectedTextColor = BadgeGold,
+                                indicatorColor = BadgeGold.copy(alpha = 0.15f),
+                                unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                                unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        )
+                        NavigationBarItem(
+                            selected = currentScreen == Screen.Assessment,
+                            onClick = { navigateToTab(Screen.Assessment) },
+                            icon = { Icon(Icons.AutoMirrored.Rounded.MenuBook, contentDescription = "Modules") },
+                            label = { Text("Modules", style = MaterialTheme.typography.labelSmall) },
+                            colors = NavigationBarItemDefaults.colors(
+                                selectedIconColor = BadgeGold,
+                                selectedTextColor = BadgeGold,
+                                indicatorColor = BadgeGold.copy(alpha = 0.15f),
+                                unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                                unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        )
+                        NavigationBarItem(
+                            selected = currentScreen == Screen.Simulation || currentScreen == Screen.QuizTaking,
+                            onClick = { navigateTo(Screen.Simulation) },
+                            icon = { Icon(Icons.Rounded.Quiz, contentDescription = "Quiz") },
+                            label = { Text("Quiz", style = MaterialTheme.typography.labelSmall) },
+                            colors = NavigationBarItemDefaults.colors(
+                                selectedIconColor = BadgeGold,
+                                selectedTextColor = BadgeGold,
+                                indicatorColor = BadgeGold.copy(alpha = 0.15f),
+                                unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                                unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        )
+                        NavigationBarItem(
+                            selected = currentScreen == Screen.Gamification,
+                            onClick = { navigateToTab(Screen.Gamification) },
+                            icon = { Icon(Icons.AutoMirrored.Rounded.TrendingUp, contentDescription = "Progress") },
+                            label = { Text("Progress", style = MaterialTheme.typography.labelSmall) },
+                            colors = NavigationBarItemDefaults.colors(
+                                selectedIconColor = BadgeGold,
+                                selectedTextColor = BadgeGold,
+                                indicatorColor = BadgeGold.copy(alpha = 0.15f),
+                                unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                                unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        )
+                        NavigationBarItem(
+                            selected = currentScreen == Screen.Profile,
+                            onClick = { navigateToTab(Screen.Profile) },
+                            icon = { Icon(Icons.Rounded.Person, contentDescription = "Profile") },
+                            label = { Text("Profile", style = MaterialTheme.typography.labelSmall) },
+                            colors = NavigationBarItemDefaults.colors(
+                                selectedIconColor = BadgeGold,
+                                selectedTextColor = BadgeGold,
+                                indicatorColor = BadgeGold.copy(alpha = 0.15f),
+                                unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                                unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        )
+                    }
+                }
+            }
+        },
         containerColor = MaterialTheme.colorScheme.background
     ) { innerPadding ->
         Surface(
@@ -479,38 +561,20 @@ fun RoadSafetyApp() {
                 }
                 Screen.Simulation -> {
                     SimulationScreen(
+                        username = loggedInUsername,
+                        xpManager = xpManager,
+                        onBackClick = { goBack() },
                         onSubmitDecision = { option ->
-                            lastSubmittedOption = option
                             coroutineScope.launch {
-                                val xpEarned: Int
-                                if (option.isCorrect) {
-                                    val result = xpManager.awardSimulationDecision(
-                                        username = loggedInUsername,
-                                        tier = option.tier,
-                                        aiRecommendationFollowed = option.aiRecommended,
-                                        scenarioTitle = MockData.activeScenario.title
-                                    )
-                                    xpEarned = result.totalAwarded
-                                    lastSimLeveledUp = result.leveledUp
-                                    lastSimNewLevel = result.newLevel
-                                } else {
-                                    xpEarned = 0
-                                    lastSimLeveledUp = false
-                                }
-                                lastSimXpEarned = xpEarned
-                                if (xpEarned > 0) {
-                                    Toast.makeText(context, "+$xpEarned XP earned!", Toast.LENGTH_SHORT).show()
-                                }
+                                val xpEarned = if (option.isCorrect) 100 else 0
                                 logUserAction(
                                     actionType = ActionType.SIMULATION_DECISION,
                                     module = Module.CONTENT_DATA,
-                                    description = "Completed simulation '${MockData.activeScenario.title}' choosing '${option.label}' (${if (option.isCorrect) "Correct" else "Incorrect"}) — earned $xpEarned XP",
+                                    description = "Simulation decision: chosen '${option.label}' (${if (option.isCorrect) "Correct" else "Incorrect"}) — earned $xpEarned XP",
                                     riskLevel = if (option.isCorrect) RiskLevel.LOW else RiskLevel.MEDIUM
                                 )
-                                navigateTo(Screen.Feedback)
                             }
                         },
-                        onBackClick = { goBack() },
                         modifier = Modifier.padding(innerPadding)
                     )
                 }
@@ -824,6 +888,10 @@ fun RoadSafetyApp() {
                 Screen.AdminQuizAttempts -> {
                     AdminQuizAttemptsScreen(
                         xpManager = xpManager,
+                        onReviewAttempt = { attemptId ->
+                            activeAttemptId = attemptId
+                            navigateTo(Screen.AdminAnswerReview)
+                        },
                         onBackClick = { goBack() },
                         modifier = Modifier.padding(innerPadding)
                     )

@@ -1,31 +1,16 @@
 package com.example.gamifiedroadsafetyawareness.ui.screens
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
-import androidx.compose.material3.FilterChip
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.material.icons.automirrored.rounded.ArrowForward
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -40,30 +25,37 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-/** All-users searchable/filterable quiz attempt log — admin-only. */
+/** All-users searchable/filterable quiz and simulation attempt log — admin/super-admin monitoring. */
 @Composable
 fun AdminQuizAttemptsScreen(
     xpManager: XpManager,
+    onReviewAttempt: (Long) -> Unit = {},
     onBackClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     var attempts by remember { mutableStateOf<List<QuizAttemptEntity>>(emptyList()) }
     var searchQuery by remember { mutableStateOf("") }
     var statusFilter by remember { mutableStateOf<Boolean?>(null) } // null = all, true = passed, false = failed
+    var typeFilter by remember { mutableStateOf<String?>(null) } // null = all, "SIMULATION", "QUIZ"
     var difficultyFilter by remember { mutableStateOf<String?>(null) }
 
     LaunchedEffect(Unit) {
         attempts = xpManager.getAllQuizAttempts()
     }
 
-    val filtered = remember(attempts, searchQuery, statusFilter, difficultyFilter) {
+    val filtered = remember(attempts, searchQuery, statusFilter, typeFilter, difficultyFilter) {
         attempts.filter { attempt ->
             val matchesQuery = searchQuery.isBlank() ||
                 attempt.userId.contains(searchQuery, ignoreCase = true) ||
                 attempt.quizTitle.contains(searchQuery, ignoreCase = true)
             val matchesStatus = statusFilter == null || attempt.passed == statusFilter
+            val matchesType = when (typeFilter) {
+                "SIMULATION" -> attempt.quizId.contains("simulation", ignoreCase = true)
+                "QUIZ" -> !attempt.quizId.contains("simulation", ignoreCase = true)
+                else -> true
+            }
             val matchesDifficulty = difficultyFilter == null || attempt.difficulty == difficultyFilter
-            matchesQuery && matchesStatus && matchesDifficulty
+            matchesQuery && matchesStatus && matchesType && matchesDifficulty
         }
     }
 
@@ -85,12 +77,19 @@ fun AdminQuizAttemptsScreen(
                     )
                 }
                 Spacer(modifier = Modifier.width(4.dp))
-                Text(
-                    text = "All Quiz Attempts",
-                    style = MaterialTheme.typography.titleLarge,
-                    color = MaterialTheme.colorScheme.onBackground,
-                    fontWeight = FontWeight.Bold
-                )
+                Column {
+                    Text(
+                        text = "Monitoring & Attempts",
+                        style = MaterialTheme.typography.titleLarge,
+                        color = MaterialTheme.colorScheme.onBackground,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Text(
+                        text = "Admin & Super Admin Activity Log",
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
             }
         }
 
@@ -98,20 +97,26 @@ fun AdminQuizAttemptsScreen(
             SearchFilterBar(
                 query = searchQuery,
                 onQueryChange = { searchQuery = it },
-                placeholder = "Search by username or module..."
+                placeholder = "Search by user or simulation scenario..."
             )
         }
 
         item {
             LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 item {
-                    FilterChip(selected = statusFilter == null, onClick = { statusFilter = null }, label = { Text("All") })
+                    FilterChip(selected = typeFilter == null && statusFilter == null, onClick = { typeFilter = null; statusFilter = null }, label = { Text("All Attempts") })
                 }
                 item {
-                    FilterChip(selected = statusFilter == true, onClick = { statusFilter = true }, label = { Text("Passed") })
+                    FilterChip(selected = typeFilter == "SIMULATION", onClick = { typeFilter = if (typeFilter == "SIMULATION") null else "SIMULATION" }, label = { Text("Simulations 🚗") })
                 }
                 item {
-                    FilterChip(selected = statusFilter == false, onClick = { statusFilter = false }, label = { Text("Failed") })
+                    FilterChip(selected = typeFilter == "QUIZ", onClick = { typeFilter = if (typeFilter == "QUIZ") null else "QUIZ" }, label = { Text("Quizzes 📝") })
+                }
+                item {
+                    FilterChip(selected = statusFilter == true, onClick = { statusFilter = if (statusFilter == true) null else true }, label = { Text("Passed") })
+                }
+                item {
+                    FilterChip(selected = statusFilter == false, onClick = { statusFilter = if (statusFilter == false) null else false }, label = { Text("Failed") })
                 }
                 item {
                     FilterChip(selected = difficultyFilter == "EASY", onClick = { difficultyFilter = if (difficultyFilter == "EASY") null else "EASY" }, label = { Text("Easy") })
@@ -127,14 +132,17 @@ fun AdminQuizAttemptsScreen(
 
         item {
             Text(
-                text = "${filtered.size} of ${attempts.size} attempts",
+                text = "${filtered.size} of ${attempts.size} recorded attempts (Tap to review answers)",
                 style = MaterialTheme.typography.labelSmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
 
         items(filtered, key = { it.id }) { attempt ->
-            AdminAttemptRow(attempt)
+            AdminAttemptRow(
+                attempt = attempt,
+                onClick = { onReviewAttempt(attempt.id) }
+            )
         }
 
         item { Spacer(modifier = Modifier.height(16.dp)) }
@@ -142,30 +150,49 @@ fun AdminQuizAttemptsScreen(
 }
 
 @Composable
-private fun AdminAttemptRow(attempt: QuizAttemptEntity) {
+private fun AdminAttemptRow(
+    attempt: QuizAttemptEntity,
+    onClick: () -> Unit
+) {
     val dateStr = remember(attempt.completedAt) {
         SimpleDateFormat("MMM dd, yyyy HH:mm", Locale.getDefault()).format(Date(attempt.completedAt))
     }
-    AppCard(modifier = Modifier.fillMaxWidth(), elevation = 2) {
+    val isSim = attempt.quizId.contains("simulation", ignoreCase = true)
+
+    AppCard(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = onClick),
+        containerColor = MaterialTheme.colorScheme.surface,
+        elevation = 2
+    ) {
         Row(
-            modifier = Modifier.fillMaxWidth().padding(16.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Column(modifier = Modifier.weight(1f)) {
-                Text(
-                    text = "@${attempt.userId} · ${attempt.quizTitle}",
-                    style = MaterialTheme.typography.titleSmall,
-                    color = MaterialTheme.colorScheme.onSurface,
-                    fontWeight = FontWeight.Bold
-                )
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text(
+                        text = if (isSim) "🚗 " else "📝 ",
+                        style = MaterialTheme.typography.titleSmall
+                    )
+                    Text(
+                        text = "@${attempt.userId} · ${attempt.quizTitle}",
+                        style = MaterialTheme.typography.titleSmall,
+                        color = MaterialTheme.colorScheme.onSurface,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
                 Spacer(modifier = Modifier.height(2.dp))
                 Text(
-                    text = "$dateStr · ${attempt.difficulty} · Attempt #${attempt.attemptNumber}",
+                    text = "$dateStr · ${attempt.difficulty} · Attempt #${attempt.attemptNumber} · ${attempt.correctCount}/${attempt.totalQuestions} Correct",
                     style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
-            Spacer(modifier = Modifier.width(12.dp))
+            Spacer(modifier = Modifier.width(10.dp))
             Column(horizontalAlignment = Alignment.End) {
                 Text(
                     text = "${attempt.scorePercent}%",
@@ -179,6 +206,13 @@ private fun AdminAttemptRow(attempt: QuizAttemptEntity) {
                     color = if (attempt.passed) EmeraldGreen else TrafficRed
                 )
             }
+            Spacer(modifier = Modifier.width(6.dp))
+            Icon(
+                imageVector = Icons.AutoMirrored.Rounded.ArrowForward,
+                contentDescription = "Review",
+                tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f),
+                modifier = Modifier.size(16.dp)
+            )
         }
     }
 }

@@ -35,7 +35,7 @@
                 <img src="logo.png" alt="RoadSafe AI Emblem" class="splash-logo">
                 <div class="splash-pulse-ring"></div>
             </div>
-            <div class="pnp-station-tag" style="margin-bottom:8px;">MUNICIPALITY OF DAGAMI · LEYTE</div>
+            <div class="station-tag" style="margin-bottom:8px;">MUNICIPALITY OF DAGAMI · LEYTE</div>
             <h1 class="splash-title font-h1">RoadSafe AI</h1>
             <p class="splash-subtitle">Traffic Safety &amp; Driver Education Command Center</p>
             <div class="splash-loader">
@@ -93,7 +93,7 @@
             </button>
             <button class="nav-item font-navigation" data-tab="devices" id="nav-devices">
                 <span class="material-icons-round">phone_android</span>
-                <span class="nav-label">Device</span>
+                <span class="nav-label">Device Fleet</span>
                 <span class="nav-badge font-badge" id="badge-devices">0</span>
             </button>
             <button class="nav-item font-navigation" data-tab="logins" id="nav-logins">
@@ -137,20 +137,35 @@
     <!-- ═══════════════════════ MAIN CONTENT ═══════════════════════ -->
     <main class="main-content" id="main-content">
 
-        <!-- Top Header Bar -->
+        <!-- ═══════════════════════ TOP HEADER BAR & PORTAL SWITCHER ═══════════════════════ -->
         <header class="top-bar">
             <button class="menu-toggle" id="menu-toggle" aria-label="Toggle Navigation Menu">
                 <span class="material-icons-round">menu</span>
             </button>
             <div class="top-bar-title">
-                <h1 class="page-title font-h1" id="page-title">Dashboard</h1>
-                <span class="top-bar-subtitle font-body-sm" id="page-subtitle">Dagami Leyte · Live Safety Telemetry</span>
+                <h1 class="page-title font-h1" id="page-title">Admin Dashboard</h1>
+                <span class="top-bar-subtitle font-body-sm" id="page-subtitle">Dagami Leyte · Live Safety Telemetry &amp; System Command</span>
             </div>
+            
+            <!-- Global Portal Mode Switcher Pill -->
+            <div class="portal-mode-toggle-wrap">
+                <div class="portal-toggle-pill">
+                    <button class="portal-toggle-btn active font-button" id="btn-portal-admin" onclick="switchPortalMode('admin')">
+                        <span class="material-icons-round">admin_panel_settings</span>
+                        <span>Admin Command</span>
+                    </button>
+                    <button class="portal-toggle-btn font-button" id="btn-portal-user" onclick="switchPortalMode('user')">
+                        <span class="material-icons-round">school</span>
+                        <span>User Learning</span>
+                    </button>
+                </div>
+            </div>
+
             <div class="top-bar-actions">
                 <button class="btn btn-download-apk font-button" onclick="showAppInstallModal()"
                     title="Install RoadSafe AI Mobile App">
                     <span class="material-icons-round">install_mobile</span>
-                    <span class="btn-text">Install Mobile App</span>
+                    <span class="btn-text">Install App</span>
                 </button>
                 <div class="live-indicator">
                     <span class="live-dot pulse"></span>
@@ -168,56 +183,571 @@
             </div>
         </header>
 
-        <!-- ═══════════ TAB 1: DASHBOARD ═══════════ -->
-        <section class="tab-content active" id="tab-dashboard">
-            <div class="metrics-grid">
-                <div class="metric-card metric-online">
-                    <div class="metric-icon-wrap"><span class="material-icons-round">wifi</span></div>
-                    <div class="metric-info">
-                        <span class="metric-value font-statistic" id="metric-online">0</span>
-                        <span class="metric-label font-label">Online Now</span>
-                        <span class="metric-caption font-caption">Active in last 5 mins</span>
+        <!-- ═══════════════════════════════════════════════════════════════
+             PART A: DEDICATED USER DASHBOARD (LEARNING & GAMIFICATION)
+             ═══════════════════════════════════════════════════════════════ -->
+        <div id="user-portal-container" class="portal-view user-portal-view" style="display:none;">
+            <!-- 1. USER HEADER -->
+            <div class="user-welcome-banner">
+                <div class="user-welcome-left">
+                    <div class="user-avatar-frame">
+                        <span class="material-icons-round">sports_motorsports</span>
+                    </div>
+                    <div class="user-welcome-texts">
+                        <div class="station-tag" style="margin-bottom:4px;">
+                            <span class="material-icons-round" style="font-size:12px;">verified</span>
+                            DAGAMI DRIVER ACADEMY
+                        </div>
+                        <h1 class="font-h1 user-greet-title">Welcome back, <span id="user-display-name">Driver Juan Dela Cruz</span>! 👋</h1>
+                        <p class="font-body-sm user-greet-sub">Continue your journey toward safer, responsible driving in the Philippines.</p>
                     </div>
                 </div>
+                <div class="user-welcome-right">
+                    <div class="user-status-pill">
+                        <span class="live-dot pulse" style="background:var(--emerald-green);"></span>
+                        <span class="font-badge" style="color:var(--emerald-green);">DAILY LEARNER ACTIVE</span>
+                    </div>
+                    <button class="btn btn-primary font-button" onclick="startDailyChallengeModal()">
+                        <span class="material-icons-round">bolt</span>
+                        <span>Daily Challenge (+50 XP)</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="user-dashboard-body">
+                <!-- 2. USER PROGRESS SUMMARY (4 EQUAL-WEIGHT STAT CARDS) -->
+                <section class="user-dash-section">
+                    <div class="user-stat-cards-grid">
+                        <div class="user-stat-card level-card">
+                            <div class="stat-card-head">
+                                <div class="stat-icon-wrap level"><span class="material-icons-round">military_tech</span></div>
+                                <span class="stat-tag font-badge">CURRENT LEVEL</span>
+                            </div>
+                            <div class="stat-main-value font-h1" id="u-stat-level">Level 4</div>
+                            <div class="stat-sub-label font-label">Pro Defensive Driver</div>
+                            <div class="user-progress-bar-wrap">
+                                <div class="user-progress-bar-fill" id="u-stat-level-bar" style="width: 72%;"></div>
+                            </div>
+                            <div class="stat-progress-text font-caption">72% to Level 5 (Master Driver)</div>
+                        </div>
+
+                        <div class="user-stat-card xp-card">
+                            <div class="stat-card-head">
+                                <div class="stat-icon-wrap xp"><span class="material-icons-round">bolt</span></div>
+                                <span class="stat-tag font-badge">EXPERIENCE POINTS</span>
+                            </div>
+                            <div class="stat-main-value font-h1 text-gold" id="u-stat-xp">2,450 XP</div>
+                            <div class="stat-sub-label font-label"><span class="text-gold">+150 XP</span> Earned Today</div>
+                            <div class="user-progress-bar-wrap">
+                                <div class="user-progress-bar-fill gold" style="width: 65%;"></div>
+                            </div>
+                            <div class="stat-progress-text font-caption">550 XP needed for next level</div>
+                        </div>
+
+                        <div class="user-stat-card streak-card">
+                            <div class="stat-card-head">
+                                <div class="stat-icon-wrap streak"><span class="material-icons-round">local_fire_department</span></div>
+                                <span class="stat-tag font-badge">DAILY STREAK</span>
+                            </div>
+                            <div class="stat-main-value font-h1 text-orange" id="u-stat-streak">🔥 7 Days</div>
+                            <div class="stat-sub-label font-label">Active Learning Habit</div>
+                            <div class="streak-days-row">
+                                <span class="streak-dot active">M</span>
+                                <span class="streak-dot active">T</span>
+                                <span class="streak-dot active">W</span>
+                                <span class="streak-dot active">T</span>
+                                <span class="streak-dot active">F</span>
+                                <span class="streak-dot active">S</span>
+                                <span class="streak-dot active today">S</span>
+                            </div>
+                            <div class="stat-progress-text font-caption text-emerald">Daily Goal Completed 🟢</div>
+                        </div>
+
+                        <div class="user-stat-card rank-card">
+                            <div class="stat-card-head">
+                                <div class="stat-icon-wrap rank"><span class="material-icons-round">emoji_events</span></div>
+                                <span class="stat-tag font-badge">LEADERBOARD RANK</span>
+                            </div>
+                            <div class="stat-main-value font-h1 text-gold" id="u-stat-rank">#3 Municipal</div>
+                            <div class="stat-sub-label font-label">Dagami Leyte Safety Registry</div>
+                            <div class="stat-meta-pill">
+                                <span class="material-icons-round" style="font-size:14px;color:var(--emerald-green);">trending_up</span>
+                                <span>Top 5% of active learners</span>
+                            </div>
+                            <div class="stat-progress-text font-caption">50 XP behind #2 Driver Santos</div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 3. CONTINUE LEARNING (PROMINENT HERO BANNER) -->
+                <section class="user-dash-section">
+                    <div class="continue-learning-card">
+                        <div class="continue-badge-wrap">
+                            <span class="station-tag"><span class="material-icons-round" style="font-size:12px;">play_circle</span> CONTINUE LEARNING</span>
+                            <span class="continue-time font-caption"><span class="material-icons-round" style="font-size:14px;">schedule</span> Practiced 2 hours ago</span>
+                        </div>
+                        <div class="continue-content-row">
+                            <div class="continue-icon-box">
+                                <span class="material-icons-round">traffic</span>
+                            </div>
+                            <div class="continue-info">
+                                <div class="continue-tag font-badge">MODULE 2 · TRAFFIC SIGNS &amp; ROAD MARKINGS</div>
+                                <h2 class="continue-title font-h2">Regulatory, Warning, &amp; Guide Signs in the Philippines</h2>
+                                <p class="continue-desc font-body-sm">
+                                    Master priority stop signs, speed limit indicators, pedestrian crossing warnings, and solid lane pavement markings.
+                                </p>
+                                <div class="continue-progress-row">
+                                    <div class="continue-bar-wrap">
+                                        <div class="continue-bar-fill" style="width: 65%;"></div>
+                                    </div>
+                                    <span class="continue-pct font-label">65% Complete (13/20 Passed)</span>
+                                </div>
+                            </div>
+                            <button class="btn btn-primary btn-continue-action font-button" onclick="startModuleDirectly('mod_medium_quiz')">
+                                <span>Continue Learning</span>
+                                <span class="material-icons-round">arrow_forward</span>
+                            </button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 4. LEARNING MODULE GRID (6 STRUCTURED CARDS) -->
+                <section class="user-dash-section">
+                    <div class="section-title-row">
+                        <div>
+                            <h2 class="font-h2 section-heading">Educational Curriculum Modules</h2>
+                            <p class="font-caption section-subheading">Select a topic below to study Philippine traffic laws and practice safe driving decisions</p>
+                        </div>
+                        <button class="btn btn-secondary font-button" onclick="openAllModulesView()">View All Curriculum</button>
+                    </div>
+                    <div class="learning-module-grid">
+                        <div class="module-card-tile" onclick="startModuleDirectly('mod_easy_quiz')">
+                            <div class="module-tile-header">
+                                <div class="module-tile-icon rules"><span class="material-icons-round">alt_route</span></div>
+                                <span class="module-xp-pill font-badge">+100 XP</span>
+                            </div>
+                            <h3 class="module-tile-title font-h3">🚦 Traffic Rules &amp; Priority</h3>
+                            <p class="module-tile-desc font-body-sm">Right-of-way laws, 4-way uncontrolled intersections, roundabout rules, and overtaking limits.</p>
+                            <div class="module-tile-footer">
+                                <div class="module-mini-bar"><div class="module-mini-fill" style="width:80%;"></div></div>
+                                <span class="module-pct font-caption">80% Completed</span>
+                            </div>
+                        </div>
+
+                        <div class="module-card-tile active" onclick="startModuleDirectly('mod_medium_quiz')">
+                            <div class="module-tile-header">
+                                <div class="module-tile-icon signs"><span class="material-icons-round">traffic</span></div>
+                                <span class="module-xp-pill font-badge">+200 XP</span>
+                            </div>
+                            <h3 class="module-tile-title font-h3">🛑 Traffic Signs &amp; Signals</h3>
+                            <p class="module-tile-desc font-body-sm">Official regulatory signs, warning triangles, speed limit boards, and road pavement markings.</p>
+                            <div class="module-tile-footer">
+                                <div class="module-mini-bar"><div class="module-mini-fill" style="width:65%;"></div></div>
+                                <span class="module-pct font-caption">65% Completed</span>
+                            </div>
+                        </div>
+
+                        <div class="module-card-tile" onclick="startModuleDirectly('mod_hard_quiz')">
+                            <div class="module-tile-header">
+                                <div class="module-tile-icon safety"><span class="material-icons-round">speed</span></div>
+                                <span class="module-xp-pill font-badge">+300 XP</span>
+                            </div>
+                            <h3 class="module-tile-title font-h3">🛣 Road Safety &amp; Speed Control</h3>
+                            <p class="module-tile-desc font-body-sm">Safe speed limits, braking distances on wet asphalt, school zones, and vehicle safety maintenance.</p>
+                            <div class="module-tile-footer">
+                                <div class="module-mini-bar"><div class="module-mini-fill" style="width:50%;"></div></div>
+                                <span class="module-pct font-caption">50% Completed</span>
+                            </div>
+                        </div>
+
+                        <div class="module-card-tile" onclick="startModuleDirectly('mod_medium_quiz')">
+                            <div class="module-tile-header">
+                                <div class="module-tile-icon defensive"><span class="material-icons-round">security</span></div>
+                                <span class="module-xp-pill font-badge">+200 XP</span>
+                            </div>
+                            <h3 class="module-tile-title font-h3">🚗 Defensive Driving Tactics</h3>
+                            <p class="module-tile-desc font-body-sm">The 3-second buffer rule, mirror head-checks, blind spots, and predicting other motorists' errors.</p>
+                            <div class="module-tile-footer">
+                                <div class="module-mini-bar"><div class="module-mini-fill" style="width:40%;"></div></div>
+                                <span class="module-pct font-caption">40% Completed</span>
+                            </div>
+                        </div>
+
+                        <div class="module-card-tile" onclick="startScenarioTrialDirectly()">
+                            <div class="module-tile-header">
+                                <div class="module-tile-icon decisions"><span class="material-icons-round">psychology</span></div>
+                                <span class="module-xp-pill font-badge">+250 XP</span>
+                            </div>
+                            <h3 class="module-tile-title font-h3">🧠 Driver Decision-Making</h3>
+                            <p class="module-tile-desc font-body-sm">Split-second hazard choices, pedestrian crossing dilemmas, and emergency lane merging.</p>
+                            <div class="module-tile-footer">
+                                <div class="module-mini-bar"><div class="module-mini-fill" style="width:75%;"></div></div>
+                                <span class="module-pct font-caption">75% Completed</span>
+                            </div>
+                        </div>
+
+                        <div class="module-card-tile" onclick="startModuleDirectly('mod_hard_quiz')">
+                            <div class="module-tile-header">
+                                <div class="module-tile-icon hazards"><span class="material-icons-round">warning</span></div>
+                                <span class="module-xp-pill font-badge">+300 XP</span>
+                            </div>
+                            <h3 class="module-tile-title font-h3">⚠️ Road Hazards &amp; Night Driving</h3>
+                            <p class="module-tile-desc font-body-sm">Low visibility, heavy tropical downpours, animal crossings, pedestrian safety, and fatigue control.</p>
+                            <div class="module-tile-footer">
+                                <div class="module-mini-bar"><div class="module-mini-fill" style="width:30%;"></div></div>
+                                <span class="module-pct font-caption">30% Completed</span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 5. AI ROAD SAFETY ASSISTANT (INTERACTIVE DEDICATED SECTION) -->
+                <section class="user-dash-section">
+                    <div class="ai-assistant-card">
+                        <div class="ai-assistant-header">
+                            <div class="ai-avatar-badge">
+                                <span class="material-icons-round">smart_toy</span>
+                            </div>
+                            <div class="ai-assistant-text">
+                                <div class="station-tag" style="margin-bottom:4px;">INTELLIGENT DRIVER TUTOR</div>
+                                <h2 class="font-h2" style="color:#FFFFFF;margin-bottom:2px;">AI Road Safety Assistant</h2>
+                                <p class="font-caption" style="color:var(--text-secondary);">
+                                    Ask questions, understand Philippine traffic rules, and practice safer driving decisions.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="ai-actions-grid">
+                            <button class="ai-action-btn font-button" onclick="triggerAiAssistant('Ask AI')">
+                                <span class="material-icons-round">chat</span>
+                                <span>Ask AI</span>
+                            </button>
+                            <button class="ai-action-btn font-button" onclick="triggerAiAssistant('Explain Traffic Rule')">
+                                <span class="material-icons-round">gavel</span>
+                                <span>Explain Traffic Rule</span>
+                            </button>
+                            <button class="ai-action-btn font-button" onclick="triggerAiAssistant('Identify Traffic Sign')">
+                                <span class="material-icons-round">traffic</span>
+                                <span>Identify Traffic Sign</span>
+                            </button>
+                            <button class="ai-action-btn font-button" onclick="triggerAiAssistant('Analyze Driving Scenario')">
+                                <span class="material-icons-round">explore</span>
+                                <span>Analyze Driving Scenario</span>
+                            </button>
+                            <button class="ai-action-btn font-button" onclick="triggerAiAssistant('Practice Decision-Making')">
+                                <span class="material-icons-round">psychology</span>
+                                <span>Practice Decision-Making</span>
+                            </button>
+                        </div>
+
+                        <div class="ai-prompt-box">
+                            <input type="text" id="user-ai-query-input" class="ai-input font-body" placeholder="Ask anything about Philippine traffic rules, signs, or hazard scenarios…">
+                            <button class="btn btn-primary ai-submit-btn font-button" onclick="submitUserAiQuery()">
+                                <span class="material-icons-round">send</span>
+                                <span>Ask Assistant</span>
+                            </button>
+                        </div>
+
+                        <div class="ai-response-preview" id="user-ai-response-box">
+                            <div class="ai-response-badge font-badge">
+                                <span class="material-icons-round" style="font-size:14px;">auto_awesome</span>
+                                AI TUTOR RESPONSE · PHILIPPINE TRAFFIC RULE EXPLANATION
+                            </div>
+                            <div class="ai-response-content font-body-sm" id="user-ai-response-text">
+                                <strong>Answer:</strong> At an uncontrolled intersection without traffic lights or signs in the Philippines, the vehicle approaching from the right has legal right-of-way (R.A. 4136).<br><br>
+                                <strong>Why:</strong> Standardizing priority removes confusion and prevents conflicting maneuvers that cause right-angle and broadside collisions.<br><br>
+                                <strong>Safety Tip:</strong> Always decelerate, look left-right-left, and prepare to stop. Defensive drivers prioritize safety and courtesy over asserting technical priority.
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 6. DAILY ROAD SAFETY CHALLENGE -->
+                <section class="user-dash-section">
+                    <div class="daily-challenge-card">
+                        <div class="daily-challenge-left">
+                            <div class="daily-icon-frame">
+                                <span class="material-icons-round">emoji_objects</span>
+                            </div>
+                            <div class="daily-challenge-info">
+                                <div class="daily-badge-row">
+                                    <span class="tag-badge gold font-badge">⚡ DAILY CHALLENGE</span>
+                                    <span class="tag-badge blue font-badge">🟡 MEDIUM DIFFICULTY</span>
+                                    <span class="tag-badge green font-badge">+50 XP REWARD</span>
+                                </div>
+                                <h3 class="daily-challenge-title font-h2">
+                                    What is the safest action when approaching an uncontrolled crosswalk where a pedestrian is stepping onto the curb?
+                                </h3>
+                                <p class="daily-challenge-desc font-body-sm">
+                                    Evaluate pedestrian right-of-way, stopping distance, and rear-view mirror precautions under Philippine traffic regulations.
+                                </p>
+                            </div>
+                        </div>
+                        <div class="daily-challenge-right">
+                            <button class="btn btn-primary btn-daily-start font-button" onclick="startDailyChallengeModal()">
+                                <span class="material-icons-round">play_arrow</span>
+                                <span>Start Challenge</span>
+                            </button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 7. ACHIEVEMENTS AND RANK -->
+                <section class="user-dash-section">
+                    <div class="achieve-rank-grid">
+                        <div class="card achieve-card">
+                            <div class="card-header" style="display:flex;justify-content:space-between;align-items:center;">
+                                <h3 class="font-h3"><span class="material-icons-round">military_tech</span> Recently Earned Badges</h3>
+                                <button class="btn btn-secondary font-button" onclick="openAllBadgesModal()">View All Achievements</button>
+                            </div>
+                            <div class="badges-row-preview" id="user-recent-badges-row">
+                                <div class="badge-mini-tile">
+                                    <div class="badge-mini-icon">🏅</div>
+                                    <span class="badge-mini-title font-label">First Step</span>
+                                    <span class="badge-mini-xp font-caption">+50 XP</span>
+                                </div>
+                                <div class="badge-mini-tile">
+                                    <div class="badge-mini-icon">🔥</div>
+                                    <span class="badge-mini-title font-label">Hot Streak</span>
+                                    <span class="badge-mini-xp font-caption">+100 XP</span>
+                                </div>
+                                <div class="badge-mini-tile">
+                                    <div class="badge-mini-icon">🎯</div>
+                                    <span class="badge-mini-title font-label">Perfect Driver</span>
+                                    <span class="badge-mini-xp font-caption">+150 XP</span>
+                                </div>
+                                <div class="badge-mini-tile">
+                                    <div class="badge-mini-icon">🛡️</div>
+                                    <span class="badge-mini-title font-label">Safety Sentinel</span>
+                                    <span class="badge-mini-xp font-caption">+300 XP</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card rank-leader-card">
+                            <div class="card-header" style="display:flex;justify-content:space-between;align-items:center;">
+                                <h3 class="font-h3"><span class="material-icons-round">leaderboard</span> Municipal Leaderboard</h3>
+                                <button class="btn btn-secondary font-button" onclick="openLeaderboardModal()">View Leaderboard</button>
+                            </div>
+                            <div class="mini-leaderboard-list">
+                                <div class="mini-leader-item rank-1">
+                                    <span class="leader-pos font-h3">🥇 #1</span>
+                                    <div class="leader-info">
+                                        <span class="leader-name font-body-sm">Officer Ramos</span>
+                                        <span class="leader-sub font-caption">Master Safety Instructor</span>
+                                    </div>
+                                    <span class="leader-xp font-label">3,800 XP</span>
+                                </div>
+                                <div class="mini-leader-item rank-2">
+                                    <span class="leader-pos font-h3">🥈 #2</span>
+                                    <div class="leader-info">
+                                        <span class="leader-name font-body-sm">Driver Santos</span>
+                                        <span class="leader-sub font-caption">Senior Defensive Driver</span>
+                                    </div>
+                                    <span class="leader-xp font-label">3,100 XP</span>
+                                </div>
+                                <div class="mini-leader-item current-user rank-3">
+                                    <span class="leader-pos font-h3">🥉 #3</span>
+                                    <div class="leader-info">
+                                        <span class="leader-name font-body-sm">You (Juan Dela Cruz)</span>
+                                        <span class="leader-sub font-caption">Pro Defensive Driver</span>
+                                    </div>
+                                    <span class="leader-xp font-label">2,450 XP</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 8. USER QUICK ACTIONS -->
+                <section class="user-dash-section">
+                    <div class="section-title-row">
+                        <div>
+                            <h2 class="font-h2 section-heading">User Quick Actions</h2>
+                            <p class="font-caption section-subheading">Convenient shortcuts to examinations, answer breakdowns, modules, and ranking tables</p>
+                        </div>
+                    </div>
+                    <div class="user-quick-actions-grid">
+                        <button class="user-action-tile font-navigation" onclick="startModuleDirectly('mod_easy_quiz')">
+                            <span class="material-icons-round action-icon">quiz</span>
+                            <span class="action-label">Start Quiz</span>
+                        </button>
+                        <button class="user-action-tile font-navigation" onclick="openReviewAnswersModal()">
+                            <span class="material-icons-round action-icon">fact_check</span>
+                            <span class="action-label">Review Answers</span>
+                        </button>
+                        <button class="user-action-tile font-navigation" onclick="openAllModulesView()">
+                            <span class="material-icons-round action-icon">menu_book</span>
+                            <span class="action-label">View Modules</span>
+                        </button>
+                        <button class="user-action-tile font-navigation" onclick="showUserProfileModal()">
+                            <span class="material-icons-round action-icon">insights</span>
+                            <span class="action-label">Learning Summary</span>
+                        </button>
+                        <button class="user-action-tile font-navigation" onclick="openAllBadgesModal()">
+                            <span class="material-icons-round action-icon">military_tech</span>
+                            <span class="action-label">Achievements</span>
+                        </button>
+                        <button class="user-action-tile font-navigation" onclick="openLeaderboardModal()">
+                            <span class="material-icons-round action-icon">emoji_events</span>
+                            <span class="action-label">Leaderboard</span>
+                        </button>
+                    </div>
+                </section>
+            </div>
+
+            <!-- 9. USER BOTTOM NAVIGATION (FOR MOBILE SCREENS) -->
+            <nav class="user-bottom-nav" aria-label="Driver Mobile Navigation">
+                <button class="bottom-nav-item active" onclick="switchUserTab('home')">
+                    <span class="material-icons-round">home</span>
+                    <span class="bottom-nav-label">Home</span>
+                </button>
+                <button class="bottom-nav-item" onclick="openAllModulesView()">
+                    <span class="material-icons-round">menu_book</span>
+                    <span class="bottom-nav-label">Modules</span>
+                </button>
+                <button class="bottom-nav-item" onclick="startModuleDirectly('mod_easy_quiz')">
+                    <span class="material-icons-round">quiz</span>
+                    <span class="bottom-nav-label">Quiz</span>
+                </button>
+                <button class="bottom-nav-item" onclick="showUserProfileModal()">
+                    <span class="material-icons-round">trending_up</span>
+                    <span class="bottom-nav-label">Progress</span>
+                </button>
+                <button class="bottom-nav-item" onclick="openUserSettingsModal()">
+                    <span class="material-icons-round">person</span>
+                    <span class="bottom-nav-label">Profile</span>
+                </button>
+            </nav>
+        </div>
+
+        <!-- ═══════════════════════════════════════════════════════════════
+             PART B: DEDICATED ADMIN DASHBOARD (MONITOR, ANALYZE, MANAGE)
+             ═══════════════════════════════════════════════════════════════ -->
+        <div id="admin-portal-container" class="portal-view admin-portal-view">
+
+        <!-- ═══════════ TAB 1: ADMIN DASHBOARD OVERVIEW ═══════════ -->
+        <section class="tab-content active" id="tab-dashboard">
+            <!-- 11. ADMIN DASHBOARD HIERARCHY / SYSTEM OVERVIEW -->
+            <div class="admin-overview-header">
+                <div class="admin-overview-badge-row">
+                    <span class="station-tag"><span class="material-icons-round" style="font-size:12px;">security</span> MUNICIPAL TELEMETRY NODE</span>
+                    <span class="font-caption" style="color:var(--text-secondary);">Real-time synchronized data from mobile driver fleet</span>
+                </div>
+            </div>
+
+            <!-- 13. SYSTEM OVERVIEW CARDS (6 STATISTICAL CARDS) -->
+            <div class="admin-system-metrics-grid">
                 <div class="metric-card metric-devices">
                     <div class="metric-icon-wrap"><span class="material-icons-round">people</span></div>
                     <div class="metric-info">
                         <span class="metric-value font-statistic" id="metric-total-devices">0</span>
-                        <span class="metric-label font-label">Total Users</span>
+                        <span class="metric-label font-label">TOTAL USERS</span>
                         <span class="metric-caption font-caption">Registered driver accounts</span>
                     </div>
                 </div>
+
+                <div class="metric-card metric-online">
+                    <div class="metric-icon-wrap"><span class="material-icons-round">wifi</span></div>
+                    <div class="metric-info">
+                        <span class="metric-value font-statistic" id="metric-online">0</span>
+                        <span class="metric-label font-label">ACTIVE USERS</span>
+                        <span class="metric-caption font-caption">Active in last 5 minutes</span>
+                    </div>
+                </div>
+
+                <div class="metric-card metric-modules">
+                    <div class="metric-icon-wrap"><span class="material-icons-round">menu_book</span></div>
+                    <div class="metric-info">
+                        <span class="metric-value font-statistic" id="metric-total-modules">3</span>
+                        <span class="metric-label font-label">TOTAL MODULES</span>
+                        <span class="metric-caption font-caption">Published curriculum sets</span>
+                    </div>
+                </div>
+
+                <div class="metric-card metric-quiz-banks">
+                    <div class="metric-icon-wrap"><span class="material-icons-round">inventory_2</span></div>
+                    <div class="metric-info">
+                        <span class="metric-value font-statistic" id="metric-total-questions">60</span>
+                        <span class="metric-label font-label">TOTAL QUESTIONS</span>
+                        <span class="metric-caption font-caption">Active assessment bank</span>
+                    </div>
+                </div>
+
                 <div class="metric-card metric-quizzes">
                     <div class="metric-icon-wrap"><span class="material-icons-round">quiz</span></div>
                     <div class="metric-info">
                         <span class="metric-value font-statistic" id="metric-total-quizzes">0</span>
-                        <span class="metric-label font-label">Quiz Attempts</span>
+                        <span class="metric-label font-label">QUIZ ATTEMPTS</span>
                         <span class="metric-caption font-caption">Assessments completed</span>
                     </div>
                 </div>
+
                 <div class="metric-card metric-alerts">
-                    <div class="metric-icon-wrap"><span class="material-icons-round">star</span></div>
+                    <div class="metric-icon-wrap"><span class="material-icons-round">analytics</span></div>
                     <div class="metric-info">
-                        <span class="metric-value font-statistic" id="metric-total-xp">0</span>
-                        <span class="metric-label font-label">Total XP Distributed</span>
-                        <span class="metric-caption font-caption">Across all learner ranks</span>
+                        <span class="metric-value font-statistic" id="metric-passing-rate">78.4%</span>
+                        <span class="metric-label font-label">COMPLETION RATE</span>
+                        <span class="metric-caption font-caption">Overall passing benchmark</span>
                     </div>
                 </div>
             </div>
 
+            <!-- 21. ADMIN QUICK ACTIONS FEATURE GRID -->
+            <div class="card admin-quick-grid-card">
+                <div class="card-header">
+                    <h3 class="font-h3"><span class="material-icons-round">grid_view</span> Administrative Feature Grid</h3>
+                </div>
+                <div class="admin-features-grid">
+                    <button class="admin-feature-tile font-navigation" onclick="switchTab('users')">
+                        <span class="material-icons-round feature-icon">manage_accounts</span>
+                        <span class="feature-label">👥 Manage Users</span>
+                        <span class="feature-badge font-badge badge-users-val">0</span>
+                    </button>
+                    <button class="admin-feature-tile font-navigation" onclick="switchTab('modules')">
+                        <span class="material-icons-round feature-icon">menu_book</span>
+                        <span class="feature-label">📚 Manage Modules</span>
+                        <span class="feature-badge font-badge badge-modules-val">3</span>
+                    </button>
+                    <button class="admin-feature-tile font-navigation" onclick="switchTab('quizzes')">
+                        <span class="material-icons-round feature-icon">assignment_turned_in</span>
+                        <span class="feature-label">📝 Manage Quizzes</span>
+                        <span class="feature-badge font-badge badge-quizzes-val">0</span>
+                    </button>
+                    <button class="admin-feature-tile font-navigation" onclick="switchTab('ai-activity')">
+                        <span class="material-icons-round feature-icon">smart_toy</span>
+                        <span class="feature-label">🤖 AI Activity</span>
+                        <span class="feature-badge font-badge badge-ai-val">0</span>
+                    </button>
+                    <button class="admin-feature-tile font-navigation" onclick="switchTab('gamification')">
+                        <span class="material-icons-round feature-icon">military_tech</span>
+                        <span class="feature-label">🏆 Rank History</span>
+                    </button>
+                    <button class="admin-feature-tile font-navigation" onclick="switchTab('analytics')">
+                        <span class="material-icons-round feature-icon">insights</span>
+                        <span class="feature-label">📊 Reports &amp; Analytics</span>
+                    </button>
+                    <button class="admin-feature-tile font-navigation" onclick="switchTab('settings')">
+                        <span class="material-icons-round feature-icon">settings</span>
+                        <span class="feature-label">⚙️ System Settings</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- 14. USER ANALYTICS & RECENT ACTIVITY STREAM -->
             <div class="dashboard-body">
                 <div class="card chart-card">
                     <div class="card-header">
-                        <h3 class="font-h3"><span class="material-icons-round">bar_chart</span> Quiz Performance &
-                            Passing Rate</h3>
+                        <h3 class="font-h3"><span class="material-icons-round">bar_chart</span> Quiz Performance &amp; Passing Rate</h3>
                     </div>
                     <div class="chart-container">
                         <canvas id="quizChart"></canvas>
                     </div>
                 </div>
                 <div class="card recent-card">
-                    <div class="card-header">
-                        <h3 class="font-h3"><span class="material-icons-round">bolt</span> Live Activity Stream</h3>
+                    <div class="card-header" style="display:flex;justify-content:space-between;align-items:center;">
+                        <h3 class="font-h3"><span class="material-icons-round">bolt</span> Recent User Activity</h3>
+                        <span class="live-dot pulse"></span>
                     </div>
                     <div class="activity-feed" id="activity-feed">
                         <div class="empty-state mini">
@@ -362,11 +892,17 @@
                         <button class="chip font-button" data-filter="Medium">Medium</button>
                         <button class="chip font-button" data-filter="Hard">Hard</button>
                     </div>
-                    <button class="btn btn-primary font-button" onclick="openQuestionEditor()"
-                        style="margin-left:auto;">
-                        <span class="material-icons-round">add_circle</span>
-                        <span>Add Question</span>
-                    </button>
+                    <div style="margin-left:auto;display:flex;gap:8px;">
+                        <button class="btn btn-secondary font-button" onclick="startVisualDrivingSimulation()"
+                            style="background:rgba(0,56,168,0.25);border-color:var(--badge-gold);color:#FFFFFF;">
+                            <span class="material-icons-round" style="color:var(--badge-gold-bright);">smart_toy</span>
+                            <span>Launch 20-Item Simulation</span>
+                        </button>
+                        <button class="btn btn-primary font-button" onclick="openQuestionEditor()">
+                            <span class="material-icons-round">add_circle</span>
+                            <span>Add Question</span>
+                        </button>
+                    </div>
                 </div>
                 <div class="data-list" id="questions-list"></div>
             </div>
@@ -381,12 +917,16 @@
                         placeholder="Search simulation scenarios & decisions…">
                 </div>
                 <div class="filter-chips">
-                    <button class="chip active font-button" data-filter="all">All Scenarios</button>
-                    <button class="chip font-button" data-filter="pedestrian">Pedestrian</button>
-                    <button class="chip font-button" data-filter="intersection">Intersection</button>
-                    <button class="chip font-button" data-filter="emergency">Emergency</button>
-                    <button class="chip font-button" data-filter="weather">Weather / Grip</button>
+                    <button class="chip active font-button" data-filter="all">All 20 Scenarios</button>
+                    <button class="chip font-button" data-filter="Easy">🟢 Easy (01–05)</button>
+                    <button class="chip font-button" data-filter="Medium">🟡 Medium (06–15)</button>
+                    <button class="chip font-button" data-filter="Hard">🔴 Hard (16–20)</button>
                 </div>
+                <button class="btn btn-primary font-button" onclick="startVisualDrivingSimulation()"
+                    style="margin-left:auto;background:linear-gradient(135deg, #0038A8 0%, #D4AF37 130%);border-color:var(--badge-gold);">
+                    <span class="material-icons-round">play_circle_filled</span>
+                    <span>Start 20-Item Visual Simulation</span>
+                </button>
             </div>
             <div class="data-list" id="scenarios-list"></div>
         </section>
@@ -588,8 +1128,87 @@
                 </div>
             </div>
         </section>
-
+        </div><!-- End of admin-portal-container -->
     </main>
+
+    <!-- ═══════════ USER DAILY CHALLENGE INTERACTIVE MODAL ═══════════ -->
+    <div class="modal-overlay" id="daily-challenge-modal-overlay" style="display:none;">
+        <div class="modal" style="max-width:560px;">
+            <div class="modal-header">
+                <div style="display:flex;align-items:center;gap:10px;">
+                    <div class="stat-icon-wrap" style="background:rgba(212,175,55,0.18);border:1px solid rgba(212,175,55,0.4);border-radius:10px;padding:6px;display:flex;">
+                        <span class="material-icons-round" style="color:var(--badge-gold-bright, #F5C542);">emoji_objects</span>
+                    </div>
+                    <div>
+                        <h3 class="font-h3" style="color:#FFFFFF;">Daily Road Safety Challenge</h3>
+                        <span class="font-caption" style="color:var(--text-secondary);">Earn +50 XP and maintain your 7-day learning streak</span>
+                    </div>
+                </div>
+                <button class="modal-close" onclick="closeDailyChallengeModal()" aria-label="Close modal">
+                    <span class="material-icons-round">close</span>
+                </button>
+            </div>
+            <div class="modal-body" style="padding:22px;">
+                <div class="daily-badge-row" style="margin-bottom:14px;">
+                    <span class="tag-badge blue font-badge">PHILIPPINE TRAFFIC RULE · R.A. 4136</span>
+                    <span class="tag-badge gold font-badge">+50 XP BONUS</span>
+                </div>
+                <h3 class="font-h3" style="color:#FFFFFF;margin-bottom:16px;line-height:1.4;">
+                    What is the safest and legal action when approaching an uncontrolled crosswalk where a pedestrian is stepping onto the curb?
+                </h3>
+                <div class="challenge-options-list" id="challenge-options-container" style="display:flex;flex-direction:column;gap:10px;">
+                    <button class="challenge-opt-btn font-body" onclick="selectDailyChallengeOption(0)">
+                        <span class="opt-letter">A</span>
+                        <span class="opt-text">Honk your horn twice and accelerate through before they cross.</span>
+                    </button>
+                    <button class="challenge-opt-btn font-body" onclick="selectDailyChallengeOption(1)">
+                        <span class="opt-letter">B</span>
+                        <span class="opt-text">Slow down to a complete, smooth stop and yield right-of-way to the pedestrian.</span>
+                    </button>
+                    <button class="challenge-opt-btn font-body" onclick="selectDailyChallengeOption(2)">
+                        <span class="opt-letter">C</span>
+                        <span class="opt-text">Swerve into the adjacent oncoming lane to bypass the crosswalk quickly.</span>
+                    </button>
+                    <button class="challenge-opt-btn font-body" onclick="selectDailyChallengeOption(3)">
+                        <span class="opt-letter">D</span>
+                        <span class="opt-text">Flash your high-beams to command the pedestrian to wait on the curb.</span>
+                    </button>
+                </div>
+                <div id="challenge-feedback-box" style="display:none;margin-top:16px;padding:14px;border-radius:12px;font-size:13px;line-height:1.5;"></div>
+            </div>
+            <div class="modal-actions" style="padding:14px 22px;border-top:1px solid var(--border-subtle);display:flex;justify-content:space-between;">
+                <button class="btn btn-secondary font-button" onclick="closeDailyChallengeModal()">Close</button>
+                <button class="btn btn-primary font-button" id="btn-submit-daily-challenge" onclick="submitDailyChallenge()" disabled>
+                    <span class="material-icons-round">check_circle</span>
+                    <span>Submit Answer</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══════════ USER REVIEW ANSWERS MODAL ═══════════ -->
+    <div class="modal-overlay" id="review-answers-modal-overlay" style="display:none;">
+        <div class="modal modal-large" style="max-width:680px;">
+            <div class="modal-header">
+                <div style="display:flex;align-items:center;gap:10px;">
+                    <span class="material-icons-round" style="color:var(--info-blue);font-size:24px;">fact_check</span>
+                    <div>
+                        <h3 class="font-h3" style="color:#FFFFFF;">Assessment Answer Review &amp; Safety Keys</h3>
+                        <span class="font-caption" style="color:var(--text-secondary);">Master defensive principles and understand why choices are correct</span>
+                    </div>
+                </div>
+                <button class="modal-close" onclick="closeReviewAnswersModal()" aria-label="Close modal">
+                    <span class="material-icons-round">close</span>
+                </button>
+            </div>
+            <div class="modal-body" style="padding:20px;max-height:65vh;overflow-y:auto;" id="review-answers-content">
+                <!-- Dynamically populated by JS -->
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-primary font-button" onclick="closeReviewAnswersModal()">Done Reviewing</button>
+            </div>
+        </div>
+    </div>
 
     <!-- ═══════════ MULTI-TAB USER PROFILE MODAL ═══════════ -->
     <div class="modal-overlay" id="profile-modal-overlay">
@@ -795,6 +1414,211 @@
         </div>
     </div>
 
+    <!-- ═══════════ 20-ITEM VISUAL DRIVING SIMULATION MODAL ═══════════ -->
+    <div class="modal-overlay" id="driving-sim-modal-overlay" style="display:none;z-index:99990;">
+        <div class="modal sim-modal-container" id="driving-sim-modal">
+            <!-- SIMULATION HUD / TOP BAR -->
+            <div class="sim-hud-topbar">
+                <div class="sim-hud-left">
+                    <div class="sim-badge-step" id="sim-step-badge">Scenario 01 of 20</div>
+                    <span class="sim-diff-badge easy" id="sim-diff-badge">Easy</span>
+                </div>
+                <div class="sim-hud-center">
+                    <div class="sim-metric-pill">
+                        <span class="sim-metric-label">SCORE:</span>
+                        <span class="sim-metric-val" id="sim-score-display">0 / 0</span>
+                    </div>
+                    <div class="sim-metric-pill xp-pill">
+                        <span class="material-icons-round" style="font-size:14px;color:var(--badge-gold-bright);">bolt</span>
+                        <span class="sim-metric-val text-gold" id="sim-xp-display">+0 XP</span>
+                    </div>
+                </div>
+                <div class="sim-hud-right">
+                    <button class="modal-close" id="sim-modal-close" onclick="closeSimulationModal()" title="Exit Simulation">
+                        <span class="material-icons-round">close</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- SIMULATION PROGRESS BAR -->
+            <div class="sim-progress-track">
+                <div class="sim-progress-fill" id="sim-progress-bar" style="width: 5%;"></div>
+            </div>
+
+            <!-- ACTIVE SCENARIO VIEW -->
+            <div class="sim-active-container" id="sim-active-container">
+                <!-- SCENARIO TITLE -->
+                <div class="sim-header-area">
+                    <div class="sim-category-pill">
+                        <span class="material-icons-round" style="font-size:14px;">videogame_asset</span>
+                        <span id="sim-category-text">Philippine Road Safety &amp; Driver Decision-Making</span>
+                    </div>
+                    <h2 class="font-h2 sim-scenario-title" id="sim-title">01 — Pedestrian Crossing</h2>
+                </div>
+
+                <!-- DRIVER PERSPECTIVE VISUAL SIMULATION IMAGE -->
+                <div class="sim-visual-wrapper">
+                    <div class="sim-visual-canvas" id="sim-visual-canvas">
+                        <!-- SVG / Visual Road Scene dynamically injected here -->
+                    </div>
+                    <div class="sim-visual-hud-overlay">
+                        <span class="sim-hud-speed" id="sim-hud-speed">35 KM/H</span>
+                        <span class="sim-hud-weather" id="sim-hud-weather">🌤️ CLEAR · DAY</span>
+                        <span class="sim-hud-env" id="sim-hud-env">MANILA URBAN STREET</span>
+                    </div>
+                </div>
+
+                <!-- SITUATION & DECISION QUESTION -->
+                <div class="sim-situation-card">
+                    <div class="sim-situation-header">
+                        <span class="material-icons-round" style="font-size:16px;color:var(--badge-gold-bright);">visibility</span>
+                        <span class="font-label" style="text-transform:uppercase;letter-spacing:0.5px;color:var(--badge-gold-bright);">Driver Road Observation</span>
+                    </div>
+                    <p class="font-body sim-situation-text" id="sim-situation-desc">
+                        You are driving down a two-lane urban street. A pedestrian is standing at a marked pedestrian zebra crossing ahead, looking to cross while traffic is flowing.
+                    </p>
+                    <div class="sim-question-prompt">
+                        <span class="material-icons-round" style="color:var(--badge-gold-bright);font-size:18px;">help_outline</span>
+                        <span class="font-h3" id="sim-question-title">What would you do?</span>
+                    </div>
+                </div>
+
+                <!-- 4 DECISION CHOICES -->
+                <div class="sim-options-grid" id="sim-options-grid">
+                    <!-- Option items generated dynamically -->
+                </div>
+
+                <!-- SUBMIT / ACTION BUTTON -->
+                <div class="sim-action-row" id="sim-action-row">
+                    <button class="btn btn-primary sim-submit-btn font-button" id="btn-submit-sim-decision" onclick="submitSimulationDecision()" disabled>
+                        <span class="material-icons-round">check_circle</span>
+                        <span>Submit Decision</span>
+                    </button>
+                </div>
+
+                <!-- AI FEEDBACK PANEL (DISPLAYED POST-SUBMISSION) -->
+                <div class="sim-feedback-panel" id="sim-feedback-panel" style="display:none;">
+                    <div class="sim-feedback-header" id="sim-feedback-header">
+                        <div class="sim-feedback-status-wrap">
+                            <span class="material-icons-round" id="sim-feedback-icon">check_circle</span>
+                            <h3 class="font-h3" id="sim-feedback-status-title">✓ Correct Decision</h3>
+                        </div>
+                        <span class="sim-feedback-xp-earned font-badge" id="sim-feedback-xp">+10 XP Earned</span>
+                    </div>
+                    
+                    <div class="sim-feedback-body">
+                        <div class="sim-fb-item">
+                            <div class="sim-fb-item-label">
+                                <span class="material-icons-round">psychology</span>
+                                <span>Why this action?</span>
+                            </div>
+                            <p class="sim-fb-item-text" id="sim-fb-why">Stopping well before the crosswalk gives the pedestrian full safe passage and complies with Philippine right-of-way laws.</p>
+                        </div>
+
+                        <div class="sim-fb-item">
+                            <div class="sim-fb-item-label">
+                                <span class="material-icons-round">warning</span>
+                                <span>Hazard Identified:</span>
+                            </div>
+                            <p class="sim-fb-item-text" id="sim-fb-hazard">Vulnerable pedestrian entering roadway at designated crosswalk.</p>
+                        </div>
+
+                        <div class="sim-fb-item">
+                            <div class="sim-fb-item-label">
+                                <span class="material-icons-round">gavel</span>
+                                <span>Road Safety Principle:</span>
+                            </div>
+                            <p class="sim-fb-item-text" id="sim-fb-principle">R.A. 4136 Art. III Sec. 42 — Pedestrian Right-of-Way at Crosswalks.</p>
+                        </div>
+
+                        <div class="sim-fb-item highlight">
+                            <div class="sim-fb-item-label">
+                                <span class="material-icons-round">verified</span>
+                                <span>Recommended Safe Action:</span>
+                            </div>
+                            <p class="sim-fb-item-text" id="sim-fb-action">Slow down smoothly, bring vehicle to a complete stop before the stop line, and wait for pedestrians to fully cross.</p>
+                        </div>
+                    </div>
+
+                    <div class="sim-feedback-footer">
+                        <button class="btn btn-primary sim-next-btn font-button" id="btn-next-sim-scenario" onclick="nextSimulationScenario()">
+                            <span>Next Scenario</span>
+                            <span class="material-icons-round">arrow_forward</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SIMULATION COMPLETE SUMMARY VIEW (DISPLAYED AFTER 20 SCENARIOS) -->
+            <div class="sim-summary-container" id="sim-summary-container" style="display:none;">
+                <div class="sim-summary-trophy-wrap">
+                    <span class="material-icons-round trophy-icon">military_tech</span>
+                </div>
+                <div class="station-tag" style="margin-bottom:6px;">20-ITEM SIMULATION COMPLETE</div>
+                <h2 class="font-h1 sim-summary-title">Driver Decision-Making Assessment Results</h2>
+                <p class="font-body-sm sim-summary-sub">Evaluation of your hazard recognition and defensive decision-making in Philippine traffic environments.</p>
+
+                <div class="sim-performance-badge-wrap">
+                    <div class="sim-perf-badge excellent" id="sim-perf-badge">
+                        <span class="material-icons-round" id="sim-perf-icon">star</span>
+                        <span id="sim-perf-level-text">EXCELLENT (90–100%)</span>
+                    </div>
+                </div>
+
+                <div class="sim-metrics-grid">
+                    <div class="sim-metric-card">
+                        <span class="font-caption">FINAL SCORE</span>
+                        <div class="sim-metric-big text-gold" id="sim-summary-score">18 / 20</div>
+                    </div>
+                    <div class="sim-metric-card">
+                        <span class="font-caption">ACCURACY</span>
+                        <div class="sim-metric-big text-emerald" id="sim-summary-accuracy">90%</div>
+                    </div>
+                    <div class="sim-metric-card">
+                        <span class="font-caption">CORRECT DECISIONS</span>
+                        <div class="sim-metric-big" style="color:var(--emerald-green);" id="sim-summary-correct">18</div>
+                    </div>
+                    <div class="sim-metric-card">
+                        <span class="font-caption">INCORRECT DECISIONS</span>
+                        <div class="sim-metric-big" style="color:#EF4444;" id="sim-summary-incorrect">2</div>
+                    </div>
+                    <div class="sim-metric-card full-span">
+                        <span class="font-caption">TOTAL EXPERIENCE POINTS EARNED</span>
+                        <div class="sim-metric-big text-gold" id="sim-summary-total-xp">+180 XP</div>
+                    </div>
+                </div>
+
+                <div class="sim-ai-remediation-box">
+                    <div class="sim-ai-remediation-head">
+                        <span class="material-icons-round" style="color:var(--badge-gold-bright);">smart_toy</span>
+                        <span class="font-label">AI Decision-Making Feedback &amp; Recommendations</span>
+                    </div>
+                    <p class="font-body-sm" id="sim-ai-remediation-text" style="color:var(--text-secondary);line-height:1.5;">
+                        Outstanding hazard detection and defensive driving awareness! You demonstrated excellent compliance with Philippine traffic regulations, mirror checking habits, and safe speed adjustment in rain and congested traffic.
+                    </p>
+                    <div class="sim-recommended-modules-wrap" id="sim-recommended-modules">
+                        <span class="font-caption" style="color:var(--badge-gold-bright);font-weight:700;">RECOMMENDED NEXT STEPS:</span>
+                        <div class="sim-recom-chips" id="sim-recom-chips-container">
+                            <span class="sim-recom-chip">🚦 R.A. 4136 Right-of-Way</span>
+                            <span class="sim-recom-chip">🌧️ Wet Weather &amp; Skid Control</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="sim-summary-actions">
+                    <button class="btn btn-secondary font-button" onclick="restartSimulation()">
+                        <span class="material-icons-round">replay</span>
+                        <span>Retake 20 Scenarios</span>
+                    </button>
+                    <button class="btn btn-primary font-button" onclick="closeSimulationModal()">
+                        <span class="material-icons-round">dashboard</span>
+                        <span>Return to Dashboard</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- ═══════════ INSTALL MOBILE APP MODAL (MOBILE PORTAL) ═══════════ -->
     <div class="modal-overlay" id="install-modal-overlay">
         <div class="modal" id="install-modal" style="max-width:640px;">
@@ -805,7 +1629,7 @@
                     <div>
                         <h3 class="font-h3" style="color:#FFFFFF;margin:0;">Mobile App Portal</h3>
                         <span class="font-caption"
-                            style="color:var(--pnp-badge-gold);font-size:10px;text-transform:uppercase;letter-spacing:1px;">Official
+                            style="color:var(--badge-gold);font-size:10px;text-transform:uppercase;letter-spacing:1px;">Official
                             Road Safety Driver Training Client</span>
                     </div>
                 </div>
@@ -821,7 +1645,7 @@
                     </div>
                     <div class="qr-install-info">
                         <div style="display:flex;align-items:center;gap:6px;">
-                            <span class="pnp-station-tag" style="font-size:9px;">VERIFIED BUILD</span>
+                            <span class="station-tag" style="font-size:9px;">VERIFIED BUILD</span>
                             <span class="font-caption" style="color:var(--emerald-green);font-weight:700;">● Signed APK
                                 Release</span>
                         </div>
@@ -829,7 +1653,7 @@
                             Mobile App</h4>
                         <div style="display:flex;gap:6px;margin:6px 0;">
                             <button type="button" id="btn-qr-mode-public" class="btn font-button"
-                                style="padding:4px 12px;font-size:11px;background:var(--pnp-patrol-blue);color:#fff;border:1px solid var(--pnp-badge-gold-border);">🌐
+                                style="padding:4px 12px;font-size:11px;background:var(--patrol-blue, #0038A8);color:#fff;border:1px solid var(--badge-gold-border);">🌐
                                 Public Portal</button>
                             <button type="button" id="btn-qr-mode-local" class="btn font-button"
                                 style="padding:4px 12px;font-size:11px;background:#0A1424;color:var(--text-secondary);border:1px solid var(--border-card);">📶
@@ -863,7 +1687,7 @@
                             </a>
                             <a href="https://github.com/jiemmm03/Gamified-Road-Safety-Awareness/releases/download/v1.0.0/RoadSafe-AI.apk"
                                 target="_blank" class="btn btn-secondary font-button"
-                                style="font-size:12px;padding:7px 14px;text-decoration:none;display:inline-flex;align-items:center;gap:4px;color:var(--pnp-badge-gold-bright);border-color:var(--pnp-badge-gold-border);">
+                                style="font-size:12px;padding:7px 14px;text-decoration:none;display:inline-flex;align-items:center;gap:4px;color:var(--badge-gold-bright, #F5C542);border-color:var(--badge-gold-border);">
                                 <span class="material-icons-round" style="font-size:16px;">shield</span>
                                 <span>Direct APK Download</span>
                             </a>
@@ -905,7 +1729,7 @@
         <div class="admin-auth-topbar">
             <div class="admin-auth-station-pill">
                 <span class="material-icons-round"
-                    style="color:var(--pnp-gold-bright);font-size:16px;">account_balance</span>
+                    style="color:var(--badge-gold-bright, #F5C542);font-size:16px;">account_balance</span>
                 <span>Municipality of Dagami · Traffic Safety Command</span>
             </div>
             <div class="admin-auth-station-pill" style="border-color:rgba(0,56,168,0.5);">
@@ -927,7 +1751,7 @@
 
             <div class="admin-auth-badge-tag">
                 <span class="material-icons-round"
-                    style="font-size:14px;color:var(--pnp-gold-bright);">verified_user</span>
+                    style="font-size:14px;color:var(--badge-gold-bright, #F5C542);">verified_user</span>
                 <span>Dagami Municipal Command Gate</span>
             </div>
 

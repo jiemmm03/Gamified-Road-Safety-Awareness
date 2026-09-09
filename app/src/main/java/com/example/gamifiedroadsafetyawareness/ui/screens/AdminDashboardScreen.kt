@@ -126,7 +126,7 @@ fun AdminDashboardScreen(
                                     modifier = Modifier.size(15.dp)
                                 )
                                 Text(
-                                    text = "OPERATIONS COMMAND • PNP HPG",
+                                    text = "OPERATIONS COMMAND • ROAD SAFETY REGISTRY",
                                     style = AppTypeScale.eyebrowLabel.copy(letterSpacing = 1.sp),
                                     color = BadgeGold
                                 )
