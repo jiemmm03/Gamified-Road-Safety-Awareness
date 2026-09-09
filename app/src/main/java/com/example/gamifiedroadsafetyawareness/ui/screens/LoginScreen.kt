@@ -131,89 +131,116 @@ fun LoginScreen(
         }
     }
 
-    ScreenScaffold(
-        modifier = modifier.imePadding(),
-        scrollable = true,
-    ) {
+    Box(modifier = modifier.fillMaxSize()) {
+        // Dagami Municipal Hall Official Background Image
+        Image(
+            painter = painterResource(id = R.drawable.background_dagami),
+            contentDescription = "Municipality of Dagami Background",
+            contentScale = ContentScale.Crop,
+            modifier = Modifier.fillMaxSize()
+        )
+
+        // Semi-transparent tactical gradient overlay for contrast & readability
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(vertical = Dimens.spacingExtraLarge, horizontal = Dimens.spacingMedium),
-            contentAlignment = Alignment.Center
-        ) {
-            Column(
-                modifier = Modifier
-                    .widthIn(max = 440.dp) // Limits width on tablets/desktops
-                    .alpha(fadeAnim.value)
-                    .graphicsLayer { translationX = shakeAnim.value },
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                // 🇵🇭 Official Philippine Police & Government Traffic Enforcement Header
-                Box(contentAlignment = Alignment.BottomEnd) {
-                    Image(
-                        painter = painterResource(id = R.drawable.logo),
-                        contentDescription = "Official Municipality & Police Law Enforcement Seal",
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier
-                            .size(80.dp)
-                            .shadow(
-                                elevation = 10.dp,
-                                shape = CircleShape,
-                                spotColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.4f)
-                            )
-                            .clip(CircleShape)
-                            .background(Color.White)
-                            .border(2.dp, BadgeGold, CircleShape)
+                .background(
+                    Brush.verticalGradient(
+                        colors = listOf(
+                            Color(0xFF060B14).copy(alpha = 0.76f),
+                            Color(0xFF002266).copy(alpha = 0.62f),
+                            Color(0xFF060B14).copy(alpha = 0.86f)
+                        )
                     )
-                    // Security Shield Badge
-                    Box(
-                        modifier = Modifier
-                            .size(26.dp)
-                            .clip(CircleShape)
-                            .background(NavyPrimary)
-                            .border(1.dp, BadgeGold, CircleShape),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Icon(
-                            imageVector = Icons.Rounded.Shield,
-                            contentDescription = null,
-                            tint = BadgeGold,
-                            modifier = Modifier.size(15.dp)
+                )
+        )
+
+        ScreenScaffold(
+            modifier = Modifier
+                .fillMaxSize()
+                .imePadding(),
+            scrollable = true,
+            backgroundColor = Color.Transparent
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(vertical = Dimens.spacingExtraLarge, horizontal = Dimens.spacingMedium),
+                contentAlignment = Alignment.Center
+            ) {
+                Column(
+                    modifier = Modifier
+                        .widthIn(max = 440.dp) // Limits width on tablets/desktops
+                        .alpha(fadeAnim.value)
+                        .graphicsLayer { translationX = shakeAnim.value },
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    // 🇵🇭 Official Philippine Government & Traffic Enforcement Header
+                    Box(contentAlignment = Alignment.BottomEnd) {
+                        Image(
+                            painter = painterResource(id = R.drawable.logo),
+                            contentDescription = "Official Municipality of Dagami Seal",
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier
+                                .size(84.dp)
+                                .shadow(
+                                    elevation = 12.dp,
+                                    shape = CircleShape,
+                                    spotColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f)
+                                )
+                                .clip(CircleShape)
+                                .background(Color.White)
+                                .border(2.dp, BadgeGold, CircleShape)
+                        )
+                        // Security Shield Badge
+                        Box(
+                            modifier = Modifier
+                                .size(26.dp)
+                                .clip(CircleShape)
+                                .background(NavyPrimary)
+                                .border(1.dp, BadgeGold, CircleShape),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Icon(
+                                imageVector = Icons.Rounded.Shield,
+                                contentDescription = null,
+                                tint = BadgeGold,
+                                modifier = Modifier.size(15.dp)
+                            )
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(Dimens.spacingMedium))
+
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Text(
+                            text = "REPUBLIC OF THE PHILIPPINES",
+                            style = AppTypeScale.eyebrowLabel.copy(
+                                letterSpacing = 1.5.sp,
+                                fontWeight = FontWeight.Bold
+                            ),
+                            color = BadgeGold,
+                            textAlign = TextAlign.Center
+                        )
+                        Spacer(modifier = Modifier.height(2.dp))
+                        Text(
+                            text = "Road Safety Command",
+                            style = MaterialTheme.typography.displayLarge.copy(
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 26.sp
+                            ),
+                            color = Color.White,
+                            textAlign = TextAlign.Center
+                        )
+                        Text(
+                            text = "Traffic Rule Education & Driver Enforcement System",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = Color.White.copy(alpha = 0.85f),
+                            textAlign = TextAlign.Center
                         )
                     }
-                }
 
-                Spacer(modifier = Modifier.height(Dimens.spacingMedium))
-
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text(
-                        text = "REPUBLIC OF THE PHILIPPINES",
-                        style = AppTypeScale.eyebrowLabel.copy(
-                            letterSpacing = 1.5.sp,
-                            fontWeight = FontWeight.Bold
-                        ),
-                        color = BadgeGold,
-                        textAlign = TextAlign.Center
-                    )
-                    Spacer(modifier = Modifier.height(2.dp))
-                    Text(
-                        text = "Road Safety Command",
-                        style = MaterialTheme.typography.displayLarge.copy(
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 26.sp
-                        ),
-                        color = MaterialTheme.colorScheme.onBackground,
-                        textAlign = TextAlign.Center
-                    )
-                    Text(
-                        text = "Traffic Rule Education & Driver Enforcement System",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        textAlign = TextAlign.Center
-                    )
-                }
-
-                Spacer(modifier = Modifier.height(Dimens.spacingLarge))
+                    Spacer(modifier = Modifier.height(Dimens.spacingLarge))
 
                 // Authentication Card with Tactical Gold Bevel Border
                 AppCard(
@@ -363,4 +390,5 @@ fun LoginScreen(
             }
         }
     }
+}
 }

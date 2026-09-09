@@ -188,13 +188,14 @@ fun AppOutlinedButton(
 fun ScreenScaffold(
     modifier: Modifier = Modifier,
     scrollable: Boolean = true,
+    backgroundColor: Color = MaterialTheme.colorScheme.background,
     content: @Composable ColumnScope.() -> Unit
 ) {
     val scrollState = rememberScrollState()
     Column(
         modifier = modifier
             .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
+            .background(backgroundColor)
             .statusBarsPadding()
             .navigationBarsPadding()
             .then(if (scrollable) Modifier.verticalScroll(scrollState) else Modifier)

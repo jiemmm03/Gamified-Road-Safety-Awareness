@@ -247,41 +247,68 @@ fun SignUpScreen(
         }
     }
 
-    ScreenScaffold(
-        modifier = modifier.imePadding(),
-        scrollable = true
-    ) {
-        Spacer(modifier = Modifier.height(32.dp))
-
+    Box(modifier = modifier.fillMaxSize()) {
+        // Dagami Municipal Hall Official Background Image
         Image(
-            painter = painterResource(id = R.drawable.logo),
-            contentDescription = "Municipality of Dagami, Leyte Logo",
+            painter = painterResource(id = R.drawable.background_dagami),
+            contentDescription = "Municipality of Dagami Background",
             contentScale = ContentScale.Crop,
+            modifier = Modifier.fillMaxSize()
+        )
+
+        // Semi-transparent tactical gradient overlay
+        Box(
             modifier = Modifier
-                .size(72.dp)
-                .shadow(
-                    elevation = 8.dp,
-                    shape = CircleShape,
-                    spotColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.3f)
+                .fillMaxSize()
+                .background(
+                    Brush.verticalGradient(
+                        colors = listOf(
+                            Color(0xFF060B14).copy(alpha = 0.78f),
+                            Color(0xFF002266).copy(alpha = 0.65f),
+                            Color(0xFF060B14).copy(alpha = 0.88f)
+                        )
+                    )
                 )
-                .clip(CircleShape)
-                .background(Color.White)
         )
 
-        Spacer(modifier = Modifier.height(16.dp))
+        ScreenScaffold(
+            modifier = Modifier
+                .fillMaxSize()
+                .imePadding(),
+            scrollable = true,
+            backgroundColor = Color.Transparent
+        ) {
+            Spacer(modifier = Modifier.height(32.dp))
 
-        Text(
-            text = stringResource(R.string.signup_title),
-            style = MaterialTheme.typography.displayLarge,
-            color = MaterialTheme.colorScheme.onBackground
-        )
-        Text(
-            text = stringResource(R.string.signup_subtitle),
-            style = AppTypeScale.eyebrowLabel,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
-        )
+            Image(
+                painter = painterResource(id = R.drawable.logo),
+                contentDescription = "Municipality of Dagami, Leyte Logo",
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .size(76.dp)
+                    .shadow(
+                        elevation = 8.dp,
+                        shape = CircleShape,
+                        spotColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.3f)
+                    )
+                    .clip(CircleShape)
+                    .background(Color.White)
+            )
 
-        Spacer(modifier = Modifier.height(32.dp))
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Text(
+                text = stringResource(R.string.signup_title),
+                style = MaterialTheme.typography.displayLarge.copy(fontWeight = FontWeight.Bold),
+                color = Color.White
+            )
+            Text(
+                text = stringResource(R.string.signup_subtitle),
+                style = AppTypeScale.eyebrowLabel,
+                color = Color.White.copy(alpha = 0.85f)
+            )
+
+            Spacer(modifier = Modifier.height(32.dp))
 
         AppCard(
             modifier = Modifier
@@ -553,6 +580,7 @@ fun SignUpScreen(
 
         Spacer(modifier = Modifier.height(24.dp))
     }
+}
 }
 
 @Composable

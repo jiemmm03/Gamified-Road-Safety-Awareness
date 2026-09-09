@@ -2468,7 +2468,10 @@ input:checked + .slider:before {
     left: 0;
     width: 100vw;
     height: 100vh;
-    background: radial-gradient(circle at 50% 45%, #0F2038 0%, #060B14 80%);
+    background:
+        radial-gradient(ellipse at 50% 10%, rgba(0, 56, 168, 0.45) 0%, transparent 65%),
+        linear-gradient(135deg, rgba(6, 11, 20, 0.84) 0%, rgba(0, 34, 102, 0.74) 45%, rgba(6, 11, 20, 0.92) 100%),
+        url('background-dagami.jpg') center/cover no-repeat;
     z-index: 99999;
     display: flex;
     align-items: center;
