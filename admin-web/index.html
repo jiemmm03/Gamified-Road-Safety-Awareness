@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RoadSafe AI — Municipality of Dagami Traffic Safety Command Center</title>
-    <meta name="description" content="Official Municipality of Dagami, Leyte AI Road Safety and Traffic Education Command Center.">
+    <meta name="description"
+        content="Official Municipality of Dagami, Leyte AI Road Safety and Traffic Education Command Center.">
 
     <!-- Primary Font: Inter (Google Fonts) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -23,6 +25,7 @@
 
     <link rel="stylesheet" href="styles.css?v=4.2">
 </head>
+
 <body>
 
     <!-- ═══════════════════════ SPLASH SCREEN ═══════════════════════ -->
@@ -57,7 +60,7 @@
         <nav class="sidebar-nav" aria-label="Main Navigation">
             <button class="nav-item active font-navigation" data-tab="dashboard" id="nav-dashboard">
                 <span class="material-icons-round">dashboard</span>
-                <span class="nav-label">Command Dashboard</span>
+                <span class="nav-label">Dashboard</span>
             </button>
             <button class="nav-item font-navigation" data-tab="users" id="nav-users">
                 <span class="material-icons-round">manage_accounts</span>
@@ -119,7 +122,7 @@
                     <span class="material-icons-round">account_balance</span>
                 </div>
                 <div class="admin-info-mini">
-                    <span class="admin-role-title font-caption">Command Administrator</span>
+                    <span class="admin-role-title font-caption">System Administrator</span>
                     <span class="admin-username font-body-sm" id="current-admin-name">admin</span>
                 </div>
             </div>
@@ -140,11 +143,12 @@
                 <span class="material-icons-round">menu</span>
             </button>
             <div class="top-bar-title">
-                <h1 class="page-title font-h1" id="page-title">Command Dashboard</h1>
+                <h1 class="page-title font-h1" id="page-title">Dashboard</h1>
                 <span class="top-bar-subtitle font-body-sm" id="page-subtitle">Dagami Leyte · Live Safety Telemetry</span>
             </div>
             <div class="top-bar-actions">
-                <button class="btn btn-download-apk font-button" onclick="showAppInstallModal()" title="Install RoadSafe AI Mobile App">
+                <button class="btn btn-download-apk font-button" onclick="showAppInstallModal()"
+                    title="Install RoadSafe AI Mobile App">
                     <span class="material-icons-round">install_mobile</span>
                     <span class="btn-text">Install Mobile App</span>
                 </button>
@@ -155,7 +159,9 @@
                 <button class="refresh-btn" id="refresh-btn" title="Refresh Live Data">
                     <span class="material-icons-round">refresh</span>
                 </button>
-                <button class="btn btn-secondary font-button" id="btn-admin-logout" onclick="openAdminLogoutModal()" title="Sign Out of Command Center" style="padding:7px 12px;font-size:12px;border-color:rgba(206,17,38,0.4);color:#FCA5A5;gap:4px;">
+                <button class="btn btn-secondary font-button" id="btn-admin-logout" onclick="openAdminLogoutModal()"
+                    title="Sign Out of Command Center"
+                    style="padding:7px 12px;font-size:12px;border-color:rgba(206,17,38,0.4);color:#FCA5A5;gap:4px;">
                     <span class="material-icons-round" style="font-size:16px;color:#EF4444;">logout</span>
                     <span class="btn-text">Log Out</span>
                 </button>
@@ -202,7 +208,8 @@
             <div class="dashboard-body">
                 <div class="card chart-card">
                     <div class="card-header">
-                        <h3 class="font-h3"><span class="material-icons-round">bar_chart</span> Quiz Performance & Passing Rate</h3>
+                        <h3 class="font-h3"><span class="material-icons-round">bar_chart</span> Quiz Performance &
+                            Passing Rate</h3>
                     </div>
                     <div class="chart-container">
                         <canvas id="quizChart"></canvas>
@@ -227,7 +234,8 @@
             <div class="tab-toolbar">
                 <div class="search-box">
                     <span class="material-icons-round">search</span>
-                    <input type="text" id="search-users" class="font-body" placeholder="Search by name, username, email, contact, or device…">
+                    <input type="text" id="search-users" class="font-body"
+                        placeholder="Search by name, username, email, contact, or device…">
                 </div>
                 <div class="filter-chips" id="users-filter-chips">
                     <button class="chip active font-button" data-filter="all">All Users</button>
@@ -256,7 +264,8 @@
                             🟢 Easy Quiz
                         </div>
                         <div class="mobile-module-desc font-body">
-                            20 questions covering road safety basics, traffic lights, signs, seat belts, and fundamental driving rules.
+                            20 questions covering road safety basics, traffic lights, signs, seat belts, and fundamental
+                            driving rules.
                         </div>
                         <div class="mobile-module-badges">
                             <span class="tag-badge blue font-badge">EASY MODULE</span>
@@ -275,7 +284,8 @@
                             🟡 Medium Quiz
                         </div>
                         <div class="mobile-module-desc font-body">
-                            20 scenario-based questions on lane changes, rain driving, overtaking rules, and defensive driving techniques.
+                            20 scenario-based questions on lane changes, rain driving, overtaking rules, and defensive
+                            driving techniques.
                         </div>
                         <div class="mobile-module-badges">
                             <span class="tag-badge blue font-badge">MEDIUM MODULE</span>
@@ -294,7 +304,8 @@
                             🔴 Hard Quiz
                         </div>
                         <div class="mobile-module-desc font-body">
-                            20 advanced situational questions on right-of-way, night driving, skid control, and multi-hazard intersections.
+                            20 advanced situational questions on right-of-way, night driving, skid control, and
+                            multi-hazard intersections.
                         </div>
                         <div class="mobile-module-badges">
                             <span class="tag-badge blue font-badge">HARD MODULE</span>
@@ -325,7 +336,8 @@
                 <div class="tab-toolbar">
                     <div class="search-box">
                         <span class="material-icons-round">search</span>
-                        <input type="text" id="search-quizzes" class="font-body" placeholder="Search quiz attempts by user or topic…">
+                        <input type="text" id="search-quizzes" class="font-body"
+                            placeholder="Search quiz attempts by user or topic…">
                     </div>
                     <div class="filter-chips">
                         <button class="chip active font-button" data-filter="all">All Attempts</button>
@@ -341,7 +353,8 @@
                 <div class="tab-toolbar">
                     <div class="search-box">
                         <span class="material-icons-round">search</span>
-                        <input type="text" id="search-questions" class="font-body" placeholder="Search questions in question bank…">
+                        <input type="text" id="search-questions" class="font-body"
+                            placeholder="Search questions in question bank…">
                     </div>
                     <div class="filter-chips">
                         <button class="chip active font-button" data-filter="all">All Questions</button>
@@ -349,7 +362,8 @@
                         <button class="chip font-button" data-filter="Medium">Medium</button>
                         <button class="chip font-button" data-filter="Hard">Hard</button>
                     </div>
-                    <button class="btn btn-primary font-button" onclick="openQuestionEditor()" style="margin-left:auto;">
+                    <button class="btn btn-primary font-button" onclick="openQuestionEditor()"
+                        style="margin-left:auto;">
                         <span class="material-icons-round">add_circle</span>
                         <span>Add Question</span>
                     </button>
@@ -363,7 +377,8 @@
             <div class="tab-toolbar">
                 <div class="search-box">
                     <span class="material-icons-round">search</span>
-                    <input type="text" id="search-scenarios" class="font-body" placeholder="Search simulation scenarios & decisions…">
+                    <input type="text" id="search-scenarios" class="font-body"
+                        placeholder="Search simulation scenarios & decisions…">
                 </div>
                 <div class="filter-chips">
                     <button class="chip active font-button" data-filter="all">All Scenarios</button>
@@ -379,7 +394,8 @@
         <!-- ═══════════ TAB 6: GAMIFICATION & RANKS ═══════════ -->
         <section class="tab-content" id="tab-gamification">
             <div class="sub-nav-tabs">
-                <button class="sub-tab-btn active font-button" data-subtab="gamif-leaderboard" id="subtab-leaderboard-btn">
+                <button class="sub-tab-btn active font-button" data-subtab="gamif-leaderboard"
+                    id="subtab-leaderboard-btn">
                     <span class="material-icons-round">leaderboard</span> Live Leaderboard
                 </button>
                 <button class="sub-tab-btn font-button" data-subtab="gamif-badges" id="subtab-badges-btn">
@@ -417,7 +433,8 @@
             <div class="tab-toolbar">
                 <div class="search-box">
                     <span class="material-icons-round">search</span>
-                    <input type="text" id="search-ai" class="font-body" placeholder="Search AI tutor queries, questions, or road topics…">
+                    <input type="text" id="search-ai" class="font-body"
+                        placeholder="Search AI tutor queries, questions, or road topics…">
                 </div>
                 <div class="filter-chips">
                     <button class="chip active font-button" data-filter="all">All Queries</button>
@@ -434,7 +451,8 @@
             <div class="tab-toolbar">
                 <div class="search-box">
                     <span class="material-icons-round">search</span>
-                    <input type="text" id="search-devices" class="font-body" placeholder="Search devices by hardware model, name, or OS…">
+                    <input type="text" id="search-devices" class="font-body"
+                        placeholder="Search devices by hardware model, name, or OS…">
                 </div>
                 <div class="filter-chips">
                     <button class="chip active font-button" data-filter="all">All Devices</button>
@@ -450,7 +468,8 @@
             <div class="tab-toolbar">
                 <div class="search-box">
                     <span class="material-icons-round">search</span>
-                    <input type="text" id="search-logins" class="font-body" placeholder="Search activity stream by user, event, or device…">
+                    <input type="text" id="search-logins" class="font-body"
+                        placeholder="Search activity stream by user, event, or device…">
                 </div>
                 <div class="filter-chips">
                     <button class="chip active font-button" data-filter="all">All Events</button>
@@ -466,17 +485,24 @@
         <section class="tab-content" id="tab-analytics">
             <div class="analytics-grid">
                 <div class="card">
-                    <div class="card-header"><h3 class="font-h3"><span class="material-icons-round">pie_chart</span> Learner Level Distribution</h3></div>
+                    <div class="card-header">
+                        <h3 class="font-h3"><span class="material-icons-round">pie_chart</span> Learner Level
+                            Distribution</h3>
+                    </div>
                     <div class="chart-container" style="height:260px;"><canvas id="levelDistChart"></canvas></div>
                 </div>
                 <div class="card">
-                    <div class="card-header"><h3 class="font-h3"><span class="material-icons-round">category</span> Road Safety Topics Mastery</h3></div>
+                    <div class="card-header">
+                        <h3 class="font-h3"><span class="material-icons-round">category</span> Road Safety Topics
+                            Mastery</h3>
+                    </div>
                     <div class="chart-container" style="height:260px;"><canvas id="topicMasteryChart"></canvas></div>
                 </div>
             </div>
             <div class="card" style="margin-top:20px;">
                 <div class="card-header" style="display:flex;justify-content:space-between;align-items:center;">
-                    <h3 class="font-h3"><span class="material-icons-round">description</span> Executive System Summary Report</h3>
+                    <h3 class="font-h3"><span class="material-icons-round">description</span> Executive System Summary
+                        Report</h3>
                     <button class="btn btn-secondary font-button" onclick="exportSystemReport()">
                         <span class="material-icons-round">download</span>
                         <span>Export CSV Summary</span>
@@ -507,15 +533,20 @@
         <section class="tab-content" id="tab-settings">
             <div class="settings-container">
                 <div class="card" style="margin-bottom:20px;">
-                    <div class="card-header"><h3 class="font-h3"><span class="material-icons-round">tune</span> Examination & Passing Standards</h3></div>
+                    <div class="card-header">
+                        <h3 class="font-h3"><span class="material-icons-round">tune</span> Examination & Passing
+                            Standards</h3>
+                    </div>
                     <div class="card-body" style="padding:20px;display:flex;flex-direction:column;gap:16px;">
                         <div class="form-row">
                             <label class="font-label">Quiz Passing Score Threshold (%)</label>
-                            <input type="number" id="setting-pass-score" class="form-input font-body" value="70" min="50" max="100">
+                            <input type="number" id="setting-pass-score" class="form-input font-body" value="70"
+                                min="50" max="100">
                         </div>
                         <div class="form-row">
                             <label class="font-label">Base XP Awarded per Passed Quiz</label>
-                            <input type="number" id="setting-quiz-xp" class="form-input font-body" value="100" min="10" max="1000">
+                            <input type="number" id="setting-quiz-xp" class="form-input font-body" value="100" min="10"
+                                max="1000">
                         </div>
                         <div class="form-row">
                             <label class="font-label">Daily Streak Bonus Multiplier</label>
@@ -529,7 +560,10 @@
                 </div>
 
                 <div class="card">
-                    <div class="card-header"><h3 class="font-h3"><span class="material-icons-round">security</span> Administrator Access & Permissions</h3></div>
+                    <div class="card-header">
+                        <h3 class="font-h3"><span class="material-icons-round">security</span> Administrator Access &
+                            Permissions</h3>
+                    </div>
                     <div class="card-body" style="padding:20px;display:flex;flex-direction:column;gap:12px;">
                         <div class="modal-detail-row">
                             <span class="font-label">Active Admin Role:</span>
@@ -537,13 +571,16 @@
                         </div>
                         <div class="modal-detail-row">
                             <span class="font-label">Firebase Cloud Project:</span>
-                            <span class="font-body-sm" style="color:var(--info-blue);">gamifiedroadsafetyawareness</span>
+                            <span class="font-body-sm"
+                                style="color:var(--info-blue);">gamifiedroadsafetyawareness</span>
                         </div>
                         <div class="modal-detail-row">
                             <span class="font-label">Data Deletion Policy:</span>
-                            <span class="font-body-sm" style="color:var(--emerald-green);">Multi-Collection Atomic Cleanup Active</span>
+                            <span class="font-body-sm" style="color:var(--emerald-green);">Multi-Collection Atomic
+                                Cleanup Active</span>
                         </div>
-                        <button class="btn btn-primary font-button" onclick="saveSettings()" style="margin-top:10px;align-self:flex-start;">
+                        <button class="btn btn-primary font-button" onclick="saveSettings()"
+                            style="margin-top:10px;align-self:flex-start;">
                             <span class="material-icons-round">save</span>
                             <span>Save System Preferences</span>
                         </button>
@@ -600,12 +637,14 @@
         <div class="modal" id="module-modal">
             <div class="modal-header">
                 <h3 class="font-h3" id="module-modal-title">Create Road Safety Module</h3>
-                <button class="modal-close" id="module-modal-close"><span class="material-icons-round">close</span></button>
+                <button class="modal-close" id="module-modal-close"><span
+                        class="material-icons-round">close</span></button>
             </div>
             <div class="modal-body">
                 <div class="form-row">
                     <label class="font-label">Module Title</label>
-                    <input type="text" id="module-input-title" class="form-input font-body" placeholder="e.g., Pedestrian Safety & Crosswalk Rules">
+                    <input type="text" id="module-input-title" class="form-input font-body"
+                        placeholder="e.g., Pedestrian Safety & Crosswalk Rules">
                 </div>
                 <div class="form-row" style="margin-top:12px;">
                     <label class="font-label">Category / Safety Topic</label>
@@ -632,11 +671,13 @@
                 </div>
                 <div class="form-row" style="margin-top:12px;">
                     <label class="font-label">Learning Description</label>
-                    <textarea id="module-input-desc" class="form-input font-body" rows="3" placeholder="Key educational takeaways for drivers..."></textarea>
+                    <textarea id="module-input-desc" class="form-input font-body" rows="3"
+                        placeholder="Key educational takeaways for drivers..."></textarea>
                 </div>
                 <div class="form-row" style="margin-top:12px;">
                     <label class="font-label">Key Safety Tip</label>
-                    <input type="text" id="module-input-tip" class="form-input font-body" placeholder="e.g., Look both ways and yield before entering crosswalks.">
+                    <input type="text" id="module-input-tip" class="form-input font-body"
+                        placeholder="e.g., Look both ways and yield before entering crosswalks.">
                 </div>
             </div>
             <div class="modal-actions">
@@ -654,12 +695,14 @@
         <div class="modal" id="question-modal">
             <div class="modal-header">
                 <h3 class="font-h3" id="question-modal-title">Add Question to Bank</h3>
-                <button class="modal-close" id="question-modal-close"><span class="material-icons-round">close</span></button>
+                <button class="modal-close" id="question-modal-close"><span
+                        class="material-icons-round">close</span></button>
             </div>
             <div class="modal-body">
                 <div class="form-row">
                     <label class="font-label">Question Text</label>
-                    <textarea id="q-input-text" class="form-input font-body" rows="2" placeholder="What should a driver do when approaching a flashing yellow light?"></textarea>
+                    <textarea id="q-input-text" class="form-input font-body" rows="2"
+                        placeholder="What should a driver do when approaching a flashing yellow light?"></textarea>
                 </div>
                 <div class="form-row" style="margin-top:10px;">
                     <label class="font-label">Option A</label>
@@ -698,7 +741,8 @@
                 </div>
                 <div class="form-row" style="margin-top:10px;">
                     <label class="font-label">Answer Explanation (Educational Feedback)</label>
-                    <textarea id="q-input-exp" class="form-input font-body" rows="2" placeholder="Explain why this option is correct based on traffic rules..."></textarea>
+                    <textarea id="q-input-exp" class="form-input font-body" rows="2"
+                        placeholder="Explain why this option is correct based on traffic rules..."></textarea>
                 </div>
             </div>
             <div class="modal-actions">
@@ -719,19 +763,22 @@
                     <span class="material-icons-round danger-icon-pulse">warning</span>
                     <h3 class="font-h3">Delete User?</h3>
                 </div>
-                <button class="modal-close" id="delete-modal-close"><span class="material-icons-round">close</span></button>
+                <button class="modal-close" id="delete-modal-close"><span
+                        class="material-icons-round">close</span></button>
             </div>
             <div class="modal-body">
                 <div class="danger-banner">
                     <p class="danger-warning-text font-body">
                         <strong>Are you sure you want to permanently delete this user?</strong>
-                        This action will permanently remove the user's account, learning progress, quiz attempts, and activity history from the cloud database.
+                        This action will permanently remove the user's account, learning progress, quiz attempts, and
+                        activity history from the cloud database.
                     </p>
                 </div>
                 <div class="delete-user-preview" id="delete-user-preview"></div>
                 <div class="self-delete-warning" id="self-delete-warning" style="display:none;">
                     <span class="material-icons-round">shield</span>
-                    <p class="font-body-sm"><strong>Self-Deletion Prohibited:</strong> You cannot delete your own administrator account from this page.</p>
+                    <p class="font-body-sm"><strong>Self-Deletion Prohibited:</strong> You cannot delete your own
+                        administrator account from this page.</p>
                 </div>
                 <div class="delete-loading-indicator" id="delete-loading-indicator" style="display:none;">
                     <div class="spinner"></div>
@@ -753,13 +800,17 @@
         <div class="modal" id="install-modal" style="max-width:640px;">
             <div class="modal-header">
                 <div style="display:flex;align-items:center;gap:12px;">
-                    <img src="logo.png" alt="RoadSafe AI Official Emblem" style="width:36px;height:36px;object-fit:contain;border-radius:10px;">
+                    <img src="logo.png" alt="RoadSafe AI Official Emblem"
+                        style="width:36px;height:36px;object-fit:contain;border-radius:10px;">
                     <div>
                         <h3 class="font-h3" style="color:#FFFFFF;margin:0;">Mobile App Portal</h3>
-                        <span class="font-caption" style="color:var(--pnp-badge-gold);font-size:10px;text-transform:uppercase;letter-spacing:1px;">Official Road Safety Driver Training Client</span>
+                        <span class="font-caption"
+                            style="color:var(--pnp-badge-gold);font-size:10px;text-transform:uppercase;letter-spacing:1px;">Official
+                            Road Safety Driver Training Client</span>
                     </div>
                 </div>
-                <button class="modal-close" id="install-modal-close"><span class="material-icons-round">close</span></button>
+                <button class="modal-close" id="install-modal-close"><span
+                        class="material-icons-round">close</span></button>
             </div>
             <div class="modal-body">
                 <!-- QR Code & Quick Scan Container -->
@@ -771,33 +822,48 @@
                     <div class="qr-install-info">
                         <div style="display:flex;align-items:center;gap:6px;">
                             <span class="pnp-station-tag" style="font-size:9px;">VERIFIED BUILD</span>
-                            <span class="font-caption" style="color:var(--emerald-green);font-weight:700;">● Signed APK Release</span>
+                            <span class="font-caption" style="color:var(--emerald-green);font-weight:700;">● Signed APK
+                                Release</span>
                         </div>
-                        <h4 class="font-h4" style="color:#FFFFFF;margin-bottom:2px;font-size:1.05rem;">Scan to Download Mobile App</h4>
+                        <h4 class="font-h4" style="color:#FFFFFF;margin-bottom:2px;font-size:1.05rem;">Scan to Download
+                            Mobile App</h4>
                         <div style="display:flex;gap:6px;margin:6px 0;">
-                            <button type="button" id="btn-qr-mode-public" class="btn font-button" style="padding:4px 12px;font-size:11px;background:var(--pnp-patrol-blue);color:#fff;border:1px solid var(--pnp-badge-gold-border);">🌐 Public Portal</button>
-                            <button type="button" id="btn-qr-mode-local" class="btn font-button" style="padding:4px 12px;font-size:11px;background:#0A1424;color:var(--text-secondary);border:1px solid var(--border-card);">📶 Station Wi-Fi</button>
+                            <button type="button" id="btn-qr-mode-public" class="btn font-button"
+                                style="padding:4px 12px;font-size:11px;background:var(--pnp-patrol-blue);color:#fff;border:1px solid var(--pnp-badge-gold-border);">🌐
+                                Public Portal</button>
+                            <button type="button" id="btn-qr-mode-local" class="btn font-button"
+                                style="padding:4px 12px;font-size:11px;background:#0A1424;color:var(--text-secondary);border:1px solid var(--border-card);">📶
+                                Station Wi-Fi</button>
                         </div>
-                        <p class="font-body-sm" id="qr-desc-text" style="color:var(--text-secondary);font-size:12px;line-height:1.4;">
-                            Scan with your phone camera to download and install the official Road Safety awareness client worldwide.
+                        <p class="font-body-sm" id="qr-desc-text"
+                            style="color:var(--text-secondary);font-size:12px;line-height:1.4;">
+                            Scan with your phone camera to download and install the official Road Safety awareness
+                            client worldwide.
                         </p>
                         <div class="modal-section-title font-label" style="margin-top:2px;">Mobile Portal Link</div>
                         <div class="qr-url-input-wrap">
-                            <input type="text" id="install-qr-url-input" class="form-input font-body-sm" value="https://jiemmm03.github.io/Gamified-Road-Safety-Awareness/" readonly>
-                            <button class="btn btn-secondary font-button" id="btn-copy-qr-url" title="Copy Download Link">
+                            <input type="text" id="install-qr-url-input" class="form-input font-body-sm"
+                                value="https://jiemmm03.github.io/Gamified-Road-Safety-Awareness/" readonly>
+                            <button class="btn btn-secondary font-button" id="btn-copy-qr-url"
+                                title="Copy Download Link">
                                 <span class="material-icons-round">content_copy</span>
                             </button>
                         </div>
                         <div style="display:flex;gap:8px;margin-top:6px;flex-wrap:wrap;">
-                            <button class="btn btn-primary font-button" id="btn-download-qr-img" style="font-size:12px;padding:7px 14px;">
+                            <button class="btn btn-primary font-button" id="btn-download-qr-img"
+                                style="font-size:12px;padding:7px 14px;">
                                 <span class="material-icons-round" style="font-size:16px;">download</span>
                                 <span>Save QR Badge</span>
                             </button>
-                            <a href="download.html" target="_blank" id="btn-open-download-page" class="btn btn-secondary font-button" style="font-size:12px;padding:7px 14px;text-decoration:none;display:inline-flex;align-items:center;gap:4px;">
+                            <a href="download.html" target="_blank" id="btn-open-download-page"
+                                class="btn btn-secondary font-button"
+                                style="font-size:12px;padding:7px 14px;text-decoration:none;display:inline-flex;align-items:center;gap:4px;">
                                 <span class="material-icons-round" style="font-size:16px;">open_in_new</span>
                                 <span>Public Driver Portal</span>
                             </a>
-                            <a href="https://github.com/jiemmm03/Gamified-Road-Safety-Awareness/releases/download/v1.0.0/RoadSafe-AI.apk" target="_blank" class="btn btn-secondary font-button" style="font-size:12px;padding:7px 14px;text-decoration:none;display:inline-flex;align-items:center;gap:4px;color:var(--pnp-badge-gold-bright);border-color:var(--pnp-badge-gold-border);">
+                            <a href="https://github.com/jiemmm03/Gamified-Road-Safety-Awareness/releases/download/v1.0.0/RoadSafe-AI.apk"
+                                target="_blank" class="btn btn-secondary font-button"
+                                style="font-size:12px;padding:7px 14px;text-decoration:none;display:inline-flex;align-items:center;gap:4px;color:var(--pnp-badge-gold-bright);border-color:var(--pnp-badge-gold-border);">
                                 <span class="material-icons-round" style="font-size:16px;">shield</span>
                                 <span>Direct APK Download</span>
                             </a>
@@ -806,19 +872,25 @@
                 </div>
 
                 <div class="modal-section-title font-label">Direct Secure Download Repository</div>
-                <div class="modal-detail-row" style="flex-direction:column;align-items:flex-start;gap:6px;word-break:break-all;">
+                <div class="modal-detail-row"
+                    style="flex-direction:column;align-items:flex-start;gap:6px;word-break:break-all;">
                     <div style="font-size:11px;color:var(--text-muted);">Verified Package URI:</div>
-                    <code class="font-body-sm" style="color:#93C5FD;background:#060B14;border:1px solid rgba(0,56,168,0.4);padding:8px 12px;border-radius:6px;width:100%;font-size:11px;">
+                    <code class="font-body-sm"
+                        style="color:#93C5FD;background:#060B14;border:1px solid rgba(0,56,168,0.4);padding:8px 12px;border-radius:6px;width:100%;font-size:11px;">
                         https://github.com/jiemmm03/Gamified-Road-Safety-Awareness/releases/download/v1.0.0/RoadSafe-AI.apk
                     </code>
                 </div>
 
                 <div class="modal-section-title font-label" style="margin-top:16px;">Mobile App Setup Protocol</div>
-                <ol class="font-body-sm" style="color:var(--text-secondary);padding-left:20px;line-height:1.7;font-size:13px;">
-                    <li>Scan the official QR code or download <strong>RoadSafe-AI.apk</strong> to your Android smartphone.</li>
+                <ol class="font-body-sm"
+                    style="color:var(--text-secondary);padding-left:20px;line-height:1.7;font-size:13px;">
+                    <li>Scan the official QR code or download <strong>RoadSafe-AI.apk</strong> to your Android
+                        smartphone.</li>
                     <li>Open your file manager or browser notifications and tap the downloaded APK file.</li>
-                    <li>Select <strong>"Install"</strong> (allow installation from this browser/source when prompted).</li>
-                    <li>Launch the app to begin driver safety modules, interactive quizzes, and decision simulators — your progress syncs live to this Command Center!</li>
+                    <li>Select <strong>"Install"</strong> (allow installation from this browser/source when prompted).
+                    </li>
+                    <li>Launch the app to begin driver safety modules, interactive quizzes, and decision simulators —
+                        your progress syncs live to this Command Center!</li>
                 </ol>
             </div>
             <div class="modal-actions">
@@ -828,10 +900,12 @@
     </div>
 
     <!-- ═══════════ SUPER ADMIN AUTHENTICATION GATE (DAGAMI BACKGROUND) ═══════════ -->
-    <div class="admin-auth-overlay" id="admin-auth-overlay" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;width:100vw;height:100vh;z-index:99999;">
+    <div class="admin-auth-overlay" id="admin-auth-overlay"
+        style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;width:100vw;height:100vh;z-index:99999;">
         <div class="admin-auth-topbar">
             <div class="admin-auth-station-pill">
-                <span class="material-icons-round" style="color:var(--pnp-gold-bright);font-size:16px;">account_balance</span>
+                <span class="material-icons-round"
+                    style="color:var(--pnp-gold-bright);font-size:16px;">account_balance</span>
                 <span>Municipality of Dagami · Traffic Safety Command</span>
             </div>
             <div class="admin-auth-station-pill" style="border-color:rgba(0,56,168,0.5);">
@@ -841,22 +915,27 @@
         </div>
 
         <div class="admin-auth-card">
-            <div class="admin-auth-logo-frame" style="width:84px;height:84px;margin:0 auto 16px;display:flex;align-items:center;justify-content:center;">
-                <img src="logo.png" alt="RoadSafe AI Official Emblem" style="max-width:68px;max-height:68px;object-fit:contain;display:block;">
+            <div class="admin-auth-logo-frame"
+                style="width:84px;height:84px;margin:0 auto 16px;display:flex;align-items:center;justify-content:center;">
+                <img src="logo.png" alt="RoadSafe AI Official Emblem"
+                    style="max-width:68px;max-height:68px;object-fit:contain;display:block;">
             </div>
-            
+
             <div class="admin-auth-municipality">Republic of the Philippines · Leyte</div>
             <h2 class="admin-auth-title">RoadSafe AI</h2>
             <div class="admin-auth-subtitle">Super Admin · Dagami Leyte Command Center</div>
-            
+
             <div class="admin-auth-badge-tag">
-                <span class="material-icons-round" style="font-size:14px;color:var(--pnp-gold-bright);">verified_user</span>
+                <span class="material-icons-round"
+                    style="font-size:14px;color:var(--pnp-gold-bright);">verified_user</span>
                 <span>Dagami Municipal Command Gate</span>
             </div>
 
             <form id="admin-login-form" onsubmit="handleAdminLogin(event)">
-                <div id="admin-auth-error" style="display:none;background:rgba(206,17,38,0.18);border:1px solid rgba(206,17,38,0.5);color:#FCA5A5;padding:10px 14px;border-radius:10px;font-size:12px;margin-bottom:14px;align-items:center;gap:8px;text-align:left;">
-                    <span class="material-icons-round" style="font-size:16px;color:#EF4444;flex-shrink:0;">error_outline</span>
+                <div id="admin-auth-error"
+                    style="display:none;background:rgba(206,17,38,0.18);border:1px solid rgba(206,17,38,0.5);color:#FCA5A5;padding:10px 14px;border-radius:10px;font-size:12px;margin-bottom:14px;align-items:center;gap:8px;text-align:left;">
+                    <span class="material-icons-round"
+                        style="font-size:16px;color:#EF4444;flex-shrink:0;">error_outline</span>
                     <span id="admin-auth-error-text">Invalid administrator credentials.</span>
                 </div>
 
@@ -864,7 +943,8 @@
                     <label for="admin-auth-user">Administrator Username</label>
                     <div class="admin-auth-input-wrap">
                         <span class="material-icons-round">badge</span>
-                        <input type="text" id="admin-auth-user" class="admin-auth-input" placeholder="admin or superadmin" required autocomplete="username">
+                        <input type="text" id="admin-auth-user" class="admin-auth-input"
+                            placeholder="admin or superadmin" required autocomplete="username">
                     </div>
                 </div>
 
@@ -872,7 +952,8 @@
                     <label for="admin-auth-pass">Access Security Passcode</label>
                     <div class="admin-auth-input-wrap">
                         <span class="material-icons-round">lock</span>
-                        <input type="password" id="admin-auth-pass" class="admin-auth-input" placeholder="••••••••" required autocomplete="current-password">
+                        <input type="password" id="admin-auth-pass" class="admin-auth-input" placeholder="••••••••"
+                            required autocomplete="current-password">
                     </div>
                 </div>
 
@@ -892,16 +973,20 @@
     <!-- ═══════════ ADMIN LOGOUT CONFIRMATION MODAL ═══════════ -->
     <div class="modal-overlay" id="admin-logout-overlay" style="z-index:99998;display:none;">
         <div class="modal" style="max-width:380px;text-align:center;padding:24px;">
-            <div style="width:52px;height:52px;border-radius:50%;background:rgba(206,17,38,0.15);border:1px solid rgba(206,17,38,0.4);display:flex;align-items:center;justify-content:center;margin:0 auto 14px;">
+            <div
+                style="width:52px;height:52px;border-radius:50%;background:rgba(206,17,38,0.15);border:1px solid rgba(206,17,38,0.4);display:flex;align-items:center;justify-content:center;margin:0 auto 14px;">
                 <span class="material-icons-round" style="color:#EF4444;font-size:28px;">logout</span>
             </div>
             <h3 class="font-h3" style="color:#FFFFFF;margin-bottom:6px;">Sign Out of Command Center?</h3>
-            <p class="font-body-sm" style="color:var(--text-secondary);margin-bottom:20px;font-size:13px;line-height:1.4;">
+            <p class="font-body-sm"
+                style="color:var(--text-secondary);margin-bottom:20px;font-size:13px;line-height:1.4;">
                 Are you sure you want to log out? Your administrative session will be terminated.
             </p>
             <div style="display:flex;gap:10px;justify-content:center;">
-                <button class="btn btn-secondary font-button" onclick="closeAdminLogoutModal()" style="flex:1;justify-content:center;">Cancel</button>
-                <button class="btn btn-danger font-button" onclick="confirmAdminLogout()" style="flex:1;justify-content:center;background:#CE1126;border-color:rgba(206,17,38,0.6);">
+                <button class="btn btn-secondary font-button" onclick="closeAdminLogoutModal()"
+                    style="flex:1;justify-content:center;">Cancel</button>
+                <button class="btn btn-danger font-button" onclick="confirmAdminLogout()"
+                    style="flex:1;justify-content:center;background:#CE1126;border-color:rgba(206,17,38,0.6);">
                     <span class="material-icons-round" style="font-size:16px;">logout</span>
                     <span>Log Out</span>
                 </button>
@@ -914,4 +999,5 @@
 
     <script src="app.js?v=4.2"></script>
 </body>
+
 </html>

@@ -225,7 +225,7 @@ fun LoginScreen(
                         )
                         Spacer(modifier = Modifier.height(2.dp))
                         Text(
-                            text = "Road Safety Command",
+                            text = "Road Safety Awareness",
                             style = MaterialTheme.typography.displayLarge.copy(
                                 fontWeight = FontWeight.Bold,
                                 fontSize = 26.sp
@@ -234,7 +234,7 @@ fun LoginScreen(
                             textAlign = TextAlign.Center
                         )
                         Text(
-                            text = "Traffic Rule Education & Driver Enforcement System",
+                            text = "Traffic Rule Education & Driver Safety System",
                             style = MaterialTheme.typography.bodySmall,
                             color = Color.White.copy(alpha = 0.85f),
                             textAlign = TextAlign.Center
