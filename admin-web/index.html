@@ -147,20 +147,6 @@
                 <span class="top-bar-subtitle font-body-sm" id="page-subtitle">Dagami Leyte · Live Safety Telemetry &amp; System Command</span>
             </div>
             
-            <!-- Global Portal Mode Switcher Pill -->
-            <div class="portal-mode-toggle-wrap">
-                <div class="portal-toggle-pill">
-                    <button class="portal-toggle-btn active font-button" id="btn-portal-admin" onclick="switchPortalMode('admin')">
-                        <span class="material-icons-round">admin_panel_settings</span>
-                        <span>Admin Command</span>
-                    </button>
-                    <button class="portal-toggle-btn font-button" id="btn-portal-user" onclick="switchPortalMode('user')">
-                        <span class="material-icons-round">school</span>
-                        <span>User Learning</span>
-                    </button>
-                </div>
-            </div>
-
             <div class="top-bar-actions">
                 <button class="btn btn-download-apk font-button" onclick="showAppInstallModal()"
                     title="Install RoadSafe AI Mobile App">
@@ -628,14 +614,6 @@
 
         <!-- ═══════════ TAB 1: ADMIN DASHBOARD OVERVIEW ═══════════ -->
         <section class="tab-content active" id="tab-dashboard">
-            <!-- 11. ADMIN DASHBOARD HIERARCHY / SYSTEM OVERVIEW -->
-            <div class="admin-overview-header">
-                <div class="admin-overview-badge-row">
-                    <span class="station-tag"><span class="material-icons-round" style="font-size:12px;">security</span> MUNICIPAL TELEMETRY NODE</span>
-                    <span class="font-caption" style="color:var(--text-secondary);">Real-time synchronized data from mobile driver fleet</span>
-                </div>
-            </div>
-
             <!-- 13. SYSTEM OVERVIEW CARDS (6 STATISTICAL CARDS) -->
             <div class="admin-system-metrics-grid">
                 <div class="metric-card metric-devices">
@@ -690,47 +668,6 @@
                         <span class="metric-label font-label">COMPLETION RATE</span>
                         <span class="metric-caption font-caption">Overall passing benchmark</span>
                     </div>
-                </div>
-            </div>
-
-            <!-- 21. ADMIN QUICK ACTIONS FEATURE GRID -->
-            <div class="card admin-quick-grid-card">
-                <div class="card-header">
-                    <h3 class="font-h3"><span class="material-icons-round">grid_view</span> Administrative Feature Grid</h3>
-                </div>
-                <div class="admin-features-grid">
-                    <button class="admin-feature-tile font-navigation" onclick="switchTab('users')">
-                        <span class="material-icons-round feature-icon">manage_accounts</span>
-                        <span class="feature-label">👥 Manage Users</span>
-                        <span class="feature-badge font-badge badge-users-val">0</span>
-                    </button>
-                    <button class="admin-feature-tile font-navigation" onclick="switchTab('modules')">
-                        <span class="material-icons-round feature-icon">menu_book</span>
-                        <span class="feature-label">📚 Manage Modules</span>
-                        <span class="feature-badge font-badge badge-modules-val">3</span>
-                    </button>
-                    <button class="admin-feature-tile font-navigation" onclick="switchTab('quizzes')">
-                        <span class="material-icons-round feature-icon">assignment_turned_in</span>
-                        <span class="feature-label">📝 Manage Quizzes</span>
-                        <span class="feature-badge font-badge badge-quizzes-val">0</span>
-                    </button>
-                    <button class="admin-feature-tile font-navigation" onclick="switchTab('ai-activity')">
-                        <span class="material-icons-round feature-icon">smart_toy</span>
-                        <span class="feature-label">🤖 AI Activity</span>
-                        <span class="feature-badge font-badge badge-ai-val">0</span>
-                    </button>
-                    <button class="admin-feature-tile font-navigation" onclick="switchTab('gamification')">
-                        <span class="material-icons-round feature-icon">military_tech</span>
-                        <span class="feature-label">🏆 Rank History</span>
-                    </button>
-                    <button class="admin-feature-tile font-navigation" onclick="switchTab('analytics')">
-                        <span class="material-icons-round feature-icon">insights</span>
-                        <span class="feature-label">📊 Reports &amp; Analytics</span>
-                    </button>
-                    <button class="admin-feature-tile font-navigation" onclick="switchTab('settings')">
-                        <span class="material-icons-round feature-icon">settings</span>
-                        <span class="feature-label">⚙️ System Settings</span>
-                    </button>
                 </div>
             </div>
 
