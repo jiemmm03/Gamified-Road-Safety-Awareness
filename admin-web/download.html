@@ -645,7 +645,7 @@
                 .then(response => {
                     if (response.ok) {
                         const size = response.headers.get('Content-Length');
-                        const sizeMB = size ? (parseInt(size) / (1024 * 1024)).toFixed(1) : '25.1';
+                        const sizeMB = size ? (parseInt(size) / (1024 * 1024)).toFixed(1) : '26.6';
 
                         statusBanner.className = 'status-banner ready';
                         statusText.innerHTML = `<strong>APK Ready</strong> — ${sizeMB} MB available (Local Server &amp; GitHub Release)`;
@@ -664,10 +664,10 @@
 
         function useGitHubFallback() {
             statusBanner.className = 'status-banner ready';
-            statusText.innerHTML = '<strong>APK Ready</strong> — Official GitHub Release v1.0.0 (25.1 MB)';
+            statusText.innerHTML = '<strong>APK Ready</strong> — Official Release v1.1.0 (26.6 MB)';
             downloadBtn.href = GITHUB_RELEASE_APK;
             downloadBtn.classList.remove('disabled');
-            downloadBtnText.textContent = 'Download APK from GitHub (25.1 MB)';
+            downloadBtnText.textContent = 'Download APK from GitHub (26.6 MB)';
         }
 
         // ─── Download click handler with progress feedback ───
