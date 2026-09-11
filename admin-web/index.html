@@ -615,58 +615,95 @@
         <!-- ═══════════ TAB 1: ADMIN DASHBOARD OVERVIEW ═══════════ -->
         <section class="tab-content active" id="tab-dashboard">
             <!-- 13. SYSTEM OVERVIEW CARDS (6 STATISTICAL CARDS) -->
-            <div class="admin-system-metrics-grid">
-                <div class="metric-card metric-devices">
+            <!-- 13. SYSTEM OVERVIEW CARDS (6 STATISTICAL INTERACTIVE NAVIGATION CARDS) -->
+            <div class="admin-system-metrics-grid" role="region" aria-label="Key System Metrics and Navigation">
+                <div class="metric-card metric-devices clickable-stat-card" id="card-stat-total-users"
+                    role="button" tabindex="0" data-nav="users" onclick="navigateToUsers()"
+                    title="Click to navigate to Registered Driver Directory"
+                    aria-label="Total Users: View and manage registered driver accounts">
                     <div class="metric-icon-wrap"><span class="material-icons-round">people</span></div>
                     <div class="metric-info">
                         <span class="metric-value font-statistic" id="metric-total-devices">0</span>
                         <span class="metric-label font-label">TOTAL USERS</span>
                         <span class="metric-caption font-caption">Registered driver accounts</span>
                     </div>
+                    <div class="metric-action-arrow" title="Open User Directory">
+                        <span class="material-icons-round">arrow_forward</span>
+                    </div>
                 </div>
 
-                <div class="metric-card metric-online">
+                <div class="metric-card metric-online clickable-stat-card" id="card-stat-active-users"
+                    role="button" tabindex="0" data-nav="active-users" onclick="navigateToActiveUsers()"
+                    title="Click to view Active Users and Real-Time Driver Activity"
+                    aria-label="Active Users: View drivers active recently">
                     <div class="metric-icon-wrap"><span class="material-icons-round">wifi</span></div>
                     <div class="metric-info">
                         <span class="metric-value font-statistic" id="metric-online">0</span>
                         <span class="metric-label font-label">ACTIVE USERS</span>
                         <span class="metric-caption font-caption">Active in last 5 minutes</span>
                     </div>
+                    <div class="metric-action-arrow" title="View Active Users">
+                        <span class="material-icons-round">arrow_forward</span>
+                    </div>
                 </div>
 
-                <div class="metric-card metric-modules">
+                <div class="metric-card metric-modules clickable-stat-card" id="card-stat-total-modules"
+                    role="button" tabindex="0" data-nav="modules" onclick="navigateToModules()"
+                    title="Click to navigate to Road Safety Curriculum & Module Management"
+                    aria-label="Total Modules: View and manage road safety modules">
                     <div class="metric-icon-wrap"><span class="material-icons-round">menu_book</span></div>
                     <div class="metric-info">
                         <span class="metric-value font-statistic" id="metric-total-modules">3</span>
                         <span class="metric-label font-label">TOTAL MODULES</span>
                         <span class="metric-caption font-caption">Published curriculum sets</span>
                     </div>
+                    <div class="metric-action-arrow" title="Open Modules">
+                        <span class="material-icons-round">arrow_forward</span>
+                    </div>
                 </div>
 
-                <div class="metric-card metric-quiz-banks">
+                <div class="metric-card metric-quiz-banks clickable-stat-card" id="card-stat-total-questions"
+                    role="button" tabindex="0" data-nav="questions" onclick="navigateToQuestionBank()"
+                    title="Click to navigate to Driver Assessment Question Bank (60 Questions)"
+                    aria-label="Total Questions: View 60 assessment questions by module and difficulty">
                     <div class="metric-icon-wrap"><span class="material-icons-round">inventory_2</span></div>
                     <div class="metric-info">
                         <span class="metric-value font-statistic" id="metric-total-questions">60</span>
                         <span class="metric-label font-label">TOTAL QUESTIONS</span>
                         <span class="metric-caption font-caption">Active assessment bank</span>
                     </div>
+                    <div class="metric-action-arrow" title="Open Question Bank">
+                        <span class="material-icons-round">arrow_forward</span>
+                    </div>
                 </div>
 
-                <div class="metric-card metric-quizzes">
+                <div class="metric-card metric-quizzes clickable-stat-card" id="card-stat-quiz-attempts"
+                    role="button" tabindex="0" data-nav="quiz-attempts" onclick="navigateToQuizAttempts()"
+                    title="Click to navigate to Quiz Attempts & Assessment History"
+                    aria-label="Quiz Attempts: View completed assessments and submissions">
                     <div class="metric-icon-wrap"><span class="material-icons-round">quiz</span></div>
                     <div class="metric-info">
                         <span class="metric-value font-statistic" id="metric-total-quizzes">0</span>
                         <span class="metric-label font-label">QUIZ ATTEMPTS</span>
                         <span class="metric-caption font-caption">Assessments completed</span>
                     </div>
+                    <div class="metric-action-arrow" title="View Quiz Attempts">
+                        <span class="material-icons-round">arrow_forward</span>
+                    </div>
                 </div>
 
-                <div class="metric-card metric-alerts">
+                <div class="metric-card metric-alerts clickable-stat-card" id="card-stat-completion-rate"
+                    role="button" tabindex="0" data-nav="completion-rate" onclick="navigateToCompletionAnalytics()"
+                    title="Click to navigate to Performance & Completion Analytics"
+                    aria-label="Completion Rate: View overall passing benchmark and analytics">
                     <div class="metric-icon-wrap"><span class="material-icons-round">analytics</span></div>
                     <div class="metric-info">
                         <span class="metric-value font-statistic" id="metric-passing-rate">78.4%</span>
                         <span class="metric-label font-label">COMPLETION RATE</span>
                         <span class="metric-caption font-caption">Overall passing benchmark</span>
+                    </div>
+                    <div class="metric-action-arrow" title="View Analytics">
+                        <span class="material-icons-round">arrow_forward</span>
                     </div>
                 </div>
             </div>

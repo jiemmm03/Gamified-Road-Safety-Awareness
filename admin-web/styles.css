@@ -2028,16 +2028,20 @@ body {
     background: linear-gradient(180deg, #0F1F38 0%, #0B172A 100%);
     border: 1px solid var(--border-card);
     border-radius: var(--radius-lg);
-    padding: 22px;
+    padding: 20px 18px;
     display: flex;
     align-items: flex-start;
-    gap: 16px;
+    gap: 14px;
     transition: transform var(--anim-duration-fast) var(--ease-standard),
                 box-shadow var(--anim-duration-fast) var(--ease-standard),
-                border-color var(--anim-duration-fast) var(--ease-standard);
+                border-color var(--anim-duration-fast) var(--ease-standard),
+                background var(--anim-duration-fast) var(--ease-standard);
     box-shadow: var(--shadow-card);
     position: relative;
     overflow: hidden;
+    cursor: pointer;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
 }
 .metric-card::before {
     content: '';
@@ -2047,58 +2051,137 @@ body {
     right: 0;
     height: 2px;
     background: linear-gradient(90deg, transparent, var(--border-card), transparent);
+    transition: background var(--anim-duration-fast) var(--ease-standard);
 }
+
 .metric-card:hover {
-    transform: translateY(-3px);
-    box-shadow: var(--shadow-elevated);
-    border-color: rgba(212, 175, 55, 0.4);
+    transform: translateY(-4px);
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.5), 0 0 20px rgba(0, 56, 168, 0.35);
+    border-color: rgba(212, 175, 55, 0.65);
+    background: linear-gradient(180deg, #132747 0%, #0D1C33 100%);
+}
+.metric-card:hover::before {
+    background: linear-gradient(90deg, transparent, var(--badge-gold-bright), transparent);
+}
+.metric-card:active {
+    transform: translateY(-1px) scale(0.985);
+    box-shadow: var(--shadow-card);
+}
+.metric-card:focus-visible {
+    outline: none;
+    border-color: var(--badge-gold);
+    box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.4), var(--shadow-elevated);
+}
+
+.metric-card .metric-icon-wrap,
+.metric-card .metric-info,
+.metric-card .metric-value,
+.metric-card .metric-label,
+.metric-card .metric-caption {
+    pointer-events: none;
+}
+
+.metric-action-arrow {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    opacity: 0.35;
+    transition: all 0.2s ease;
+    pointer-events: none;
+}
+.metric-action-arrow .material-icons-round {
+    font-size: 14px;
+    color: var(--text-secondary);
+    transition: transform 0.2s ease, color 0.2s ease;
+}
+.metric-card:hover .metric-action-arrow {
+    opacity: 1;
+    background: rgba(212, 175, 55, 0.2);
+    border-color: rgba(212, 175, 55, 0.5);
+}
+.metric-card:hover .metric-action-arrow .material-icons-round {
+    transform: translateX(2px);
+    color: var(--badge-gold-bright);
 }
 
 .metric-icon-wrap {
-    width: 50px;
-    height: 50px;
+    width: 48px;
+    height: 48px;
     border-radius: var(--radius-md);
     display: flex;
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
     box-shadow: inset 0 0 12px rgba(0, 0, 0, 0.4);
+    transition: transform 0.2s ease;
 }
-.metric-icon-wrap .material-icons-round { font-size: 26px; }
+.metric-card:hover .metric-icon-wrap {
+    transform: scale(1.06);
+}
+.metric-icon-wrap .material-icons-round { font-size: 24px; }
 
 .metric-info {
     display: flex;
     flex-direction: column;
     min-width: 0;
+    flex: 1;
 }
 
-.metric-online .metric-icon-wrap {
-    background: rgba(16, 185, 129, 0.15);
-    border: 1px solid rgba(16, 185, 129, 0.4);
-}
-.metric-online .metric-icon-wrap .material-icons-round { color: #10B981; }
-.metric-online .metric-value { color: #10B981; text-shadow: 0 0 16px rgba(16, 185, 129, 0.4); }
-
+/* 1. TOTAL USERS (Blue Theme) */
 .metric-devices .metric-icon-wrap {
-    background: rgba(0, 56, 168, 0.25);
-    border: 1px solid rgba(0, 56, 168, 0.5);
+    background: rgba(0, 56, 168, 0.28);
+    border: 1px solid rgba(59, 130, 246, 0.5);
 }
 .metric-devices .metric-icon-wrap .material-icons-round { color: #60A5FA; }
 .metric-devices .metric-value { color: #93C5FD; text-shadow: 0 0 16px rgba(59, 130, 246, 0.4); }
 
-.metric-quizzes .metric-icon-wrap {
-    background: var(--badge-gold-dim);
-    border: 1px solid var(--badge-gold-border);
+/* 2. ACTIVE USERS (Emerald Green Theme) */
+.metric-online .metric-icon-wrap {
+    background: rgba(16, 185, 129, 0.18);
+    border: 1px solid rgba(16, 185, 129, 0.5);
 }
-.metric-quizzes .metric-icon-wrap .material-icons-round { color: var(--badge-gold-bright); }
-.metric-quizzes .metric-value { color: var(--badge-gold-bright); text-shadow: 0 0 16px rgba(212, 175, 55, 0.4); }
+.metric-online .metric-icon-wrap .material-icons-round { color: #10B981; }
+.metric-online .metric-value { color: #34D399; text-shadow: 0 0 16px rgba(16, 185, 129, 0.4); }
 
-.metric-alerts .metric-icon-wrap {
-    background: rgba(206, 17, 38, 0.18);
-    border: 1px solid rgba(206, 17, 38, 0.4);
+/* 3. TOTAL MODULES (Indigo/Sky Theme) */
+.metric-modules .metric-icon-wrap {
+    background: rgba(99, 102, 241, 0.2);
+    border: 1px solid rgba(129, 140, 248, 0.5);
 }
-.metric-alerts .metric-icon-wrap .material-icons-round { color: #F87171; }
-.metric-alerts .metric-value { color: #F87171; text-shadow: 0 0 16px rgba(206, 17, 38, 0.4); }
+.metric-modules .metric-icon-wrap .material-icons-round { color: #818CF8; }
+.metric-modules .metric-value { color: #A5B4FC; text-shadow: 0 0 16px rgba(99, 102, 241, 0.4); }
+
+/* 4. TOTAL QUESTIONS (Gold/Amber Theme) */
+.metric-quiz-banks .metric-icon-wrap {
+    background: rgba(212, 175, 55, 0.18);
+    border: 1px solid rgba(212, 175, 55, 0.5);
+}
+.metric-quiz-banks .metric-icon-wrap .material-icons-round { color: var(--badge-gold-bright); }
+.metric-quiz-banks .metric-value { color: var(--badge-gold-bright); text-shadow: 0 0 16px rgba(212, 175, 55, 0.4); }
+
+/* 5. QUIZ ATTEMPTS (Crimson Theme) */
+.metric-quizzes .metric-icon-wrap {
+    background: rgba(239, 68, 68, 0.18);
+    border: 1px solid rgba(239, 68, 68, 0.5);
+}
+.metric-quizzes .metric-icon-wrap .material-icons-round { color: #F87171; }
+.metric-quizzes .metric-value { color: #FCA5A5; text-shadow: 0 0 16px rgba(239, 68, 68, 0.4); }
+
+/* 6. COMPLETION RATE (Cyan/Teal Theme) */
+.metric-alerts .metric-icon-wrap {
+    background: rgba(6, 182, 212, 0.18);
+    border: 1px solid rgba(6, 182, 212, 0.5);
+}
+.metric-alerts .metric-icon-wrap .material-icons-round { color: #22D3EE; }
+.metric-alerts .metric-value { color: #67E8F9; text-shadow: 0 0 16px rgba(6, 182, 212, 0.4); }
 
 .metric-label {
     color: var(--text-muted);
@@ -2110,7 +2193,7 @@ body {
 }
 
 .metric-caption {
-    color: #64748B;
+    color: #94A3B8;
     font-size: 11px;
     margin-top: 2px;
 }

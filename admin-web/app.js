@@ -108,11 +108,71 @@ const DEFAULT_MODULES = [
 ];
 
 const DEFAULT_QUESTIONS = [
-    { id: "q_1", text: "What is the primary rule at an uncontrolled intersection without signs?", options: ["The vehicle approaching from the left goes first", "The vehicle on the right has right-of-way", "Whoever arrives fastest goes first", "Larger vehicles always have priority"], correct: 1, difficulty: "Easy", topic: "Right-of-Way", points: 10, exp: "At an uncontrolled intersection, the driver on the right has priority." },
-    { id: "q_2", text: "What does a flashing yellow traffic signal indicate?", options: ["Stop completely before proceeding", "Proceed with caution after slowing down", "Speed up to clear the intersection", "The signal is broken, ignore it"], correct: 1, difficulty: "Easy", topic: "Traffic Signs & Signals", points: 10, exp: "A flashing yellow light warns drivers to slow down and proceed with caution." },
-    { id: "q_3", text: "What is the recommended following distance under normal dry conditions?", options: ["1 second", "3 seconds", "5 car lengths regardless of speed", "10 meters"], correct: 1, difficulty: "Medium", topic: "Following Distance", points: 20, exp: "The 3-second rule provides sufficient stopping distance in dry conditions." },
-    { id: "q_4", text: "When approaching a crosswalk where a pedestrian is stepping onto the curb:", options: ["Honk and continue through", "Speed up before they step out", "Slow down and stop to yield right-of-way", "Wave them to stop"], correct: 2, difficulty: "Easy", topic: "Pedestrian Safety", points: 10, exp: "Pedestrians at marked crosswalks have legal priority; drivers must stop." },
-    { id: "q_5", text: "When is overtaking strictly prohibited?", options: ["On open straight highways", "Across solid yellow/white lines and blind curves", "When following a slow truck", "During daylight hours"], correct: 1, difficulty: "Hard", topic: "Overtaking", points: 30, exp: "Solid lane markings and blind curves prohibit passing due to limited visibility." }
+    // 🟢 EASY MODULE (20 Questions)
+    { id: "q_e1", text: "What should you do when the traffic light turns red?", options: ["Stop", "Speed up", "Overtake", "Turn immediately"], correct: 0, difficulty: "Easy", topic: "Traffic Signs & Signals", points: 10, exp: "A red signal requires a complete vehicular stop behind the stop line." },
+    { id: "q_e2", text: "What does a green traffic light generally mean?", options: ["Stop", "Proceed when safe", "Reverse", "Park"], correct: 1, difficulty: "Easy", topic: "Traffic Signs & Signals", points: 10, exp: "Green indicates permission to proceed only if the intersection is clear of pedestrians and vehicles." },
+    { id: "q_e3", text: "What does a yellow traffic light warn drivers about?", options: ["Prepare to stop", "Speed up", "Park", "Overtake"], correct: 0, difficulty: "Easy", topic: "Traffic Signs & Signals", points: 10, exp: "A yellow light indicates that the red light is imminent; drivers must prepare to stop safely." },
+    { id: "q_e4", text: "What should a driver do before starting a trip?", options: ["Check the vehicle", "Increase the radio volume", "Drive immediately", "Ignore the vehicle condition"], correct: 0, difficulty: "Easy", topic: "Vehicle Maintenance & Inspection", points: 10, exp: "Conducting pre-trip BLOWBAGETS inspection prevents mechanical failures on the road." },
+    { id: "q_e5", text: "What is the purpose of a seat belt?", options: ["Improve fuel economy", "Protect occupants during a crash", "Increase vehicle speed", "Improve engine power"], correct: 1, difficulty: "Easy", topic: "Seat Belt Safety", points: 10, exp: "Seat belts restrain occupants, distributing impact forces across rigid skeletal structures." },
+    { id: "q_e6", text: "What should you do when approaching a pedestrian crossing?", options: ["Speed up", "Slow down and be prepared to stop", "Honk continuously", "Overtake other vehicles"], correct: 1, difficulty: "Easy", topic: "Pedestrian Safety", points: 10, exp: "Pedestrians on marked crosswalks have legal right-of-way; slow down and prepare to yield." },
+    { id: "q_e7", text: "What does a STOP sign require a driver to do?", options: ["Slow down only", "Come to a complete stop", "Speed up", "Turn around"], correct: 1, difficulty: "Easy", topic: "Traffic Signs & Signals", points: 10, exp: "An octagonal STOP sign mandates a full halt before proceeding when safe." },
+    { id: "q_e8", text: "Why are turn signals used?", options: ["To communicate intended movement", "To increase speed", "To warn about engine problems", "To save fuel"], correct: 0, difficulty: "Easy", topic: "Vehicle Communication", points: 10, exp: "Turn signals give surrounding motorists and pedestrians advance notice of your maneuvers." },
+    { id: "q_e9", text: "What should you do when driving behind another vehicle?", options: ["Follow extremely closely", "Maintain a safe following distance", "Drive beside it constantly", "Flash headlights continuously"], correct: 1, difficulty: "Easy", topic: "Following Distance", points: 10, exp: "Maintaining adequate following distance grants sufficient reaction time and stopping buffer." },
+    { id: "q_e10", text: "What is the main purpose of traffic signs?", options: ["Decoration", "Provide information and regulate traffic", "Increase vehicle speed", "Advertise vehicles"], correct: 1, difficulty: "Easy", topic: "Traffic Signs & Signals", points: 10, exp: "Traffic signs regulate, warn, and guide road users for smooth and safe traffic flow." },
+    { id: "q_e11", text: "Who should wear a seat belt in a vehicle equipped with seat belts?", options: ["Only the driver", "Only passengers", "Driver and passengers as required", "Nobody"], correct: 2, difficulty: "Easy", topic: "Seat Belt Safety", points: 10, exp: "Under R.A. 8750, both driver and front/rear passengers are mandated to wear seat belts." },
+    { id: "q_e12", text: "What should you do if you feel very tired while driving?", options: ["Continue driving faster", "Stop at a safe place and rest", "Open the windows and continue indefinitely", "Ignore the tiredness"], correct: 1, difficulty: "Easy", topic: "Driver Condition & Fatigue", points: 10, exp: "Driver fatigue impairs reaction time similarly to alcohol; take a rest break immediately." },
+    { id: "q_e13", text: "What does a pedestrian crossing primarily provide?", options: ["A place for pedestrians to cross the road", "A parking area", "A loading zone", "An overtaking lane"], correct: 0, difficulty: "Easy", topic: "Pedestrian Safety", points: 10, exp: "Zebra crosswalks designate safe crossing paths where pedestrians possess legal priority." },
+    { id: "q_e14", text: "What should you do before changing lanes?", options: ["Check surrounding traffic", "Close your eyes", "Accelerate without checking", "Immediately move over"], correct: 0, difficulty: "Easy", topic: "Lane Changing & Overtaking", points: 10, exp: "Always check rear-view and side mirrors and look over your shoulder to inspect blind spots." },
+    { id: "q_e15", text: "What should a responsible driver obey?", options: ["Traffic laws and regulations", "Only other drivers", "Only passengers", "No rules"], correct: 0, difficulty: "Easy", topic: "Traffic Laws & Discipline", points: 10, exp: "Adherence to traffic laws and ordinances ensures safe, orderly, and disciplined roads." },
+    { id: "q_e16", text: "What is the safest approach to driving?", options: ["Aggressive driving", "Defensive driving", "Racing", "Constant overtaking"], correct: 1, difficulty: "Easy", topic: "Defensive Driving", points: 10, exp: "Defensive driving involves anticipating hazards and allowing margins for others' errors." },
+    { id: "q_e17", text: "What should you do when you see a warning sign?", options: ["Ignore it", "Be alert and adjust driving as necessary", "Speed up", "Stop anywhere"], correct: 1, difficulty: "Easy", topic: "Traffic Signs & Signals", points: 10, exp: "Warning signs (triangular or diamond) caution drivers about upcoming hazards and curve changes." },
+    { id: "q_e18", text: "What is the purpose of a vehicle's brakes?", options: ["Increase speed", "Slow down or stop the vehicle", "Improve the radio", "Increase fuel consumption"], correct: 1, difficulty: "Easy", topic: "Vehicle Maintenance & Inspection", points: 10, exp: "Brakes convert kinetic energy into friction to decelerate or completely stop the vehicle." },
+    { id: "q_e19", text: "What should you do when approaching an intersection?", options: ["Observe traffic and signs", "Close your eyes", "Always accelerate", "Ignore other vehicles"], correct: 0, difficulty: "Easy", topic: "Right-of-Way", points: 10, exp: "Intersections are multi-hazard zones; scan left, right, and ahead before entering." },
+    { id: "q_e20", text: "Why should drivers follow speed limits?", options: ["To promote road safety", "To use more fuel", "To make the trip longer", "To prevent all traffic"], correct: 0, difficulty: "Easy", topic: "Speed Management", points: 10, exp: "Speed limits match road design limits and significantly lower impact energy in collisions." },
+
+    // 🟡 MEDIUM MODULE (20 Questions)
+    { id: "q_m1", text: "You are approaching an intersection and the traffic signal changes from green to yellow. What should you do?", options: ["Always accelerate", "Prepare to stop when safe", "Reverse immediately", "Overtake"], correct: 1, difficulty: "Medium", topic: "Traffic Signs & Signals", points: 20, exp: "Controlled deceleration to stop safely before the line is required unless already in the intersection." },
+    { id: "q_m2", text: "You want to change lanes on a busy road. What should you do first?", options: ["Move immediately", "Check mirrors and surrounding traffic", "Honk and turn suddenly", "Accelerate without checking"], correct: 1, difficulty: "Medium", topic: "Lane Changing & Overtaking", points: 20, exp: "Check interior and side mirrors, activate turn indicator 30 meters prior, and verify blind spots." },
+    { id: "q_m3", text: "A vehicle in front of you suddenly slows down. What is the safest response?", options: ["Follow closely", "Maintain control and increase stopping space", "Overtake immediately", "Use the shoulder"], correct: 1, difficulty: "Medium", topic: "Following Distance", points: 20, exp: "Apply firm and controlled braking to maintain a safe cushion from the decelerating vehicle." },
+    { id: "q_m4", text: "You approach a pedestrian who is preparing to cross at a designated crossing. What should you do?", options: ["Speed up", "Slow down and yield as required", "Ignore the pedestrian", "Overtake another vehicle"], correct: 1, difficulty: "Medium", topic: "Pedestrian Safety", points: 20, exp: "Yield right-of-way to crossing pedestrians; never pass a vehicle stopped at a crosswalk." },
+    { id: "q_m5", text: "When is overtaking safest?", options: ["When visibility is adequate and it is legally permitted", "At every intersection", "On a blind curve", "When approaching a pedestrian crossing"], correct: 0, difficulty: "Medium", topic: "Lane Changing & Overtaking", points: 20, exp: "Overtake only with clear forward visibility, broken lane markings, and no oncoming traffic." },
+    { id: "q_m6", text: "Why is following another vehicle too closely dangerous?", options: ["It reduces reaction and stopping time", "It improves visibility", "It saves fuel", "It makes traffic move faster"], correct: 0, difficulty: "Medium", topic: "Following Distance", points: 20, exp: "Tailgating drastically diminishes reaction time, making rear-end collisions unavoidable during sudden stops." },
+    { id: "q_m7", text: "A driver behind you is attempting to overtake. What should you generally do?", options: ["Block the vehicle", "Maintain appropriate speed and allow safe passing when permitted", "Accelerate aggressively", "Move unpredictably"], correct: 1, difficulty: "Medium", topic: "Road Courtesy & Defensive Driving", points: 20, exp: "Maintain your lane and speed (or yield slightly) to facilitate the passing vehicle's safe return." },
+    { id: "q_m8", text: "You are driving in heavy rain. What adjustment should you make?", options: ["Increase speed", "Reduce speed and increase following distance", "Drive closer to other vehicles", "Turn off all lights"], correct: 1, difficulty: "Medium", topic: "Weather & Hazard Driving", points: 20, exp: "Wet tarmac increases stopping distance and introduces hydroplaning risk; double following distance." },
+    { id: "q_m9", text: "What should you do if your view of the road is temporarily blocked?", options: ["Continue at the same speed", "Slow down and proceed only when visibility is adequate", "Accelerate", "Overtake immediately"], correct: 1, difficulty: "Medium", topic: "Defensive Driving", points: 20, exp: "Never drive blind into unverified space; slow down until your visual field is restored." },
+    { id: "q_m10", text: "You see a vehicle stopped near a pedestrian crossing. What should you consider?", options: ["A pedestrian may be crossing or preparing to cross", "The vehicle is always parked illegally", "You should immediately overtake", "The road is automatically clear"], correct: 0, difficulty: "Medium", topic: "Pedestrian Safety", points: 20, exp: "Assume the stopped vehicle is yielding to a pedestrian hidden from your immediate sightline." },
+    { id: "q_m11", text: "When driving downhill, why should you maintain proper control of your vehicle?", options: ["The vehicle may gain speed", "The engine automatically stops", "Brakes become unnecessary", "Traffic signs disappear"], correct: 0, difficulty: "Medium", topic: "Speed Management", points: 20, exp: "Gravity increases vehicle momentum on descents; use engine braking to avoid brake overheating." },
+    { id: "q_m12", text: "What is a good practice when approaching a sharp curve?", options: ["Reduce speed before entering the curve", "Accelerate heavily", "Overtake immediately", "Drive on the opposite lane"], correct: 0, difficulty: "Medium", topic: "Speed Management", points: 20, exp: "Brake in a straight line before the curve; accelerating through the apex prevents tire skid." },
+    { id: "q_m13", text: "A traffic officer is directing traffic while the traffic signal shows a different indication. What should you follow?", options: ["The traffic officer's lawful direction", "The radio", "Another driver's action", "The vehicle behind you"], correct: 0, difficulty: "Medium", topic: "Traffic Laws & Discipline", points: 20, exp: "Hand signals and lawful directions of an active traffic enforcer supersede automatic signals." },
+    { id: "q_m14", text: "What should you do before turning?", options: ["Signal and check for other road users", "Turn suddenly", "Ignore pedestrians", "Accelerate without checking"], correct: 0, difficulty: "Medium", topic: "Vehicle Communication", points: 20, exp: "Check mirrors, signal at least 30 meters ahead, and verify that motorcyclists or pedestrians are clear." },
+    { id: "q_m15", text: "Why should you avoid unnecessary distractions while driving?", options: ["They can reduce attention and reaction ability", "They increase concentration", "They improve road visibility", "They make traffic signs clearer"], correct: 0, difficulty: "Medium", topic: "Impaired & Distracted Driving", points: 20, exp: "Distractions such as mobile phones lead to cognitive tunnel vision and fatal delays in braking." },
+    { id: "q_m16", text: "If another driver behaves aggressively toward you, what is the safest response?", options: ["Challenge the driver", "Remain calm and avoid escalating the situation", "Race the driver", "Follow the driver closely"], correct: 1, difficulty: "Medium", topic: "Road Courtesy & Defensive Driving", points: 20, exp: "Avoid eye contact, create physical distance, and prioritize de-escalation over confrontation." },
+    { id: "q_m17", text: "When approaching a roadwork area, you should:", options: ["Follow temporary signs and adjust speed", "Ignore signs", "Drive through barriers", "Overtake workers"], correct: 0, difficulty: "Medium", topic: "Weather & Hazard Driving", points: 20, exp: "Construction zones feature narrow lanes, debris, and workers; observe temporary limits strictly." },
+    { id: "q_m18", text: "Why should you check your mirrors regularly?", options: ["To monitor surrounding traffic", "To increase engine power", "To reduce tire wear", "To change the traffic light"], correct: 0, difficulty: "Medium", topic: "Defensive Driving", points: 20, exp: "Regular mirror checks every 5 to 8 seconds maintain complete 360-degree situational awareness." },
+    { id: "q_m19", text: "What is defensive driving primarily intended to do?", options: ["Anticipate hazards and reduce collision risks", "Make driving more aggressive", "Encourage speeding", "Eliminate traffic rules"], correct: 0, difficulty: "Medium", topic: "Defensive Driving", points: 20, exp: "Defensive driving saves lives, time, and money in spite of the conditions around you." },
+    { id: "q_m20", text: "When parking, what should you consider first?", options: ["Whether parking is permitted and safe at the location", "How quickly you can leave", "Whether another car is nearby only", "Whether you can block part of the road"], correct: 0, difficulty: "Medium", topic: "Traffic Laws & Discipline", points: 20, exp: "Verify parking signage, ensure adequate clearance, and avoid obstructing driveways or fire hydrants." },
+
+    // 🔴 HARD MODULE (20 Questions)
+    { id: "q_h1", text: "You approach an intersection with no traffic signal. Another vehicle is already approaching from a direction that has the applicable right-of-way. What should you do?", options: ["Accelerate to reach the intersection first", "Yield according to the applicable right-of-way rule", "Ignore the vehicle", "Use the shoulder"], correct: 1, difficulty: "Hard", topic: "Right-of-Way", points: 30, exp: "Under R.A. 4136, at uncontrolled intersections, vehicles on the right or already within have priority." },
+    { id: "q_h2", text: "You are driving at night and an oncoming vehicle has bright headlights. What is the safest response?", options: ["Look directly into the headlights", "Reduce speed as necessary and avoid being blinded by staring at the lights", "Turn your headlights off", "Accelerate toward the vehicle"], correct: 1, difficulty: "Hard", topic: "Night & Low Visibility Driving", points: 30, exp: "Look toward the right edge line of the roadway to guide your steering without retinal glare blindness." },
+    { id: "q_h3", text: "You are approaching a curve where you cannot see vehicles coming from the opposite direction. Should you overtake?", options: ["Yes, if you honk", "No, because visibility is insufficient", "Yes, if you accelerate", "Yes, if the vehicle ahead is slow"], correct: 1, difficulty: "Hard", topic: "Lane Changing & Overtaking", points: 30, exp: "Overtaking on blind curves is strictly prohibited by law due to zero forward sight distance." },
+    { id: "q_h4", text: "You are driving in heavy rain and notice water accumulating on the road. What is the safest approach?", options: ["Increase speed to cross quickly", "Reduce speed and maintain control", "Follow the vehicle ahead closely", "Make sudden steering movements"], correct: 1, difficulty: "Hard", topic: "Weather & Hazard Driving", points: 30, exp: "Standing water causes hydroplaning (loss of tire-pavement contact); ease off the throttle smoothly." },
+    { id: "q_h5", text: "You are approaching an intersection while an emergency vehicle is approaching with its warning devices activated. What should you do?", options: ["Compete for the intersection", "Give way as required and avoid obstructing it", "Follow closely behind it", "Overtake it"], correct: 1, difficulty: "Hard", topic: "Emergency Vehicles & Sirens", points: 30, exp: "Pull over as close as possible to the right side of the road and halt until emergency vehicles pass." },
+    { id: "q_h6", text: "You are preparing to overtake, but the road markings and traffic conditions do not permit a safe maneuver. What should you do?", options: ["Overtake anyway", "Wait until overtaking is legal and safe", "Drive on the sidewalk", "Use the opposite lane regardless of conditions"], correct: 1, difficulty: "Hard", topic: "Lane Changing & Overtaking", points: 30, exp: "Solid white or yellow centerlines strictly forbid passing; exercise patience until marked broken zones." },
+    { id: "q_h7", text: "A vehicle suddenly enters your lane from a side road. What should be your first priority?", options: ["Maintain safety and avoid collision", "Sound the horn continuously", "Accelerate toward the vehicle", "Chase the vehicle"], correct: 0, difficulty: "Hard", topic: "Defensive Driving", points: 30, exp: "Execute controlled braking and maneuver into your safety escape cushion to prevent collision." },
+    { id: "q_h8", text: "You are driving behind a large truck that blocks your view of the road ahead. What should you do?", options: ["Follow extremely closely", "Increase following distance to improve visibility and reaction time", "Overtake immediately without checking", "Drive beside the truck indefinitely"], correct: 1, difficulty: "Hard", topic: "Following Distance", points: 30, exp: "Dropping back widens your viewing angle around the truck body and avoids truck blind spots (No-Zones)." },
+    { id: "q_h9", text: "You miss your intended turn on a busy road. What is the safest choice?", options: ["Stop and reverse immediately", "Continue safely and find a legal place to turn or reroute", "Make a sudden U-turn", "Drive against traffic"], correct: 1, difficulty: "Hard", topic: "Defensive Driving", points: 30, exp: "Never stop or reverse on active roadways; proceed to the next roundabout or legal U-turn slot." },
+    { id: "q_h10", text: "You are approaching a pedestrian crossing while another vehicle in the adjacent lane has stopped. Why should you be cautious?", options: ["A pedestrian may be hidden from your view", "The road is always empty", "You should overtake the stopped vehicle immediately", "The stopped vehicle automatically gives you priority"], correct: 0, difficulty: "Hard", topic: "Pedestrian Safety", points: 30, exp: "A stopped vehicle at a crosswalk blocks your view of pedestrians; passing is strictly illegal and fatal." },
+    { id: "q_h11", text: "A driver behind you is following too closely. What is the safest response?", options: ["Brake suddenly to teach the driver a lesson", "Maintain a safe pace and, when appropriate, allow the vehicle to pass", "Race the vehicle", "Block the vehicle"], correct: 1, difficulty: "Hard", topic: "Road Courtesy & Defensive Driving", points: 30, exp: "Increase your forward cushion to allow gentle stops and encourage tailgaters to overtake safely." },
+    { id: "q_h12", text: "Your vehicle begins to skid on a slippery surface. What should you avoid?", options: ["Sudden, aggressive steering or braking", "Remaining calm", "Maintaining vehicle control", "Adjusting speed appropriately"], correct: 0, difficulty: "Hard", topic: "Weather & Hazard Driving", points: 30, exp: "Slamming brakes or violent steering locks wheels; steer smoothly into the direction of the skid." },
+    { id: "q_h13", text: "You are approaching a road intersection where your view is obstructed by a parked vehicle. What should you do?", options: ["Proceed quickly", "Slow down and ensure the way is clear", "Accelerate through the intersection", "Ignore the obstruction"], correct: 1, difficulty: "Hard", topic: "Right-of-Way", points: 30, exp: "Creep forward slowly until your sightlines to cross-traffic are clear before committing to enter." },
+    { id: "q_h14", text: "You are tired, but you are only a few kilometers from your destination. What is the safest decision?", options: ["Continue because the destination is close", "Stop and rest if you are not fit to drive", "Drive faster to arrive sooner", "Drink something and continue regardless of fatigue"], correct: 1, difficulty: "Hard", topic: "Driver Condition & Fatigue", points: 30, exp: "Microsleeps happen in seconds, especially near the end of long drives; stop in a safe lit area to rest." },
+    { id: "q_h15", text: "You see a temporary traffic sign that differs from the normal road arrangement because of road construction. What should you do?", options: ["Follow the temporary traffic control", "Ignore it", "Follow the old road arrangement", "Drive around the barriers"], correct: 0, difficulty: "Hard", topic: "Traffic Signs & Signals", points: 30, exp: "Work-zone signs supersede permanent striping and lane layouts to protect lives." },
+    { id: "q_h16", text: "You are entering a road where pedestrians, motorcycles, bicycles, and vehicles are all present. What is the best driving strategy?", options: ["Assume everyone will move out of your way", "Maintain awareness, reduce risk, and anticipate possible movements", "Drive at maximum speed", "Focus only on vehicles"], correct: 1, difficulty: "Hard", topic: "Defensive Driving", points: 30, exp: "Mixed-traffic roads demand vigilant scanning for vulnerable road users and wider lateral passing buffers." },
+    { id: "q_h17", text: "A vehicle ahead signals that it intends to turn, but you are also approaching the same area. What should you do?", options: ["Ignore the signal", "Adjust your speed and position safely while considering the vehicle's movement", "Overtake immediately", "Drive beside it without checking"], correct: 1, difficulty: "Hard", topic: "Defensive Driving", points: 30, exp: "Anticipate the turning vehicle's deceleration path and maintain safe following gap." },
+    { id: "q_h18", text: "You are driving on a road with a posted speed limit, but traffic, weather, and visibility conditions are poor. What should you prioritize?", options: ["Maximum speed", "Safe speed appropriate to the conditions while obeying the applicable limit", "Keeping up with the fastest vehicle", "Driving faster than the posted limit"], correct: 1, difficulty: "Hard", topic: "Speed Management", points: 30, exp: "The Basic Speed Rule dictates driving at a prudent speed suited to environmental conditions." },
+    { id: "q_h19", text: "A driver becomes angry after you make a legal maneuver. What is the best defensive-driving response?", options: ["Confront the driver", "Maintain composure and create distance from the aggressive driver", "Follow the driver", "Make an aggressive maneuver"], correct: 1, difficulty: "Hard", topic: "Road Courtesy & Defensive Driving", points: 30, exp: "Never engage or retaliate; preserve a calm demeanor and navigate toward safe, populated areas." },
+    { id: "q_h20", text: "You are approaching an intersection with several potential hazards: a pedestrian near the crossing, a motorcycle beside you, and a vehicle approaching from another direction. What should you do?", options: ["Focus only on the vehicle ahead", "Slow down, scan all relevant road users, and proceed only when safe and permitted", "Accelerate through the intersection", "Sound the horn and continue without checking"], correct: 1, difficulty: "Hard", topic: "Defensive Driving", points: 30, exp: "Multi-hazard situations require early speed reduction, systematic scanning, and defensive yielding." }
 ];
 
 const SIMULATION_20_SCENARIOS = [
@@ -849,6 +909,10 @@ function setOfflineMode() {
 // 6. METRICS & COUNTERS
 // ═══════════════════════════════════════════════════════════════
 
+// ═══════════════════════════════════════════════════════════════
+// 6. METRICS & COUNTERS
+// ═══════════════════════════════════════════════════════════════
+
 function updateMetrics() {
     const fiveMinsAgo = Date.now() - 5 * 60 * 1000;
     const onlineCount = State.users.filter(u => {
@@ -868,14 +932,28 @@ function updateMetrics() {
     if (DOM.metricQuizzes) DOM.metricQuizzes.textContent = State.quizzes.length;
     if (DOM.metricTotalXp) DOM.metricTotalXp.textContent = totalXp.toLocaleString();
 
-    // Update Admin Overview 6 Statistical Cards
+    // 1. TOTAL USERS (Dynamic Count)
+    const elTotUsers = $('metric-total-devices');
+    if (elTotUsers) elTotUsers.textContent = State.users.length;
+
+    // 2. ACTIVE USERS (Real-time Count)
+    const elActiveUsers = $('metric-online');
+    if (elActiveUsers) elActiveUsers.textContent = onlineCount;
+
+    // 3. TOTAL MODULES (Active/Published Sets)
     const elTotModules = $('metric-total-modules');
     if (elTotModules) elTotModules.textContent = State.mobileModules.length || 3;
 
+    // 4. TOTAL QUESTIONS (Curriculum Items Count)
     const elTotQuestions = $('metric-total-questions');
-    if (elTotQuestions) elTotQuestions.textContent = ((State.mobileModules.length || 3) * 20);
+    if (elTotQuestions) elTotQuestions.textContent = State.questions.length || 60;
 
-    const passedCount = State.quizzes.filter(q => (q.score || 0) >= 70).length;
+    // 5. QUIZ ATTEMPTS (Completed Assessments)
+    const elTotQuizzes = $('metric-total-quizzes');
+    if (elTotQuizzes) elTotQuizzes.textContent = State.quizzes.length;
+
+    // 6. COMPLETION & PASSING RATE (Dynamic Calculation)
+    const passedCount = State.quizzes.filter(q => (q.score !== undefined ? q.score >= (q.totalQuestions ? q.totalQuestions * 0.7 : 14) : q.passed)).length;
     const passRate = State.quizzes.length > 0 ? Math.round((passedCount / State.quizzes.length) * 100) + '%' : '78.4%';
     const elPassRate = $('metric-passing-rate');
     if (elPassRate) elPassRate.textContent = passRate;
@@ -904,8 +982,8 @@ function updateMetrics() {
 // ═══════════════════════════════════════════════════════════════
 
 const TAB_TITLES = {
-    'dashboard': { title: 'Dashboard', subtitle: 'Real-Time System Overview' },
-    'users': { title: 'User Management', subtitle: 'Driver Directory & Account Control' },
+    'dashboard': { title: 'Dashboard', subtitle: 'Real-Time System Overview & Key Metrics' },
+    'users': { title: 'User Management', subtitle: 'Driver Directory, Account Control & Real-Time Activity' },
     'modules': { title: 'Road Safety Modules', subtitle: 'Educational Curriculum & Topic Manager' },
     'quizzes': { title: 'Quiz Bank & Submissions', subtitle: 'Questions Repository & Real-Time Exam Results' },
     'scenarios': { title: 'Driver Decisions', subtitle: 'Simulation Scenarios & Risk Assessment' },
@@ -963,8 +1041,9 @@ function switchTab(tab) {
     if (mainContent) mainContent.scrollTo({ top: 0, behavior: 'smooth' });
 
     // Lazy renders
+    if (tab === 'users') renderUsersList();
     if (tab === 'modules') renderModulesList();
-    if (tab === 'quizzes') renderQuizzesList();
+    if (tab === 'quizzes') { renderQuizzesList(); renderQuestionsList(); }
     if (tab === 'scenarios') renderScenariosList();
     if (tab === 'gamification') { renderProgressList(); renderBadgesCatalogList(); renderRankHistoryList(); }
     if (tab === 'ai-activity') renderAiActivityList();
@@ -976,8 +1055,92 @@ document.querySelectorAll('.sub-tab-btn').forEach(btn => {
     btn.addEventListener('click', () => {
         const target = btn.dataset.subtab;
         const parent = btn.closest('.tab-content');
-        parent.querySelectorAll('.sub-tab-btn').forEach(b => b.classList.toggle('active', b === btn));
-        parent.querySelectorAll('.sub-tab-content').forEach(c => c.classList.toggle('active', c.id === `sub-tab-${target}`));
+        if (parent) {
+            parent.querySelectorAll('.sub-tab-btn').forEach(b => b.classList.toggle('active', b === btn));
+            parent.querySelectorAll('.sub-tab-content').forEach(c => c.classList.toggle('active', c.id === `sub-tab-${target}`));
+        }
+    });
+});
+
+// ═══════════════════════════════════════════════════════════════
+// DEDICATED STATISTIC CARD NAVIGATION HANDLERS (INTERACTIVE CARDS)
+// ═══════════════════════════════════════════════════════════════
+
+window.navigateToUsers = function() {
+    switchTab('users');
+    const filterContainer = document.getElementById('users-filter-chips');
+    if (filterContainer) {
+        filterContainer.querySelectorAll('.chip').forEach(c => c.classList.toggle('active', c.dataset.filter === 'all'));
+    }
+    State.userFilter = 'all';
+    renderUsersList();
+    showToast('Navigated to Registered Drivers Directory.', 'info', 2000);
+};
+
+window.navigateToActiveUsers = function() {
+    switchTab('users');
+    const filterContainer = document.getElementById('users-filter-chips');
+    if (filterContainer) {
+        filterContainer.querySelectorAll('.chip').forEach(c => c.classList.toggle('active', c.dataset.filter === 'online'));
+    }
+    State.userFilter = 'online';
+    renderUsersList();
+    showToast('Viewing currently active drivers & recent activity.', 'info', 2000);
+};
+
+window.navigateToModules = function() {
+    switchTab('modules');
+    renderModulesList();
+    showToast('Navigated to Road Safety Curriculum & Module Management.', 'info', 2000);
+};
+
+window.navigateToQuestionBank = function(filterDifficulty = 'all') {
+    switchTab('quizzes');
+    const parent = document.getElementById('tab-quizzes');
+    if (parent) {
+        parent.querySelectorAll('.sub-tab-btn').forEach(b => b.classList.toggle('active', b.dataset.subtab === 'quiz-bank'));
+        parent.querySelectorAll('.sub-tab-content').forEach(c => c.classList.toggle('active', c.id === 'sub-tab-quiz-bank'));
+    }
+    const qFilterContainer = document.querySelector('#sub-tab-quiz-bank .filter-chips');
+    if (qFilterContainer) {
+        qFilterContainer.querySelectorAll('.chip').forEach(c => c.classList.toggle('active', c.dataset.filter.toLowerCase() === filterDifficulty.toLowerCase()));
+    }
+    State.questionFilter = filterDifficulty;
+    renderQuestionsList();
+    showToast(`Navigated to Driver Assessment Question Bank (${State.questions.length} Items).`, 'info', 2000);
+};
+
+window.navigateToQuizAttempts = function(filterStatus = 'all') {
+    switchTab('quizzes');
+    const parent = document.getElementById('tab-quizzes');
+    if (parent) {
+        parent.querySelectorAll('.sub-tab-btn').forEach(b => b.classList.toggle('active', b.dataset.subtab === 'quiz-attempts'));
+        parent.querySelectorAll('.sub-tab-content').forEach(c => c.classList.toggle('active', c.id === 'sub-tab-quiz-attempts'));
+    }
+    const attemptsFilterContainer = document.querySelector('#sub-tab-quiz-attempts .filter-chips');
+    if (attemptsFilterContainer) {
+        attemptsFilterContainer.querySelectorAll('.chip').forEach(c => c.classList.toggle('active', c.dataset.filter === filterStatus));
+    }
+    State.quizFilter = filterStatus;
+    renderQuizzesList();
+    showToast(`Navigated to Quiz Attempts & Assessment History (${State.quizzes.length} Submissions).`, 'info', 2000);
+};
+
+window.navigateToCompletionAnalytics = function() {
+    switchTab('analytics');
+    renderAnalyticsView();
+    showToast('Navigated to Safety Performance & Completion Analytics.', 'info', 2000);
+};
+
+// Keyboard Accessibility for all interactive cards
+document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.clickable-stat-card').forEach(card => {
+        card.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                card.click();
+            }
+        });
     });
 });
 
@@ -1025,28 +1188,44 @@ function renderUsersList() {
 
     DOM.usersList.innerHTML = list.map(u => {
         const isOnline = !!u.isOnline;
-        const role = (u.role || 'User').toUpperCase();
+        const role = (u.role || 'USER').toUpperCase();
         const progress = State.progress.find(p => p.userId === u.username || p.userId === u.id) || {};
         const xp = progress.totalXp || progress.xp || u.xp || 0;
         const level = progress.currentLevel || progress.level || u.level || 1;
+        const gender = u.gender ? (u.gender.toLowerCase() === 'female' ? '♀️ Female' : '♂️ Male') : '🚗 Driver';
+        const contact = u.contact || u.phone || 'N/A';
+        const regDate = u.createdAt ? (u.createdAt.toDate ? u.createdAt.toDate().toLocaleDateString() : (new Date(u.createdAt).toLocaleDateString() !== 'Invalid Date' ? new Date(u.createdAt).toLocaleDateString() : 'Active')) : 'Active';
+        const lastActive = formatRelativeTime(u.lastActive || u.lastLogin || u.updatedAt);
+        const isActiveAccount = u.isActive !== false;
 
         return `
             <div class="data-row">
-                <div class="data-avatar user-avatar">
-                    <span class="material-icons-round">${role === 'ADMIN' ? 'shield' : 'person'}</span>
+                <div class="data-avatar user-avatar" style="background:${role === 'ADMIN' ? 'rgba(212,175,55,0.2)' : 'rgba(0,56,168,0.25)'};">
+                    <span class="material-icons-round" style="color:${role === 'ADMIN' ? 'var(--badge-gold-bright)' : '#60A5FA'};">
+                        ${role === 'ADMIN' ? 'shield' : 'sports_motorsports'}
+                    </span>
                 </div>
                 <div class="data-main-info">
-                    <div class="data-title font-body">${escapeHtml(u.name || u.username || 'Unnamed User')}</div>
-                    <div class="data-subtitle font-body-sm">
-                        <span>@${escapeHtml(u.username || u.id)}</span>
-                        ${u.email ? `<span>· ${escapeHtml(u.email)}</span>` : ''}
-                        <span>· Lv.${level} (${xp} XP)</span>
+                    <div class="data-title font-body" style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+                        <span>${escapeHtml(u.name || u.fullName || u.username || 'Registered Driver')}</span>
+                        <span style="font-size:12px;color:var(--text-secondary);font-weight:normal;">@${escapeHtml(u.username || u.id)}</span>
+                        <span class="tag-badge ${role === 'ADMIN' ? 'gold' : 'blue'} font-badge" style="font-size:10px;padding:2px 6px;">${gender}</span>
+                    </div>
+                    <div class="data-subtitle font-body-sm" style="margin-top:4px;display:flex;gap:12px;flex-wrap:wrap;color:var(--text-secondary);">
+                        <span>📞 Contact: <strong>${escapeHtml(contact)}</strong></span>
+                        ${u.email ? `<span>✉️ ${escapeHtml(u.email)}</span>` : ''}
+                        <span>📅 Registered: <strong>${regDate}</strong></span>
+                        <span style="color:var(--badge-gold-bright);font-weight:600;">🏆 Lv.${level} (${xp} XP)</span>
+                        <span style="color:${isOnline ? 'var(--emerald-green)' : 'var(--text-muted)'};">⏱️ ${isOnline ? 'Active Now' : `Last: ${lastActive}`}</span>
                     </div>
                 </div>
                 <div class="data-meta-cell">
                     <span class="role-tag ${role === 'ADMIN' ? 'admin' : 'user'} font-badge">${role}</span>
                     <span class="status-badge ${isOnline ? 'online' : 'offline'} font-badge">
                         <span class="badge-dot"></span>${isOnline ? 'Online' : 'Offline'}
+                    </span>
+                    <span class="status-badge ${isActiveAccount ? 'online' : 'offline'} font-badge" style="font-size:10px;">
+                        ${isActiveAccount ? 'Active Status' : 'Deactivated'}
                     </span>
                 </div>
                 <div class="data-actions">
@@ -1332,12 +1511,14 @@ function renderQuizzesList() {
         list = list.filter(quiz =>
             (quiz.topic || '').toLowerCase().includes(q) ||
             (quiz.userId || '').toLowerCase().includes(q) ||
-            (quiz.username || '').toLowerCase().includes(q)
+            (quiz.username || '').toLowerCase().includes(q) ||
+            (quiz.userName || '').toLowerCase().includes(q) ||
+            (quiz.moduleTitle || '').toLowerCase().includes(q)
         );
     }
 
-    if (State.quizFilter === 'passed') list = list.filter(q => q.passed);
-    else if (State.quizFilter === 'failed') list = list.filter(q => !q.passed);
+    if (State.quizFilter === 'passed') list = list.filter(q => (q.score !== undefined ? q.score >= (q.totalQuestions ? q.totalQuestions * 0.7 : 14) : q.passed));
+    else if (State.quizFilter === 'failed') list = list.filter(q => (q.score !== undefined ? q.score < (q.totalQuestions ? q.totalQuestions * 0.7 : 14) : !q.passed));
 
     if (list.length === 0) {
         DOM.quizzesList.innerHTML = `
@@ -1350,28 +1531,47 @@ function renderQuizzesList() {
         return;
     }
 
-    DOM.quizzesList.innerHTML = list.map(q => `
-        <div class="data-row">
-            <div class="data-avatar" style="background:${q.passed ? 'var(--emerald-green-dim)' : 'var(--traffic-red-dim)'};">
-                <span class="material-icons-round" style="color:${q.passed ? 'var(--emerald-green)' : 'var(--traffic-red)'};">
-                    ${q.passed ? 'check_circle' : 'cancel'}
-                </span>
-            </div>
-            <div class="data-main-info">
-                <div class="data-title font-body">${escapeHtml(q.topic || 'Traffic Rules Quiz')}</div>
-                <div class="data-subtitle font-body-sm">
-                    <span>User: @${escapeHtml(q.userId || q.username || 'user')}</span>
-                    <span>· Score: ${q.score}/${q.totalQuestions || 5} (${q.percentage || Math.round(q.score/5*100)}%)</span>
+    DOM.quizzesList.innerHTML = list.map(q => {
+        const total = q.totalQuestions || 20;
+        const score = q.score !== undefined ? q.score : 18;
+        const passed = q.passed !== undefined ? q.passed : (score >= Math.round(total * 0.7));
+        const percentage = q.percentage || Math.round((score / total) * 100);
+        const diff = q.difficulty || (q.topic && q.topic.includes('Hard') ? 'Hard' : (q.topic && q.topic.includes('Medium') ? 'Medium' : 'Easy'));
+        const diffBadgeClass = diff === 'Hard' ? 'red' : (diff === 'Medium' ? 'gold' : 'green');
+        const xpEarned = q.xpEarned || (passed ? (diff === 'Hard' ? 300 : (diff === 'Medium' ? 200 : 100)) : 25);
+        const userName = q.userName || q.name || q.userId || q.username || 'Registered Driver';
+        const formattedDate = formatDateTime(q.timestamp);
+
+        return `
+            <div class="data-row">
+                <div class="data-avatar" style="background:${passed ? 'rgba(16,185,129,0.18)' : 'rgba(239,68,68,0.18)'};">
+                    <span class="material-icons-round" style="color:${passed ? 'var(--emerald-green)' : 'var(--traffic-red)'};">
+                        ${passed ? 'check_circle' : 'cancel'}
+                    </span>
+                </div>
+                <div class="data-main-info">
+                    <div class="data-title font-body" style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+                        <span>${escapeHtml(q.topic || q.moduleTitle || 'Road Safety Assessment')}</span>
+                        <span class="tag-badge ${diffBadgeClass} font-badge" style="font-size:10px;padding:2px 6px;">
+                            ${diff.toUpperCase()}
+                        </span>
+                    </div>
+                    <div class="data-subtitle font-body-sm" style="margin-top:4px;display:flex;gap:12px;flex-wrap:wrap;color:var(--text-secondary);">
+                        <span>👤 Driver: <strong>${escapeHtml(userName)}</strong> (@${escapeHtml(q.userId || q.username || 'user')})</span>
+                        <span style="font-weight:600;color:${passed ? 'var(--emerald-green)' : 'var(--traffic-red)'};">📊 Score: ${score}/${total} (${percentage}%)</span>
+                        <span style="color:var(--badge-gold-bright);font-weight:600;">⚡ +${xpEarned} XP</span>
+                        <span>📅 ${formattedDate}</span>
+                    </div>
+                </div>
+                <div class="data-meta-cell">
+                    <span class="status-badge ${passed ? 'online' : 'offline'} font-badge">
+                        ${passed ? '✅ PASSED (≥70%)' : '❌ FAILED (<70%)'}
+                    </span>
+                    <span class="font-caption">${formatRelativeTime(q.timestamp)}</span>
                 </div>
             </div>
-            <div class="data-meta-cell">
-                <span class="status-badge ${q.passed ? 'online' : 'offline'} font-badge">
-                    ${q.passed ? 'PASSED' : 'FAILED'}
-                </span>
-                <span class="font-caption">${formatRelativeTime(q.timestamp)}</span>
-            </div>
-        </div>
-    `).join('');
+        `;
+    }).join('');
 }
 
 function renderQuestionsList() {
@@ -2732,21 +2932,55 @@ function updateTopicMasteryChart() {
 
 function renderSummaryTable() {
     if (!DOM.analyticsSummaryTable) return;
+    const passedCount = State.quizzes.filter(q => (q.score !== undefined ? q.score >= (q.totalQuestions ? q.totalQuestions * 0.7 : 14) : q.passed)).length;
+    const passRate = State.quizzes.length ? Math.round((passedCount / State.quizzes.length) * 100) : 78;
+    const totalXp = State.progress.reduce((acc, p) => acc + (p.totalXp || p.xp || 0), 0);
+    const avgXp = State.users.length ? Math.round(totalXp / State.users.length) : 0;
+
     DOM.analyticsSummaryTable.innerHTML = `
-        <div style="display:grid;grid-template-columns:repeat(3, 1fr);gap:16px;">
-            <div class="modal-detail-row" style="flex-direction:column;align-items:flex-start;">
-                <span class="font-caption">Total Registered Users</span>
-                <span class="font-statistic" style="font-size:24px;color:var(--text-primary);">${State.users.length}</span>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(200px, 1fr));gap:16px;margin-bottom:20px;">
+            <div class="modal-detail-row" style="flex-direction:column;align-items:flex-start;background:rgba(10,20,38,0.6);padding:14px;border-radius:8px;border:1px solid rgba(255,255,255,0.06);">
+                <span class="font-caption" style="color:var(--text-secondary);">Total Driver Accounts</span>
+                <span class="font-statistic" style="font-size:26px;color:#93C5FD;">${State.users.length}</span>
+                <span class="font-caption" style="color:#60A5FA;margin-top:2px;">Registered Learners</span>
             </div>
-            <div class="modal-detail-row" style="flex-direction:column;align-items:flex-start;">
-                <span class="font-caption">Average Quiz Pass Rate</span>
-                <span class="font-statistic" style="font-size:24px;color:var(--emerald-green);">
-                    ${State.quizzes.length ? Math.round(State.quizzes.filter(q => q.passed).length / State.quizzes.length * 100) : 100}%
-                </span>
+            <div class="modal-detail-row" style="flex-direction:column;align-items:flex-start;background:rgba(10,20,38,0.6);padding:14px;border-radius:8px;border:1px solid rgba(255,255,255,0.06);">
+                <span class="font-caption" style="color:var(--text-secondary);">Overall Passing Rate</span>
+                <span class="font-statistic" style="font-size:26px;color:var(--emerald-green);">${passRate}%</span>
+                <span class="font-caption" style="color:var(--emerald-green);margin-top:2px;">Benchmark: ≥70% Passing</span>
             </div>
-            <div class="modal-detail-row" style="flex-direction:column;align-items:flex-start;">
-                <span class="font-caption">Active Safety Curriculum</span>
-                <span class="font-statistic" style="font-size:24px;color:var(--info-blue);">${State.modules.length} Modules</span>
+            <div class="modal-detail-row" style="flex-direction:column;align-items:flex-start;background:rgba(10,20,38,0.6);padding:14px;border-radius:8px;border:1px solid rgba(255,255,255,0.06);">
+                <span class="font-caption" style="color:var(--text-secondary);">Total Assessments Taken</span>
+                <span class="font-statistic" style="font-size:26px;color:var(--badge-gold-bright);">${State.quizzes.length}</span>
+                <span class="font-caption" style="color:var(--badge-gold);margin-top:2px;">${passedCount} Passed · ${State.quizzes.length - passedCount} Retries</span>
+            </div>
+            <div class="modal-detail-row" style="flex-direction:column;align-items:flex-start;background:rgba(10,20,38,0.6);padding:14px;border-radius:8px;border:1px solid rgba(255,255,255,0.06);">
+                <span class="font-caption" style="color:var(--text-secondary);">Average Driver XP</span>
+                <span class="font-statistic" style="font-size:26px;color:#C084FC;">${avgXp.toLocaleString()} XP</span>
+                <span class="font-caption" style="color:#A855F7;margin-top:2px;">Total Pool: ${totalXp.toLocaleString()} XP</span>
+            </div>
+        </div>
+        <div style="background:rgba(6,11,20,0.5);border:1px solid var(--border-card);border-radius:8px;padding:16px;">
+            <div class="font-label" style="margin-bottom:12px;color:var(--badge-gold-bright);display:flex;align-items:center;gap:6px;">
+                <span class="material-icons-round" style="font-size:18px;">fact_check</span>
+                <span>Curriculum &amp; Assessment Completion Summary</span>
+            </div>
+            <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(260px, 1fr));gap:12px;">
+                <div style="background:var(--navy-surface);padding:12px;border-radius:6px;">
+                    <div class="font-body-sm font-weight-semibold">🟢 Easy Tier Module &amp; Exam</div>
+                    <div class="font-caption" style="color:var(--text-secondary);margin-top:2px;">20 Questions · Basics, Signals &amp; Road Signs</div>
+                    <div class="font-caption" style="color:var(--emerald-green);margin-top:4px;">Status: Published &amp; Active (100 XP)</div>
+                </div>
+                <div style="background:var(--navy-surface);padding:12px;border-radius:6px;">
+                    <div class="font-body-sm font-weight-semibold">🟡 Medium Tier Module &amp; Exam</div>
+                    <div class="font-caption" style="color:var(--text-secondary);margin-top:2px;">20 Questions · Situations, Rain &amp; Lane Rules</div>
+                    <div class="font-caption" style="color:var(--badge-gold);margin-top:4px;">Status: Published &amp; Active (200 XP)</div>
+                </div>
+                <div style="background:var(--navy-surface);padding:12px;border-radius:6px;">
+                    <div class="font-body-sm font-weight-semibold">🔴 Hard Tier Module &amp; Exam</div>
+                    <div class="font-caption" style="color:var(--text-secondary);margin-top:2px;">20 Questions · Advanced Right-of-Way &amp; Skids</div>
+                    <div class="font-caption" style="color:#F87171;margin-top:4px;">Status: Published &amp; Active (300 XP)</div>
+                </div>
             </div>
         </div>
     `;
@@ -2965,6 +3199,24 @@ function formatRelativeTime(ts) {
     if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
     if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
     return `${Math.floor(diff / 86400)}d ago`;
+}
+
+function formatDateTime(ts) {
+    if (!ts) return 'Recent';
+    try {
+        let date = ts.toDate ? ts.toDate() : (ts instanceof Date ? ts : new Date(ts));
+        if (isNaN(date.getTime())) return 'Recent';
+        return date.toLocaleString('en-US', { 
+            month: 'short', 
+            day: 'numeric', 
+            year: 'numeric', 
+            hour: '2-digit', 
+            minute: '2-digit', 
+            hour12: true 
+        });
+    } catch(e) {
+        return 'Recent';
+    }
 }
 
 function showToast(msg, type = 'info', duration = 3500) {
