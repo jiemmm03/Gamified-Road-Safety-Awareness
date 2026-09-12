@@ -375,14 +375,16 @@ fun LoginScreen(
                         ) {
                             Text(
                                 text = stringResource(R.string.login_no_account),
-                                style = MaterialTheme.typography.bodyMedium,
+                                style = MaterialTheme.typography.bodySmall,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
+                            Spacer(modifier = Modifier.width(4.dp))
                             Text(
                                 text = stringResource(R.string.login_create_account),
-                                style = MaterialTheme.typography.titleSmall,
+                                style = MaterialTheme.typography.bodySmall.copy(
+                                    fontWeight = FontWeight.Bold
+                                ),
                                 color = MaterialTheme.colorScheme.primary,
-                                fontWeight = FontWeight.Bold,
                                 modifier = Modifier.clickable { onNavigateToSignUp() }
                             )
                         }
