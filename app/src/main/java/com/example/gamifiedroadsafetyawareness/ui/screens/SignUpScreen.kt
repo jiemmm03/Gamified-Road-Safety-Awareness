@@ -15,13 +15,13 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.AlternateEmail
 import androidx.compose.material.icons.rounded.Badge
 import androidx.compose.material.icons.rounded.CalendarMonth
 import androidx.compose.material.icons.rounded.CheckCircle
 import androidx.compose.material.icons.rounded.Female
 import androidx.compose.material.icons.rounded.Key
 import androidx.compose.material.icons.rounded.Male
+import androidx.compose.material.icons.rounded.Person
 import androidx.compose.material.icons.rounded.RadioButtonUnchecked
 import androidx.compose.material.icons.rounded.Smartphone
 import androidx.compose.material.icons.rounded.VerifiedUser
@@ -436,7 +436,7 @@ fun SignUpScreen(
                         value = username,
                         onValueChange = { username = it; usernameError = validateUsername(it, validationStrings) },
                         label = stringResource(R.string.common_username),
-                        leadingIcon = Icons.Rounded.AlternateEmail,
+                        leadingIcon = Icons.Rounded.Person,
                         isError = usernameError != null,
                         supportingText = usernameError
                     )

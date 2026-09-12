@@ -13,8 +13,8 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.AlternateEmail
 import androidx.compose.material.icons.rounded.Key
+import androidx.compose.material.icons.rounded.Person
 import androidx.compose.material.icons.rounded.Shield
 import androidx.compose.material.icons.rounded.Visibility
 import androidx.compose.material.icons.rounded.VisibilityOff
@@ -302,7 +302,7 @@ fun LoginScreen(
                                 showError = false
                             },
                             label = stringResource(R.string.common_username),
-                            leadingIcon = Icons.Rounded.AlternateEmail,
+                            leadingIcon = Icons.Rounded.Person,
                             isError = showError
                         )
 
