@@ -738,13 +738,34 @@
                         placeholder="Search by name, username, email, contact, or device…">
                 </div>
                 <div class="filter-chips" id="users-filter-chips">
-                    <button class="chip active font-button" data-filter="all">All Users</button>
-                    <button class="chip font-button" data-filter="online">🟢 Online</button>
-                    <button class="chip font-button" data-filter="offline">⚪ Offline</button>
-                    <button class="chip font-button" data-filter="admin">🛡️ Admins</button>
-                    <button class="chip font-button" data-filter="user">🚗 Users</button>
-                    <button class="chip font-button" data-filter="male">♂️ Male</button>
-                    <button class="chip font-button" data-filter="female">♀️ Female</button>
+                    <button class="chip active font-button" data-filter="all">
+                        <span class="material-icons-round" style="color:#94A3B8;">group</span>
+                        <span>All Users</span>
+                    </button>
+                    <button class="chip font-button" data-filter="online">
+                        <span class="material-icons-round" style="color:#10B981;">sensors</span>
+                        <span>Online</span>
+                    </button>
+                    <button class="chip font-button" data-filter="offline">
+                        <span class="material-icons-round" style="color:#64748B;">cloud_off</span>
+                        <span>Offline</span>
+                    </button>
+                    <button class="chip font-button" data-filter="admin">
+                        <span class="material-icons-round" style="color:#60A5FA;">admin_panel_settings</span>
+                        <span>Admins</span>
+                    </button>
+                    <button class="chip font-button" data-filter="user">
+                        <span class="material-icons-round" style="color:#F59E0B;">sports_motorsports</span>
+                        <span>Users</span>
+                    </button>
+                    <button class="chip font-button" data-filter="male">
+                        <span class="material-icons-round" style="color:#38BDF8;">male</span>
+                        <span>Male</span>
+                    </button>
+                    <button class="chip font-button" data-filter="female">
+                        <span class="material-icons-round" style="color:#F472B6;">female</span>
+                        <span>Female</span>
+                    </button>
                 </div>
             </div>
             <div class="data-list" id="users-list"></div>
@@ -840,9 +861,18 @@
                             placeholder="Search quiz attempts by user or topic…">
                     </div>
                     <div class="filter-chips">
-                        <button class="chip active font-button" data-filter="all">All Attempts</button>
-                        <button class="chip font-button" data-filter="passed">✅ Passed (≥70%)</button>
-                        <button class="chip font-button" data-filter="failed">❌ Failed (&lt;70%)</button>
+                        <button class="chip active font-button" data-filter="all">
+                            <span class="material-icons-round" style="color:#94A3B8;">fact_check</span>
+                            <span>All Attempts</span>
+                        </button>
+                        <button class="chip font-button" data-filter="passed">
+                            <span class="material-icons-round" style="color:#10B981;">check_circle</span>
+                            <span>Passed (≥70%)</span>
+                        </button>
+                        <button class="chip font-button" data-filter="failed">
+                            <span class="material-icons-round" style="color:#EF4444;">cancel</span>
+                            <span>Failed (&lt;70%)</span>
+                        </button>
                     </div>
                 </div>
                 <div class="data-list" id="quizzes-list"></div>

@@ -2359,6 +2359,13 @@ body {
     letter-spacing: 0.03em;
     transition: all var(--anim-duration-fast) var(--ease-standard);
     user-select: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+.chip .material-icons-round {
+    font-size: 15px;
+    line-height: 1;
 }
 .chip:hover {
     background: #152B4D;
