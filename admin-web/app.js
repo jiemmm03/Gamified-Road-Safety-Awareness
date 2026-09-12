@@ -3098,7 +3098,9 @@ const btnQrModePublic = $('btn-qr-mode-public');
 const btnQrModeLocal = $('btn-qr-mode-local');
 const qrDescText = $('qr-desc-text');
 
-const PUBLIC_PAGE_URL = 'https://jiemmm03.github.io/Gamified-Road-Safety-Awareness/';
+const PUBLIC_PAGE_URL = (window.location.hostname.includes('web.app') || window.location.hostname.includes('firebaseapp.com'))
+    ? window.location.origin + '/download.html'
+    : 'https://jiemmm03.github.io/Gamified-Road-Safety-Awareness/';
 const localDownloadPageUrl = window.location.origin + window.location.pathname.replace(/\/[^\/]*$/, '') + '/download.html';
 
 let currentQrUrl = PUBLIC_PAGE_URL;
