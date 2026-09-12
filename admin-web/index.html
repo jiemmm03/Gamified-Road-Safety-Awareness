@@ -511,31 +511,8 @@
                                 <h3 class="font-h3"><span class="material-icons-round">leaderboard</span> Municipal Leaderboard</h3>
                                 <button class="btn btn-secondary font-button" onclick="openLeaderboardModal()">View Leaderboard</button>
                             </div>
-                            <div class="mini-leaderboard-list">
-                                <div class="mini-leader-item rank-1">
-                                    <span class="leader-pos font-h3">🥇 #1</span>
-                                    <div class="leader-info">
-                                        <span class="leader-name font-body-sm">Officer Ramos</span>
-                                        <span class="leader-sub font-caption">Master Safety Instructor</span>
-                                    </div>
-                                    <span class="leader-xp font-label">3,800 XP</span>
-                                </div>
-                                <div class="mini-leader-item rank-2">
-                                    <span class="leader-pos font-h3">🥈 #2</span>
-                                    <div class="leader-info">
-                                        <span class="leader-name font-body-sm">Driver Santos</span>
-                                        <span class="leader-sub font-caption">Senior Defensive Driver</span>
-                                    </div>
-                                    <span class="leader-xp font-label">3,100 XP</span>
-                                </div>
-                                <div class="mini-leader-item current-user rank-3">
-                                    <span class="leader-pos font-h3">🥉 #3</span>
-                                    <div class="leader-info">
-                                        <span class="leader-name font-body-sm">You (Juan Dela Cruz)</span>
-                                        <span class="leader-sub font-caption">Pro Defensive Driver</span>
-                                    </div>
-                                    <span class="leader-xp font-label">2,450 XP</span>
-                                </div>
+                            <div class="mini-leaderboard-list" id="mini-leaderboard-container">
+                                <!-- Dynamically populated by JS from real Firestore records -->
                             </div>
                         </div>
                     </div>
@@ -933,7 +910,61 @@
 
         <!-- ═══════════ TAB 6: GAMIFICATION & RANKS ═══════════ -->
         <section class="tab-content" id="tab-gamification">
-            <div class="sub-nav-tabs">
+            <!-- Dynamic Gamification Overview Cards -->
+            <div class="gamification-summary-grid">
+                <div class="gamif-summary-card">
+                    <div class="gamif-summary-icon" style="background:rgba(0,56,168,0.15);color:var(--electric-blue);">
+                        <span class="material-icons-round">people</span>
+                    </div>
+                    <div class="gamif-summary-content">
+                        <span class="gamif-summary-label font-caption">REGISTERED LEARNERS</span>
+                        <div class="gamif-summary-val font-statistic" id="gamif-stat-total-users">0</div>
+                        <span class="gamif-summary-sub font-caption" style="color:var(--text-muted);">Tracked Driver Accounts</span>
+                    </div>
+                </div>
+                <div class="gamif-summary-card">
+                    <div class="gamif-summary-icon" style="background:rgba(16,185,129,0.15);color:var(--emerald-green);">
+                        <span class="material-icons-round">bolt</span>
+                    </div>
+                    <div class="gamif-summary-content">
+                        <span class="gamif-summary-label font-caption">TOTAL XP AWARDED</span>
+                        <div class="gamif-summary-val font-statistic" id="gamif-stat-total-xp" style="color:var(--emerald-green);">0</div>
+                        <span class="gamif-summary-sub font-caption" style="color:var(--text-muted);">Across All Activities</span>
+                    </div>
+                </div>
+                <div class="gamif-summary-card">
+                    <div class="gamif-summary-icon" style="background:rgba(212,168,67,0.15);color:var(--badge-gold);">
+                        <span class="material-icons-round">military_tech</span>
+                    </div>
+                    <div class="gamif-summary-content">
+                        <span class="gamif-summary-label font-caption">AVERAGE LEVEL</span>
+                        <div class="gamif-summary-val font-statistic" id="gamif-stat-avg-level" style="color:var(--badge-gold);">Lvl 1.0</div>
+                        <span class="gamif-summary-sub font-caption" id="gamif-stat-avg-title" style="color:var(--text-muted);">Recruit Driver</span>
+                    </div>
+                </div>
+                <div class="gamif-summary-card">
+                    <div class="gamif-summary-icon" style="background:rgba(59,130,246,0.15);color:var(--info-blue);">
+                        <span class="material-icons-round">analytics</span>
+                    </div>
+                    <div class="gamif-summary-content">
+                        <span class="gamif-summary-label font-caption">AVERAGE XP / USER</span>
+                        <div class="gamif-summary-val font-statistic" id="gamif-stat-avg-xp">0 XP</div>
+                        <span class="gamif-summary-sub font-caption" style="color:var(--text-muted);">Per Registered Driver</span>
+                    </div>
+                </div>
+                <div class="gamif-summary-card">
+                    <div class="gamif-summary-icon" style="background:rgba(245,158,11,0.15);color:#F59E0B;">
+                        <span class="material-icons-round">local_fire_department</span>
+                    </div>
+                    <div class="gamif-summary-content">
+                        <span class="gamif-summary-label font-caption">ACTIVE STREAKS</span>
+                        <div class="gamif-summary-val font-statistic" id="gamif-stat-active-streaks" style="color:#F59E0B;">0</div>
+                        <span class="gamif-summary-sub font-caption" style="color:var(--text-muted);">Consistent Daily Learners</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sub-nav-tabs" style="margin-top:16px;">
                 <button class="sub-tab-btn active font-button" data-subtab="gamif-leaderboard"
                     id="subtab-leaderboard-btn">
                     <span class="material-icons-round">leaderboard</span> Live Leaderboard
@@ -949,9 +980,24 @@
             <!-- Leaderboard -->
             <div class="sub-tab-content active" id="sub-tab-gamif-leaderboard">
                 <div class="tab-toolbar">
-                    <div class="search-box">
+                    <div class="search-box" style="flex:1;max-width:320px;">
                         <span class="material-icons-round">search</span>
-                        <input type="text" id="search-progress" class="font-body" placeholder="Search leaderboard…">
+                        <input type="text" id="search-progress" class="font-body" placeholder="Search driver by name, handle, or rank…">
+                    </div>
+                    <div class="filter-chips" id="leaderboard-filter-chips">
+                        <button class="chip active font-button" data-gamif-filter="all">All Learners</button>
+                        <button class="chip font-button" data-gamif-filter="top10">🏆 Top 10</button>
+                        <button class="chip font-button" data-gamif-filter="level5">🎖️ Level 5+</button>
+                        <button class="chip font-button" data-gamif-filter="streaks">🔥 Active Streaks</button>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:8px;margin-left:auto;">
+                        <label class="font-caption" style="color:var(--text-muted);white-space:nowrap;">Sort by:</label>
+                        <select id="leaderboard-sort-select" class="form-input font-body-sm" style="padding:6px 10px;width:auto;">
+                            <option value="xp-desc">Total XP (Highest First)</option>
+                            <option value="level-desc">Level (Highest First)</option>
+                            <option value="streak-desc">Streak (Longest First)</option>
+                            <option value="name-asc">Driver Name (A–Z)</option>
+                        </select>
                     </div>
                 </div>
                 <div class="data-list" id="progress-list"></div>
@@ -1247,6 +1293,64 @@
                     <span class="material-icons-round">delete_forever</span>
                     <span>Delete User</span>
                 </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══════════ USER GAMIFICATION INSPECTION MODAL ═══════════ -->
+    <div class="modal-overlay" id="gamif-inspect-overlay">
+        <div class="modal modal-large" id="gamif-inspect-modal" style="max-width:740px;">
+            <div class="modal-header">
+                <div style="display:flex;align-items:center;gap:14px;">
+                    <div class="data-avatar user-avatar" id="gamif-modal-avatar" style="position:relative;width:48px;height:48px;font-size:20px;">
+                        <span class="material-icons-round">person</span>
+                        <div id="gamif-modal-rank-badge" style="position:absolute;bottom:-4px;right:-4px;background:var(--badge-gold);color:#0A1424;font-size:10px;font-weight:bold;padding:1px 5px;border-radius:10px;border:1.5px solid var(--navy-surface);">#1</div>
+                    </div>
+                    <div>
+                        <div style="display:flex;align-items:center;gap:8px;">
+                            <h3 class="font-h3" id="gamif-modal-name" style="margin:0;">User Profile</h3>
+                            <span class="role-tag user font-badge" id="gamif-modal-role">LEARNER</span>
+                        </div>
+                        <div style="display:flex;gap:8px;align-items:center;margin-top:2px;">
+                            <span class="font-caption" id="gamif-modal-handle" style="color:var(--text-secondary);">@username</span>
+                            <span class="font-caption" style="color:var(--text-muted);">·</span>
+                            <span class="font-caption" id="gamif-modal-id-text" style="color:var(--electric-blue);font-family:monospace;">ID: user_id</span>
+                        </div>
+                    </div>
+                </div>
+                <button class="modal-close" id="gamif-modal-close" aria-label="Close modal">
+                    <span class="material-icons-round">close</span>
+                </button>
+            </div>
+
+            <!-- Gamification Inspector Sub-Navigation Tabs -->
+            <div class="profile-sub-tabs" id="gamif-inspect-tabs">
+                <button class="profile-tab-btn active font-button" data-gtab="g-breakdown">
+                    <span class="material-icons-round" style="font-size:16px;">pie_chart</span> XP &amp; Level
+                </button>
+                <button class="profile-tab-btn font-button" data-gtab="g-quizzes">
+                    <span class="material-icons-round" style="font-size:16px;">quiz</span> Quiz History
+                </button>
+                <button class="profile-tab-btn font-button" data-gtab="g-modules">
+                    <span class="material-icons-round" style="font-size:16px;">menu_book</span> Modules
+                </button>
+                <button class="profile-tab-btn font-button" data-gtab="g-badges">
+                    <span class="material-icons-round" style="font-size:16px;">military_tech</span> Badges
+                </button>
+                <button class="profile-tab-btn font-button" data-gtab="g-ledger">
+                    <span class="material-icons-round" style="font-size:16px;">receipt_long</span> XP Ledger
+                </button>
+                <button class="profile-tab-btn font-button" data-gtab="g-adjust">
+                    <span class="material-icons-round" style="font-size:16px;">tune</span> Admin Adjust
+                </button>
+            </div>
+
+            <div class="modal-body" id="gamif-modal-body" style="min-height:320px;">
+                <!-- Dynamically Rendered by JS -->
+            </div>
+
+            <div class="modal-actions">
+                <button class="btn btn-secondary font-button" id="btn-close-gamif-inspect">Close</button>
             </div>
         </div>
     </div>

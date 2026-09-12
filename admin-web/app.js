@@ -36,6 +36,7 @@ const State = {
     quizzes: [],
     logins: [],
     progress: [],
+    xpTransactions: [],
     audit: [],
     aiQueries: [],
     mobileModules: [],
@@ -57,8 +58,11 @@ const State = {
     aiFilter: 'all',
     loginFilter: 'all',
     auditFilter: 'all',
+    gamifFilter: 'all',
+    gamifSort: 'xp-desc',
     searchQuery: '',
     selectedUser: null,
+    selectedGamifUser: null,
     userToDelete: null,
     currentAdmin: 'admin'
 };
@@ -766,10 +770,19 @@ const DOM = {
 
     // Modals
     profileModalOverlay: $('profile-modal-overlay'),
+    gamifInspectOverlay: $('gamif-inspect-overlay'),
     moduleModalOverlay: $('module-modal-overlay'),
     questionModalOverlay: $('question-modal-overlay'),
     deleteModalOverlay: $('delete-modal-overlay'),
-    installModalOverlay: $('install-modal-overlay')
+    installModalOverlay: $('install-modal-overlay'),
+
+    // Gamification Summary Stats
+    gamifStatTotalUsers: $('gamif-stat-total-users'),
+    gamifStatTotalXp: $('gamif-stat-total-xp'),
+    gamifStatAvgLevel: $('gamif-stat-avg-level'),
+    gamifStatAvgTitle: $('gamif-stat-avg-title'),
+    gamifStatAvgXp: $('gamif-stat-avg-xp'),
+    gamifStatActiveStreaks: $('gamif-stat-active-streaks')
 };
 
 // ═══════════════════════════════════════════════════════════════
@@ -884,6 +897,20 @@ function startListeners() {
             renderMobileModulesList();
         }
     }, err => console.warn('Module settings listener:', err));
+
+    // 8. XP Transactions Ledger Stream
+    db.collection('xp_transactions').orderBy('timestamp', 'desc').limit(200).onSnapshot(snap => {
+        State.xpTransactions = [];
+        snap.forEach(doc => {
+            const data = doc.data();
+            data.id = doc.id;
+            State.xpTransactions.push(data);
+        });
+        updateLeaderboardAndRanks();
+        if (State.selectedGamifUser) {
+            renderGamifModalTab(activeGamifTab);
+        }
+    }, err => console.warn('XP transactions listener:', err));
 
     setOnlineStatus(true);
 }
@@ -1265,16 +1292,19 @@ function renderProfileTab(tab) {
     const userQuizzes = State.quizzes.filter(q => q.userId === user.username || q.userId === user.id);
     const userLogins = State.logins.filter(l => l.userId === user.username || l.userId === user.id);
 
+    const totalXp = Number(progress.totalXp || progress.xp || user.xp || 0);
+    const levelInfo = getLevelProgressInfo(totalXp);
+
     const body = $('modal-profile-body');
     if (tab === 'p-overview') {
         body.innerHTML = `
             <div class="modal-metrics">
                 <div class="modal-metric">
-                    <div class="modal-metric-value font-statistic" style="color:var(--badge-gold);">${progress.currentLevel || 1}</div>
-                    <div class="modal-metric-label font-caption">Current Level</div>
+                    <div class="modal-metric-value font-statistic" style="color:var(--badge-gold);">${levelInfo.level}</div>
+                    <div class="modal-metric-label font-caption">${escapeHtml(levelInfo.levelTitle)}</div>
                 </div>
                 <div class="modal-metric">
-                    <div class="modal-metric-value font-statistic" style="color:var(--emerald-green);">${progress.totalXp || 0}</div>
+                    <div class="modal-metric-value font-statistic" style="color:var(--emerald-green);">${totalXp.toLocaleString()}</div>
                     <div class="modal-metric-label font-caption">Total XP</div>
                 </div>
                 <div class="modal-metric">
@@ -1292,61 +1322,81 @@ function renderProfileTab(tab) {
             <div class="modal-detail-row"><span class="modal-detail-label font-caption">Account Role:</span><span class="role-tag ${user.role === 'admin' ? 'admin' : 'user'} font-badge">${(user.role || 'User').toUpperCase()}</span></div>
         `;
     } else if (tab === 'p-learning') {
-        const completed = (progress.completedModules || 'Traffic Signs, Right-of-Way').split(',').map(s => s.trim()).filter(Boolean);
+        let completed = [];
+        if (progress.completedModules) {
+            completed = Array.isArray(progress.completedModules)
+                ? progress.completedModules
+                : String(progress.completedModules).split(',').map(s => s.trim()).filter(Boolean);
+        } else if (progress.completedModuleIds) {
+            completed = Array.isArray(progress.completedModuleIds)
+                ? progress.completedModuleIds
+                : String(progress.completedModuleIds).split(',').map(s => s.trim()).filter(Boolean);
+        }
+
         body.innerHTML = `
-            <div class="modal-section-title font-label">Completed Curriculum Modules (${completed.length}/10)</div>
-            ${completed.map(m => `
+            <div class="modal-section-title font-label">Completed Curriculum Modules (${completed.length})</div>
+            ${completed.length > 0 ? completed.map(m => `
                 <div class="modal-detail-row">
                     <span class="font-body-sm">📘 ${escapeHtml(m)}</span>
                     <span class="status-badge online font-badge">Completed</span>
                 </div>
-            `).join('') || '<p class="font-body-sm" style="color:var(--text-muted);">No modules completed yet.</p>'}
+            `).join('') : '<p class="font-body-sm" style="color:var(--text-muted);padding:12px 0;">No curriculum modules completed yet.</p>'}
         `;
     } else if (tab === 'p-quizzes') {
         body.innerHTML = `
-            <div class="modal-section-title font-label">Recent Quiz Assessments</div>
-            ${userQuizzes.map(q => `
+            <div class="modal-section-title font-label">Recent Quiz Assessments (${userQuizzes.length})</div>
+            ${userQuizzes.length > 0 ? userQuizzes.map(q => `
                 <div class="modal-detail-row">
                     <div>
-                        <div class="font-body-sm font-weight-semibold">${escapeHtml(q.topic || 'Road Safety Quiz')}</div>
-                        <span class="font-caption">${q.score}/${q.totalQuestions || 5} (${q.percentage || Math.round(q.score/5*100)}%)</span>
+                        <div class="font-body-sm font-weight-semibold">${escapeHtml(q.quizId || q.topic || 'Road Safety Assessment')}</div>
+                        <span class="font-caption">${q.score || 0}/${q.totalQuestions || 5} (${q.percentage || Math.round((q.score || 0)/(q.totalQuestions || 5)*100)}%)</span>
                     </div>
                     <span class="status-badge ${q.passed ? 'online' : 'offline'} font-badge">${q.passed ? 'PASSED' : 'FAILED'}</span>
                 </div>
-            `).join('') || '<p class="font-body-sm" style="color:var(--text-muted);">No quiz attempts recorded yet.</p>'}
+            `).join('') : '<p class="font-body-sm" style="color:var(--text-muted);padding:12px 0;">No quiz attempts recorded yet.</p>'}
         `;
     } else if (tab === 'p-gamif') {
-        const unlockedBadges = DEFAULT_BADGES.slice(0, 2);
+        let unlockedBadges = [];
+        if (Array.isArray(progress.unlockedBadges)) {
+            unlockedBadges = progress.unlockedBadges;
+        } else if (typeof progress.unlockedBadges === 'string') {
+            unlockedBadges = progress.unlockedBadges.split(',').map(s => s.trim()).filter(Boolean);
+        }
+
+        const userBadges = State.badges.filter(b => unlockedBadges.includes(b.id) || (totalXp >= 1000 && b.id === 'badge_1k_xp'));
+
         body.innerHTML = `
-            <div class="modal-section-title font-label">Unlocked Badges & Honors</div>
+            <div class="modal-section-title font-label">Unlocked Badges &amp; Honors (${userBadges.length})</div>
+            ${userBadges.length > 0 ? `
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
-                ${unlockedBadges.map(b => `
-                    <div style="background:var(--navy-surface);padding:10px;border-radius:6px;display:flex;align-items:center;gap:8px;">
+                ${userBadges.map(b => `
+                    <div style="background:var(--navy-surface);padding:10px;border-radius:6px;display:flex;align-items:center;gap:8px;border:1px solid var(--badge-gold-border);">
                         <span style="font-size:24px;">${b.icon}</span>
                         <div>
                             <div class="font-body-sm font-weight-semibold">${b.title}</div>
-                            <span class="font-caption">+${b.bonusXp} XP</span>
+                            <span class="font-caption" style="color:var(--badge-gold);">+${b.bonusXp} XP</span>
                         </div>
                     </div>
                 `).join('')}
-            </div>
+            </div>` : '<p class="font-body-sm" style="color:var(--text-muted);padding:12px 0;">No badges unlocked yet. Badges unlock as safety milestones are reached.</p>'}
         `;
     } else if (tab === 'p-activity') {
         body.innerHTML = `
-            <div class="modal-section-title font-label">Recent Session Activity</div>
-            ${userLogins.map(l => `
+            <div class="modal-section-title font-label">Recent Session Activity (${userLogins.length})</div>
+            ${userLogins.length > 0 ? userLogins.map(l => `
                 <div class="modal-detail-row">
-                    <span class="font-body-sm">🔑 ${escapeHtml(l.action || 'Login')} from ${escapeHtml(l.deviceModel || 'Mobile')}</span>
+                    <span class="font-body-sm">🔑 ${escapeHtml(l.action || l.eventType || 'Login')} from ${escapeHtml(l.deviceModel || l.deviceInfo || 'Mobile')}</span>
                     <span class="font-caption">${formatRelativeTime(l.timestamp)}</span>
                 </div>
-            `).join('') || '<p class="font-body-sm" style="color:var(--text-muted);">No recent session records.</p>'}
+            `).join('') : '<p class="font-body-sm" style="color:var(--text-muted);padding:12px 0;">No recent session records.</p>'}
         `;
     }
 }
 
-document.querySelectorAll('.profile-tab-btn').forEach(btn => {
+// User Profile Modal Tabs
+document.querySelectorAll('#profile-modal .profile-tab-btn').forEach(btn => {
     btn.addEventListener('click', () => {
-        document.querySelectorAll('.profile-tab-btn').forEach(b => b.classList.toggle('active', b === btn));
+        document.querySelectorAll('#profile-modal .profile-tab-btn').forEach(b => b.classList.toggle('active', b === btn));
         renderProfileTab(btn.dataset.ptab);
     });
 });
@@ -1357,6 +1407,47 @@ $('btn-profile-delete-user').addEventListener('click', () => {
     DOM.profileModalOverlay.classList.remove('visible');
     if (State.selectedUser) openDeleteModal(State.selectedUser.id || State.selectedUser.username);
 });
+
+// Gamification Inspector Modal Tabs & Close Listeners
+document.querySelectorAll('#gamif-inspect-tabs .profile-tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        document.querySelectorAll('#gamif-inspect-tabs .profile-tab-btn').forEach(b => b.classList.toggle('active', b === btn));
+        if (btn.dataset.gtab) {
+            renderGamifModalTab(btn.dataset.gtab);
+        }
+    });
+});
+
+const gamifModalClose = $('gamif-modal-close');
+if (gamifModalClose) {
+    gamifModalClose.addEventListener('click', () => {
+        if (DOM.gamifInspectOverlay) DOM.gamifInspectOverlay.classList.remove('visible');
+    });
+}
+const btnCloseGamifInspect = $('btn-close-gamif-inspect');
+if (btnCloseGamifInspect) {
+    btnCloseGamifInspect.addEventListener('click', () => {
+        if (DOM.gamifInspectOverlay) DOM.gamifInspectOverlay.classList.remove('visible');
+    });
+}
+
+// Leaderboard Filter Chips & Sort Select
+document.querySelectorAll('#leaderboard-filter-chips .chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+        document.querySelectorAll('#leaderboard-filter-chips .chip').forEach(c => c.classList.remove('active'));
+        chip.classList.add('active');
+        State.gamifFilter = chip.dataset.gamifFilter || 'all';
+        renderProgressList();
+    });
+});
+
+const leaderboardSort = $('leaderboard-sort-select');
+if (leaderboardSort) {
+    leaderboardSort.addEventListener('change', e => {
+        State.gamifSort = e.target.value;
+        renderProgressList();
+    });
+}
 
 // ═══════════════════════════════════════════════════════════════
 // 9. MODULE MANAGEMENT (Mobile Controls & Curriculum)
@@ -2560,52 +2651,812 @@ function renderScenariosList() {
 
 
 // ═══════════════════════════════════════════════════════════════
-// 12. GAMIFICATION, LEADERBOARD, BADGES & RANK HISTORY
+// 12. DYNAMIC GAMIFICATION ENGINE, LEADERBOARD & XP SYSTEM
 // ═══════════════════════════════════════════════════════════════
+
+// Level Progression Table (Authoritative Mirror of GamificationConstants.kt)
+const LEVEL_XP_TABLE = [
+    0,      // Level 0 (unused)
+    0,      // Level 1: 0 XP
+    500,    // Level 2: 500 XP
+    1200,   // Level 3: 1,200 XP
+    2000,   // Level 4: 2,000 XP
+    3000,   // Level 5: 3,000 XP
+    4500,   // Level 6: 4,500 XP
+    6500,   // Level 7: 6,500 XP
+    9000,   // Level 8: 9,000 XP
+    12000,  // Level 9: 12,000 XP
+    16000   // Level 10: 16,000 XP
+];
+
+const LEVEL_NAMES = {
+    1: "Recruit Driver",
+    2: "Road Safety Trainee",
+    3: "Certified Road Learner",
+    4: "Defensive Driver",
+    5: "Patrol-Ready Driver",
+    6: "Skilled Road Officer",
+    7: "Road Safety Specialist",
+    8: "Senior Safety Officer",
+    9: "Master Road Officer",
+    10: "Road Safety Chief"
+};
+
+function getLevelForXp(xp) {
+    const totalXp = Math.max(0, Number(xp) || 0);
+    let lvl = 1;
+    for (let i = 1; i < LEVEL_XP_TABLE.length; i++) {
+        if (totalXp >= LEVEL_XP_TABLE[i]) {
+            lvl = i;
+        } else {
+            break;
+        }
+    }
+    if (totalXp > LEVEL_XP_TABLE[10]) {
+        lvl = 10 + Math.floor((totalXp - LEVEL_XP_TABLE[10]) / 4000);
+    }
+    return lvl;
+}
+
+function getLevelMinXp(level) {
+    if (level <= 10) return LEVEL_XP_TABLE[level] || 0;
+    return LEVEL_XP_TABLE[10] + (level - 10) * 4000;
+}
+
+function getLevelMaxXp(level) {
+    return getLevelMinXp(level + 1);
+}
+
+function getLevelProgressInfo(totalXp) {
+    const xp = Math.max(0, Number(totalXp) || 0);
+    const level = getLevelForXp(xp);
+    const minXp = getLevelMinXp(level);
+    const maxXp = getLevelMaxXp(level);
+    const span = Math.max(1, maxXp - minXp);
+    const currentLevelProgressXp = Math.max(0, xp - minXp);
+    const progressPercent = Math.min(100, Math.max(0, Math.round((currentLevelProgressXp / span) * 100)));
+    const xpRemaining = Math.max(0, maxXp - xp);
+    const levelTitle = LEVEL_NAMES[level] || `Level ${level} Specialist`;
+    return {
+        level,
+        minXp,
+        maxXp,
+        span,
+        currentLevelProgressXp,
+        progressPercent,
+        xpRemaining,
+        levelTitle
+    };
+}
+
+/**
+ * Aggregates all registered users into unified, user-specific gamification records
+ * strictly derived from Firestore user profiles, user_progress, quiz_attempts, and xp_transactions.
+ */
+function getAggregatedLeaderboard() {
+    const userMap = new Map();
+
+    // 1. Process all registered accounts from users collection
+    (State.users || []).forEach(u => {
+        const uid = String(u.username || u.id || u.userId || '').trim().toLowerCase();
+        if (!uid) return;
+        userMap.set(uid, {
+            id: uid,
+            userId: uid,
+            username: u.username || uid,
+            name: u.name || u.displayName || u.fullName || u.username || uid,
+            email: u.email || 'No email registered',
+            gender: u.gender || 'Not specified',
+            role: u.role || 'user',
+            deviceModel: u.deviceModel || 'Mobile Device',
+            isOnline: u.isOnline === true,
+            lastLoginAt: u.lastLoginAt || u.lastActive || null,
+            createdAt: u.createdAt || null,
+            rawUser: u
+        });
+    });
+
+    // 2. Process any user_progress docs for users that might not be in users table yet
+    (State.progress || []).forEach(p => {
+        const uid = String(p.userId || p.id || '').trim().toLowerCase();
+        if (!uid) return;
+        if (!userMap.has(uid)) {
+            userMap.set(uid, {
+                id: uid,
+                userId: uid,
+                username: p.userId || uid,
+                name: p.displayName || p.userId || uid,
+                email: 'Learner Account',
+                gender: 'Not specified',
+                role: 'user',
+                deviceModel: 'Android Device',
+                isOnline: false,
+                lastLoginAt: p.lastSyncedTimestamp || null,
+                createdAt: null,
+                rawUser: null
+            });
+        }
+    });
+
+    // 3. Aggregate each user's activities with strict isolation
+    const aggregated = Array.from(userMap.values()).map(user => {
+        const uid = user.userId;
+        const progress = (State.progress || []).find(p => {
+            const pUid = String(p.userId || p.id || '').trim().toLowerCase();
+            return pUid === uid || pUid === String(user.username || '').toLowerCase();
+        }) || {};
+
+        // Find user's isolated quiz attempts
+        const userQuizzes = (State.quizzes || []).filter(q => {
+            const qUid = String(q.userId || '').trim().toLowerCase();
+            return qUid === uid || qUid === String(user.username || '').toLowerCase();
+        });
+
+        // Find user's isolated XP transactions
+        const userTransactions = (State.xpTransactions || []).filter(tx => {
+            const txUid = String(tx.userId || '').trim().toLowerCase();
+            return txUid === uid || txUid === String(user.username || '').toLowerCase();
+        });
+
+        // Compute Quiz Performance
+        let quizAttemptXp = 0;
+        let totalCorrect = 0;
+        let totalQuestions = 0;
+        let passedQuizzes = 0;
+        let perfectQuizzes = 0;
+
+        userQuizzes.forEach(q => {
+            const correct = Number(q.score) || 0;
+            const total = Number(q.totalQuestions) || 5;
+            totalCorrect += correct;
+            totalQuestions += total;
+            if (q.passed || (total > 0 && (correct / total) >= 0.6)) passedQuizzes++;
+            if (total > 0 && correct === total) perfectQuizzes++;
+            const baseXp = correct * 10;
+            const perfectBonus = (total > 0 && correct === total) ? 50 : 0;
+            const completionBonus = 25;
+            quizAttemptXp += (baseXp + perfectBonus + completionBonus);
+        });
+
+        const quizAccuracy = totalQuestions > 0 ? Math.round((totalCorrect / totalQuestions) * 100) : 0;
+
+        // Parse Completed Modules
+        let completedModules = [];
+        if (progress.completedModules) {
+            completedModules = Array.isArray(progress.completedModules)
+                ? progress.completedModules
+                : String(progress.completedModules).split(',').map(s => s.trim()).filter(Boolean);
+        } else if (progress.completedModuleIds) {
+            completedModules = Array.isArray(progress.completedModuleIds)
+                ? progress.completedModuleIds
+                : String(progress.completedModuleIds).split(',').map(s => s.trim()).filter(Boolean);
+        }
+
+        // Calculate Module XP
+        let moduleXp = 0;
+        completedModules.forEach(modId => {
+            if (modId.includes('easy')) moduleXp += 100;
+            else if (modId.includes('medium')) moduleXp += 200;
+            else if (modId.includes('hard')) moduleXp += 300;
+            else moduleXp += 100;
+        });
+
+        // Parse Unlocked Badges
+        let unlockedBadges = [];
+        if (Array.isArray(progress.unlockedBadges)) {
+            unlockedBadges = progress.unlockedBadges;
+        } else if (typeof progress.unlockedBadges === 'string') {
+            unlockedBadges = progress.unlockedBadges.split(',').map(s => s.trim()).filter(Boolean);
+        }
+
+        // Calculate Badge XP
+        let badgeXp = 0;
+        unlockedBadges.forEach(bId => {
+            const badgeDef = (State.badges || []).find(b => b.id === bId);
+            badgeXp += badgeDef ? (badgeDef.bonusXp || 50) : 50;
+        });
+
+        // Calculate Streak & Streak XP
+        const currentStreak = Math.max(0, Number(progress.currentStreak || progress.streak || 0));
+        const longestStreak = Math.max(currentStreak, Number(progress.longestStreak || 0));
+        let streakBonusXp = 0;
+        if (currentStreak >= 30) streakBonusXp = 500;
+        else if (currentStreak >= 14) streakBonusXp = 150;
+        else if (currentStreak >= 7) streakBonusXp = 75;
+        else if (currentStreak >= 3) streakBonusXp = 40;
+        else if (currentStreak >= 1) streakBonusXp = 20;
+
+        // Calculate Admin Adjustments
+        let adminAdjustmentXp = 0;
+        userTransactions.forEach(tx => {
+            if (tx.source === 'ADMIN_ADJUSTMENT' || tx.activityType === 'ADMIN_ADJUSTMENT') {
+                adminAdjustmentXp += Number(tx.xpAmount || tx.xpDelta || tx.totalAwarded || 0);
+            }
+        });
+
+        // Authoritative Total XP
+        let totalXp = 0;
+        if (progress.totalXp !== undefined && progress.totalXp !== null) {
+            totalXp = Math.max(0, Number(progress.totalXp));
+        } else if (progress.xp !== undefined && progress.xp !== null) {
+            totalXp = Math.max(0, Number(progress.xp));
+        } else {
+            totalXp = moduleXp + quizAttemptXp + streakBonusXp + badgeXp + adminAdjustmentXp;
+        }
+
+        // Dynamically compute Level & Progress
+        const levelInfo = getLevelProgressInfo(totalXp);
+
+        return {
+            userId: uid,
+            username: user.username,
+            name: user.name,
+            email: user.email,
+            gender: user.gender,
+            role: user.role,
+            deviceModel: user.deviceModel,
+            isOnline: user.isOnline,
+            totalXp,
+            level: levelInfo.level,
+            levelTitle: levelInfo.levelTitle,
+            levelInfo,
+            currentStreak,
+            longestStreak,
+            lastActivityDate: progress.lastActivityDate || progress.lastSyncedTimestamp || (userQuizzes[0] ? userQuizzes[0].timestamp : null),
+            completedModules,
+            unlockedBadges,
+            quizzesCompleted: userQuizzes.length,
+            passedQuizzes,
+            perfectQuizzes,
+            totalCorrect,
+            totalQuestions,
+            quizAccuracy,
+            userQuizzes,
+            userTransactions,
+            xpBreakdown: {
+                moduleXp,
+                quizXp: Math.max(quizAttemptXp, Math.round(totalXp * 0.4)),
+                streakXp: streakBonusXp,
+                badgeXp,
+                adminXp: adminAdjustmentXp
+            }
+        };
+    });
+
+    // 4. Deterministic Tie-Breaking & Ranking
+    aggregated.sort((a, b) => {
+        if (b.totalXp !== a.totalXp) return b.totalXp - a.totalXp;
+        if (b.level !== a.level) return b.level - a.level;
+        if (b.currentStreak !== a.currentStreak) return b.currentStreak - a.currentStreak;
+        if (b.quizAccuracy !== a.quizAccuracy) return b.quizAccuracy - a.quizAccuracy;
+        return a.userId.localeCompare(b.userId);
+    });
+
+    // Assign rank #1, #2, #3, ...
+    aggregated.forEach((item, index) => {
+        item.rank = index + 1;
+    });
+
+    return aggregated;
+}
 
 function updateLeaderboardAndRanks() {
     renderProgressList();
+    renderMiniLeaderboard();
     renderBadgesCatalogList();
     renderRankHistoryList();
+    updateGamificationSummary();
+}
+
+function renderMiniLeaderboard() {
+    const container = $('mini-leaderboard-container');
+    if (!container) return;
+
+    const list = getAggregatedLeaderboard().slice(0, 3);
+    if (list.length === 0) {
+        container.innerHTML = `
+            <div style="padding:16px;text-align:center;color:var(--text-muted);font-size:12px;">
+                No registered drivers ranked yet.
+            </div>
+        `;
+        return;
+    }
+
+    container.innerHTML = list.map((u, idx) => {
+        const medal = idx === 0 ? '🥇 #1' : (idx === 1 ? '🥈 #2' : '🥉 #3');
+        const rankClass = idx === 0 ? 'rank-1' : (idx === 1 ? 'rank-2' : 'rank-3');
+        return `
+            <div class="mini-leader-item ${rankClass}" onclick="openUserGamificationModal('${escapeHtml(u.userId)}')" style="cursor:pointer;" title="Click to view driver details">
+                <span class="leader-pos font-h3">${medal}</span>
+                <div class="leader-info">
+                    <span class="leader-name font-body-sm">${escapeHtml(u.name)}</span>
+                    <span class="leader-sub font-caption">Level ${u.level} · ${escapeHtml(u.levelTitle)}</span>
+                </div>
+                <span class="leader-xp font-label" style="color:var(--emerald-green);">${u.totalXp.toLocaleString()} XP</span>
+            </div>
+        `;
+    }).join('');
+}
+
+function updateGamificationSummary() {
+    const leaderboard = getAggregatedLeaderboard();
+    const totalUsers = leaderboard.length;
+    let totalXp = 0;
+    let totalLevels = 0;
+    let activeStreaks = 0;
+
+    leaderboard.forEach(u => {
+        totalXp += u.totalXp;
+        totalLevels += u.level;
+        if (u.currentStreak > 0) activeStreaks++;
+    });
+
+    const avgLevel = totalUsers > 0 ? (totalLevels / totalUsers).toFixed(1) : '1.0';
+    const avgXp = totalUsers > 0 ? Math.round(totalXp / totalUsers) : 0;
+    const roundedAvgLvl = Math.round(Number(avgLevel) || 1);
+    const avgTitle = LEVEL_NAMES[roundedAvgLvl] || 'Recruit Driver';
+
+    if (DOM.gamifStatTotalUsers) DOM.gamifStatTotalUsers.textContent = totalUsers;
+    if (DOM.gamifStatTotalXp) DOM.gamifStatTotalXp.textContent = totalXp.toLocaleString() + ' XP';
+    if (DOM.gamifStatAvgLevel) DOM.gamifStatAvgLevel.textContent = `Lvl ${avgLevel}`;
+    if (DOM.gamifStatAvgTitle) DOM.gamifStatAvgTitle.textContent = avgTitle;
+    if (DOM.gamifStatAvgXp) DOM.gamifStatAvgXp.textContent = avgXp.toLocaleString() + ' XP';
+    if (DOM.gamifStatActiveStreaks) DOM.gamifStatActiveStreaks.textContent = activeStreaks;
 }
 
 function renderProgressList() {
     if (!DOM.progressList) return;
-    const leaderboard = State.users.map(u => {
-        const p = State.progress.find(pr => pr.userId === u.username || pr.userId === u.id) || {};
-        return {
-            user: u.username || u.name || 'user',
-            name: u.name || u.username,
-            xp: p.totalXp || p.xp || u.xp || 0,
-            level: p.currentLevel || p.level || u.level || 1,
-            streak: p.currentStreak || 0
-        };
-    }).sort((a, b) => b.xp - a.xp);
 
-    if (leaderboard.length === 0) {
-        DOM.progressList.innerHTML = `<div class="empty-state"><p class="font-body">No leaderboard standings recorded yet.</p></div>`;
+    let list = getAggregatedLeaderboard();
+
+    // Search Filtering
+    const searchInput = $('search-progress');
+    const q = (searchInput ? searchInput.value : '').toLowerCase().trim();
+    if (q) {
+        list = list.filter(u =>
+            (u.name || '').toLowerCase().includes(q) ||
+            (u.username || '').toLowerCase().includes(q) ||
+            (u.levelTitle || '').toLowerCase().includes(q) ||
+            (`level ${u.level}`).includes(q) ||
+            (`#${u.rank}`).includes(q)
+        );
+    }
+
+    // Filter Chips
+    const filter = State.gamifFilter || 'all';
+    if (filter === 'top10') {
+        list = list.slice(0, 10);
+    } else if (filter === 'level5') {
+        list = list.filter(u => u.level >= 5);
+    } else if (filter === 'streaks') {
+        list = list.filter(u => u.currentStreak > 0);
+    }
+
+    // Sorting
+    const sort = State.gamifSort || 'xp-desc';
+    if (sort === 'level-desc') {
+        list.sort((a, b) => b.level - a.level || b.totalXp - a.totalXp);
+    } else if (sort === 'streak-desc') {
+        list.sort((a, b) => b.currentStreak - a.currentStreak || b.totalXp - a.totalXp);
+    } else if (sort === 'name-asc') {
+        list.sort((a, b) => (a.name || '').localeCompare(b.name || ''));
+    }
+
+    if (list.length === 0) {
+        DOM.progressList.innerHTML = `
+            <div class="empty-state">
+                <span class="material-icons-round">military_tech</span>
+                <h3 class="font-h3">No Registered Users Yet</h3>
+                <p class="font-body">Leaderboard standings will appear automatically as learners register and complete road safety modules.</p>
+            </div>
+        `;
         return;
     }
 
-    DOM.progressList.innerHTML = leaderboard.map((l, idx) => `
-        <div class="data-row">
-            <div class="data-avatar" style="background:${idx === 0 ? 'rgba(212,168,67,0.2)' : 'var(--navy-surface)'};color:${idx === 0 ? 'var(--badge-gold)' : 'var(--text-primary)'};font-weight:bold;">
-                #${idx + 1}
-            </div>
-            <div class="data-main-info">
-                <div class="data-title font-body">${escapeHtml(l.name)}</div>
-                <div class="data-subtitle font-body-sm">
-                    <span>@${escapeHtml(l.user)}</span>
-                    <span>· 🔥 ${l.streak} day streak</span>
+    DOM.progressList.innerHTML = list.map(u => {
+        let rankClass = 'rank-std';
+        let rowClass = '';
+        if (u.rank === 1) { rankClass = 'rank-gold'; rowClass = 'rank-1'; }
+        else if (u.rank === 2) { rankClass = 'rank-silver'; rowClass = 'rank-2'; }
+        else if (u.rank === 3) { rankClass = 'rank-bronze'; rowClass = 'rank-3'; }
+
+        const prog = u.levelInfo;
+        const streakLabel = u.currentStreak > 0 ? `🔥 ${u.currentStreak}-day streak` : '0-day streak';
+        const progressFillGradient = u.rank === 1
+            ? 'linear-gradient(90deg, #F59E0B, #D4A843)'
+            : 'linear-gradient(90deg, #10B981, #0038A8)';
+
+        return `
+            <div class="leaderboard-row ${rowClass}">
+                <div class="leaderboard-rank-pill ${rankClass}">
+                    <span>#${u.rank}</span>
+                </div>
+
+                <div class="data-avatar user-avatar" style="width:44px;height:44px;flex-shrink:0;font-size:18px;">
+                    <span class="material-icons-round">person</span>
+                </div>
+
+                <div class="leaderboard-user-info">
+                    <div class="leaderboard-user-name">
+                        <span>${escapeHtml(u.name)}</span>
+                        ${u.rank === 1 ? '<span class="material-icons-round" style="color:var(--badge-gold);font-size:18px;" title="Municipal Champion">emoji_events</span>' : ''}
+                    </div>
+                    <div class="leaderboard-user-meta">
+                        <span style="color:var(--electric-blue);font-weight:600;">@${escapeHtml(u.username)}</span>
+                        <span>·</span>
+                        <span class="role-tag user font-badge" style="padding:1px 6px;">LVL ${u.level}</span>
+                        <span>·</span>
+                        <span style="color:var(--text-muted);">${escapeHtml(u.levelTitle)}</span>
+                        <span>·</span>
+                        <span style="color:${u.currentStreak > 0 ? '#F59E0B' : 'var(--text-muted)'};font-weight:600;">${streakLabel}</span>
+                    </div>
+                </div>
+
+                <div class="leaderboard-progress-col">
+                    <div class="progress-bar-label">
+                        <span><strong>Level ${u.level}</strong> (${prog.progressPercent}%)</span>
+                        <span>${prog.currentLevelProgressXp.toLocaleString()} / ${prog.span.toLocaleString()} XP to Level ${u.level + 1}</span>
+                    </div>
+                    <div class="progress-bar-wrap">
+                        <div class="progress-bar-fill-dynamic" style="width:${prog.progressPercent}%;background:${progressFillGradient};"></div>
+                    </div>
+                </div>
+
+                <div class="leaderboard-xp-col">
+                    <div class="leaderboard-xp-val">${u.totalXp.toLocaleString()} XP</div>
+                    <span class="font-caption" style="color:var(--text-muted);">${u.quizzesCompleted} quizzes · ${u.completedModules.length} mods</span>
+                </div>
+
+                <div class="leaderboard-actions-col">
+                    <button class="btn btn-secondary font-button" onclick="openUserGamificationModal('${escapeHtml(u.userId)}')" style="padding:6px 12px;font-size:12px;display:flex;align-items:center;gap:4px;" title="Inspect User Gamification Breakdown">
+                        <span class="material-icons-round" style="font-size:16px;color:var(--badge-gold);">military_tech</span>
+                        <span>Inspect</span>
+                    </button>
                 </div>
             </div>
-            <div class="data-meta-cell">
-                <span class="font-statistic" style="font-size:20px;color:var(--emerald-green);">${l.xp.toLocaleString()} XP</span>
-                <span class="role-tag user font-badge">LEVEL ${l.level}</span>
-            </div>
-        </div>
-    `).join('');
+        `;
+    }).join('');
 }
+
+let activeGamifTab = 'g-breakdown';
+
+window.openUserGamificationModal = function(userId) {
+    const leaderboard = getAggregatedLeaderboard();
+    const user = leaderboard.find(u => u.userId === String(userId).toLowerCase() || u.username === userId);
+    if (!user) {
+        showToast('User gamification record not found.', 'warning');
+        return;
+    }
+
+    State.selectedGamifUser = user;
+    activeGamifTab = 'g-breakdown';
+
+    // Update Modal Header
+    const modalName = $('gamif-modal-name');
+    const modalHandle = $('gamif-modal-handle');
+    const modalIdText = $('gamif-modal-id-text');
+    const modalRankBadge = $('gamif-modal-rank-badge');
+    const modalRole = $('gamif-modal-role');
+
+    if (modalName) modalName.textContent = user.name;
+    if (modalHandle) modalHandle.textContent = `@${user.username} · ${user.email}`;
+    if (modalIdText) modalIdText.textContent = `ID: ${user.userId}`;
+    if (modalRankBadge) modalRankBadge.textContent = `#${user.rank}`;
+    if (modalRole) modalRole.textContent = (user.role || 'LEARNER').toUpperCase();
+
+    // Reset active tab button
+    document.querySelectorAll('#gamif-inspect-tabs .profile-tab-btn').forEach(b => {
+        b.classList.toggle('active', b.dataset.gtab === 'g-breakdown');
+    });
+
+    renderGamifModalTab('g-breakdown');
+
+    if (DOM.gamifInspectOverlay) {
+        DOM.gamifInspectOverlay.classList.add('visible');
+    }
+};
+
+function renderGamifModalTab(tab) {
+    const user = State.selectedGamifUser;
+    const body = $('gamif-modal-body');
+    if (!user || !body) return;
+
+    activeGamifTab = tab;
+    const prog = user.levelInfo;
+
+    if (tab === 'g-breakdown') {
+        body.innerHTML = `
+            <div class="gamif-metric-card-grid">
+                <div class="gamif-metric-box">
+                    <div class="gamif-metric-box-val" style="color:var(--emerald-green);">${user.totalXp.toLocaleString()}</div>
+                    <div class="gamif-metric-box-lbl">Total Valid XP</div>
+                </div>
+                <div class="gamif-metric-box">
+                    <div class="gamif-metric-box-val" style="color:var(--badge-gold);">Lvl ${user.level}</div>
+                    <div class="gamif-metric-box-lbl">${escapeHtml(user.levelTitle)}</div>
+                </div>
+                <div class="gamif-metric-box">
+                    <div class="gamif-metric-box-val" style="color:#F59E0B;">${user.currentStreak}d</div>
+                    <div class="gamif-metric-box-lbl">Active Streak (Max: ${user.longestStreak}d)</div>
+                </div>
+                <div class="gamif-metric-box">
+                    <div class="gamif-metric-box-val" style="color:var(--info-blue);">${user.quizzesCompleted}</div>
+                    <div class="gamif-metric-box-lbl">Assessments Passed</div>
+                </div>
+            </div>
+
+            <div class="xp-source-breakdown-card">
+                <div class="font-h3" style="font-size:14px;color:var(--badge-gold);margin-bottom:10px;display:flex;align-items:center;gap:6px;">
+                    <span class="material-icons-round" style="font-size:18px;">analytics</span>
+                    <span>Activity XP Distribution Breakdown</span>
+                </div>
+                <div class="xp-source-row">
+                    <span style="color:var(--text-secondary);">📚 Training Modules Completed:</span>
+                    <strong style="color:var(--electric-blue);">+${user.xpBreakdown.moduleXp.toLocaleString()} XP</strong>
+                </div>
+                <div class="xp-source-row">
+                    <span style="color:var(--text-secondary);">📝 Quiz Correct Answers &amp; Passes:</span>
+                    <strong style="color:var(--emerald-green);">+${user.xpBreakdown.quizXp.toLocaleString()} XP</strong>
+                </div>
+                <div class="xp-source-row">
+                    <span style="color:var(--text-secondary);">🔥 Daily Learning Streak Rewards:</span>
+                    <strong style="color:#F59E0B;">+${user.xpBreakdown.streakXp.toLocaleString()} XP</strong>
+                </div>
+                <div class="xp-source-row">
+                    <span style="color:var(--text-secondary);">🏅 Unlocked Badges &amp; Milestone Honors:</span>
+                    <strong style="color:var(--badge-gold);">+${user.xpBreakdown.badgeXp.toLocaleString()} XP</strong>
+                </div>
+                ${user.xpBreakdown.adminXp !== 0 ? `
+                <div class="xp-source-row">
+                    <span style="color:var(--text-secondary);">⚙️ Admin Manual Adjustments:</span>
+                    <strong style="color:${user.xpBreakdown.adminXp > 0 ? 'var(--emerald-green)' : 'var(--traffic-red)'};">${user.xpBreakdown.adminXp > 0 ? '+' : ''}${user.xpBreakdown.adminXp} XP</strong>
+                </div>` : ''}
+            </div>
+
+            <div class="xp-source-breakdown-card">
+                <div class="font-h3" style="font-size:14px;color:var(--text-primary);margin-bottom:8px;display:flex;justify-content:space-between;">
+                    <span>Level ${user.level} Progression</span>
+                    <span style="color:var(--badge-gold);">${prog.progressPercent}% to Level ${user.level + 1}</span>
+                </div>
+                <div class="progress-bar-wrap" style="height:12px;margin:8px 0;">
+                    <div class="progress-bar-fill-dynamic" style="width:${prog.progressPercent}%;background:linear-gradient(90deg, #10B981, #F59E0B);"></div>
+                </div>
+                <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--text-muted);">
+                    <span>Current: ${user.totalXp.toLocaleString()} XP</span>
+                    <span>Target for Level ${user.level + 1}: ${prog.maxXp.toLocaleString()} XP (${prog.xpRemaining.toLocaleString()} XP needed)</span>
+                </div>
+            </div>
+        `;
+    } else if (tab === 'g-quizzes') {
+        body.innerHTML = `
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+                <div class="font-h3" style="font-size:14px;">User Assessments History (${user.userQuizzes.length})</div>
+                <span class="tag-badge green font-badge">${user.quizAccuracy}% Overall Accuracy</span>
+            </div>
+            ${user.userQuizzes.length === 0 ? `
+                <div class="empty-state mini">
+                    <span class="material-icons-round">quiz</span>
+                    <p class="font-body-sm">This user has no recorded quiz assessments yet.</p>
+                </div>
+            ` : `
+                <table class="xp-ledger-table">
+                    <thead>
+                        <tr>
+                            <th>Assessment / Topic</th>
+                            <th>Score</th>
+                            <th>Percent</th>
+                            <th>Status</th>
+                            <th>Time</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${user.userQuizzes.map(q => `
+                            <tr>
+                                <td>
+                                    <strong>${escapeHtml(q.quizId || q.topic || 'Road Safety Assessment')}</strong>
+                                </td>
+                                <td>${q.score || 0}/${q.totalQuestions || 5}</td>
+                                <td>${q.percentage || Math.round((q.score || 0) / (q.totalQuestions || 5) * 100)}%</td>
+                                <td>
+                                    <span class="status-badge ${q.passed ? 'online' : 'offline'} font-badge">
+                                        ${q.passed ? 'PASSED' : 'FAILED'}
+                                    </span>
+                                </td>
+                                <td style="color:var(--text-muted);">${formatRelativeTime(q.timestamp)}</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `}
+        `;
+    } else if (tab === 'g-modules') {
+        const defaultMods = [
+            { id: 'mod_easy_quiz', title: '🟢 Easy Module — Basics & Signals', xp: 100 },
+            { id: 'mod_medium_quiz', title: '🟡 Medium Module — Defensive Driving', xp: 200 },
+            { id: 'mod_hard_quiz', title: '🔴 Hard Module — Advanced Right-of-Way', xp: 300 }
+        ];
+
+        body.innerHTML = `
+            <div class="font-h3" style="font-size:14px;margin-bottom:12px;">Curriculum Module Completion Status (${user.completedModules.length}/3)</div>
+            <div style="display:flex;flex-direction:column;gap:10px;">
+                ${defaultMods.map(m => {
+                    const isDone = user.completedModules.some(cm => cm === m.id || cm.includes(m.id.replace('mod_', '')));
+                    return `
+                        <div class="xp-source-row" style="background:rgba(15,31,56,0.6);padding:12px 14px;border-radius:8px;border:1px solid var(--navy-card-border);">
+                            <div>
+                                <div class="font-body-sm font-weight-semibold">${escapeHtml(m.title)}</div>
+                                <span class="font-caption" style="color:var(--text-muted);">Reward: +${m.xp} XP upon completion</span>
+                            </div>
+                            <span class="status-badge ${isDone ? 'online' : 'offline'} font-badge">
+                                ${isDone ? '✅ COMPLETED' : '⏳ PENDING'}
+                            </span>
+                        </div>
+                    `;
+                }).join('')}
+            </div>
+        `;
+    } else if (tab === 'g-badges') {
+        body.innerHTML = `
+            <div class="font-h3" style="font-size:14px;margin-bottom:12px;">Badges &amp; Honors Unlocked (${user.unlockedBadges.length} earned)</div>
+            <div class="badges-grid">
+                ${State.badges.map(b => {
+                    const isUnlocked = user.unlockedBadges.includes(b.id) || (user.totalXp >= 1000 && b.id === 'badge_1k_xp') || (user.level >= 5 && b.id === 'badge_lvl5');
+                    return `
+                        <div class="badge-item-card ${isUnlocked ? 'unlocked' : 'locked'}" style="opacity:${isUnlocked ? '1' : '0.45'};border-color:${isUnlocked ? 'var(--badge-gold-border)' : 'var(--navy-card-border)'};">
+                            <div class="badge-icon-lg">${b.icon}</div>
+                            <div class="badge-info-wrap">
+                                <h4 class="font-h3" style="font-size:15px;">${escapeHtml(b.title)}</h4>
+                                <p class="font-body-sm" style="color:var(--text-secondary);margin:2px 0;">${escapeHtml(b.description)}</p>
+                                <div style="display:flex;justify-content:space-between;align-items:center;margin-top:6px;">
+                                    <span class="font-caption" style="color:var(--badge-gold);">+${b.bonusXp} XP</span>
+                                    <span class="status-badge ${isUnlocked ? 'online' : 'offline'} font-badge">
+                                        ${isUnlocked ? 'UNLOCKED' : 'LOCKED'}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }).join('')}
+            </div>
+        `;
+    } else if (tab === 'g-ledger') {
+        body.innerHTML = `
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+                <div class="font-h3" style="font-size:14px;">XP Transaction Ledger (${user.userTransactions.length} events)</div>
+            </div>
+            ${user.userTransactions.length === 0 ? `
+                <div class="empty-state mini">
+                    <span class="material-icons-round">receipt_long</span>
+                    <p class="font-body-sm">No individual XP transactions logged yet. All XP is computed from verified quiz &amp; module events.</p>
+                </div>
+            ` : `
+                <table class="xp-ledger-table">
+                    <thead>
+                        <tr>
+                            <th>Time</th>
+                            <th>Source</th>
+                            <th>Description</th>
+                            <th>XP Delta</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${user.userTransactions.map(tx => `
+                            <tr>
+                                <td style="color:var(--text-muted);">${formatRelativeTime(tx.timestamp)}</td>
+                                <td><span class="role-tag user font-badge">${escapeHtml(tx.source || tx.activityType || 'ACTIVITY')}</span></td>
+                                <td>${escapeHtml(tx.description || tx.activityName || 'Activity Completed')}</td>
+                                <td style="color:var(--emerald-green);font-weight:bold;">+${tx.xpAmount || tx.xpDelta || tx.totalAwarded || 0} XP</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `}
+        `;
+    } else if (tab === 'g-adjust') {
+        body.innerHTML = `
+            <div class="xp-source-breakdown-card">
+                <div class="font-h3" style="font-size:15px;color:var(--badge-gold);margin-bottom:6px;">
+                    <span class="material-icons-round" style="vertical-align:middle;font-size:18px;">tune</span>
+                    <span>Admin Manual XP Adjustment</span>
+                </div>
+                <p class="font-body-sm" style="color:var(--text-secondary);margin-bottom:14px;">
+                    Manually award bonus XP for civic driving achievements, safety seminars, or adjust for administrative corrections. This creates a permanent audit log entry.
+                </p>
+                <div class="form-row">
+                    <label class="font-label">XP Delta (Positive to add, Negative to deduct)</label>
+                    <input type="number" id="input-adjust-xp-delta" class="form-input font-body" placeholder="e.g. 100 or -50" value="50">
+                </div>
+                <div class="form-row" style="margin-top:12px;">
+                    <label class="font-label">Administrative Reason / Justification</label>
+                    <input type="text" id="input-adjust-xp-reason" class="form-input font-body" placeholder="e.g. Dagami LGU On-Road Safety Workshop Completed">
+                </div>
+                <div style="margin-top:16px;display:flex;justify-content:flex-end;">
+                    <button class="btn btn-primary font-button" onclick="submitAdminXpAdjustment('${escapeHtml(user.userId)}')">
+                        <span class="material-icons-round">check_circle</span>
+                        <span>Apply XP Adjustment</span>
+                    </button>
+                </div>
+            </div>
+        `;
+    }
+}
+
+window.submitAdminXpAdjustment = function(userId) {
+    const deltaInput = $('input-adjust-xp-delta');
+    const reasonInput = $('input-adjust-xp-reason');
+    if (!deltaInput || !reasonInput) return;
+
+    const delta = parseInt(deltaInput.value, 10);
+    const reason = reasonInput.value.trim() || 'Admin manual XP update';
+
+    if (isNaN(delta) || delta === 0) {
+        showToast('Please enter a valid non-zero XP amount.', 'warning');
+        return;
+    }
+
+    const leaderboard = getAggregatedLeaderboard();
+    const user = leaderboard.find(u => u.userId === String(userId).toLowerCase());
+    if (!user) return;
+
+    const newTotalXp = Math.max(0, user.totalXp + delta);
+    const newLevel = getLevelForXp(newTotalXp);
+
+    if (db) {
+        // 1. Update user_progress doc in Firestore
+        db.collection('user_progress').doc(user.userId).set({
+            userId: user.userId,
+            displayName: user.name,
+            totalXp: newTotalXp,
+            currentLevel: newLevel,
+            lastSyncedTimestamp: firebase.firestore.FieldValue.serverTimestamp()
+        }, { merge: true }).catch(err => console.warn('Progress update error:', err));
+
+        // 2. Add XP transaction to ledger
+        db.collection('xp_transactions').add({
+            userId: user.userId,
+            xpAmount: delta,
+            source: 'ADMIN_ADJUSTMENT',
+            activityType: 'ADMIN_ADJUSTMENT',
+            description: reason,
+            adminId: State.currentAdmin,
+            timestamp: firebase.firestore.FieldValue.serverTimestamp()
+        }).catch(err => console.warn('Transaction log error:', err));
+
+        // 3. Emit security audit log
+        db.collection('audit_logs').add({
+            action: 'RECORD_EDITED',
+            adminId: State.currentAdmin,
+            targetUser: user.name,
+            description: `Manual XP adjustment of ${delta > 0 ? '+' : ''}${delta} XP for user @${user.username} (${reason})`,
+            riskLevel: 'MEDIUM',
+            timestamp: firebase.firestore.FieldValue.serverTimestamp()
+        }).catch(err => console.warn('Audit log error:', err));
+    } else {
+        // Local mode fallback
+        let prog = State.progress.find(p => p.userId === user.userId);
+        if (prog) {
+            prog.totalXp = newTotalXp;
+            prog.currentLevel = newLevel;
+        } else {
+            State.progress.push({ userId: user.userId, totalXp: newTotalXp, currentLevel: newLevel });
+        }
+        State.xpTransactions.push({
+            id: 'tx_local_' + Date.now(),
+            userId: user.userId,
+            xpAmount: delta,
+            source: 'ADMIN_ADJUSTMENT',
+            description: reason,
+            timestamp: new Date()
+        });
+    }
+
+    showToast(`Successfully adjusted ${delta > 0 ? '+' : ''}${delta} XP for ${user.name}!`, 'success');
+    updateLeaderboardAndRanks();
+    if (State.selectedGamifUser) {
+        State.selectedGamifUser = getAggregatedLeaderboard().find(u => u.userId === user.userId);
+        renderGamifModalTab('g-breakdown');
+    }
+};
 
 function renderBadgesCatalogList() {
     if (!DOM.badgesCatalogList) return;
@@ -2626,20 +3477,41 @@ function renderBadgesCatalogList() {
 
 function renderRankHistoryList() {
     if (!DOM.rankHistoryList) return;
-    const history = [
-        { user: "camancho", oldRank: 3, newRank: 1, delta: "+2 Positions", reason: "Scored 100% on Traffic Rules Exam", time: "2 hours ago" },
-        { user: "user", oldRank: 2, newRank: 2, delta: "Maintained", reason: "Completed Right-of-Way Module", time: "5 hours ago" }
-    ];
 
-    DOM.rankHistoryList.innerHTML = history.map(h => `
-        <div class="rank-history-card">
-            <div>
-                <div class="font-body font-weight-semibold">@${escapeHtml(h.user)}: #${h.oldRank} → #${h.newRank}</div>
-                <span class="font-caption">${escapeHtml(h.reason)} · ${h.time}</span>
+    // Dynamically derive rank movements from recent quiz attempts and XP events
+    const recentEvents = [...(State.quizzes || [])]
+        .filter(q => q.userId)
+        .slice(0, 10);
+
+    if (recentEvents.length === 0) {
+        DOM.rankHistoryList.innerHTML = `
+            <div class="empty-state mini">
+                <span class="material-icons-round">trending_up</span>
+                <p class="font-body-sm">No recent rank movement events recorded yet. Movements populate dynamically as assessments are passed.</p>
             </div>
-            <span class="rank-delta-pill rank-delta-up">${h.delta}</span>
-        </div>
-    `).join('');
+        `;
+        return;
+    }
+
+    DOM.rankHistoryList.innerHTML = recentEvents.map(ev => {
+        const u = getAggregatedLeaderboard().find(usr => usr.userId === String(ev.userId).toLowerCase() || usr.username === ev.userId);
+        const userName = u ? u.name : ev.userId;
+        const score = ev.score || 0;
+        const total = ev.totalQuestions || 5;
+        const passed = ev.passed || (score / total >= 0.6);
+
+        return `
+            <div class="rank-history-card">
+                <div>
+                    <div class="font-body font-weight-semibold">@${escapeHtml(ev.userId)} (${escapeHtml(userName)})</div>
+                    <span class="font-caption">
+                        ${passed ? '🎯 Scored ' + score + '/' + total + ' on ' + escapeHtml(ev.quizId || ev.topic || 'Assessment') : 'Completed quiz attempt'} · ${formatRelativeTime(ev.timestamp)}
+                    </span>
+                </div>
+                <span class="rank-delta-pill rank-delta-up">${passed ? '+XP Earned' : 'Attempt'}</span>
+            </div>
+        `;
+    }).join('');
 }
 
 // ═══════════════════════════════════════════════════════════════
