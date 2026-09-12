@@ -280,14 +280,14 @@ fun SignUpScreen(
             scrollable = true,
             backgroundColor = Color.Transparent
         ) {
-            Spacer(modifier = Modifier.height(32.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
             Image(
                 painter = painterResource(id = R.drawable.logo),
                 contentDescription = "Municipality of Dagami, Leyte Logo",
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
-                    .size(76.dp)
+                    .size(72.dp)
                     .shadow(
                         elevation = 8.dp,
                         shape = CircleShape,
@@ -297,39 +297,67 @@ fun SignUpScreen(
                     .background(Color.White)
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(10.dp))
 
-            Text(
-                text = stringResource(R.string.signup_title),
-                style = MaterialTheme.typography.displayLarge.copy(fontWeight = FontWeight.Bold),
-                color = Color.White
-            )
-            Text(
-                text = stringResource(R.string.signup_subtitle),
-                style = AppTypeScale.eyebrowLabel,
-                color = Color.White.copy(alpha = 0.85f)
-            )
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Text(
+                    text = "REPUBLIC OF THE PHILIPPINES",
+                    style = AppTypeScale.eyebrowLabel.copy(
+                        letterSpacing = 1.5.sp,
+                        fontWeight = FontWeight.Bold
+                    ),
+                    color = BadgeGold,
+                    textAlign = TextAlign.Center
+                )
+                Spacer(modifier = Modifier.height(2.dp))
+                Text(
+                    text = stringResource(R.string.signup_title),
+                    style = MaterialTheme.typography.displayLarge.copy(
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 26.sp
+                    ),
+                    color = Color.White,
+                    textAlign = TextAlign.Center
+                )
+                Text(
+                    text = stringResource(R.string.signup_subtitle),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = Color.White.copy(alpha = 0.85f),
+                    textAlign = TextAlign.Center
+                )
+            }
 
-            Spacer(modifier = Modifier.height(32.dp))
+            Spacer(modifier = Modifier.height(18.dp))
 
         AppCard(
             modifier = Modifier
                 .fillMaxWidth()
                 .alpha(fadeAnim.value)
                 .graphicsLayer { translationX = shakeAnim.value },
-            elevation = 16
+            borderColor = BadgeGold.copy(alpha = 0.35f),
+            elevation = 6
         ) {
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(24.dp),
+                    .padding(20.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = stringResource(R.string.signup_registration_header),
-                    style = MaterialTheme.typography.titleLarge,
-                    color = MaterialTheme.colorScheme.onSurface,
-                    modifier = Modifier.padding(bottom = 16.dp)
+                    text = "NEW DRIVER REGISTRATION",
+                    style = MaterialTheme.typography.titleMedium.copy(
+                        fontWeight = FontWeight.Bold,
+                        letterSpacing = 0.8.sp
+                    ),
+                    color = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.padding(bottom = 2.dp)
+                )
+                Text(
+                    text = "Create an account to start earning road safety badges & XP",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(bottom = 10.dp)
                 )
 
                 AnimatedVisibility(visible = showSuccess) {
@@ -340,14 +368,14 @@ fun SignUpScreen(
                                 .clip(RoundedCornerShape(16.dp))
                                 .background(MaterialTheme.colorScheme.tertiaryContainer)
                                 .border(1.dp, MaterialTheme.colorScheme.tertiary.copy(alpha = 0.3f), RoundedCornerShape(16.dp))
-                                .padding(20.dp)
+                                .padding(16.dp)
                         ) {
                             Column(
                                 modifier = Modifier.fillMaxWidth(),
                                 horizontalAlignment = Alignment.CenterHorizontally
                             ) {
-                                Text(text = "✅", fontSize = 32.sp)
-                                Spacer(modifier = Modifier.height(8.dp))
+                                Text(text = "✅", fontSize = 28.sp)
+                                Spacer(modifier = Modifier.height(6.dp))
                                 Text(
                                     text = stringResource(R.string.signup_account_created),
                                     style = MaterialTheme.typography.titleMedium,
@@ -355,12 +383,12 @@ fun SignUpScreen(
                                 )
                                 Text(
                                     text = stringResource(R.string.signup_can_sign_in),
-                                    style = MaterialTheme.typography.bodyMedium,
+                                    style = MaterialTheme.typography.bodySmall,
                                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                                     textAlign = TextAlign.Center,
-                                    modifier = Modifier.padding(top = 4.dp)
+                                    modifier = Modifier.padding(top = 2.dp)
                                 )
-                                Spacer(modifier = Modifier.height(16.dp))
+                                Spacer(modifier = Modifier.height(12.dp))
                                 AppButton(
                                     text = stringResource(R.string.signup_go_to_login),
                                     onClick = { onSignUpSuccess(UserRole.USER, fullName.trim(), emptySet()) },
@@ -376,10 +404,11 @@ fun SignUpScreen(
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .clip(RoundedCornerShape(12.dp))
+                            .padding(bottom = 10.dp)
+                            .clip(RoundedCornerShape(10.dp))
                             .background(MaterialTheme.colorScheme.errorContainer)
-                            .border(1.dp, MaterialTheme.colorScheme.error.copy(alpha = 0.3f), RoundedCornerShape(12.dp))
-                            .padding(12.dp)
+                            .border(1.dp, MaterialTheme.colorScheme.error.copy(alpha = 0.3f), RoundedCornerShape(10.dp))
+                            .padding(10.dp)
                     ) {
                         Text(
                             text = errorMessage,
@@ -387,10 +416,6 @@ fun SignUpScreen(
                             style = MaterialTheme.typography.labelMedium
                         )
                     }
-                }
-
-                if (showError) {
-                    Spacer(modifier = Modifier.height(16.dp))
                 }
 
                 if (!showSuccess) {
@@ -403,7 +428,7 @@ fun SignUpScreen(
                         supportingText = fullNameError
                     )
 
-                    Spacer(modifier = Modifier.height(16.dp))
+                    Spacer(modifier = Modifier.height(10.dp))
 
                     AppTextField(
                         value = username,
@@ -414,7 +439,7 @@ fun SignUpScreen(
                         supportingText = usernameError
                     )
 
-                    Spacer(modifier = Modifier.height(16.dp))
+                    Spacer(modifier = Modifier.height(10.dp))
 
                     AppTextField(
                         value = password,
@@ -442,7 +467,7 @@ fun SignUpScreen(
                         supportingText = passwordError
                     )
 
-                    Spacer(modifier = Modifier.height(16.dp))
+                    Spacer(modifier = Modifier.height(10.dp))
 
                     AppTextField(
                         value = confirmPassword,
@@ -467,7 +492,7 @@ fun SignUpScreen(
                         supportingText = confirmPasswordError
                     )
 
-                    Spacer(modifier = Modifier.height(8.dp))
+                    Spacer(modifier = Modifier.height(4.dp))
 
                     Text(
                         text = stringResource(R.string.signup_password_hint, AuthManager.MIN_PASSWORD_LENGTH),
@@ -476,21 +501,21 @@ fun SignUpScreen(
                         modifier = Modifier.fillMaxWidth().padding(start = 4.dp)
                     )
 
-                    Spacer(modifier = Modifier.height(20.dp))
+                    Spacer(modifier = Modifier.height(12.dp))
 
                     Text(
                         text = stringResource(R.string.signup_gender),
-                        style = MaterialTheme.typography.bodySmall,
+                        style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.SemiBold),
                         color = if (genderError != null) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurfaceVariant,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(start = 4.dp, bottom = 8.dp)
+                            .padding(start = 4.dp, bottom = 6.dp)
                     )
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
                             .selectableGroup(),
-                        horizontalArrangement = Arrangement.spacedBy(12.dp)
+                        horizontalArrangement = Arrangement.spacedBy(10.dp)
                     ) {
                         GenderOption(
                             label = stringResource(R.string.signup_gender_male),
@@ -518,7 +543,7 @@ fun SignUpScreen(
                         )
                     }
 
-                    Spacer(modifier = Modifier.height(16.dp))
+                    Spacer(modifier = Modifier.height(10.dp))
 
                     AppTextField(
                         value = age,
@@ -536,7 +561,7 @@ fun SignUpScreen(
                         supportingText = ageError
                     )
 
-                    Spacer(modifier = Modifier.height(16.dp))
+                    Spacer(modifier = Modifier.height(10.dp))
 
                     AppTextField(
                         value = contactNumber,
@@ -548,16 +573,16 @@ fun SignUpScreen(
                         supportingText = contactError
                     )
 
-                    Spacer(modifier = Modifier.height(24.dp))
+                    Spacer(modifier = Modifier.height(14.dp))
 
                     AppButton(
                         text = stringResource(R.string.login_create_account),
                         onClick = { performSignUp() }
                     )
 
-                    Spacer(modifier = Modifier.height(16.dp))
-                    HorizontalDivider(color = MaterialTheme.colorScheme.outline.copy(alpha = 0.5f), thickness = 1.dp)
-                    Spacer(modifier = Modifier.height(16.dp))
+                    Spacer(modifier = Modifier.height(12.dp))
+                    HorizontalDivider(color = MaterialTheme.colorScheme.outline.copy(alpha = 0.4f), thickness = 1.dp)
+                    Spacer(modifier = Modifier.height(12.dp))
 
                     Row(
                         modifier = Modifier.fillMaxWidth(),
@@ -583,7 +608,7 @@ fun SignUpScreen(
             }
         }
 
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(20.dp))
     }
 }
 }
@@ -606,30 +631,30 @@ private fun GenderOption(
             .background(bgColor)
             .border(if (selected) 2.dp else 1.dp, borderColor, RoundedCornerShape(Dimens.cornerRadiusMedium))
             .selectable(selected = selected, onClick = onClick, role = Role.RadioButton)
-            .padding(vertical = 16.dp),
+            .padding(vertical = 10.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Box(
             modifier = Modifier
-                .size(40.dp)
+                .size(34.dp)
                 .clip(CircleShape)
                 .background(contentColor.copy(alpha = 0.12f)),
             contentAlignment = Alignment.Center
         ) {
-            Icon(imageVector = icon, contentDescription = null, tint = contentColor)
+            Icon(imageVector = icon, contentDescription = null, tint = contentColor, modifier = Modifier.size(20.dp))
         }
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(4.dp))
         Text(
             text = label,
-            style = MaterialTheme.typography.titleSmall,
+            style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.SemiBold),
             color = if (selected) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.onSurfaceVariant
         )
-        Spacer(modifier = Modifier.height(4.dp))
+        Spacer(modifier = Modifier.height(2.dp))
         Icon(
             imageVector = if (selected) Icons.Rounded.CheckCircle else Icons.Rounded.RadioButtonUnchecked,
             contentDescription = if (selected) stringResource(R.string.signup_gender_selected) else null,
             tint = if (selected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outline,
-            modifier = Modifier.size(16.dp)
+            modifier = Modifier.size(15.dp)
         )
     }
 }
