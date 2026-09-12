@@ -16,7 +16,7 @@ val Inter = FontFamily(
 )
 
 val Typography = Typography(
-    // XP/Score Numbers (hero) — score counters, avatar initials, brand title
+    // DISPLAY / PAGE TITLE (28–32sp, Bold / 700)
     displayLarge = TextStyle(
         fontFamily = Inter,
         fontWeight = FontWeight.Bold,
@@ -24,7 +24,6 @@ val Typography = Typography(
         lineHeight = 36.sp,
         letterSpacing = (-0.25).sp
     ),
-    // Secondary hero tier (available for future use)
     displayMedium = TextStyle(
         fontFamily = Inter,
         fontWeight = FontWeight.Bold,
@@ -32,7 +31,6 @@ val Typography = Typography(
         lineHeight = 34.sp,
         letterSpacing = (-0.15).sp
     ),
-    // Big stat number (e.g. progress screen)
     displaySmall = TextStyle(
         fontFamily = Inter,
         fontWeight = FontWeight.Bold,
@@ -40,7 +38,7 @@ val Typography = Typography(
         lineHeight = 30.sp,
         letterSpacing = 0.sp
     ),
-    // Large Heading
+    // SECTION TITLES (20–24sp, Semi-bold / 600–700)
     headlineLarge = TextStyle(
         fontFamily = Inter,
         fontWeight = FontWeight.Bold,
@@ -48,15 +46,14 @@ val Typography = Typography(
         lineHeight = 28.sp,
         letterSpacing = 0.sp
     ),
-    // Gamification "LEVEL 10"-style numbers
     headlineMedium = TextStyle(
         fontFamily = Inter,
-        fontWeight = FontWeight.Bold,
+        fontWeight = FontWeight.SemiBold,
         fontSize = 20.sp,
         lineHeight = 26.sp,
         letterSpacing = 0.sp
     ),
-    // Quiz question text — comfortable multi-line reading
+    // QUIZ / QUESTION TITLE (18–20sp, Semi-bold)
     headlineSmall = TextStyle(
         fontFamily = Inter,
         fontWeight = FontWeight.SemiBold,
@@ -64,7 +61,7 @@ val Typography = Typography(
         lineHeight = 26.sp,
         letterSpacing = 0.sp
     ),
-    // Screen Title
+    // SCREEN / PAGE TITLE (22–24sp, Bold)
     titleLarge = TextStyle(
         fontFamily = Inter,
         fontWeight = FontWeight.Bold,
@@ -72,7 +69,7 @@ val Typography = Typography(
         lineHeight = 28.sp,
         letterSpacing = (-0.15).sp
     ),
-    // Section Heading / AI Assistant title
+    // SECTION HEADER / AI ASSISTANT TITLE (18–20sp, Semi-bold)
     titleMedium = TextStyle(
         fontFamily = Inter,
         fontWeight = FontWeight.SemiBold,
@@ -80,23 +77,23 @@ val Typography = Typography(
         lineHeight = 24.sp,
         letterSpacing = 0.sp
     ),
-    // Card Title / gamification labels ("12 DAY STREAK")
+    // CARD TITLE (16–18sp, Semi-bold / 600)
     titleSmall = TextStyle(
         fontFamily = Inter,
         fontWeight = FontWeight.SemiBold,
-        fontSize = 17.sp,
+        fontSize = 16.sp,
         lineHeight = 22.sp,
         letterSpacing = 0.sp
     ),
-    // Body Text / Scenario Text / Explanation
+    // BODY TEXT (14–16sp, Regular / 400)
     bodyLarge = TextStyle(
         fontFamily = Inter,
         fontWeight = FontWeight.Normal,
-        fontSize = 16.sp,
-        lineHeight = 24.sp,
+        fontSize = 15.sp,
+        lineHeight = 22.sp,
         letterSpacing = 0.sp
     ),
-    // Body Text (secondary) / AI responses / Explanation
+    // SECONDARY / DESCRIPTION (12–14sp, Regular / 400, Muted)
     bodyMedium = TextStyle(
         fontFamily = Inter,
         fontWeight = FontWeight.Normal,
@@ -104,7 +101,7 @@ val Typography = Typography(
         lineHeight = 20.sp,
         letterSpacing = 0.1.sp
     ),
-    // Form Label / AI Assistant user messages
+    // FORM LABEL / COMPACT BODY (12–13sp, Medium / 500)
     bodySmall = TextStyle(
         fontFamily = Inter,
         fontWeight = FontWeight.Medium,
@@ -112,7 +109,7 @@ val Typography = Typography(
         lineHeight = 18.sp,
         letterSpacing = 0.1.sp
     ),
-    // Button Text / Quiz & Scenario Answer Choices
+    // BUTTON TEXT (14–16sp, Medium/Semi-bold / 500–600)
     labelLarge = TextStyle(
         fontFamily = Inter,
         fontWeight = FontWeight.SemiBold,
@@ -120,20 +117,20 @@ val Typography = Typography(
         lineHeight = 20.sp,
         letterSpacing = 0.1.sp
     ),
-    // Navigation Labels / Question Number / AI suggested questions
+    // SMALL LABEL / NAVIGATION (11–13sp, Medium / 500–600)
     labelMedium = TextStyle(
-        fontFamily = Inter,
-        fontWeight = FontWeight.Medium,
-        fontSize = 13.sp,
-        lineHeight = 16.sp,
-        letterSpacing = 0.1.sp
-    ),
-    // Caption/Metadata, supporting info
-    labelSmall = TextStyle(
         fontFamily = Inter,
         fontWeight = FontWeight.Medium,
         fontSize = 12.sp,
         lineHeight = 16.sp,
+        letterSpacing = 0.1.sp
+    ),
+    // CAPTION / METADATA (11–12sp, Regular / 400)
+    labelSmall = TextStyle(
+        fontFamily = Inter,
+        fontWeight = FontWeight.Medium,
+        fontSize = 11.sp,
+        lineHeight = 15.sp,
         letterSpacing = 0.1.sp
     )
 )

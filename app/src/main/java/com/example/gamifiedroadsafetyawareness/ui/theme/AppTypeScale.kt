@@ -10,16 +10,16 @@ import androidx.compose.ui.unit.sp
  * as Dimens.kt.
  */
 object AppTypeScale {
-    // Short ALL-CAPS section kicker / badge label (e.g. "PROGRESS", "DRIVING SCENARIO").
+    // UPPERCASE SYSTEM LABEL / EYEBROW TEXT (11–13sp, Semi-bold, letter-spacing 1.0–1.5sp)
     val eyebrowLabel = TextStyle(
         fontFamily = Inter,
-        fontWeight = FontWeight.Bold,
-        fontSize = 13.sp,
+        fontWeight = FontWeight.SemiBold,
+        fontSize = 12.sp,
         lineHeight = 16.sp,
-        letterSpacing = 0.5.sp
+        letterSpacing = 1.2.sp
     )
 
-    // Compact badge / chip content text (e.g. module name, risk level inside Badge()).
+    // COMPACT BADGE / CHIP CONTENT (11–12sp, Medium/Semi-bold)
     val badgeLabel = TextStyle(
         fontFamily = Inter,
         fontWeight = FontWeight.SemiBold,
@@ -28,12 +28,21 @@ object AppTypeScale {
         letterSpacing = 0.2.sp
     )
 
-    // Dashboard stat value (e.g. audit summary counts, summary-card numbers).
+    // DASHBOARD STAT VALUE (24–32sp, Bold / 700, Centered)
     val statValue = TextStyle(
         fontFamily = Inter,
         fontWeight = FontWeight.Bold,
-        fontSize = 20.sp,
-        lineHeight = 26.sp,
+        fontSize = 28.sp,
+        lineHeight = 34.sp,
         letterSpacing = 0.sp
+    )
+
+    // DASHBOARD STAT LABEL (12–14sp, Medium / 500, Centered)
+    val statLabel = TextStyle(
+        fontFamily = Inter,
+        fontWeight = FontWeight.Medium,
+        fontSize = 13.sp,
+        lineHeight = 18.sp,
+        letterSpacing = 0.1.sp
     )
 }

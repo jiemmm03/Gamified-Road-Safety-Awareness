@@ -3,7 +3,7 @@ package com.example.gamifiedroadsafetyawareness.ui.theme
 import androidx.compose.ui.unit.dp
 
 object Dimens {
-    // 8px Grid System
+    // 4dp / 8dp Grid System
     val spacingTiny = 4.dp
     val spacingSmall = 8.dp
     val spacingMedium = 16.dp
@@ -12,21 +12,21 @@ object Dimens {
 
     // Corner Radii
     val cornerRadiusSmall = 8.dp
-    val cornerRadiusMedium = 16.dp
-    val cornerRadiusLarge = 24.dp
+    val cornerRadiusMedium = 14.dp
+    val cornerRadiusLarge = 20.dp
 
     // Dashboard Card System
-    val cardCornerRadius = 20.dp
-    val cardPadding = 24.dp
-    val dashboardHorizontalPadding = 24.dp
-    val cardVerticalSpacing = 20.dp
-    val iconContainerSize = 52.dp
-    val iconToTitleSpacing = 24.dp
-    val titleToDescriptionSpacing = 8.dp
+    val cardCornerRadius = 16.dp
+    val cardPadding = 20.dp
+    val dashboardHorizontalPadding = 20.dp
+    val cardVerticalSpacing = 16.dp
+    val iconContainerSize = 48.dp
+    val iconToTitleSpacing = 16.dp
+    val titleToDescriptionSpacing = 6.dp
 
     // Component Sizes
     val buttonHeight = 48.dp
-    val inputFieldHeight = 56.dp
+    val inputFieldHeight = 54.dp
 
     // Elevations
     val elevationNone = 0.dp

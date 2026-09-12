@@ -52,15 +52,14 @@ fun AppTopBar(
         tonalElevation = 2.dp,
         shadowElevation = 4.dp
     ) {
-        Row(
+        Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 10.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
+                .padding(horizontal = 16.dp, vertical = 10.dp)
         ) {
             // ── Left: Hamburger Menu or Back Button ──────────────────────
             Row(
+                modifier = Modifier.align(Alignment.CenterStart),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
@@ -73,7 +72,7 @@ fun AppTopBar(
                         width = 1.dp,
                         color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f)
                     ),
-                    modifier = Modifier.size(42.dp)
+                    modifier = Modifier.size(40.dp)
                 ) {
                     Box(contentAlignment = Alignment.Center) {
                         Icon(
@@ -95,7 +94,7 @@ fun AppTopBar(
                             width = 1.dp,
                             color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f)
                         ),
-                        modifier = Modifier.size(42.dp)
+                        modifier = Modifier.size(40.dp)
                     ) {
                         Box(contentAlignment = Alignment.Center) {
                             Icon(
@@ -109,11 +108,11 @@ fun AppTopBar(
                 }
             }
 
-            // ── Center: Branding & Screen Title ──────────────────────────
+            // ── Center: Branding & Screen Title (True Optical Centering) ──
             Column(
                 modifier = Modifier
-                    .weight(1f)
-                    .padding(horizontal = 12.dp),
+                    .align(Alignment.Center)
+                    .padding(horizontal = 88.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Row(
@@ -152,6 +151,7 @@ fun AppTopBar(
 
             // ── Right: Gamification Status Pill / AI Coach Shortcut ──────
             Row(
+                modifier = Modifier.align(Alignment.CenterEnd),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(6.dp)
             ) {

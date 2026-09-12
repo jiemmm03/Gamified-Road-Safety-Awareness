@@ -241,6 +241,180 @@ fun SearchFilterBar(
 }
 
 /**
+ * Standardized Dashboard Metric / Statistic Card
+ * Numbers: 24–32sp, Bold, centered
+ * Labels: 12–14sp, Medium, centered
+ */
+@Composable
+fun StatCard(
+    value: String,
+    label: String,
+    modifier: Modifier = Modifier,
+    icon: androidx.compose.ui.graphics.vector.ImageVector? = null,
+    iconTint: Color = BadgeGold,
+    valueColor: Color = MaterialTheme.colorScheme.onSurface,
+    containerColor: Color = MaterialTheme.colorScheme.surface,
+    borderColor: Color = MaterialTheme.colorScheme.outline
+) {
+    AppCard(
+        modifier = modifier,
+        containerColor = containerColor,
+        borderColor = borderColor
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(Dimens.cardPadding),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            if (icon != null) {
+                Box(
+                    modifier = Modifier
+                        .size(36.dp)
+                        .clip(RoundedCornerShape(8.dp))
+                        .background(iconTint.copy(alpha = 0.12f)),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        imageVector = icon,
+                        contentDescription = null,
+                        tint = iconTint,
+                        modifier = Modifier.size(20.dp)
+                    )
+                }
+                Spacer(modifier = Modifier.height(Dimens.spacingSmall))
+            }
+            Text(
+                text = value,
+                style = com.example.gamifiedroadsafetyawareness.ui.theme.AppTypeScale.statValue,
+                color = valueColor,
+                textAlign = androidx.compose.ui.text.style.TextAlign.Center
+            )
+            Spacer(modifier = Modifier.height(Dimens.spacingTiny))
+            Text(
+                text = label,
+                style = com.example.gamifiedroadsafetyawareness.ui.theme.AppTypeScale.statLabel,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                textAlign = androidx.compose.ui.text.style.TextAlign.Center
+            )
+        }
+    }
+}
+
+/**
+ * Standardized Section Title with Left Alignment & Optional Action/Badge
+ */
+@Composable
+fun SectionHeader(
+    title: String,
+    modifier: Modifier = Modifier,
+    subtitle: String? = null,
+    eyebrow: String? = null,
+    action: @Composable (() -> Unit)? = null
+) {
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(vertical = Dimens.spacingSmall),
+        horizontalAlignment = Alignment.Start
+    ) {
+        if (!eyebrow.isNullOrBlank()) {
+            Text(
+                text = eyebrow.uppercase(),
+                style = com.example.gamifiedroadsafetyawareness.ui.theme.AppTypeScale.eyebrowLabel,
+                color = BadgeGold,
+                modifier = Modifier.padding(bottom = Dimens.spacingTiny)
+            )
+        }
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = title,
+                style = MaterialTheme.typography.titleLarge,
+                color = MaterialTheme.colorScheme.onSurface
+            )
+            if (action != null) {
+                action()
+            }
+        }
+        if (!subtitle.isNullOrBlank()) {
+            Spacer(modifier = Modifier.height(Dimens.spacingTiny))
+            Text(
+                text = subtitle,
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
+    }
+}
+
+/**
+ * Standardized Centered Page Header
+ */
+@Composable
+fun PageHeader(
+    title: String,
+    modifier: Modifier = Modifier,
+    subtitle: String? = null,
+    eyebrow: String? = null,
+    icon: androidx.compose.ui.graphics.vector.ImageVector? = null,
+    iconTint: Color = BadgeGold
+) {
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(vertical = Dimens.spacingMedium),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        if (icon != null) {
+            Box(
+                modifier = Modifier
+                    .size(Dimens.iconContainerSize)
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(iconTint.copy(alpha = 0.12f)),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    imageVector = icon,
+                    contentDescription = null,
+                    tint = iconTint,
+                    modifier = Modifier.size(26.dp)
+                )
+            }
+            Spacer(modifier = Modifier.height(Dimens.spacingSmall))
+        }
+        if (!eyebrow.isNullOrBlank()) {
+            Text(
+                text = eyebrow.uppercase(),
+                style = com.example.gamifiedroadsafetyawareness.ui.theme.AppTypeScale.eyebrowLabel,
+                color = BadgeGold,
+                textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+                modifier = Modifier.padding(bottom = Dimens.spacingTiny)
+            )
+        }
+        Text(
+            text = title,
+            style = MaterialTheme.typography.displaySmall,
+            color = MaterialTheme.colorScheme.onSurface,
+            textAlign = androidx.compose.ui.text.style.TextAlign.Center
+        )
+        if (!subtitle.isNullOrBlank()) {
+            Spacer(modifier = Modifier.height(Dimens.spacingTiny))
+            Text(
+                text = subtitle,
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                textAlign = androidx.compose.ui.text.style.TextAlign.Center
+            )
+        }
+    }
+}
+
+/**
  * Generic Cancel/Confirm dialog for destructive or otherwise consequential actions,
  * so this pattern isn't hand-rolled per screen.
  */
