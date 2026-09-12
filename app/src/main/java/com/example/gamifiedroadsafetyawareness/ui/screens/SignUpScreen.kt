@@ -57,6 +57,7 @@ import com.example.gamifiedroadsafetyawareness.ui.components.AppTextField
 import com.example.gamifiedroadsafetyawareness.ui.components.CelebrationBurst
 import com.example.gamifiedroadsafetyawareness.ui.components.ScreenScaffold
 import com.example.gamifiedroadsafetyawareness.ui.theme.AppTypeScale
+import com.example.gamifiedroadsafetyawareness.ui.theme.BadgeGold
 import com.example.gamifiedroadsafetyawareness.ui.theme.Dimens
 import kotlinx.coroutines.launch
 
