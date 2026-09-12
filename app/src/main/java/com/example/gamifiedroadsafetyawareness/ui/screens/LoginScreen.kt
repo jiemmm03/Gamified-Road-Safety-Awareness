@@ -262,43 +262,38 @@ fun LoginScreen(
                                 letterSpacing = 0.8.sp
                             ),
                             color = MaterialTheme.colorScheme.primary,
-                            modifier = Modifier.padding(bottom = Dimens.spacingSmall)
+                            modifier = Modifier.padding(bottom = 2.dp)
                         )
                         Text(
                             text = "Sign in to access official road safety modules & command logs",
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                             textAlign = TextAlign.Center,
-                            modifier = Modifier.padding(bottom = Dimens.spacingMedium)
+                            modifier = Modifier.padding(bottom = 8.dp)
                         )
 
-                        // Error Message Container (Fixed height to prevent layout shift)
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .heightIn(min = 48.dp)
-                                .padding(bottom = Dimens.spacingSmall),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            if (showError) {
-                                Box(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .clip(RoundedCornerShape(Dimens.cornerRadiusSmall))
-                                        .background(MaterialTheme.colorScheme.errorContainer)
-                                        .border(1.dp, MaterialTheme.colorScheme.error.copy(alpha = 0.3f), RoundedCornerShape(Dimens.cornerRadiusSmall))
-                                        .padding(Dimens.spacingSmall)
-                                ) {
-                                    Text(
-                                        text = errorMessage,
-                                        color = MaterialTheme.colorScheme.error,
-                                        style = MaterialTheme.typography.labelMedium,
-                                        textAlign = TextAlign.Center,
-                                        modifier = Modifier.fillMaxWidth()
-                                    )
-                                }
+                        // Error Message Container (only displayed when active)
+                        if (showError) {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(bottom = 10.dp)
+                                    .clip(RoundedCornerShape(Dimens.cornerRadiusSmall))
+                                    .background(MaterialTheme.colorScheme.errorContainer)
+                                    .border(1.dp, MaterialTheme.colorScheme.error.copy(alpha = 0.3f), RoundedCornerShape(Dimens.cornerRadiusSmall))
+                                    .padding(Dimens.spacingSmall)
+                            ) {
+                                Text(
+                                    text = errorMessage,
+                                    color = MaterialTheme.colorScheme.error,
+                                    style = MaterialTheme.typography.labelMedium,
+                                    textAlign = TextAlign.Center,
+                                    modifier = Modifier.fillMaxWidth()
+                                )
                             }
                         }
+
+                        Spacer(modifier = Modifier.height(4.dp))
 
                         AppTextField(
                             value = username,
@@ -311,7 +306,7 @@ fun LoginScreen(
                             isError = showError
                         )
 
-                        Spacer(modifier = Modifier.height(Dimens.spacingMedium))
+                        Spacer(modifier = Modifier.height(12.dp))
 
                         AppTextField(
                             value = password,
@@ -334,7 +329,7 @@ fun LoginScreen(
                             isError = showError
                         )
 
-                        Spacer(modifier = Modifier.height(Dimens.spacingMedium))
+                        Spacer(modifier = Modifier.height(8.dp))
 
                         Row(
                             modifier = Modifier.fillMaxWidth(),
@@ -356,7 +351,7 @@ fun LoginScreen(
                             )
                         }
 
-                        Spacer(modifier = Modifier.height(Dimens.spacingLarge))
+                        Spacer(modifier = Modifier.height(12.dp))
 
                         AppButton(
                             text = stringResource(R.string.login_log_in),
@@ -366,7 +361,7 @@ fun LoginScreen(
                                 .height(Dimens.buttonHeight)
                         )
 
-                        Spacer(modifier = Modifier.height(Dimens.spacingLarge))
+                        Spacer(modifier = Modifier.height(14.dp))
 
                         Row(
                             modifier = Modifier.fillMaxWidth(),
