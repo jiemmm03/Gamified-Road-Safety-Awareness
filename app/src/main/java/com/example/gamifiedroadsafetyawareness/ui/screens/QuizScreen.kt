@@ -43,6 +43,7 @@ import com.example.gamifiedroadsafetyawareness.ui.components.ConfirmActionDialog
 import com.example.gamifiedroadsafetyawareness.ui.components.FloatingRewardPopup
 import com.example.gamifiedroadsafetyawareness.ui.components.QuizGamificationHud
 import com.example.gamifiedroadsafetyawareness.ui.theme.AmberYellow
+import com.example.gamifiedroadsafetyawareness.ui.theme.BadgeGold
 import com.example.gamifiedroadsafetyawareness.ui.theme.EmeraldGreen
 import com.example.gamifiedroadsafetyawareness.ui.theme.TrafficRed
 import kotlinx.coroutines.delay
@@ -255,11 +256,17 @@ fun QuizScreen(
                         )
                     }
                     Spacer(modifier = Modifier.width(4.dp))
-                    Text(
-                        text = quiz.title,
-                        style = MaterialTheme.typography.titleMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
+                    Column {
+                        com.example.gamifiedroadsafetyawareness.ui.components.AppEyebrowLabel(
+                            text = "ROAD SAFETY TRAINING • KNOWLEDGE CHECK",
+                            color = BadgeGold
+                        )
+                        Text(
+                            text = quiz.title,
+                            style = MaterialTheme.typography.titleMedium,
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
+                    }
                 }
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(

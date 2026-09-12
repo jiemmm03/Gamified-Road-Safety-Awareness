@@ -149,30 +149,24 @@ fun DashboardScreen(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Column(modifier = Modifier.weight(1f)) {
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.spacedBy(6.dp)
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Rounded.Shield,
-                                    contentDescription = null,
-                                    tint = BadgeGold,
-                                    modifier = Modifier.size(15.dp)
-                                )
-                                Text(
-                                    text = "OFFICIAL DISPATCH • ${greeting.uppercase()}",
-                                    style = AppTypeScale.eyebrowLabel.copy(letterSpacing = 1.sp),
-                                    color = BadgeGold
-                                )
-                            }
-                            Spacer(modifier = Modifier.height(3.dp))
+                            com.example.gamifiedroadsafetyawareness.ui.components.AppEyebrowLabel(
+                                text = "ROAD SAFETY TRAINING • DRIVER LEARNING",
+                                color = BadgeGold
+                            )
+                            Spacer(modifier = Modifier.height(4.dp))
                             Text(
-                                text = userName.ifBlank { "Officer" },
+                                text = "Welcome, ${userName.ifBlank { "Learner" }}",
                                 color = MaterialTheme.colorScheme.onSurface,
                                 style = MaterialTheme.typography.titleLarge.copy(
                                     fontWeight = FontWeight.Bold,
                                     fontSize = 20.sp
                                 )
+                            )
+                            Spacer(modifier = Modifier.height(2.dp))
+                            Text(
+                                text = "Your Road Safety Dashboard",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
                             Spacer(modifier = Modifier.height(6.dp))
                             com.example.gamifiedroadsafetyawareness.ui.components.OfficerRankChip(

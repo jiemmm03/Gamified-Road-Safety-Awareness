@@ -115,23 +115,11 @@ fun AdminDashboardScreen(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Column(modifier = Modifier.weight(1f)) {
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.spacedBy(6.dp)
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Rounded.Shield,
-                                    contentDescription = null,
-                                    tint = BadgeGold,
-                                    modifier = Modifier.size(15.dp)
-                                )
-                                Text(
-                                    text = "OPERATIONS COMMAND • ROAD SAFETY REGISTRY",
-                                    style = AppTypeScale.eyebrowLabel.copy(letterSpacing = 1.sp),
-                                    color = BadgeGold
-                                )
-                            }
-                            Spacer(modifier = Modifier.height(3.dp))
+                            com.example.gamifiedroadsafetyawareness.ui.components.AppEyebrowLabel(
+                                text = "OPERATIONS COMMAND • ROAD SAFETY REGISTRY",
+                                color = BadgeGold
+                            )
+                            Spacer(modifier = Modifier.height(4.dp))
                             Text(
                                 text = adminName,
                                 color = MaterialTheme.colorScheme.onSurface,

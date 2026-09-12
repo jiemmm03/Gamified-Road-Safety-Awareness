@@ -148,6 +148,11 @@ fun SimulationScreen(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Column(modifier = Modifier.weight(1f)) {
+                        com.example.gamifiedroadsafetyawareness.ui.components.AppEyebrowLabel(
+                            text = "DRIVER SAFETY • SCENARIO SIMULATION",
+                            color = BadgeGold
+                        )
+                        Spacer(modifier = Modifier.height(2.dp))
                         Text(
                             text = "Scenario ${String.format("%02d", currentScenario.scenarioNumber)} of $totalScenarios",
                             style = MaterialTheme.typography.labelMedium,

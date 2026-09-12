@@ -303,6 +303,25 @@ fun StatCard(
 }
 
 /**
+ * Standardized Eyebrow Label (Uppercase, 11–13sp, semi-bold, 1.2sp letter spacing)
+ */
+@Composable
+fun AppEyebrowLabel(
+    text: String,
+    modifier: Modifier = Modifier,
+    color: Color = BadgeGold,
+    textAlign: androidx.compose.ui.text.style.TextAlign = androidx.compose.ui.text.style.TextAlign.Start
+) {
+    Text(
+        text = text.uppercase(),
+        style = com.example.gamifiedroadsafetyawareness.ui.theme.AppTypeScale.eyebrowLabel,
+        color = color,
+        textAlign = textAlign,
+        modifier = modifier
+    )
+}
+
+/**
  * Standardized Section Title with Left Alignment & Optional Action/Badge
  */
 @Composable
