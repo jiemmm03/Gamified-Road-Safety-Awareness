@@ -15,17 +15,18 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.AlternateEmail
 import androidx.compose.material.icons.rounded.Badge
-import androidx.compose.material.icons.rounded.Cake
+import androidx.compose.material.icons.rounded.CalendarMonth
 import androidx.compose.material.icons.rounded.CheckCircle
-import androidx.compose.material.icons.rounded.Lock
-import androidx.compose.material.icons.rounded.Man
-import androidx.compose.material.icons.rounded.Person
-import androidx.compose.material.icons.rounded.Phone
+import androidx.compose.material.icons.rounded.Female
+import androidx.compose.material.icons.rounded.Key
+import androidx.compose.material.icons.rounded.Male
 import androidx.compose.material.icons.rounded.RadioButtonUnchecked
+import androidx.compose.material.icons.rounded.Smartphone
+import androidx.compose.material.icons.rounded.VerifiedUser
 import androidx.compose.material.icons.rounded.Visibility
 import androidx.compose.material.icons.rounded.VisibilityOff
-import androidx.compose.material.icons.rounded.Woman
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -435,7 +436,7 @@ fun SignUpScreen(
                         value = username,
                         onValueChange = { username = it; usernameError = validateUsername(it, validationStrings) },
                         label = stringResource(R.string.common_username),
-                        leadingIcon = Icons.Rounded.Person,
+                        leadingIcon = Icons.Rounded.AlternateEmail,
                         isError = usernameError != null,
                         supportingText = usernameError
                     )
@@ -452,7 +453,7 @@ fun SignUpScreen(
                             }
                         },
                         label = stringResource(R.string.common_password),
-                        leadingIcon = Icons.Rounded.Lock,
+                        leadingIcon = Icons.Rounded.Key,
                         trailingIcon = {
                             IconButton(onClick = { passwordVisible = !passwordVisible }) {
                                 Icon(
@@ -477,7 +478,7 @@ fun SignUpScreen(
                             confirmPasswordError = validateConfirmPassword(password, it, validationStrings)
                         },
                         label = stringResource(R.string.signup_confirm_password),
-                        leadingIcon = Icons.Rounded.Lock,
+                        leadingIcon = Icons.Rounded.VerifiedUser,
                         trailingIcon = {
                             IconButton(onClick = { confirmPasswordVisible = !confirmPasswordVisible }) {
                                 Icon(
@@ -520,14 +521,14 @@ fun SignUpScreen(
                     ) {
                         GenderOption(
                             label = stringResource(R.string.signup_gender_male),
-                            icon = Icons.Rounded.Man,
+                            icon = Icons.Rounded.Male,
                             selected = gender == "MALE",
                             onClick = { gender = "MALE"; genderError = null },
                             modifier = Modifier.weight(1f)
                         )
                         GenderOption(
                             label = stringResource(R.string.signup_gender_female),
-                            icon = Icons.Rounded.Woman,
+                            icon = Icons.Rounded.Female,
                             selected = gender == "FEMALE",
                             onClick = { gender = "FEMALE"; genderError = null },
                             modifier = Modifier.weight(1f)
@@ -556,7 +557,7 @@ fun SignUpScreen(
                         },
                         label = stringResource(R.string.signup_age),
                         placeholder = stringResource(R.string.signup_age_placeholder),
-                        leadingIcon = Icons.Rounded.Cake,
+                        leadingIcon = Icons.Rounded.CalendarMonth,
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                         isError = ageError != null,
                         supportingText = ageError
@@ -568,7 +569,7 @@ fun SignUpScreen(
                         value = contactNumber,
                         onValueChange = { contactNumber = it; contactError = validateContactNumber(it, validationStrings) },
                         label = stringResource(R.string.signup_contact_number),
-                        leadingIcon = Icons.Rounded.Phone,
+                        leadingIcon = Icons.Rounded.Smartphone,
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
                         isError = contactError != null,
                         supportingText = contactError
