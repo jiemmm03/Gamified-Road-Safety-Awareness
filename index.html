@@ -505,23 +505,23 @@
                 </span>
                 <span class="tag-badge official">
                     <span class="material-icons-round" style="font-size:14px;">verified</span>
-                    v1.1.0 Verified
+                    v1.2.0 Verified (300 Questions)
                 </span>
-                <span class="tag-badge">27.5 MB</span>
+                <span class="tag-badge">28.7 MB</span>
             </div>
         </div>
 
         <!-- Connection Status Banner -->
         <div class="status-banner ready" id="status-banner">
             <span class="material-icons-round">check_circle</span>
-            <span id="status-text"><strong>APK Ready</strong> — Official Release v1.1.0 (27.5 MB)</span>
+            <span id="status-text"><strong>APK Ready</strong> — Official Release v1.2.0 with 300 Questions (28.7 MB)</span>
         </div>
 
         <!-- Direct Download Button Card -->
         <div class="download-card">
-            <a href="https://github.com/jiemmm03/Gamified-Road-Safety-Awareness/releases/download/v1.0.0/RoadSafe-AI.apk" class="btn-download-apk" id="btn-download-apk" download="RoadSafe-AI.apk">
+            <a href="https://github.com/jiemmm03/Gamified-Road-Safety-Awareness/raw/main/admin-web/RoadSafe-AI.apk" class="btn-download-apk" id="btn-download-apk" download="RoadSafe-AI.apk">
                 <span class="material-icons-round">file_download</span>
-                <span id="btn-download-text">Download APK (27.5 MB)</span>
+                <span id="btn-download-text">Download APK (28.7 MB)</span>
             </a>
 
             <!-- Progress indicator -->
@@ -664,10 +664,10 @@
 
         function useGitHubFallback() {
             statusBanner.className = 'status-banner ready';
-            statusText.innerHTML = '<strong>APK Ready</strong> — Official Release v1.1.0 (27.5 MB)';
+            statusText.innerHTML = '<strong>APK Ready</strong> — Official Release v1.2.0 (300 Questions, 28.7 MB)';
             downloadBtn.href = GITHUB_RELEASE_APK;
             downloadBtn.classList.remove('disabled');
-            downloadBtnText.textContent = 'Download APK (27.5 MB)';
+            downloadBtnText.textContent = 'Download APK (28.7 MB)';
         }
 
         // ─── Download click handler with progress feedback ───
