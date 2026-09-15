@@ -255,6 +255,9 @@ class XpManager(context: Context) {
     suspend fun getAttemptsForUser(username: String): List<QuizAttemptEntity> =
         db.quizAttemptDao().getAttemptsForUser(key(username))
 
+    suspend fun getLatestAttemptForModule(username: String, moduleId: String): QuizAttemptEntity? =
+        db.quizAttemptDao().getAttemptsForUserByModule(key(username), moduleId).firstOrNull()
+
     suspend fun getAttempt(attemptId: Long): QuizAttemptEntity? =
         db.quizAttemptDao().getAttempt(attemptId)
 

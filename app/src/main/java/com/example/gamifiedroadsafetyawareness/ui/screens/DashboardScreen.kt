@@ -436,7 +436,7 @@ fun DashboardScreen(
                             )
                             Spacer(modifier = Modifier.height(Dimens.spacingTiny))
                             Text(
-                                text = "+$xpReward XP · ${module.moduleType.label}",
+                                text = "AI Module · +$xpReward XP",
                                 style = MaterialTheme.typography.labelSmall,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                             )

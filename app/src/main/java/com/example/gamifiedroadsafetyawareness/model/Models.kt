@@ -140,7 +140,7 @@ object MockData {
     val learningModules = listOf(
         LearningModule(
             id = "mod_easy_quiz",
-            title = "🟢 Easy Quiz",
+            title = "Easy Quiz",
             description = "20 questions covering road safety basics, traffic lights, signs, seat belts, and fundamental driving rules.",
             progressPercentage = 0.0f,
             status = "Up Next",
@@ -151,7 +151,7 @@ object MockData {
         ),
         LearningModule(
             id = "mod_medium_quiz",
-            title = "🟡 Medium Quiz",
+            title = "Medium Quiz",
             description = "20 scenario-based questions on lane changes, rain driving, overtaking rules, and defensive driving techniques.",
             progressPercentage = 0.0f,
             status = "Up Next",
@@ -162,7 +162,7 @@ object MockData {
         ),
         LearningModule(
             id = "mod_hard_quiz",
-            title = "🔴 Hard Quiz",
+            title = "Hard Quiz",
             description = "20 advanced situational questions on right-of-way, night driving, skid control, and multi-hazard intersections.",
             progressPercentage = 0.0f,
             status = "Up Next",

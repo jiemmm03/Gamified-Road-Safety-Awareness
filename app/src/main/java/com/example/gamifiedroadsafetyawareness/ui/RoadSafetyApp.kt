@@ -606,6 +606,18 @@ fun RoadSafetyApp() {
                                 navigateTo(Screen.QuizTaking)
                             }
                         },
+                        onViewResults = { moduleId ->
+                            coroutineScope.launch {
+                                val latestAttempt = xpManager.getLatestAttemptForModule(loggedInUsername, moduleId)
+                                if (latestAttempt != null) {
+                                    activeAttemptId = latestAttempt.id
+                                    navigateTo(Screen.ModuleSummary)
+                                } else {
+                                    activeQuizModuleId = moduleId
+                                    navigateTo(Screen.QuizTaking)
+                                }
+                            }
+                        },
                         onModuleComplete = { module ->
                             coroutineScope.launch {
                                 val result = xpManager.awardModuleCompletion(

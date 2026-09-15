@@ -4,6 +4,7 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -14,20 +15,25 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
+import androidx.compose.material.icons.automirrored.rounded.ArrowForward
 import androidx.compose.material.icons.rounded.Cancel
 import androidx.compose.material.icons.rounded.CheckCircle
 import androidx.compose.material.icons.rounded.HourglassEmpty
+import androidx.compose.material.icons.rounded.Info
+import androidx.compose.material.icons.rounded.Lightbulb
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.gamifiedroadsafetyawareness.model.GamificationConstants
 import com.example.gamifiedroadsafetyawareness.model.QuestionAnswerRecord
 import com.example.gamifiedroadsafetyawareness.model.QuizData
@@ -45,6 +51,7 @@ import com.example.gamifiedroadsafetyawareness.ui.components.QuizGamificationHud
 import com.example.gamifiedroadsafetyawareness.ui.theme.AmberYellow
 import com.example.gamifiedroadsafetyawareness.ui.theme.BadgeGold
 import com.example.gamifiedroadsafetyawareness.ui.theme.EmeraldGreen
+import com.example.gamifiedroadsafetyawareness.ui.theme.PureWhite
 import com.example.gamifiedroadsafetyawareness.ui.theme.TrafficRed
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -62,9 +69,9 @@ fun QuizScreen(
 ) {
     val quiz = remember(quizId) {
         when (quizId) {
-            "mod_easy_quiz" -> QuizData.quiz_easy
-            "mod_medium_quiz" -> QuizData.quiz_medium
-            "mod_hard_quiz" -> QuizData.quiz_hard
+            "mod_easy_quiz", "quiz_easy" -> QuizData.quiz_easy
+            "mod_medium_quiz", "quiz_medium" -> QuizData.quiz_medium
+            "mod_hard_quiz", "quiz_hard" -> QuizData.quiz_hard
             else -> QuizData.quiz_easy
         }
     }
@@ -81,14 +88,12 @@ fun QuizScreen(
     var isAnswered by remember { mutableStateOf(false) }
     var timeLeftSeconds by remember { mutableStateOf(20) }
 
-    // Per-quiz combo streak — resets on a wrong answer, drives streak bonuses + multiplier.
     var comboStreak by remember { mutableIntStateOf(0) }
     var bestComboStreak by remember { mutableIntStateOf(0) }
     var comboXpEarned by remember { mutableIntStateOf(0) }
     var currentMultiplier by remember { mutableFloatStateOf(1.0f) }
     var rewardKey by remember { mutableIntStateOf(0) }
     var rewardText by remember { mutableStateOf("") }
-    // Answering every question before its timer expires earns the time-challenge bonus.
     var hadAnyTimeout by remember { mutableStateOf(false) }
     val haptic = LocalHapticFeedback.current
 
@@ -98,21 +103,15 @@ fun QuizScreen(
     var highestScorePercentEver by remember { mutableStateOf(0) }
     val coroutineScope = rememberCoroutineScope()
 
-    // Per-question answer log — previously discarded once the user moved to the next question.
-    // Backs Module Summary's breakdown and the Module Review screen.
     val answerLog = remember { mutableStateListOf<QuestionAnswerRecord>() }
     val startedAtMillis = remember { System.currentTimeMillis() }
 
-    // Has the user actually engaged with this attempt? Gates the leave-confirmation so a fresh,
-    // untouched question 1 can be left silently but real progress can't be discarded by accident.
     val hasProgress = !isFinished && (currentQuestionIndex > 0 || isAnswered)
     var showExitConfirm by remember { mutableStateOf(false) }
     fun requestExit() {
         if (hasProgress) showExitConfirm = true else onNavigateBack()
     }
 
-    // Same function backs the system back button, the header arrow, and the Quit/Continue
-    // buttons, so every exit path behaves identically.
     BackHandler { requestExit() }
 
     LaunchedEffect(username, xpManager) {
@@ -219,7 +218,7 @@ fun QuizScreen(
         val attempt = awardedAttempt
         if (result == null || attempt == null) {
             Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                CircularProgressIndicator()
+                CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
             }
         } else {
             ModuleSummaryScreen(
@@ -247,12 +246,16 @@ fun QuizScreen(
                     .fillMaxSize()
                     .background(MaterialTheme.colorScheme.background)
                     .verticalScroll(rememberScrollState())
-                    .padding(16.dp)
+                    .padding(horizontal = 16.dp, vertical = 12.dp)
             ) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
+                // ── Header Bar ───────────────────────────────────────────────
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
                     IconButton(
                         onClick = { requestExit() },
-                        modifier = Modifier.size(36.dp)
+                        modifier = Modifier.size(38.dp)
                     ) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
@@ -260,27 +263,27 @@ fun QuizScreen(
                             tint = MaterialTheme.colorScheme.onBackground
                         )
                     }
-                    Spacer(modifier = Modifier.width(4.dp))
-                    Column {
-                        com.example.gamifiedroadsafetyawareness.ui.components.AppEyebrowLabel(
-                            text = "ROAD SAFETY TRAINING • KNOWLEDGE CHECK",
-                            color = BadgeGold
-                        )
+                    Spacer(modifier = Modifier.width(6.dp))
+                    Column(modifier = Modifier.weight(1f)) {
                         Text(
                             text = quiz.title,
                             style = MaterialTheme.typography.titleMedium,
-                            color = MaterialTheme.colorScheme.onSurface
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.onSurface,
+                            maxLines = 1
+                        )
+                        Text(
+                            text = "Question ${currentQuestionIndex + 1} of ${activeQuestions.size}",
+                            style = MaterialTheme.typography.labelMedium,
+                            color = MaterialTheme.colorScheme.primary,
+                            fontWeight = FontWeight.SemiBold
                         )
                     }
                 }
-                Spacer(modifier = Modifier.height(4.dp))
-                Text(
-                    text = "Question ${currentQuestionIndex + 1} of ${activeQuestions.size}",
-                    style = MaterialTheme.typography.labelMedium,
-                    color = MaterialTheme.colorScheme.primary
-                )
-                Spacer(modifier = Modifier.height(8.dp))
 
+                Spacer(modifier = Modifier.height(10.dp))
+
+                // ── Linear Progress Bar ──────────────────────────────────────
                 LinearProgressIndicator(
                     progress = { (currentQuestionIndex + 1).toFloat() / activeQuestions.size },
                     modifier = Modifier
@@ -294,6 +297,7 @@ fun QuizScreen(
 
                 Spacer(modifier = Modifier.height(12.dp))
 
+                // ── Gamification HUD ─────────────────────────────────────────
                 QuizGamificationHud(
                     totalXp = runningTotalXp,
                     comboStreak = comboStreak,
@@ -306,11 +310,12 @@ fun QuizScreen(
 
                 Spacer(modifier = Modifier.height(12.dp))
 
+                // ── Timer Card ───────────────────────────────────────────────
                 AppCard(modifier = Modifier.fillMaxWidth()) {
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(16.dp),
+                            .padding(horizontal = 16.dp, vertical = 12.dp),
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
@@ -318,7 +323,8 @@ fun QuizScreen(
                             Icon(
                                 imageVector = Icons.Rounded.HourglassEmpty,
                                 contentDescription = "Timer",
-                                tint = timerColor
+                                tint = timerColor,
+                                modifier = Modifier.size(18.dp)
                             )
                             Spacer(modifier = Modifier.width(8.dp))
                             Text(
@@ -329,7 +335,7 @@ fun QuizScreen(
                         }
                         Text(
                             text = "${timeLeftSeconds}s",
-                            style = MaterialTheme.typography.titleLarge,
+                            style = MaterialTheme.typography.titleMedium,
                             color = timerColor,
                             fontWeight = FontWeight.Bold
                         )
@@ -338,31 +344,43 @@ fun QuizScreen(
                         progress = { timerProgress },
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(4.dp),
+                            .height(3.dp),
                         color = timerColor,
                         trackColor = MaterialTheme.colorScheme.surfaceVariant,
                         strokeCap = StrokeCap.Round
                     )
                 }
 
-                Spacer(modifier = Modifier.height(20.dp))
+                Spacer(modifier = Modifier.height(16.dp))
 
-                Text(
-                    text = question.question,
-                    style = MaterialTheme.typography.headlineSmall,
-                    color = MaterialTheme.colorScheme.onBackground
-                )
-                if (question.questionFil.isNotBlank()) {
-                    Spacer(modifier = Modifier.height(4.dp))
-                    Text(
-                        text = question.questionFil,
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
+                // ── Question Card ────────────────────────────────────────────
+                AppCard(
+                    modifier = Modifier.fillMaxWidth(),
+                    elevation = 4
+                ) {
+                    Column(modifier = Modifier.padding(18.dp)) {
+                        Text(
+                            text = question.question,
+                            style = MaterialTheme.typography.titleLarge.copy(fontSize = 18.sp),
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.onSurface,
+                            lineHeight = 25.sp
+                        )
+                        if (question.questionFil.isNotBlank()) {
+                            Spacer(modifier = Modifier.height(6.dp))
+                            Text(
+                                text = question.questionFil,
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                lineHeight = 20.sp
+                            )
+                        }
+                    }
                 }
 
-                Spacer(modifier = Modifier.height(20.dp))
+                Spacer(modifier = Modifier.height(16.dp))
 
+                // ── Answer Choices ───────────────────────────────────────────
                 Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
                     shuffledOptions.forEachIndexed { displayIndex, (originalIndex, option) ->
                         val isSelected = selectedOptionIndex == originalIndex
@@ -384,7 +402,6 @@ fun QuizScreen(
                                 selectedOptionIndex = originalIndex
                                 isAnswered = true
                                 val topic = RoadSafetyTopic.classify(question.question, question.options)
-                                // Compute XP before logging so it can be captured in the record.
                                 var questionXp = 0
                                 if (isCorrect) {
                                     score++
@@ -436,52 +453,146 @@ fun QuizScreen(
                     }
                 }
 
+                // ── Clear Answer Feedback Box ────────────────────────────────
                 if (isAnswered) {
-                    Spacer(modifier = Modifier.height(8.dp))
-                    val correctDisplayIndex = shuffledOptions.indexOfFirst { it.first == question.correctAnswerIndex }
+                    Spacer(modifier = Modifier.height(16.dp))
                     val isUserCorrect = selectedOptionIndex == question.correctAnswerIndex
-                    val feedbackText = when {
-                        isUserCorrect -> "✅ Correct! +${GamificationConstants.QuizXp.CORRECT_ANSWER} XP"
-                        selectedOptionIndex == -1 -> "⏰ Time's up! The correct answer was ${choiceLabels[correctDisplayIndex]}."
-                        else -> "❌ Incorrect — Keep learning and try again!"
-                    }
-                    Text(
-                        text = feedbackText,
-                        style = MaterialTheme.typography.titleSmall,
-                        color = if (isUserCorrect) EmeraldGreen else TrafficRed
-                    )
-                    if (isUserCorrect && comboStreak > 1) {
-                        Text(
-                            text = "🔥 $comboStreak answer streak! ${if (currentMultiplier > 1f) "${currentMultiplier}× multiplier active" else ""}",
-                            style = MaterialTheme.typography.labelMedium,
-                            color = AmberYellow,
-                            fontWeight = FontWeight.Bold
-                        )
+                    val topic = RoadSafetyTopic.classify(question.question, question.options)
+                    val correctText = question.options.getOrElse(question.correctAnswerIndex) { "" }
+
+                    Surface(
+                        shape = RoundedCornerShape(14.dp),
+                        color = if (isUserCorrect) EmeraldGreen.copy(alpha = 0.1f) else TrafficRed.copy(alpha = 0.1f),
+                        border = BorderStroke(1.dp, if (isUserCorrect) EmeraldGreen.copy(alpha = 0.4f) else TrafficRed.copy(alpha = 0.4f)),
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Column(modifier = Modifier.padding(16.dp)) {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                modifier = Modifier.fillMaxWidth()
+                            ) {
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.spacedBy(6.dp)
+                                ) {
+                                    Icon(
+                                        imageVector = if (isUserCorrect) Icons.Rounded.CheckCircle else Icons.Rounded.Cancel,
+                                        contentDescription = null,
+                                        tint = if (isUserCorrect) EmeraldGreen else TrafficRed,
+                                        modifier = Modifier.size(20.dp)
+                                    )
+                                    Text(
+                                        text = if (isUserCorrect) "Correct Answer!" else if (selectedOptionIndex == -1) "Time's Up!" else "Incorrect",
+                                        style = MaterialTheme.typography.titleMedium,
+                                        fontWeight = FontWeight.Bold,
+                                        color = if (isUserCorrect) EmeraldGreen else TrafficRed
+                                    )
+                                }
+
+                                if (isUserCorrect) {
+                                    Surface(
+                                        shape = RoundedCornerShape(8.dp),
+                                        color = BadgeGold.copy(alpha = 0.2f),
+                                        border = BorderStroke(1.dp, BadgeGold.copy(alpha = 0.5f))
+                                    ) {
+                                        Text(
+                                            text = "+${GamificationConstants.QuizXp.CORRECT_ANSWER} XP",
+                                            style = MaterialTheme.typography.labelSmall,
+                                            fontWeight = FontWeight.Bold,
+                                            color = BadgeGold,
+                                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
+                                        )
+                                    }
+                                }
+                            }
+
+                            if (!isUserCorrect) {
+                                Spacer(modifier = Modifier.height(8.dp))
+                                Text(
+                                    text = "Correct Answer: $correctText",
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    fontWeight = FontWeight.SemiBold,
+                                    color = MaterialTheme.colorScheme.onSurface
+                                )
+                            }
+
+                            Spacer(modifier = Modifier.height(8.dp))
+                            Text(
+                                text = "Why: ${topic.explanation}",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                lineHeight = 18.sp
+                            )
+
+                            if (topic.safetyTip.isNotBlank()) {
+                                Spacer(modifier = Modifier.height(6.dp))
+                                Row(
+                                    verticalAlignment = Alignment.Top,
+                                    horizontalArrangement = Arrangement.spacedBy(4.dp)
+                                ) {
+                                    Text(
+                                        text = "💡 Safe Tip: ",
+                                        style = MaterialTheme.typography.labelSmall,
+                                        fontWeight = FontWeight.Bold,
+                                        color = AmberYellow
+                                    )
+                                    Text(
+                                        text = topic.safetyTip,
+                                        style = MaterialTheme.typography.labelSmall,
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                                    )
+                                }
+                            }
+                        }
                     }
                 }
 
-                Spacer(modifier = Modifier.height(24.dp))
+                Spacer(modifier = Modifier.height(20.dp))
 
+                // ── Next / Finish / Quit Action Buttons ───────────────────────
                 if (isAnswered) {
-                    AppButton(
-                        text = if (currentQuestionIndex < activeQuestions.size - 1) "Next Question →" else "Finish Quiz",
+                    val nextButtonLabel = if (currentQuestionIndex < activeQuestions.size - 1) "Next Question" else "Finish Quiz"
+                    Button(
                         onClick = {
                             if (currentQuestionIndex < activeQuestions.size - 1) {
                                 currentQuestionIndex++
                             } else {
                                 isFinished = true
                             }
-                        }
-                    )
-                    Spacer(modifier = Modifier.height(12.dp))
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(48.dp),
+                        colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
+                        shape = RoundedCornerShape(12.dp)
+                    ) {
+                        Text(
+                            text = nextButtonLabel,
+                            style = MaterialTheme.typography.labelLarge,
+                            fontWeight = FontWeight.Bold,
+                            color = PureWhite,
+                            maxLines = 1,
+                            softWrap = false
+                        )
+                        Spacer(modifier = Modifier.width(6.dp))
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Rounded.ArrowForward,
+                            contentDescription = null,
+                            tint = PureWhite,
+                            modifier = Modifier.size(18.dp)
+                        )
+                    }
+                    Spacer(modifier = Modifier.height(10.dp))
                 }
 
                 AppOutlinedButton(
                     text = "Quit Quiz",
                     onClick = { requestExit() },
-                    borderColor = MaterialTheme.colorScheme.error.copy(alpha = 0.5f)
+                    borderColor = MaterialTheme.colorScheme.error.copy(alpha = 0.4f)
                 )
-                Spacer(modifier = Modifier.height(16.dp))
+
+                Spacer(modifier = Modifier.height(24.dp))
             }
 
             FloatingRewardPopup(
@@ -490,7 +601,7 @@ fun QuizScreen(
                 color = EmeraldGreen,
                 modifier = Modifier
                     .align(Alignment.TopCenter)
-                    .padding(top = 100.dp)
+                    .padding(top = 90.dp)
             )
         }
     }
@@ -512,11 +623,6 @@ fun QuizScreen(
 
 private enum class QuizOptionState { NEUTRAL, SELECTED, CORRECT, INCORRECT }
 
-/**
- * A single quiz choice: flat (no shadow) bordered row with a compact letter badge and, once
- * answered, a trailing check/cross icon — kept deliberately quiet so 4-6 stacked options read
- * as one clean list rather than a stack of cards.
- */
 @Composable
 private fun QuizOptionRow(
     label: String,
@@ -550,12 +656,12 @@ private fun QuizOptionRow(
             .background(bgColor, shape)
             .border(1.2.dp, borderColor, shape)
             .clickable(enabled = enabled, onClick = onClick)
-            .padding(horizontal = 14.dp, vertical = 12.dp),
+            .padding(horizontal = 16.dp, vertical = 14.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Box(
             modifier = Modifier
-                .size(30.dp)
+                .size(32.dp)
                 .clip(RoundedCornerShape(9.dp))
                 .background(accentColor.copy(alpha = 0.14f)),
             contentAlignment = Alignment.Center
@@ -573,13 +679,16 @@ private fun QuizOptionRow(
                 text = text,
                 style = MaterialTheme.typography.bodyMedium,
                 fontWeight = FontWeight.Medium,
-                color = MaterialTheme.colorScheme.onSurface
+                color = MaterialTheme.colorScheme.onSurface,
+                lineHeight = 20.sp
             )
             if (textFil.isNotBlank()) {
+                Spacer(modifier = Modifier.height(2.dp))
                 Text(
                     text = textFil,
                     style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    lineHeight = 16.sp
                 )
             }
         }
@@ -590,7 +699,7 @@ private fun QuizOptionRow(
                     imageVector = Icons.Rounded.CheckCircle,
                     contentDescription = "Correct answer",
                     tint = EmeraldGreen,
-                    modifier = Modifier.size(20.dp)
+                    modifier = Modifier.size(22.dp)
                 )
             }
             QuizOptionState.INCORRECT -> {
@@ -599,7 +708,7 @@ private fun QuizOptionRow(
                     imageVector = Icons.Rounded.Cancel,
                     contentDescription = "Your answer, incorrect",
                     tint = TrafficRed,
-                    modifier = Modifier.size(20.dp)
+                    modifier = Modifier.size(22.dp)
                 )
             }
             else -> Unit
