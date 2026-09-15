@@ -1,6 +1,6 @@
 # 🛡️ RoadSafe AI — Deep System Feature & Architecture Audit
 **Municipality of Dagami, Leyte · Road Safety Awareness, Traffic Rule Education, and Driver Decision-Making System**
-*Document Version: 1.0.0 | Audit Date: September 2026 | System Status: Production Ready*
+*Document Version: 2.0.0 | Audit Date: September 2026 | System Status: Production Ready*
 
 ---
 
@@ -35,6 +35,7 @@ graph TD
         MA --> SIM
         AM & GE & SIM & AUD --> ROOM
         ROOM -. Offline-First Sync .-> FSM
+        AIT -- syncAiInteraction --> FSM
     end
 
     subgraph "Cloud Backend (Google Firebase)"
@@ -49,6 +50,7 @@ graph TD
         WD[Admin Web Dashboard]
         WCH[Chart.js Telemetry]
         WM[User / Fleet / Module Management]
+        WAI[AI Activity Feed]
         WQR[Dynamic APK QR Distributor]
         WD --> FSTORE
         FHOST --> WD
@@ -59,7 +61,7 @@ graph TD
 | :--- | :--- | :--- |
 | **Mobile App Frontend** | Kotlin 2.0, Jetpack Compose, Material 3, Coroutines, StateFlow | Learner & Driver client interface |
 | **Mobile App Persistence** | Android Jetpack Room (SQLite ORM), KSP | Offline-first local data storage |
-| **Mobile AI Engine** | Deterministic Knowledge-Base, Intent Matching, Adaptive Accuracy Engine | Instant, zero-latency offline AI coaching |
+| **Mobile AI Engine** | Deterministic Knowledge-Base, Intent Matching, Bilingual EN/FIL, On-Topic Guard | Instant, zero-latency offline AI coaching |
 | **Admin Web Frontend** | HTML5, CSS3 Glassmorphism, Vanilla JavaScript, Chart.js 4.4 | Real-time administrative operations |
 | **Cloud Backend** | Firebase Firestore, Firebase Authentication, Firebase Hosting | Cloud data aggregation and telemetry |
 | **CI/CD & Automation** | GitHub Actions, Gradle 8.11, Android SDK Build Tools | Automated APK building and release |
@@ -93,6 +95,7 @@ graph TD
   - $1.0\times$ (1–2 correct) $\rightarrow$ $1.2\times$ (3–4 correct) $\rightarrow$ $1.5\times$ (5–6 correct) $\rightarrow$ $2.0\times$ (7–9 correct) $\rightarrow$ $2.5\times$ (10+ streak max).
 - **Time Challenge System**: 15-second per question timer awarding $+50\text{ XP}$ upon quick completion.
 - **Answer Review & Explanations (`ModuleReviewScreen.kt`, `AdminAnswerReviewScreen.kt`)**: Comprehensive post-test review displaying the exact legal basis and driving rationale.
+- **Taker-Based Quiz Analytics**: Admin web shows unique takers vs. total attempts, pass rate, average score, and per-module filtering.
 
 ---
 
@@ -134,15 +137,25 @@ graph TD
 
 ---
 
-### 5. Local AI Traffic Tutor ("RoadSafe AI" Coach)
+### 5. Local AI Traffic Tutor ("RoadSafe AI" Coach) — v2.0
 - **Deterministic Edge Intelligence (`AiTutorEngine.kt`)**:
   - 100% offline rule-based dialogue engine with zero API latency or cloud cost.
   - Interactive multi-turn dialogue modes: *Quiz Me*, *Practice Scenario*, *Explain a Topic*, *How am I doing?*, *Hint*.
-- **Adaptive Accuracy Feedback Loop**:
-  - Analyzes rolling session accuracy and dynamically recommends appropriate module difficulty.
+- **Bilingual Auto-Detection (EN / FIL)**:
+  - Per-message automatic Filipino/Tagalog detection — no manual language switch required.
+  - When ≥2 Filipino keywords are detected, all responses, quick-reply chips, hints, and progress summaries switch to Filipino/Tagalog.
+- **12-Topic Philippine Road Safety Knowledge Base (`QuizTopics.kt`)**:
+  - Right-of-Way, Traffic Signs & Signals, Speed Management, Following Distance, Pedestrian Safety, Overtaking & Lane Discipline, Road Markings, Motorcycle Safety, Impaired & Distracted Driving, Emergency Procedures, Defensive Driving, Weather & Road Conditions.
+  - Every topic carries both English and Filipino explanations grounded in **R.A. 4136**, DPWH road sign standards, LTO driver's manuals, and **R.A. 10913** (Anti-Distracted Driving Act).
+- **Structured Response Format**:
+  - Every answer displays: **Answer Label** (✅/❌/🟢/🟡🔴) → **Explanation** → **Safety Tip**.
+  - Topic-lookup responses use the same structured bubble with a divider, info-icon explanation, and shield-icon safety tip box.
+- **On-Topic Guard**: Queries unrelated to road safety receive a respectful bilingual redirect — the AI never answers off-topic questions.
+- **Adaptive Accuracy Feedback Loop**: Analyzes rolling session accuracy and dynamically recommends appropriate module difficulty.
 - **2-Tier Hinting System**:
-  - Tier 1: General driving hint.
+  - Tier 1: Topic-domain hint (EN or FIL).
   - Tier 2: Specific Philippine Traffic Law (RA 4136) rule hint.
+- **Firestore Sync**: Every AI interaction is logged to the `ai_interactions` Firestore collection via `FirebaseSyncManager.syncAiInteraction()`, populating the Admin Web AI Activity Feed in real-time.
 
 ---
 
@@ -171,9 +184,9 @@ The Admin Web Command Center is located in `/admin-web` and is live at **`https:
 admin-web/
 ├── index.html        (Main 12-tab single-page command dashboard)
 ├── download.html     (Mobile APK download landing page with dynamic QR code)
-├── app.js            (3,700+ lines of real-time Firebase & UI management logic)
+├── app.js            (4,900+ lines of real-time Firebase & UI management logic)
 ├── styles.css        (Custom CSS3 glassmorphism design system)
-├── app-debug.apk     (Latest Android binary ready for wireless deployment)
+├── RoadSafetyApp.apk (Latest Android binary ready for wireless deployment)
 └── logo.png          (Dagami MPS official seal)
 ```
 
@@ -187,10 +200,10 @@ admin-web/
 | 4 | **Driver Assessment Bank** | 60-question interactive assessment bank with filtering by Easy/Medium/Hard, answer inspection, and explanation details. |
 | 5 | **Hazard Decision Trials** | 20 situational driving scenarios with weather details, road friction parameters, and AI recommendations. |
 | 6 | **Ranks & Medals** | Municipality leaderboard ranking, badge unlocking rates, and XP distribution metrics. |
-| 7 | **AI Traffic Tutor** | Real-time live feed of driver questions, queries, and topic inquiries submitted to RoadSafe AI. |
+| 7 | **AI Traffic Tutor** | Real-time live feed of driver AI queries with EN/FIL language badge, topic classification, user ID, and timestamp. |
 | 8 | **Device Fleet** | Real-time tracking of active Android devices, OS versions (Android 11–15), screen resolutions, and battery/connection statuses. |
 | 9 | **Access Logs** | Immutable authentication logs recording login timestamps, success/failure statuses, and device fingerprints. |
-| 10 | **Safety Analytics** | Analytical charts for learner competency, weak safety topics, pass/fail trends, and time-of-day activity. |
+| 10 | **Safety Analytics** | Quiz performance charts by unique takers or total attempts, module filters, pass rate, and average score strip. |
 | 11 | **Security Audit Ledger** | High-risk event monitoring with tamper-evident audit trails and risk-level categorization. |
 | 12 | **System Protocols** | JSON data backup/export, cloud cache purging, database re-seeding, and factory reset controls. |
 
@@ -206,6 +219,7 @@ erDiagram
     USERS ||--o{ QUIZ_ATTEMPTS : records
     USERS ||--o{ USER_LOGINS : logs
     USERS ||--o{ AUDIT_LOGS : generates
+    USERS ||--o{ AI_INTERACTIONS : asks
 
     USERS {
         string username PK
@@ -235,6 +249,9 @@ erDiagram
         string docId PK
         string userId FK
         string quizId
+        string moduleId
+        string quizTitle
+        string difficulty
         int score
         int totalQuestions
         int percentage
@@ -260,6 +277,17 @@ erDiagram
         string riskLevel
         string result
         long timestampUtc
+    }
+
+    AI_INTERACTIONS {
+        string docId PK
+        string userId FK
+        string prompt
+        string response
+        string topic
+        string language
+        timestamp timestamp
+        string source
     }
 
     SYSTEM_SETTINGS {
@@ -293,9 +321,14 @@ erDiagram
 | **Bilingual Question Bank (60 items)** | ✅ 100% Fully Implemented | In-Memory + Room DB | Yes |
 | **Visual Simulations (20 items)** | ✅ 100% Fully Implemented | In-Memory Engine | Yes |
 | **Gamification, Streaks & Medals** | ✅ 100% Fully Implemented | Room SQLite + Firestore | Yes |
-| **Local AI Traffic Tutor** | ✅ 100% Fully Implemented | In-Memory + Room Progress | N/A (Edge) |
+| **AI Tutor v2 — Bilingual EN/FIL** | ✅ 100% Fully Implemented | In-Memory + Firestore Sync | Yes |
+| **AI On-Topic Guard** | ✅ 100% Fully Implemented | In-Memory (Rule-Based) | N/A |
+| **AI Structured Responses (Ans/Exp/Tip)** | ✅ 100% Fully Implemented | In-Memory Engine | N/A |
+| **AI Firestore Interaction Logging** | ✅ 100% Fully Implemented | Firestore `ai_interactions` | Yes |
+| **Quiz Taker-Based Analytics** | ✅ 100% Fully Implemented | Firestore `quiz_attempts` | Yes |
 | **Security Audit Trail** | ✅ 100% Fully Implemented | Room DB + Firestore | Yes |
-| **Admin Web Command Center (12 Tabs)**| ✅ 100% Fully Implemented | Cloud Firestore + Web Client | Yes |
+| **Admin Web Command Center (12 Tabs)** | ✅ 100% Fully Implemented | Cloud Firestore + Web Client | Yes |
+| **Admin Web AI Activity Feed** | ✅ 100% Fully Implemented | Firestore `ai_interactions` | Yes |
 | **Dynamic QR Code Onboarding** | ✅ 100% Fully Implemented | Dynamic JS + Canvas | Real-time |
 | **Automated CI/CD Workflow** | ✅ 100% Fully Implemented | GitHub Actions Pipeline | Automated |
 
@@ -303,4 +336,4 @@ erDiagram
 
 ## 🎯 Conclusion
 
-The **RoadSafe AI** system is a complete, resilient, and fully operational dual-platform solution. The mobile app operates flawlessly in low-connectivity or offline Philippine road environments via its local Room SQLite architecture, while automatically feeding comprehensive driver competency, telemetry, and safety metrics to the Dagami Leyte Command Center whenever connectivity is available.
+The **RoadSafe AI** system (v2.0) is a complete, resilient, and fully operational dual-platform solution. The AI assistant now operates bilingually (English and Filipino/Tagalog), enforces a road-safety on-topic guard, delivers structured educational responses (Answer → Explanation → Safety Tip), and logs every interaction to Firestore for real-time admin monitoring. The mobile app operates flawlessly in low-connectivity or offline Philippine road environments via its local Room SQLite architecture, while automatically feeding comprehensive driver competency, AI interaction, telemetry, and safety metrics to the Dagami Leyte Command Center whenever connectivity is available.
