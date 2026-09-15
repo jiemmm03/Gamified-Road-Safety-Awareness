@@ -12,163 +12,803 @@ object QuizData {
         questions = listOf(
             QuizQuestion(
                 id = 1,
-                question = "What should you do when the traffic light turns red?",
-                options = listOf("Stop", "Speed up", "Overtake", "Turn immediately"),
+                question = "What side of the road should vehicles generally keep to in the Philippines?",
+                options = listOf("Right side", "Left side", "Center"),
                 correctAnswerIndex = 0,
-                questionFil = "Ano ang dapat mong gawin kapag pumula ang traffic light?",
-                optionsFil = listOf("Tumigil", "Bilisan", "Mag-overtake", "Agad na lumiko")
+                questionFil = "Saang bahagi ng kalsada dapat karaniwang pumusisyon ang mga sasakyan sa Pilipinas?",
+                optionsFil = listOf("Kanan na bahagi", "Kaliwa na bahagi", "Gitna")
             ),
             QuizQuestion(
                 id = 2,
-                question = "What does a green traffic light generally mean?",
-                options = listOf("Stop", "Proceed when safe", "Reverse", "Park"),
-                correctAnswerIndex = 1,
-                questionFil = "Ano ang karaniwang ibig sabihin ng berdeng ilaw trapiko?",
-                optionsFil = listOf("Tumigil", "Magpatuloy kung ligtas na", "Umatras", "Pumarada")
+                question = "What should a driver do when approaching a red traffic light?",
+                options = listOf("Stop", "Speed up", "Overtake"),
+                correctAnswerIndex = 0,
+                questionFil = "Ano ang dapat gawin ng driver kapag papalapit sa pulang ilaw-trapiko?",
+                optionsFil = listOf("Huminto", "Bilisan", "Mag-overtake")
             ),
             QuizQuestion(
                 id = 3,
-                question = "What does a yellow traffic light warn drivers about?",
-                options = listOf("Prepare to stop", "Speed up", "Park", "Overtake"),
+                question = "What should a driver do before changing lanes?",
+                options = listOf("Check mirrors and signal", "Accelerate immediately", "Turn off the headlights"),
                 correctAnswerIndex = 0,
-                questionFil = "Ano ang binababalaan ng dilaw na ilaw trapiko sa mga driver?",
-                optionsFil = listOf("Maghanda tumigil", "Bilisan", "Pumarada", "Mag-overtake")
+                questionFil = "Ano ang dapat gawin ng driver bago lumipat ng linya (lane)?",
+                optionsFil = listOf("Tumingin sa mga salamin at mag-signal", "Bumilis agad", "Patayin ang headlights")
             ),
             QuizQuestion(
                 id = 4,
-                question = "What should a driver do before starting a trip?",
-                options = listOf("Check the vehicle", "Increase the radio volume", "Drive immediately", "Ignore the vehicle condition"),
-                correctAnswerIndex = 0,
-                questionFil = "Ano ang dapat gawin ng driver bago magsimula ng biyahe?",
-                optionsFil = listOf("Suriin ang sasakyan", "Lakasan ang radyo", "Agad na magmaneho", "Huwag pansinin ang kalagayan ng sasakyan")
+                question = "What does a STOP sign require a driver to do?",
+                options = listOf("Slow down only", "Come to a complete stop", "Continue if there is no traffic"),
+                correctAnswerIndex = 1,
+                questionFil = "Ano ang ipinag-uutos ng STOP sign sa isang driver?",
+                optionsFil = listOf("Magbagal lamang", "Ganap na huminto", "Magpatuloy kung walang trapiko")
             ),
             QuizQuestion(
                 id = 5,
-                question = "What is the purpose of a seat belt?",
-                options = listOf("Improve fuel economy", "Protect occupants during a crash", "Increase vehicle speed", "Improve engine power"),
+                question = "What should a driver do when approaching a pedestrian crossing?",
+                options = listOf("Speed up", "Be prepared to stop and yield when required", "Honk continuously"),
                 correctAnswerIndex = 1,
-                questionFil = "Ano ang layunin ng seatbelt?",
-                optionsFil = listOf("Makatipid sa gasolina", "Protektahan ang mga sakay kapag may aksidente", "Pabilisin ang sasakyan", "Palakasin ang makina")
+                questionFil = "Ano ang dapat gawin ng driver kapag papalapit sa tawiran ng tao (pedestrian crossing)?",
+                optionsFil = listOf("Bilisan ang takbo", "Maging handang huminto at magbigay-daan kung kinakailangan", "Bumusina nang tuloy-tuloy")
             ),
             QuizQuestion(
                 id = 6,
-                question = "What should you do when approaching a pedestrian crossing?",
-                options = listOf("Speed up", "Slow down and be prepared to stop", "Honk continuously", "Overtake other vehicles"),
+                question = "What is the main purpose of traffic rules?",
+                options = listOf("To make driving more difficult", "To promote safe and orderly traffic", "To increase vehicle speed"),
                 correctAnswerIndex = 1,
-                questionFil = "Ano ang dapat gawin kapag papalapit sa tawiran ng mga pedestrian?",
-                optionsFil = listOf("Bilisan", "Magbagal at maghanda tumigil", "Patuloy na bumusina", "Mag-overtake sa ibang sasakyan")
+                questionFil = "Ano ang pangunahing layunin ng mga batas at patakaran sa trapiko?",
+                optionsFil = listOf("Gawing mas mahirap ang pagmamaneho", "Itaguyod ang ligtas at maayos na daloy ng trapiko", "Pabilisin ang takbo ng lahat ng sasakyan")
             ),
             QuizQuestion(
                 id = 7,
-                question = "What does a STOP sign require a driver to do?",
-                options = listOf("Slow down only", "Come to a complete stop", "Speed up", "Turn around"),
-                correctAnswerIndex = 1,
-                questionFil = "Ano ang kinakailangang gawin ng driver sa isang STOP sign?",
-                optionsFil = listOf("Magbagal lamang", "Tumigil nang husto", "Bilisan", "Bumalik")
+                question = "What should a driver do when a traffic officer gives a signal that differs from the traffic light?",
+                options = listOf("Follow the traffic officer's signal", "Ignore the officer", "Follow the vehicle ahead"),
+                correctAnswerIndex = 0,
+                questionFil = "Ano ang dapat gawin ng driver kapag ang senyas ng traffic officer ay iba sa ilaw-trapiko?",
+                optionsFil = listOf("Sundin ang senyas ng traffic officer", "Sundin ang ilaw-trapiko", "Balewalain ang dalawa")
             ),
             QuizQuestion(
                 id = 8,
-                question = "Why are turn signals used?",
-                options = listOf("To communicate intended movement", "To increase speed", "To warn about engine problems", "To save fuel"),
+                question = "What should a driver do before starting the vehicle?",
+                options = listOf("Make sure the vehicle and surroundings are safe", "Immediately accelerate", "Honk continuously"),
                 correctAnswerIndex = 0,
-                questionFil = "Bakit ginagamit ang signal light?",
-                optionsFil = listOf("Para ipaalam ang balak gawin", "Para pabilisin", "Para balaan sa problema ng makina", "Para makatipid sa gasolina")
+                questionFil = "Ano ang dapat gawin ng driver bago paandarin ang sasakyan?",
+                optionsFil = listOf("Tiyaking ligtas ang sasakyan at ang paligid nito", "Bumilis agad", "Huwag nang suriin ang mga salamin")
             ),
             QuizQuestion(
                 id = 9,
-                question = "What should you do when driving behind another vehicle?",
-                options = listOf("Follow extremely closely", "Maintain a safe following distance", "Drive beside it constantly", "Flash headlights continuously"),
-                correctAnswerIndex = 1,
-                questionFil = "Ano ang dapat gawin kapag sumusunod sa likod ng ibang sasakyan?",
-                optionsFil = listOf("Sumunod nang sobrang lapit", "Panatilihin ang ligtas na agwat", "Palaging sumabay sa tabi nito", "Patuloy na kumurap ng headlights")
+                question = "What is a traffic intersection?",
+                options = listOf("A place where roads meet or cross", "A vehicle parking area", "A gasoline station"),
+                correctAnswerIndex = 0,
+                questionFil = "Ano ang isang interseksyon ng trapiko?",
+                optionsFil = listOf("Lugar kung saan nagtatagpo o nagkrus ang mga kalsada", "Lugar para lamang sa paradahan", "Lugar para lamang sa paglalakad")
             ),
             QuizQuestion(
                 id = 10,
-                question = "What is the main purpose of traffic signs?",
-                options = listOf("Decoration", "Provide information and regulate traffic", "Increase vehicle speed", "Advertise vehicles"),
+                question = "What should a driver do when traffic is congested?",
+                options = listOf("Drive aggressively", "Remain patient and follow traffic rules", "Use the sidewalk"),
                 correctAnswerIndex = 1,
-                questionFil = "Ano ang pangunahing layunin ng mga road sign?",
-                optionsFil = listOf("Pampaganda lamang", "Magbigay impormasyon at magregula ng trapiko", "Pabilisin ang sasakyan", "Mag-advertise ng sasakyan")
+                questionFil = "Ano ang dapat gawin ng driver kapag masikip ang daloy ng trapiko?",
+                optionsFil = listOf("Manatiling pasensyoso at sundin ang mga patakaran sa trapiko", "Gamitin ang bangketa para mag-overtake", "Bumusina nang tuloy-tuloy")
             ),
             QuizQuestion(
                 id = 11,
-                question = "Who should wear a seat belt in a vehicle equipped with seat belts?",
-                options = listOf("Only the driver", "Only passengers", "Driver and passengers as required", "Nobody"),
-                correctAnswerIndex = 2,
-                questionFil = "Sino ang dapat magsuot ng seatbelt sa sasakyang may seatbelt?",
-                optionsFil = listOf("Ang driver lamang", "Ang mga pasahero lamang", "Driver at mga pasahero, ayon sa kinakailangan", "Walang dapat magsuot")
+                question = "What kind of speed should a driver maintain?",
+                options = listOf("A careful and prudent speed", "The fastest possible speed", "The same speed as every other vehicle"),
+                correctAnswerIndex = 0,
+                questionFil = "Ano ang bilis na dapat panatilihin ng driver sa lahat ng oras?",
+                optionsFil = listOf("Maingat at makatwirang bilis ayon sa kondisyon", "Pinakamabilis na posibleng bilis", "Kaparehong bilis ng iba pang sasakyan")
             ),
             QuizQuestion(
                 id = 12,
-                question = "What should you do if you feel very tired while driving?",
-                options = listOf("Continue driving faster", "Stop at a safe place and rest", "Open the windows and continue indefinitely", "Ignore the tiredness"),
-                correctAnswerIndex = 1,
-                questionFil = "Ano ang dapat gawin kapag sobrang pagod ka habang nagmamaneho?",
-                optionsFil = listOf("Ituloy magmaneho nang mas mabilis", "Tumigil sa ligtas na lugar at magpahinga", "Buksan ang bintana at ituloy nang walang tigil", "Huwag pansinin ang pagod")
+                question = "Under RA 4136, what is the maximum speed for cars and motorcycles on certain open highways with no blind corners or closely bordered habitations, when no other speed restriction applies?",
+                options = listOf("40 km/h", "60 km/h", "80 km/h"),
+                correctAnswerIndex = 2,
+                questionFil = "Ano ang pangkalahatang speed limit sa mga bukas na kalsada sa bansa para sa mga pampasaherong sasakyan?",
+                optionsFil = listOf("80 km/h", "120 km/h", "140 km/h")
             ),
             QuizQuestion(
                 id = 13,
-                question = "What does a pedestrian crossing primarily provide?",
-                options = listOf("A place for pedestrians to cross the road", "A parking area", "A loading zone", "An overtaking lane"),
-                correctAnswerIndex = 0,
-                questionFil = "Ano ang pangunahing layunin ng tawiran (pedestrian crossing)?",
-                optionsFil = listOf("Lugar para tumawid ang mga pedestrian", "Lugar na paradahan", "Loading zone", "Lane para sa overtaking")
+                question = "What is the maximum speed for cars and motorcycles on city or municipal streets under the RA 4136 table, when no other speed restriction applies?",
+                options = listOf("20 km/h", "30 km/h", "50 km/h"),
+                correctAnswerIndex = 1,
+                questionFil = "Ano ang karaniwang speed limit sa mga abalang lansangan ng lungsod o bayan?",
+                optionsFil = listOf("30 km/h", "70 km/h", "90 km/h")
             ),
             QuizQuestion(
                 id = 14,
-                question = "What should you do before changing lanes?",
-                options = listOf("Check surrounding traffic", "Close your eyes", "Accelerate without checking", "Immediately move over"),
+                question = "What speed is prescribed for crowded streets and similar dangerous circumstances under RA 4136, when no other speed restriction applies?",
+                options = listOf("20 km/h", "40 km/h", "60 km/h"),
                 correctAnswerIndex = 0,
-                questionFil = "Ano ang dapat gawin bago lumipat ng lane?",
-                optionsFil = listOf("Tingnan ang paligid na trapiko", "Ipikit ang mata", "Bilisan nang hindi tumitingin", "Agad na lumipat")
+                questionFil = "Ano ang karaniwang speed limit kapag dumaraan sa mga school zone at matataong lugar?",
+                optionsFil = listOf("20 km/h", "50 km/h", "80 km/h")
             ),
             QuizQuestion(
                 id = 15,
-                question = "What should a responsible driver obey?",
-                options = listOf("Traffic laws and regulations", "Only other drivers", "Only passengers", "No rules"),
+                question = "Why should drivers reduce speed during dangerous road conditions?",
+                options = listOf("To improve safety and control", "To save tire color", "To make the vehicle louder"),
                 correctAnswerIndex = 0,
-                questionFil = "Ano ang dapat sundin ng responsableng driver?",
-                optionsFil = listOf("Mga batas at regulasyon sa trapiko", "Ibang driver lamang", "Mga pasahero lamang", "Walang dapat sundin")
+                questionFil = "Bakit dapat sundin ng mga driver ang mga itinakdang speed limit?",
+                optionsFil = listOf("Upang mapabuti ang kaligtasan at kontrol sa sasakyan", "Upang maingatan ang kulay ng gulong", "Upang mas maging maingay ang sasakyan")
             ),
             QuizQuestion(
                 id = 16,
-                question = "What is the safest approach to driving?",
-                options = listOf("Aggressive driving", "Defensive driving", "Racing", "Constant overtaking"),
-                correctAnswerIndex = 1,
-                questionFil = "Ano ang pinakaligtas na paraan ng pagmamaneho?",
-                optionsFil = listOf("Agresibong pagmamaneho", "Defensive driving (maingat na pagmamaneho)", "Karera", "Palaging pag-overtake")
+                question = "What should you do when visibility is poor?",
+                options = listOf("Reduce speed and drive carefully", "Drive faster", "Close your eyes briefly"),
+                correctAnswerIndex = 0,
+                questionFil = "Ano ang dapat gawin ng driver kapag nagmamaneho sa madulas o basang kalsada?",
+                optionsFil = listOf("Bawasan ang bilis at magmaneho nang maingat", "Magmaneho nang mas mabilis", "Pumikit sandali habang nagmamaneho")
             ),
             QuizQuestion(
                 id = 17,
-                question = "What should you do when you see a warning sign?",
-                options = listOf("Ignore it", "Be alert and adjust driving as necessary", "Speed up", "Stop anywhere"),
-                correctAnswerIndex = 1,
-                questionFil = "Ano ang dapat gawin kapag may nakitang warning sign?",
-                optionsFil = listOf("Huwag pansinin", "Maging alerto at iangkop ang pagmamaneho kung kinakailangan", "Bilisan", "Tumigil kahit saan")
+                question = "What should a driver do when approaching a blind curve?",
+                options = listOf("Reduce speed and exercise caution", "Overtake immediately", "Accelerate"),
+                correctAnswerIndex = 0,
+                questionFil = "Ano ang dapat gawin ng driver kapag mababa ang visibility dahil sa makapal na ulan o hamog?",
+                optionsFil = listOf("Bawasan ang bilis at mag-ingat nang husto", "Mag-overtake agad", "Bumilis lalo")
             ),
             QuizQuestion(
                 id = 18,
-                question = "What is the purpose of a vehicle's brakes?",
-                options = listOf("Increase speed", "Slow down or stop the vehicle", "Improve the radio", "Increase fuel consumption"),
-                correctAnswerIndex = 1,
-                questionFil = "Ano ang layunin ng preno ng sasakyan?",
-                optionsFil = listOf("Pabilisin", "Bagalan o patigilin ang sasakyan", "Pahusayin ang radyo", "Dagdagan ang gastos sa gasolina")
+                question = "What is one danger of excessive speed?",
+                options = listOf("Reduced reaction and stopping time", "Better vehicle control", "Better visibility"),
+                correctAnswerIndex = 0,
+                questionFil = "Ano ang panganib ng pagpapatakbo nang sobrang bilis?",
+                optionsFil = listOf("Nabawasang oras para mag-react at huminto", "Mas magandang kontrol sa sasakyan", "Mas malinaw na paningin")
             ),
             QuizQuestion(
                 id = 19,
-                question = "What should you do when approaching an intersection?",
-                options = listOf("Observe traffic and signs", "Close your eyes", "Always accelerate", "Ignore other vehicles"),
+                question = "What should you do when approaching a school zone?",
+                options = listOf("Slow down and watch for pedestrians", "Speed up", "Overtake all vehicles"),
                 correctAnswerIndex = 0,
-                questionFil = "Ano ang dapat gawin kapag papalapit sa interseksyon?",
-                optionsFil = listOf("Obserbahan ang trapiko at mga sign", "Ipikit ang mata", "Laging bilisan", "Huwag pansinin ang ibang sasakyan")
+                questionFil = "Ano ang dapat gawin ng driver kapag dumaraan sa mga pamilihan o matataong lugar?",
+                optionsFil = listOf("Magbagal at magbantay sa mga pedestrian", "Bilisan ang takbo", "Mag-overtake sa lahat ng sasakyan")
             ),
             QuizQuestion(
                 id = 20,
-                question = "Why should drivers follow speed limits?",
-                options = listOf("To promote road safety", "To use more fuel", "To make the trip longer", "To prevent all traffic"),
+                question = "What should a driver do when road conditions become hazardous?",
+                options = listOf("Adjust speed and driving behavior", "Ignore the conditions", "Drive faster"),
                 correctAnswerIndex = 0,
-                questionFil = "Bakit dapat sundin ng mga driver ang speed limit?",
-                optionsFil = listOf("Para itaguyod ang kaligtasan sa daan", "Para gumamit ng mas maraming gasolina", "Para tumagal ang biyahe", "Para pigilan ang lahat ng trapiko")
+                questionFil = "Ano ang dapat gawin ng driver kapag nagbago ang kondisyon ng kalsada o panahon?",
+                optionsFil = listOf("Iangkop ang bilis at paraan ng pagmamaneho", "Balewalain ang mga kondisyon", "Magmaneho nang mas mabilis")
+            ),
+            QuizQuestion(
+                id = 21,
+                question = "When overtaking another vehicle, where should you generally pass?",
+                options = listOf("On the left", "On the sidewalk", "On the shoulder"),
+                correctAnswerIndex = 0,
+                questionFil = "Saang bahagi karaniwang dapat isagawa ang pag-overtake sa Pilipinas?",
+                optionsFil = listOf("Sa kaliwa", "Sa bangketa", "Sa shoulder o gilid ng kalsada")
+            ),
+            QuizQuestion(
+                id = 22,
+                question = "Before overtaking, what should a driver check?",
+                options = listOf("Whether the maneuver can be made safely", "Only the vehicle's radio", "Only the fuel gauge"),
+                correctAnswerIndex = 0,
+                questionFil = "Ano ang dapat tiyakin ng driver bago mag-overtake?",
+                optionsFil = listOf("Kung magagawa ang paglipat nang ligtas", "Tanging ang radyo ng sasakyan", "Tanging ang metro ng gasolina")
+            ),
+            QuizQuestion(
+                id = 23,
+                question = "What should the driver being overtaken do?",
+                options = listOf("Increase speed", "Give way and not increase speed until completely passed", "Block the overtaking vehicle"),
+                correctAnswerIndex = 1,
+                questionFil = "Ano ang dapat gawin ng driver kapag may ibang sasakyang nag-o-overtake sa kanya?",
+                optionsFil = listOf("Magbigay-daan at huwag magpabilis hanggang makalagpas ito", "Bilisan ang takbo", "Harangan ang nag-o-overtake na sasakyan")
+            ),
+            QuizQuestion(
+                id = 24,
+                question = "Is overtaking generally allowed at a blind curve?",
+                options = listOf("Yes, always", "No, when the view is obstructed", "Yes, if the vehicle is fast"),
+                correctAnswerIndex = 1,
+                questionFil = "Ipinagbabawal ba ang pag-overtake sa kurbada kung saan hindi tanaw ang kasalubong?",
+                optionsFil = listOf("Oo, ipinagbabawal kapag obstructed ang paningin", "Hindi, palaging pinapayagan", "Oo, ngunit kung mabilis lamang ang sasakyan")
+            ),
+            QuizQuestion(
+                id = 25,
+                question = "Is overtaking generally allowed at a railway crossing?",
+                options = listOf("Yes, always", "No, subject to the legal exceptions", "Only at night"),
+                correctAnswerIndex = 1,
+                questionFil = "Pinapayagan ba ang pag-overtake sa isang interseksyon?",
+                optionsFil = listOf("Hindi, maliban sa mga itinakdang legal na eksepsiyon", "Oo, palagi", "Sa gabi lamang")
+            ),
+            QuizQuestion(
+                id = 26,
+                question = "What should you do if you cannot clearly see the road ahead while considering an overtake?",
+                options = listOf("Do not overtake", "Overtake immediately", "Use the sidewalk"),
+                correctAnswerIndex = 0,
+                questionFil = "Ano ang dapat gawin ng driver bago ang tulay kung saan makitid ang kalsada?",
+                optionsFil = listOf("Huwag mag-overtake", "Mag-overtake agad", "Gamitin ang bangketa")
+            ),
+            QuizQuestion(
+                id = 27,
+                question = "What should you do when approaching a no-passing zone?",
+                options = listOf("Do not overtake", "Overtake quickly", "Drive on the shoulder"),
+                correctAnswerIndex = 0,
+                questionFil = "Ano ang dapat gawin ng driver kapag papalapit sa tawiran ng tren (railway crossing)?",
+                optionsFil = listOf("Huwag mag-overtake", "Mag-overtake nang mabilis", "Magmaneho sa shoulder")
+            ),
+            QuizQuestion(
+                id = 28,
+                question = "When is overtaking safer?",
+                options = listOf("When there is sufficient clear distance and visibility", "At a blind curve", "At a pedestrian crossing"),
+                correctAnswerIndex = 0,
+                questionFil = "Kailan lamang dapat isagawa ang pag-overtake?",
+                optionsFil = listOf("Kapag may sapat na malinaw na distansya at visibility", "Sa isang blind curve", "Sa tawiran ng pedestrian")
+            ),
+            QuizQuestion(
+                id = 29,
+                question = "What should you do after overtaking another vehicle?",
+                options = listOf("Return to the proper lane only when safely clear", "Immediately cut in", "Stop in front of the vehicle"),
+                correctAnswerIndex = 0,
+                questionFil = "Ano ang dapat gawin ng driver matapos mag-overtake?",
+                optionsFil = listOf("Bumalik sa tamang lane kapag ligtas at malinaw na nakalagpas", "Agad na sumingit nang bigla", "Huminto sa harap ng sasakyan")
+            ),
+            QuizQuestion(
+                id = 30,
+                question = "What should you avoid when another vehicle is overtaking you?",
+                options = listOf("Increasing your speed", "Maintaining a safe speed", "Giving way"),
+                correctAnswerIndex = 0,
+                questionFil = "Ano ang ipinagbabawal habang may ibang sasakyang sumusubok mag-overtake sa iyo?",
+                optionsFil = listOf("Ang pagpapabilis ng iyong takbo", "Ang pagpapanatili ng ligtas na bilis", "Ang pagbibigay-daan")
+            ),
+            QuizQuestion(
+                id = 31,
+                question = "If two vehicles approach an intersection at approximately the same time, which vehicle generally has the right-of-way?",
+                options = listOf("Vehicle on the right", "Vehicle on the left", "Faster vehicle"),
+                correctAnswerIndex = 0,
+                questionFil = "Kapag dalawang sasakyan ang sabay na dumating sa interseksyon, alin ang karaniwang may right-of-way?",
+                optionsFil = listOf("Ang sasakyang nasa kanan", "Ang sasakyang nasa kaliwa", "Ang mas mabilis na sasakyan")
+            ),
+            QuizQuestion(
+                id = 32,
+                question = "What should a vehicle entering a highway from a private road do?",
+                options = listOf("Yield to vehicles already on the highway", "Force its way into traffic", "Stop traffic completely"),
+                correctAnswerIndex = 0,
+                questionFil = "Ano ang dapat gawin ng sasakyang pumapasok sa pambansang highway mula sa pribadong daan?",
+                optionsFil = listOf("Magbigay-daan sa mga sasakyang nasa highway na", "Pumilit pumasok sa trapiko", "Patigilin ang buong trapiko")
+            ),
+            QuizQuestion(
+                id = 33,
+                question = "Who should generally be given right-of-way at a crosswalk in a business or residential district?",
+                options = listOf("Pedestrians crossing within the crosswalk", "Parked vehicles", "Vehicles entering from a driveway"),
+                correctAnswerIndex = 0,
+                questionFil = "Sino ang may right-of-way sa isang minarkahang pedestrian crossing?",
+                optionsFil = listOf("Mga pedestrian na tumatawid sa loob ng crosswalk", "Mga nakaparadang sasakyan", "Mga sasakyang galing sa driveway")
+            ),
+            QuizQuestion(
+                id = 34,
+                question = "What should you do when an ambulance approaches with an audible signal?",
+                options = listOf("Give way", "Race ahead", "Block its path"),
+                correctAnswerIndex = 0,
+                questionFil = "Ano ang dapat gawin ng driver kapag papalapit ang isang emergency vehicle na may sirena at umiilaw?",
+                optionsFil = listOf("Magbigay-daan", "Makipagkarera sa emergency vehicle", "Harangan ang daanan nito")
+            ),
+            QuizQuestion(
+                id = 35,
+                question = "What should you do when a police vehicle on official business approaches with an audible signal?",
+                options = listOf("Give way", "Follow closely", "Block the vehicle"),
+                correctAnswerIndex = 0,
+                questionFil = "Ano ang dapat gawin ng driver kapag may paparating na bumbero patungo sa sunog?",
+                optionsFil = listOf("Magbigay-daan", "Sumunod nang sobrang lapit", "Harangan ang bumbero")
+            ),
+            QuizQuestion(
+                id = 36,
+                question = "What should a driver do when entering a through highway?",
+                options = listOf("Yield to vehicles approaching on the through highway", "Immediately enter without checking", "Drive against traffic"),
+                correctAnswerIndex = 0,
+                questionFil = "Ano ang dapat gawin ng driver kapag pumapasok sa through highway mula sa kalsadang may STOP sign?",
+                optionsFil = listOf("Magbigay-daan sa mga sasakyang paparating sa through highway", "Agad na pumasok nang hindi tumitingin", "Magmaneho laban sa daloy ng trapiko")
+            ),
+            QuizQuestion(
+                id = 37,
+                question = "What should you do when another vehicle already occupies the intersection?",
+                options = listOf("Allow it to proceed when required by right-of-way rules", "Force your way through", "Overtake it inside the intersection"),
+                correctAnswerIndex = 0,
+                questionFil = "Kapag may sasakyang nakapasok na sa interseksyon bago ka dumating, ano ang dapat mong gawin?",
+                optionsFil = listOf("Hayaan itong makadaan ayon sa alituntunin sa right-of-way", "Pumilit na makalusot", "I-overtake ito sa loob ng interseksyon")
+            ),
+            QuizQuestion(
+                id = 38,
+                question = "Does driving at an unlawful speed affect your right-of-way?",
+                options = listOf("Yes", "No", "Only at night"),
+                correctAnswerIndex = 0,
+                questionFil = "Dapat bang laging mag-ingat ang driver kahit sila ang may legal na right-of-way?",
+                optionsFil = listOf("Oo", "Hindi", "Sa gabi lamang")
+            ),
+            QuizQuestion(
+                id = 39,
+                question = "What is the purpose of right-of-way rules?",
+                options = listOf("To prevent conflicts between road users", "To make vehicles travel faster", "To allow drivers to ignore traffic signs"),
+                correctAnswerIndex = 0,
+                questionFil = "Ano ang layunin ng mga alituntunin sa right-of-way?",
+                optionsFil = listOf("Maiwasan ang alitan at banggaan ng mga gumagamit ng kalsada", "Pabilisin ang takbo ng mga sasakyan", "Pahintulutan ang mga driver na balewalain ang mga sign")
+            ),
+            QuizQuestion(
+                id = 40,
+                question = "What should a driver do when unsure who has the right-of-way?",
+                options = listOf("Proceed cautiously and avoid forcing the situation", "Speed up", "Honk continuously and proceed"),
+                correctAnswerIndex = 0,
+                questionFil = "Ano ang dapat gawin kapag hindi sigurado kung sino ang may right-of-way sa interseksyon?",
+                optionsFil = listOf("Magpatuloy nang may pag-iingat at huwag ipilit ang daan", "Bilisan ang takbo", "Tuloy-tuloy na bumusina at dumiretso")
+            ),
+            QuizQuestion(
+                id = 41,
+                question = "What should a driver do before turning?",
+                options = listOf("Make sure the movement can be made safely", "Turn without checking", "Close the windows"),
+                correctAnswerIndex = 0,
+                questionFil = "Ano ang dapat gawin ng driver bago lumiko sa isang interseksyon?",
+                optionsFil = listOf("Tiyaking magagawa ang pagliko nang ligtas", "Lumiko nang hindi tumitingin", "Isara ang mga bintana")
+            ),
+            QuizQuestion(
+                id = 42,
+                question = "What should a driver use to indicate a turn?",
+                options = listOf("Turn signal", "Headlights only", "Hazard lights only"),
+                correctAnswerIndex = 0,
+                questionFil = "Anong signal ang dapat gamitin ng driver bago lumiko?",
+                optionsFil = listOf("Turn signal (signal light)", "Headlights lamang", "Hazard lights lamang")
+            ),
+            QuizQuestion(
+                id = 43,
+                question = "Before changing direction, what should you check?",
+                options = listOf("Traffic and surrounding road users", "Only the dashboard", "Only the radio"),
+                correctAnswerIndex = 0,
+                questionFil = "Ano ang dapat suriin ng driver bago lumiko?",
+                optionsFil = listOf("Trapiko at iba pang gumagamit ng kalsada", "Tanging ang dashboard", "Tanging ang radyo")
+            ),
+            QuizQuestion(
+                id = 44,
+                question = "When turning right, which side should the vehicle generally approach from?",
+                options = listOf("The lane nearest the right side of the highway", "The opposite lane", "The sidewalk"),
+                correctAnswerIndex = 0,
+                questionFil = "Saang linya dapat pumuwesto ang driver bago kumanan (right turn)?",
+                optionsFil = listOf("Sa linyang pinakamalapit sa kanang bahagi ng kalsada", "Sa kabilang linya (kasalubong)", "Sa bangketa")
+            ),
+            QuizQuestion(
+                id = 45,
+                question = "What should a driver do before making a left turn?",
+                options = listOf("Signal and check for approaching traffic", "Turn suddenly", "Accelerate without checking"),
+                correctAnswerIndex = 0,
+                questionFil = "Ano ang dapat gawin ng driver bago kumaliwa (left turn)?",
+                optionsFil = listOf("Mag-signal at magbantay sa mga paparating na sasakyan", "Biglang lumiko", "Bumilis nang hindi tumitingin")
+            ),
+            QuizQuestion(
+                id = 46,
+                question = "Why are turn signals important?",
+                options = listOf("They communicate the driver's intention", "They increase engine power", "They reduce tire pressure"),
+                correctAnswerIndex = 0,
+                questionFil = "Bakit mahalaga ang paggamit ng turn signal?",
+                optionsFil = listOf("Ipinapaalam nito ang intensyon ng driver sa iba", "Nagpapalakas ito ng makina", "Nagbabawas ito ng presyon ng gulong")
+            ),
+            QuizQuestion(
+                id = 47,
+                question = "When should a turn signal be used?",
+                options = listOf("Before making a turn or lane movement", "Only after turning", "Only when stopped"),
+                correctAnswerIndex = 0,
+                questionFil = "Kailan dapat magbigay ng turn signal ang driver?",
+                optionsFil = listOf("Bago simulan ang pagliko o paglipat ng linya", "Pagkatapos lamang lumiko", "Kapag nakahinto lamang")
+            ),
+            QuizQuestion(
+                id = 48,
+                question = "What should you do if another vehicle may be affected by your turn?",
+                options = listOf("Give an appropriate signal", "Turn without warning", "Speed up"),
+                correctAnswerIndex = 0,
+                questionFil = "Ano ang dapat gawin ng driver bago huminto o bumagal nang malaki?",
+                optionsFil = listOf("Magbigay ng angkop na signal (brake light / hand signal)", "Huminto nang walang babala", "Bilisan ang takbo")
+            ),
+            QuizQuestion(
+                id = 49,
+                question = "What should you do if turning is unsafe because of approaching traffic?",
+                options = listOf("Wait until it is safe", "Turn immediately", "Drive onto the sidewalk"),
+                correctAnswerIndex = 0,
+                questionFil = "Ano ang dapat gawin kapag lumiliko pakaliwa at may paparating na kasalubong?",
+                optionsFil = listOf("Maghintay hanggang sa maging ligtas bago lumiko", "Lumiko agad bago sila makarating", "Umakyat sa bangketa")
+            ),
+            QuizQuestion(
+                id = 50,
+                question = "What should you do after signaling a turn?",
+                options = listOf("Check that the movement is safe before turning", "Turn automatically without checking", "Accelerate immediately"),
+                correctAnswerIndex = 0,
+                questionFil = "Ano ang dapat gawin bago mag-U-turn?",
+                optionsFil = listOf("Tiyaking ligtas at legal ang pag-U-turn sa lugar na iyon", "Mag-U-turn agad nang hindi tumitingin", "Bumilis agad")
+            ),
+            QuizQuestion(
+                id = 51,
+                question = "Is parking allowed in the middle of an intersection?",
+                options = listOf("Yes", "No", "Only at night"),
+                correctAnswerIndex = 1,
+                questionFil = "Ipinagbabawal ba ang pagparada sa loob ng interseksyon?",
+                optionsFil = listOf("Oo", "Hindi", "Sa gabi lamang")
+            ),
+            QuizQuestion(
+                id = 52,
+                question = "Is parking on a pedestrian crosswalk allowed?",
+                options = listOf("Yes", "No", "Only for motorcycles"),
+                correctAnswerIndex = 1,
+                questionFil = "Ipinagbabawal ba ang pagparada sa tawiran ng pedestrian (crosswalk)?",
+                optionsFil = listOf("Oo", "Hindi", "Para lamang sa mga motorsiklo")
+            ),
+            QuizQuestion(
+                id = 53,
+                question = "Is parking in front of a private driveway allowed?",
+                options = listOf("Yes", "No", "Only for five minutes"),
+                correctAnswerIndex = 1,
+                questionFil = "Ipinagbabawal ba ang pagparada sa tapat o malapit sa fire hydrant?",
+                optionsFil = listOf("Oo", "Hindi", "Pwede hanggang limang minuto lamang")
+            ),
+            QuizQuestion(
+                id = 54,
+                question = "Is parking on a sidewalk intended for pedestrians allowed?",
+                options = listOf("Yes", "No", "Only when traffic is heavy"),
+                correctAnswerIndex = 1,
+                questionFil = "Ipinagbabawal ba ang pagparada sa mga tulay o flyover?",
+                optionsFil = listOf("Oo", "Hindi", "Kung mabigat lamang ang trapiko")
+            ),
+            QuizQuestion(
+                id = 55,
+                question = "What should you do when parking an unattended vehicle on a highway?",
+                options = listOf("Turn off the engine and apply the hand brake", "Leave the engine running", "Leave the vehicle in gear without securing it"),
+                correctAnswerIndex = 0,
+                questionFil = "Ano ang dapat gawin ng driver kapag iiwanang nakaparada ang sasakyan?",
+                optionsFil = listOf("Patayin ang makina at ikabit ang handbrake", "Iwanang umaandar ang makina", "Iwanang nakakambiyo nang walang handbrake")
+            ),
+            QuizQuestion(
+                id = 56,
+                question = "Can you park where an official sign prohibits parking?",
+                options = listOf("Yes", "No", "Only during the day"),
+                correctAnswerIndex = 1,
+                questionFil = "Ipinagbabawal ba ang double parking (pagparada sa tabi ng nakaparada nang sasakyan)?",
+                optionsFil = listOf("Oo", "Hindi", "Sa araw lamang")
+            ),
+            QuizQuestion(
+                id = 57,
+                question = "Why should drivers avoid blocking driveways?",
+                options = listOf("To allow vehicles to enter and exit", "To save fuel", "To increase traffic"),
+                correctAnswerIndex = 0,
+                questionFil = "Bakit ipinagbabawal ang pagparada sa tapat ng pribadong driveway?",
+                optionsFil = listOf("Upang makalabas at makapasok ang mga sasakyan nang maayos", "Upang makatipid sa gasolina", "Upang dumami ang trapiko")
+            ),
+            QuizQuestion(
+                id = 58,
+                question = "Should a vehicle be parked where it obstructs traffic?",
+                options = listOf("No", "Yes", "Always"),
+                correctAnswerIndex = 0,
+                questionFil = "Maaari bang pumarada ang driver sa lugar na may 'NO PARKING' sign?",
+                optionsFil = listOf("Hindi", "Oo", "Palagi")
+            ),
+            QuizQuestion(
+                id = 59,
+                question = "What should you do before leaving a parked vehicle?",
+                options = listOf("Secure the vehicle properly", "Leave it running", "Leave the hand brake released"),
+                correctAnswerIndex = 0,
+                questionFil = "Ano ang dapat gawin kapag nagpaparada sa pataas o pababang kalsada (slope/incline)?",
+                optionsFil = listOf("I-secure nang maayos ang sasakyan (handbrake at tamang pihit ng gulong)", "Iwanang umaandar ang makina", "Huwag gamitin ang handbrake")
+            ),
+            QuizQuestion(
+                id = 60,
+                question = "What should you do when parking near a fire hydrant?",
+                options = listOf("Avoid parking there", "Park directly in front of it", "Block it temporarily"),
+                correctAnswerIndex = 0,
+                questionFil = "Ano ang dapat gawin kapag may nakitang emergency exit o fire station driveway?",
+                optionsFil = listOf("Iwasang pumarada roon", "Pumarada mismo sa tapat nito", "Harangan ito pansamantala")
+            ),
+            QuizQuestion(
+                id = 61,
+                question = "What does a red traffic light generally mean?",
+                options = listOf("Stop", "Go", "Speed up"),
+                correctAnswerIndex = 0,
+                questionFil = "Ano ang ibig sabihin ng pulang ilaw-trapiko?",
+                optionsFil = listOf("Huminto", "Magpatuloy", "Bilisan")
+            ),
+            QuizQuestion(
+                id = 62,
+                question = "What does a green traffic light generally mean?",
+                options = listOf("Proceed when the way is clear and safe", "Stop immediately in all situations", "Reverse"),
+                correctAnswerIndex = 0,
+                questionFil = "Ano ang ibig sabihin ng berdeng ilaw-trapiko?",
+                optionsFil = listOf("Magpatuloy kung malinaw at ligtas ang daan", "Huminto agad sa lahat ng pagkakataon", "Umatras")
+            ),
+            QuizQuestion(
+                id = 63,
+                question = "What does a yellow traffic light generally warn?",
+                options = listOf("The signal is changing; proceed with caution", "Speed up", "Park immediately"),
+                correctAnswerIndex = 0,
+                questionFil = "Ano ang ibig sabihin ng dilaw na ilaw-trapiko?",
+                optionsFil = listOf("Maghanda sa paghinto dahil magpapalit na ang ilaw", "Bilisan ang takbo", "Pumarada agad")
+            ),
+            QuizQuestion(
+                id = 64,
+                question = "What is the purpose of a STOP sign?",
+                options = listOf("To require a stop", "To indicate parking", "To indicate a gasoline station"),
+                correctAnswerIndex = 0,
+                questionFil = "Ano ang pangunahing layunin ng isang STOP sign?",
+                optionsFil = listOf("Mag-utos ng ganap na paghinto", "Magpahiwatig ng paradahan", "Magturo ng gasolinahan")
+            ),
+            QuizQuestion(
+                id = 65,
+                question = "What is the purpose of traffic signs?",
+                options = listOf("To provide information, warnings, or regulations", "To decorate roads", "To increase vehicle speed"),
+                correctAnswerIndex = 0,
+                questionFil = "Bakit inilalagay ang mga traffic sign sa mga kalsada?",
+                optionsFil = listOf("Upang magbigay ng impormasyon, babala, o regulasyon", "Pampaganda lamang ng kalsada", "Upang pabilisin ang mga sasakyan")
+            ),
+            QuizQuestion(
+                id = 66,
+                question = "What should you do when you see a warning sign?",
+                options = listOf("Be alert and adjust your driving as necessary", "Ignore it", "Speed up"),
+                correctAnswerIndex = 0,
+                questionFil = "Ano ang dapat gawin ng driver kapag may nakitang warning sign (tatsulok o diyamante)?",
+                optionsFil = listOf("Maging alerto at iangkop ang pagmamaneho kung kinakailangan", "Balewalain ito", "Bilisan ang takbo")
+            ),
+            QuizQuestion(
+                id = 67,
+                question = "What should you do when a sign prohibits an action?",
+                options = listOf("Follow the restriction", "Ignore it", "Follow only if other drivers do"),
+                correctAnswerIndex = 0,
+                questionFil = "Ano ang dapat gawin ng driver kapag may nakitang regulatory sign (tulad ng Speed Limit o No Entry)?",
+                optionsFil = listOf("Sundin ang regulasyon o pagbabawal", "Balewalain ito", "Sundin lamang kung may ibang driver na sumusunod")
+            ),
+            QuizQuestion(
+                id = 68,
+                question = "What should drivers do when road markings indicate a restriction on crossing or overtaking?",
+                options = listOf("Follow the road marking", "Ignore it", "Drive on the shoulder"),
+                correctAnswerIndex = 0,
+                questionFil = "Ano ang dapat gawin kapag may nakitang solid white line sa gitna ng kalsada?",
+                optionsFil = listOf("Sundin ang linya at iwasang magpalit ng lane o mag-overtake", "Balewalain ito", "Magmaneho sa shoulder")
+            ),
+            QuizQuestion(
+                id = 69,
+                question = "What is the purpose of road markings?",
+                options = listOf("To guide and regulate road users", "To make roads attractive", "To increase engine performance"),
+                correctAnswerIndex = 0,
+                questionFil = "Ano ang layunin ng mga road pavement markings (mga pinta sa kalsada)?",
+                optionsFil = listOf("Gabayan at isaayos ang mga gumagamit ng kalsada", "Pampaganda lamang ng daan", "Pataasin ang lakas ng makina")
+            ),
+            QuizQuestion(
+                id = 70,
+                question = "What should a driver do when a traffic signal is not functioning?",
+                options = listOf("Proceed cautiously and follow applicable traffic rules", "Speed through the intersection", "Ignore other vehicles"),
+                correctAnswerIndex = 0,
+                questionFil = "Ano ang dapat gawin kapag kumikislap ang dilaw na ilaw-trapiko (flashing yellow)?",
+                optionsFil = listOf("Magpatuloy nang may pag-iingat at magmatyag sa trapiko", "Harurutin ang pagtawid sa interseksyon", "Balewalain ang ibang sasakyan")
+            ),
+            QuizQuestion(
+                id = 71,
+                question = "Should a driver operate a motor vehicle while intoxicated by liquor or narcotic drugs?",
+                options = listOf("Yes", "No", "Only on empty roads"),
+                correctAnswerIndex = 1,
+                questionFil = "Kailangan bang magkaroon ng balidong lisensya ang bawat driver bago magmaneho?",
+                optionsFil = listOf("Oo", "Hindi", "Sa mga bakanteng kalsada lamang")
+            ),
+            QuizQuestion(
+                id = 72,
+                question = "What is reckless driving?",
+                options = listOf("Driving without reasonable caution and endangering others", "Driving slowly", "Driving with headlights on"),
+                correctAnswerIndex = 0,
+                questionFil = "Ano ang ibig sabihin ng reckless driving (walang ingat na pagmamaneho)?",
+                optionsFil = listOf("Pagmamaneho nang walang sapat na pag-iingat na naglalagay sa iba sa panganib", "Mabagal na pagmamaneho", "Pagmamaneho nang nakabukas ang headlights")
+            ),
+            QuizQuestion(
+                id = 73,
+                question = "What should a responsible driver prioritize?",
+                options = listOf("Safety", "Speed", "Competition"),
+                correctAnswerIndex = 0,
+                questionFil = "Ano ang dapat maging pangunahing prayoridad ng isang responsableng driver?",
+                optionsFil = listOf("Kaligtasan", "Bilis", "Pakikipagkumpitensya")
+            ),
+            QuizQuestion(
+                id = 74,
+                question = "Should drivers obey traffic laws?",
+                options = listOf("Yes", "No", "Only when police are present"),
+                correctAnswerIndex = 0,
+                questionFil = "Dapat bang magsuot ng seatbelt ang driver sa sasakyang mayroon nito?",
+                optionsFil = listOf("Oo", "Hindi", "Kapag may pulis lamang")
+            ),
+            QuizQuestion(
+                id = 75,
+                question = "What should a driver do when tired and unable to drive safely?",
+                options = listOf("Stop and rest", "Drive faster", "Ignore the fatigue"),
+                correctAnswerIndex = 0,
+                questionFil = "Ano ang dapat gawin ng driver kapag nakakaramdam ng matinding antok o pagod habang nagmamaneho?",
+                optionsFil = listOf("Huminto sa ligtas na lugar at magpahinga", "Magpatakbo nang mas mabilis", "Balewalain ang pagod")
+            ),
+            QuizQuestion(
+                id = 76,
+                question = "What should a driver do when visibility is reduced by weather?",
+                options = listOf("Drive more cautiously", "Speed up", "Ignore the weather"),
+                correctAnswerIndex = 0,
+                questionFil = "Ano ang dapat gawin ng driver kapag nagmamaneho sa masamang panahon?",
+                optionsFil = listOf("Magmaneho nang mas maingat at magbawas ng bilis", "Bilisan ang takbo", "Balewalain ang lagay ng panahon")
+            ),
+            QuizQuestion(
+                id = 77,
+                question = "What should drivers do when approaching pedestrians?",
+                options = listOf("Exercise caution", "Speed up", "Ignore them"),
+                correctAnswerIndex = 0,
+                questionFil = "Ano ang dapat gawin kapag may mga bata o matatandang naglalakad malapit sa kalsada?",
+                optionsFil = listOf("Mag-ingat nang husto at maghandang magpreno", "Bilisan ang takbo", "Balewalain sila")
+            ),
+            QuizQuestion(
+                id = 78,
+                question = "What should a driver do if the road becomes slippery?",
+                options = listOf("Reduce speed and maintain control", "Accelerate sharply", "Brake aggressively at all times"),
+                correctAnswerIndex = 0,
+                questionFil = "Ano ang dapat gawin kapag nagmamaneho sa madulas na kalsada?",
+                optionsFil = listOf("Bawasan ang bilis at panatilihin ang kontrol sa manibela", "Biglang bumilis", "Magpreno nang bigla sa lahat ng oras")
+            ),
+            QuizQuestion(
+                id = 79,
+                question = "Should a driver intentionally obstruct traffic?",
+                options = listOf("No", "Yes", "Only during rush hour"),
+                correctAnswerIndex = 0,
+                questionFil = "Ipinagbabawal ba ang pagmamaneho sa ilalim ng impluwensya ng alak o droga?",
+                optionsFil = listOf("Hindi (Bawal)", "Oo (Pinapayagan)", "Tuwing rush hour lamang")
+            ),
+            QuizQuestion(
+                id = 80,
+                question = "What should a driver do when another road user makes a mistake?",
+                options = listOf("Stay calm and avoid creating another hazard", "Chase the vehicle", "Drive aggressively"),
+                correctAnswerIndex = 0,
+                questionFil = "Ano ang dapat gawin kapag may isa pang driver na nagpapakita ng agresibong pagmamaneho (road rage)?",
+                optionsFil = listOf("Manatiling kalmado at iwasang lumikha ng karagdagang panganib", "Habulan ang sasakyan", "Makipaggirian nang agresibo")
+            ),
+            QuizQuestion(
+                id = 81,
+                question = "What should you do when an ambulance with its siren approaches?",
+                options = listOf("Give way", "Race the ambulance", "Block the lane"),
+                correctAnswerIndex = 0,
+                questionFil = "Ano ang dapat gawin kapag may paparating na ambulansyang may sirena?",
+                optionsFil = listOf("Magbigay-daan agad sa pamamagitan ng pagtabi sa kanan", "Makipagkarera sa ambulansya", "Harangan ang lane")
+            ),
+            QuizQuestion(
+                id = 82,
+                question = "What should you do when a fire truck approaches with an audible warning?",
+                options = listOf("Give way", "Follow closely", "Block it"),
+                correctAnswerIndex = 0,
+                questionFil = "Ano ang dapat gawin kapag may paparating na patrol car ng pulis na may sirena at umiilaw?",
+                optionsFil = listOf("Magbigay-daan", "Sumunod nang sobrang lapit sa likod nito", "Harangan ito")
+            ),
+            QuizQuestion(
+                id = 83,
+                question = "What should you do when a police vehicle approaches on official business with an audible signal?",
+                options = listOf("Give way", "Overtake it", "Block it"),
+                correctAnswerIndex = 0,
+                questionFil = "Ano ang dapat gawin kapag may convoy ng emergency vehicles na may sirena?",
+                optionsFil = listOf("Magbigay-daan", "I-overtake ang convoy", "Harangan ito")
+            ),
+            QuizQuestion(
+                id = 84,
+                question = "Why should emergency vehicles be given priority?",
+                options = listOf("They may be responding to an emergency", "They are always faster", "They are exempt from all traffic rules"),
+                correctAnswerIndex = 0,
+                questionFil = "Bakit may espesyal na right-of-way ang mga emergency vehicle?",
+                optionsFil = listOf("Maaaring rumeresponde sila sa gipit na sitwasyon upang magligtas ng buhay", "Dahil palagi silang mas mabilis", "Dahil exempted sila sa lahat ng batas")
+            ),
+            QuizQuestion(
+                id = 85,
+                question = "What should you do when an emergency vehicle is approaching from behind?",
+                options = listOf("Safely move toward the right and stop when required", "Speed up", "Block the vehicle"),
+                correctAnswerIndex = 0,
+                questionFil = "Ano ang ligtas na paraan ng pagbibigay-daan sa emergency vehicle?",
+                optionsFil = listOf("Ligtas na tumabi pakanan at huminto kung kinakailangan", "Bilisan ang takbo", "Harangan ang daan")
+            ),
+            QuizQuestion(
+                id = 86,
+                question = "Should you follow an emergency vehicle closely just to pass traffic?",
+                options = listOf("No", "Yes", "Always"),
+                correctAnswerIndex = 0,
+                questionFil = "Pinapayagan ba ang pagsunod nang napakalapit sa likod ng rumerespondeng emergency vehicle?",
+                optionsFil = listOf("Hindi", "Oo", "Palagi")
+            ),
+            QuizQuestion(
+                id = 87,
+                question = "What should you do if a traffic officer directs you to stop?",
+                options = listOf("Stop safely", "Ignore the officer", "Accelerate"),
+                correctAnswerIndex = 0,
+                questionFil = "Ano ang dapat gawin kapag pinatitigil ka ng isang traffic police officer?",
+                optionsFil = listOf("Ligtas na huminto", "Balewalain ang pulis", "Bumilis lalo")
+            ),
+            QuizQuestion(
+                id = 88,
+                question = "What should you do when an accident is blocking part of the road?",
+                options = listOf("Slow down and proceed with caution", "Speed through the area", "Drive onto the sidewalk"),
+                correctAnswerIndex = 0,
+                questionFil = "Ano ang dapat gawin kapag nagmamaneho sa lugar kung saan may aksidente sa kalsada?",
+                optionsFil = listOf("Magbagal at magpatuloy nang may pag-iingat", "Harurutin ang pagdaan sa lugar", "Umakyat sa bangketa")
+            ),
+            QuizQuestion(
+                id = 89,
+                question = "What should you do when road workers are present?",
+                options = listOf("Slow down and follow warning signs", "Overtake aggressively", "Ignore them"),
+                correctAnswerIndex = 0,
+                questionFil = "Ano ang dapat gawin kapag dumaraan sa lugar na may road work o konstruksyon?",
+                optionsFil = listOf("Magbagal at sundin ang mga babalang sign", "Mag-overtake nang agresibo", "Balewalain ang mga sign")
+            ),
+            QuizQuestion(
+                id = 90,
+                question = "Why should drivers be cautious around road construction?",
+                options = listOf("Road conditions and traffic patterns may change", "Construction makes vehicles faster", "There are no hazards"),
+                correctAnswerIndex = 0,
+                questionFil = "Bakit dapat mag-ingat nang husto sa mga road work zone?",
+                optionsFil = listOf("Maaaring magbago ang kondisyon ng kalsada at daloy ng trapiko", "Dahil bumibilis ang takbo ng sasakyan sa construction", "Dahil walang anumang panganib doon")
+            ),
+            QuizQuestion(
+                id = 91,
+                question = "What should a driver check before driving?",
+                options = listOf("The vehicle's basic safety condition", "Only the radio", "Only the paint"),
+                correctAnswerIndex = 0,
+                questionFil = "Ano ang dapat regular na suriin ng driver sa kanyang sasakyan bago bumiyahe?",
+                optionsFil = listOf("Ang kaligtasan at kondisyon ng sasakyan (BLOWBAGETS)", "Tanging ang radyo", "Tanging ang pintura")
+            ),
+            QuizQuestion(
+                id = 92,
+                question = "Why are functioning brakes important?",
+                options = listOf("They help the driver slow down and stop safely", "They increase fuel consumption", "They make the vehicle louder"),
+                correctAnswerIndex = 0,
+                questionFil = "Bakit mahalaga ang maayos na kondisyon ng preno (brakes) ng sasakyan?",
+                optionsFil = listOf("Tinutulungan nito ang driver na magbagal at huminto nang ligtas", "Nagpapataas ito ng konsumo sa gasolina", "Ginagawa nitong mas maingay ang sasakyan")
+            ),
+            QuizQuestion(
+                id = 93,
+                question = "Why are functioning lights important?",
+                options = listOf("They improve visibility and communication with other road users", "They increase engine power", "They make the vehicle heavier"),
+                correctAnswerIndex = 0,
+                questionFil = "Bakit mahalaga ang maayos na gumaganang headlights at taillights?",
+                optionsFil = listOf("Pinapabuti nito ang paningin at pakikipag-ugnayan sa ibang motorista", "Nagpapalakas ito ng makina", "Pinapabigat nito ang sasakyan")
+            ),
+            QuizQuestion(
+                id = 94,
+                question = "Why should tires have proper condition and inflation?",
+                options = listOf("For safe vehicle control and road contact", "To make the vehicle louder", "To increase the horn volume"),
+                correctAnswerIndex = 0,
+                questionFil = "Bakit mahalagang may tamang presyon at sapat na tread ang mga gulong?",
+                optionsFil = listOf("Para sa ligtas na kontrol at kapit ng sasakyan sa kalsada", "Para mas maging maingay ang sasakyan", "Para lumakas ang tunog ng busina")
+            ),
+            QuizQuestion(
+                id = 95,
+                question = "What is the purpose of a seat belt?",
+                options = listOf("To help protect occupants during a crash", "To increase speed", "To improve the radio signal"),
+                correctAnswerIndex = 0,
+                questionFil = "Ano ang pangunahing silbi ng seatbelt sa loob ng sasakyan?",
+                optionsFil = listOf("Protektahan ang mga sakay sa oras ng banggaan", "Pabilisin ang takbo ng sasakyan", "Palakasin ang signal ng radyo")
+            ),
+            QuizQuestion(
+                id = 96,
+                question = "Should a driver use a vehicle with a serious safety defect?",
+                options = listOf("No", "Yes", "Always"),
+                correctAnswerIndex = 0,
+                questionFil = "Ligtas ba ang magmaneho ng sasakyang may sirang preno o pundidong ilaw?",
+                optionsFil = listOf("Hindi", "Oo", "Palagi")
+            ),
+            QuizQuestion(
+                id = 97,
+                question = "What should you do if your vehicle suddenly develops a serious problem while driving?",
+                options = listOf("Safely slow down and move to a safe location when possible", "Continue at high speed", "Ignore the problem"),
+                correctAnswerIndex = 0,
+                questionFil = "Ano ang dapat gawin kapag nagkaroon ng mekanikal na aberya ang sasakyan habang nagmamaneho?",
+                optionsFil = listOf("Ligtas na magbagal at tumabi sa ligtas na lugar (shoulder)", "Magpatuloy sa mabilis na takbo", "Balewalain ang problema")
+            ),
+            QuizQuestion(
+                id = 98,
+                question = "Why is proper vehicle maintenance important?",
+                options = listOf("It helps maintain safe vehicle operation", "It makes traffic lights change faster", "It removes the need for a driver's license"),
+                correctAnswerIndex = 0,
+                questionFil = "Bakit mahalaga ang regular na preventive maintenance sa sasakyan?",
+                optionsFil = listOf("Nakatutulong itong mapanatili ang ligtas at maayos na operasyon ng sasakyan", "Pinapabilis nito ang pagpapalit ng ilaw-trapiko", "Tinatanggal nito ang pangangailangan ng lisensya")
+            ),
+            QuizQuestion(
+                id = 99,
+                question = "What should a driver do before opening the vehicle door beside moving traffic?",
+                options = listOf("Check for approaching road users", "Open it immediately", "Leave the door open"),
+                correctAnswerIndex = 0,
+                questionFil = "Ano ang dapat gawin ng driver bago buksan ang pinto ng sasakyan kapag nakaparada sa tabi ng kalsada?",
+                optionsFil = listOf("Tumingin sa salamin at sumilip para sa mga paparating na siklista, motorista, o tao", "Buksan agad nang buong lakas", "Iwanang laging nakabukas ang pinto")
+            ),
+            QuizQuestion(
+                id = 100,
+                question = "What is the most important principle of responsible driving?",
+                options = listOf("Safety of all road users", "Driving faster than others", "Winning against other drivers"),
+                correctAnswerIndex = 0,
+                questionFil = "Ano ang pinakamahalagang prinsipyo ng responsableng pagmamaneho?",
+                optionsFil = listOf("Kaligtasan ng lahat ng gumagamit ng kalsada", "Pagpapatakbo nang mas mabilis kaysa sa iba", "Pakikipagkarera sa ibang mga driver")
             )
         )
     )

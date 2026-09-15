@@ -69,6 +69,11 @@ fun QuizScreen(
         }
     }
 
+    val activeQuestions = remember(quizId) {
+        val raw = quiz.questions
+        if (raw.size > 20) raw.shuffled().take(20) else raw
+    }
+
     var currentQuestionIndex by remember { mutableStateOf(0) }
     var score by remember { mutableStateOf(0) }
     var isFinished by remember { mutableStateOf(false) }
@@ -121,7 +126,7 @@ fun QuizScreen(
             val result = xpManager.awardQuizCompletion(
                 username = username,
                 correctAnswers = score,
-                totalQuestions = quiz.questions.size,
+                totalQuestions = activeQuestions.size,
                 comboXpEarned = comboXpEarned,
                 bestComboStreak = bestComboStreak,
                 timeChallengeCompleted = !hadAnyTimeout,
@@ -143,7 +148,7 @@ fun QuizScreen(
                 awardResult = result
             )
             highestScorePercentEver = xpManager.getHighestScorePercent(username, quiz.id)
-            onQuizFinished(score, quiz.questions.size, result)
+            onQuizFinished(score, activeQuestions.size, result)
         }
     }
 
@@ -163,7 +168,7 @@ fun QuizScreen(
             hadAnyTimeout = true
             comboStreak = 0
             currentMultiplier = 1.0f
-            val timedOutQuestion = quiz.questions[currentQuestionIndex]
+            val timedOutQuestion = activeQuestions[currentQuestionIndex]
             val timedOutTopic = RoadSafetyTopic.classify(timedOutQuestion.question, timedOutQuestion.options)
             answerLog.add(
                 QuestionAnswerRecord(
@@ -185,7 +190,7 @@ fun QuizScreen(
                 )
             )
             delay(800L)
-            if (currentQuestionIndex < quiz.questions.size - 1) {
+            if (currentQuestionIndex < activeQuestions.size - 1) {
                 currentQuestionIndex++
             } else {
                 isFinished = true
@@ -228,7 +233,7 @@ fun QuizScreen(
             )
         }
     } else {
-        val question = quiz.questions[currentQuestionIndex]
+        val question = activeQuestions[currentQuestionIndex]
         val choiceLabels = listOf("A", "B", "C", "D", "E", "F")
         val shuffledOptions = remember(currentQuestionIndex) {
             question.options.mapIndexed { index, text -> index to text }.shuffled()
@@ -270,14 +275,14 @@ fun QuizScreen(
                 }
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
-                    text = "Question ${currentQuestionIndex + 1} of ${quiz.questions.size}",
+                    text = "Question ${currentQuestionIndex + 1} of ${activeQuestions.size}",
                     style = MaterialTheme.typography.labelMedium,
                     color = MaterialTheme.colorScheme.primary
                 )
                 Spacer(modifier = Modifier.height(8.dp))
 
                 LinearProgressIndicator(
-                    progress = { (currentQuestionIndex + 1).toFloat() / quiz.questions.size },
+                    progress = { (currentQuestionIndex + 1).toFloat() / activeQuestions.size },
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(6.dp)
@@ -296,7 +301,7 @@ fun QuizScreen(
                     multiplier = currentMultiplier,
                     level = displayLevel,
                     questionIndex = currentQuestionIndex,
-                    totalQuestions = quiz.questions.size
+                    totalQuestions = activeQuestions.size
                 )
 
                 Spacer(modifier = Modifier.height(12.dp))
@@ -459,9 +464,9 @@ fun QuizScreen(
 
                 if (isAnswered) {
                     AppButton(
-                        text = if (currentQuestionIndex < quiz.questions.size - 1) "Next Question →" else "Finish Quiz",
+                        text = if (currentQuestionIndex < activeQuestions.size - 1) "Next Question →" else "Finish Quiz",
                         onClick = {
-                            if (currentQuestionIndex < quiz.questions.size - 1) {
+                            if (currentQuestionIndex < activeQuestions.size - 1) {
                                 currentQuestionIndex++
                             } else {
                                 isFinished = true
