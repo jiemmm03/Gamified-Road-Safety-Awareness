@@ -24,8 +24,6 @@ import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.SuggestionChip
-import androidx.compose.material3.SuggestionChipDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -83,41 +81,19 @@ fun AiMessageBubble(
             Column(modifier = Modifier.padding(12.dp)) {
 
                 // ── AI header row ────────────────────────────────────────────────
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Icon(
-                            imageVector = Icons.Rounded.AutoAwesome,
-                            contentDescription = "RoadSafe AI",
-                            tint = MaterialTheme.colorScheme.primary,
-                            modifier = Modifier.width(14.dp)
-                        )
-                        Spacer(modifier = Modifier.width(6.dp))
-                        Text(
-                            text = "ROADSAFE AI",
-                            style = AppTypeScale.eyebrowLabel,
-                            color = MaterialTheme.colorScheme.primary
-                        )
-                    }
-                    if (topicTag.isNotBlank()) {
-                        SuggestionChip(
-                            onClick = {},
-                            label = {
-                                Text(
-                                    topicTag,
-                                    style = MaterialTheme.typography.labelSmall
-                                )
-                            },
-                            colors = SuggestionChipDefaults.suggestionChipColors(
-                                containerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.1f),
-                                labelColor = MaterialTheme.colorScheme.primary
-                            ),
-                            modifier = Modifier.height(24.dp)
-                        )
-                    }
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(
+                        imageVector = Icons.Rounded.AutoAwesome,
+                        contentDescription = "RoadSafe AI",
+                        tint = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.width(14.dp)
+                    )
+                    Spacer(modifier = Modifier.width(6.dp))
+                    Text(
+                        text = "ROADSAFE AI",
+                        style = AppTypeScale.eyebrowLabel,
+                        color = MaterialTheme.colorScheme.primary
+                    )
                 }
 
                 Spacer(modifier = Modifier.height(6.dp))
