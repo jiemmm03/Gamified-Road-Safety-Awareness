@@ -129,6 +129,45 @@ class FirebaseSyncManager {
     }
 
     /**
+     * Record a single AI tutor interaction to Cloud Firestore (`ai_interactions` collection).
+     * Called by [com.example.gamifiedroadsafetyawareness.model.AiTutorEngine] after every turn
+     * so the Admin Web panel's AI Activity Feed is populated with real user queries.
+     *
+     * @param userId   The logged-in user's username/uid.
+     * @param prompt   The user's message or query (truncated to 500 chars for Firestore efficiency).
+     * @param response The AI's response text (truncated to 500 chars).
+     * @param topic    The road-safety topic classification (e.g., "Right-of-Way").
+     * @param language Detected language: "EN" or "FIL".
+     */
+    fun syncAiInteraction(
+        userId: String,
+        prompt: String,
+        response: String,
+        topic: String,
+        language: String = "EN"
+    ) {
+        try {
+            val docId = "ai_${System.currentTimeMillis()}_${userId.take(8)}"
+            val data = hashMapOf(
+                "userId" to userId,
+                "prompt" to prompt.take(500),
+                "response" to response.take(500),
+                "topic" to topic,
+                "language" to language,
+                "timestamp" to com.google.firebase.Timestamp.now(),
+                "source" to "mobile_app"
+            )
+            firestore.collection(COLLECTION_AI_INTERACTIONS).document(docId)
+                .set(data)
+                .addOnFailureListener { e ->
+                    Log.w(tag, "AI interaction sync failed (non-critical): ${e.message}")
+                }
+        } catch (e: Exception) {
+            Log.w(tag, "AI interaction sync exception (non-critical): ${e.message}")
+        }
+    }
+
+    /**
      * Push critical security and administrative audit entries to Cloud Firestore.
      */
     fun syncAuditLog(log: AuditLog) {
@@ -604,6 +643,7 @@ class FirebaseSyncManager {
         const val COLLECTION_AUDIT_LOGS = "audit_logs"
         const val COLLECTION_USERS = "users"
         const val COLLECTION_USER_LOGINS = "user_logins"
+        const val COLLECTION_AI_INTERACTIONS = "ai_interactions"
 
         @Volatile
         private var INSTANCE: FirebaseSyncManager? = null

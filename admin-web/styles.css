@@ -2557,6 +2557,16 @@ body {
     color: #93C5FD;
     border: 1px solid rgba(0, 56, 168, 0.4);
 }
+.role-tag.info {
+    background: rgba(14, 165, 233, 0.15);
+    color: #7DD3FC;
+    border: 1px solid rgba(14, 165, 233, 0.35);
+}
+.role-tag.warning {
+    background: rgba(245, 158, 11, 0.15);
+    color: #FCD34D;
+    border: 1px solid rgba(245, 158, 11, 0.35);
+}
 
 .tag-badge {
     padding: 2px 7px;

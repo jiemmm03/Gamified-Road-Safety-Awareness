@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
@@ -85,7 +84,9 @@ fun AiTutorScreen(
 
     fun submitAnswer(entryIndex: Int, optionIndex: Int, optionLabel: String) {
         if (isThinking) return
-        messages[entryIndex] = messages[entryIndex].copy(message = messages[entryIndex].message.copy(answerOptions = emptyList()))
+        messages[entryIndex] = messages[entryIndex].copy(
+            message = messages[entryIndex].message.copy(answerOptions = emptyList())
+        )
         messages.add(ChatEntry(fromUser = true, message = TutorMessage(optionLabel)))
         isThinking = true
         coroutineScope.launch {
@@ -100,6 +101,7 @@ fun AiTutorScreen(
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
     ) {
+        // ── Header ────────────────────────────────────────────────────────────────
         Row(
             modifier = Modifier.fillMaxWidth().padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
@@ -120,16 +122,20 @@ fun AiTutorScreen(
                     fontWeight = FontWeight.Bold
                 )
                 Text(
-                    text = "Your local road safety tutor",
+                    text = "Philippine Road Safety & Driver Education Assistant",
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    style = MaterialTheme.typography.bodyMedium
+                    style = MaterialTheme.typography.bodySmall
                 )
             }
         }
 
+        // ── Chat list ─────────────────────────────────────────────────────────────
         LazyColumn(
             state = listState,
-            modifier = Modifier.weight(1f).fillMaxWidth().padding(horizontal = 16.dp),
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             items(messages.size) { index ->
@@ -138,18 +144,31 @@ fun AiTutorScreen(
                     if (entry.fromUser) {
                         UserMessageBubble(text = entry.message.text)
                     } else {
-                        AiMessageBubble(text = entry.message.text)
+                        // Render either a structured (Answer/Explanation/Tip) bubble or a plain one
+                        AiMessageBubble(
+                            text = entry.message.text,
+                            answerLabel = entry.message.answerLabel,
+                            explanation = entry.message.explanation,
+                            safetyTip = entry.message.safetyTip,
+                            topicTag = entry.message.topicTag,
+                            isStructured = entry.message.isStructured
+                        )
                         if (entry.message.answerOptions.isNotEmpty()) {
                             AnswerOptionsColumn(
                                 options = entry.message.answerOptions,
                                 onSelect = { optionIndex ->
-                                    submitAnswer(index, optionIndex, entry.message.answerOptions[optionIndex])
+                                    submitAnswer(
+                                        index,
+                                        optionIndex,
+                                        entry.message.answerOptions[optionIndex]
+                                    )
                                 }
                             )
                         }
                     }
                 }
             }
+
             if (isThinking) {
                 item {
                     Row(verticalAlignment = Alignment.CenterVertically) {
@@ -165,15 +184,19 @@ fun AiTutorScreen(
             }
         }
 
+        // ── Quick-reply chips ─────────────────────────────────────────────────────
         val latestQuickReplies = messages.lastOrNull { !it.fromUser }?.message?.quickReplies ?: emptyList()
         if (latestQuickReplies.isNotEmpty() && !isThinking) {
             QuickReplyChipRow(
                 chips = latestQuickReplies,
                 onSelect = { chip -> sendFreeText(chip) },
-                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 4.dp)
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 4.dp)
             )
         }
 
+        // ── Input row ─────────────────────────────────────────────────────────────
         Row(
             modifier = Modifier.fillMaxWidth().padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
@@ -181,7 +204,7 @@ fun AiTutorScreen(
             AppTextField(
                 value = inputText,
                 onValueChange = { inputText = it },
-                label = "Message RoadSafe AI",
+                label = "Ask about road safety…",
                 modifier = Modifier.weight(1f)
             )
             Spacer(modifier = Modifier.width(8.dp))

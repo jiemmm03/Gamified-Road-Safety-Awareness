@@ -3553,23 +3553,32 @@ function renderAiActivityList() {
         return;
     }
 
-    DOM.aiActivityList.innerHTML = list.map(q => `
+    DOM.aiActivityList.innerHTML = list.map(q => {
+        const topic = escapeHtml(q.topic || 'General Safety');
+        const lang = (q.language || 'EN').toUpperCase();
+        const langClass = lang === 'FIL' ? 'warning' : 'info';
+        const prompt = escapeHtml((q.prompt || q.question || '').replace(/^\[(GREET|PROGRESS-QUERY|QUIZ-ANSWER|SCENARIO-ANSWER|OFF-TOPIC)\]/, '').trim());
+        const response = escapeHtml(q.response || q.answer || 'Provided rule explanation.');
+        const userId = escapeHtml(q.userId || 'user');
+        const timeStr = formatRelativeTime(q.timestamp);
+        return `
         <div class="ai-query-card">
             <div class="ai-query-header">
-                <span class="font-body-sm font-weight-semibold">👤 User @${escapeHtml(q.userId || 'user')} asked:</span>
-                <span class="role-tag user font-badge">${escapeHtml(q.topic || 'General Safety')}</span>
+                <span class="font-body-sm font-weight-semibold">👤 @${userId}</span>
+                <div style="display:flex;gap:6px;align-items:center;">
+                    <span class="role-tag ${langClass} font-badge">${lang}</span>
+                    <span class="role-tag user font-badge">${topic}</span>
+                </div>
             </div>
-            <div class="ai-prompt-box">
-                "${escapeHtml(q.prompt || q.question || '')}"
-            </div>
+            ${prompt ? `<div class="ai-prompt-box">"${prompt}"</div>` : ''}
             <div class="ai-response-box">
-                <strong>🤖 AI Road Tutor Response:</strong> ${escapeHtml(q.response || q.answer || 'Provided rule explanation.')}
+                <strong>🤖 RoadSafe AI:</strong> ${response.length > 300 ? response.slice(0, 297) + '…' : response}
             </div>
             <div style="text-align:right;margin-top:8px;">
-                <span class="font-caption">${formatRelativeTime(q.timestamp)}</span>
+                <span class="font-caption">${timeStr}</span>
             </div>
         </div>
-    `).join('');
+    `}).join('');
 }
 
 // ═══════════════════════════════════════════════════════════════
