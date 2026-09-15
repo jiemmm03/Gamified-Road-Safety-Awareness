@@ -519,7 +519,7 @@
 
         <!-- Direct Download Button Card -->
         <div class="download-card">
-            <a href="https://github.com/jiemmm03/Gamified-Road-Safety-Awareness/releases/download/v1.0.0/RoadSafe-AI.apk" class="btn-download-apk" id="btn-download-apk" download="RoadSafe-AI.apk">
+            <a href="RoadSafe-AI.apk" class="btn-download-apk" id="btn-download-apk" download="RoadSafe-AI.apk">
                 <span class="material-icons-round">file_download</span>
                 <span id="btn-download-text">Download APK (27.5 MB)</span>
             </a>
@@ -614,12 +614,14 @@
     </div>
 
     <script>
-        const GITHUB_RELEASE_APK = 'https://github.com/jiemmm03/Gamified-Road-Safety-Awareness/releases/download/v1.0.0/RoadSafe-AI.apk';
+        const PUBLIC_APK_FALLBACK = 'RoadSafe-AI.apk';
 
         // ─── Determine download URL ───
         const baseUrl = window.location.origin + window.location.pathname.replace(/\/[^\/]*$/, '');
-        const apkUrl = baseUrl + '/app-debug.apk';
-        const downloadPageUrl = window.location.href;
+        const apkUrl = baseUrl + '/RoadSafe-AI.apk';
+        const downloadPageUrl = (window.location.hostname.includes('web.app') || window.location.hostname.includes('firebaseapp.com'))
+            ? window.location.href
+            : 'https://gamifiedroadsafetyawareness.web.app/download.html';
 
         const downloadBtn = document.getElementById('btn-download-apk');
         const downloadBtnText = document.getElementById('btn-download-text');
@@ -633,7 +635,7 @@
 
         // ─── Generate QR code pointing to THIS download page ───
         if (qrImg) {
-            qrImg.src = 'https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=' + encodeURIComponent(downloadPageUrl);
+            qrImg.src = 'https://api.qrserver.com/v1/create-qr-code/?size=240x240&data=' + encodeURIComponent(downloadPageUrl);
         }
         if (qrUrlDisplay) {
             qrUrlDisplay.textContent = downloadPageUrl;
@@ -645,27 +647,27 @@
                 .then(response => {
                     if (response.ok) {
                         const size = response.headers.get('Content-Length');
-                        const sizeMB = size ? (parseInt(size) / (1024 * 1024)).toFixed(1) : '26.6';
+                        const sizeMB = size ? (parseInt(size) / (1024 * 1024)).toFixed(1) : '27.5';
 
-                        statusBanner.className = 'status-banner ready';
-                        statusText.innerHTML = `<strong>APK Ready</strong> — ${sizeMB} MB available (Local Server &amp; GitHub Release)`;
+                        if (statusBanner) statusBanner.className = 'status-banner ready';
+                        if (statusText) statusText.innerHTML = `<strong>APK Ready</strong> — ${sizeMB} MB available (Direct Cloud Download)`;
 
                         downloadBtn.href = apkUrl;
                         downloadBtn.classList.remove('disabled');
                         downloadBtnText.textContent = `Download APK (${sizeMB} MB)`;
                     } else {
-                        useGitHubFallback();
+                        useDirectFallback();
                     }
                 })
                 .catch(() => {
-                    useGitHubFallback();
+                    useDirectFallback();
                 });
         }
 
-        function useGitHubFallback() {
-            statusBanner.className = 'status-banner ready';
-            statusText.innerHTML = '<strong>APK Ready</strong> — Official Release v1.1.0 (27.5 MB)';
-            downloadBtn.href = GITHUB_RELEASE_APK;
+        function useDirectFallback() {
+            if (statusBanner) statusBanner.className = 'status-banner ready';
+            if (statusText) statusText.innerHTML = '<strong>APK Ready</strong> — Official Release Build (27.5 MB)';
+            downloadBtn.href = PUBLIC_APK_FALLBACK;
             downloadBtn.classList.remove('disabled');
             downloadBtnText.textContent = 'Download APK (27.5 MB)';
         }
