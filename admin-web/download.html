@@ -505,7 +505,7 @@
                 </span>
                 <span class="tag-badge official">
                     <span class="material-icons-round" style="font-size:14px;">verified</span>
-                    v1.1.0 Verified
+                    v1.2.0 Verified (300 Questions)
                 </span>
                 <span class="tag-badge">27.5 MB</span>
             </div>
@@ -514,7 +514,7 @@
         <!-- Connection Status Banner -->
         <div class="status-banner ready" id="status-banner">
             <span class="material-icons-round">check_circle</span>
-            <span id="status-text"><strong>APK Ready</strong> — Official Release v1.1.0 (27.5 MB)</span>
+            <span id="status-text"><strong>APK Ready</strong> — Official Release v1.2.0 with 300 Questions (27.5 MB)</span>
         </div>
 
         <!-- Direct Download Button Card -->
@@ -666,7 +666,7 @@
 
         function useDirectFallback() {
             if (statusBanner) statusBanner.className = 'status-banner ready';
-            if (statusText) statusText.innerHTML = '<strong>APK Ready</strong> — Official Release Build (27.5 MB)';
+            if (statusText) statusText.innerHTML = '<strong>APK Ready</strong> — Official Release v1.2.0 (300 Questions)';
             downloadBtn.href = PUBLIC_APK_FALLBACK;
             downloadBtn.classList.remove('disabled');
             downloadBtnText.textContent = 'Download APK (27.5 MB)';
