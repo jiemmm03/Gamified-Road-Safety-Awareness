@@ -15,15 +15,15 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
+import androidx.compose.material.icons.automirrored.rounded.Logout
+import androidx.compose.material.icons.automirrored.rounded.VolumeUp
 import androidx.compose.material.icons.rounded.ChevronRight
 import androidx.compose.material.icons.rounded.DarkMode
 import androidx.compose.material.icons.rounded.DeleteForever
 import androidx.compose.material.icons.rounded.Language
-import androidx.compose.material.icons.rounded.Logout
 import androidx.compose.material.icons.rounded.Notifications
 import androidx.compose.material.icons.rounded.Person
 import androidx.compose.material.icons.rounded.PrivacyTip
-import androidx.compose.material.icons.rounded.VolumeUp
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -159,7 +159,7 @@ fun SettingsScreen(
                         onCheckedChange = { notificationsEnabled = it }
                     )
                     SettingsToggleRow(
-                        icon = Icons.Rounded.VolumeUp,
+                        icon = Icons.AutoMirrored.Rounded.VolumeUp,
                         label = stringResource(R.string.settings_sound_effects),
                         checked = soundEffectsEnabled,
                         onCheckedChange = { soundEffectsEnabled = it }
@@ -249,7 +249,7 @@ fun SettingsScreen(
             AppCard(modifier = Modifier.fillMaxWidth()) {
                 Column {
                     SettingsRow(
-                        icon = Icons.Rounded.Logout,
+                        icon = Icons.AutoMirrored.Rounded.Logout,
                         label = stringResource(R.string.settings_log_out),
                         onClick = { showLogoutConfirm = true }
                     )

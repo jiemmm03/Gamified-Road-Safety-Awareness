@@ -20,7 +20,7 @@ import androidx.compose.material.icons.rounded.Security
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.AssistChipDefaults
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
@@ -133,7 +133,7 @@ fun AiMessageBubble(
                     // Explanation section
                     if (explanation.isNotBlank()) {
                         Spacer(modifier = Modifier.height(8.dp))
-                        Divider(color = MaterialTheme.colorScheme.outlineVariant)
+                        HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
                         Spacer(modifier = Modifier.height(6.dp))
                         Row(verticalAlignment = Alignment.Top) {
                             Icon(

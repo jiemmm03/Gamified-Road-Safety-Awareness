@@ -12,6 +12,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
+import androidx.compose.material.icons.automirrored.rounded.TrendingUp
 import androidx.compose.material.icons.rounded.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -151,7 +152,7 @@ fun AdminXpManagementScreen(
                         modifier = Modifier.weight(1f)
                     )
                     QuickActionCard(
-                        icon = Icons.Rounded.TrendingUp,
+                        icon = Icons.AutoMirrored.Rounded.TrendingUp,
                         title = "Level Thresholds",
                         tint = MaterialTheme.colorScheme.secondary,
                         onClick = { showLevelConfig = true },
