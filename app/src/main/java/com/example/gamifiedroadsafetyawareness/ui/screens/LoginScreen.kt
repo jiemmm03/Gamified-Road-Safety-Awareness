@@ -383,6 +383,15 @@ fun LoginScreen(
                                 modifier = Modifier.clickable { onNavigateToSignUp() }
                             )
                         }
+
+                        Spacer(modifier = Modifier.height(10.dp))
+
+                        Text(
+                            text = "RoadSafe AI • v1.2.0 (300-Q)",
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f),
+                            modifier = Modifier.align(Alignment.CenterHorizontally)
+                        )
                     }
                 }
             }

@@ -553,7 +553,7 @@ fun AppNavigationDrawer(
                 contentAlignment = Alignment.Center
             ) {
                 Text(
-                    text = "Road Safety Awareness System • v1.0",
+                    text = "Road Safety Awareness System • v1.2.0 (300-Q)",
                     style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
                 )
