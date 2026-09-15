@@ -419,6 +419,529 @@ const DEFAULT_QUESTIONS = [
     { id: "q_h100", text: "A driver must choose between legally overtaking a vehicle and waiting because visibility is insufficient. What is the best decision?", options: ["Wait until the maneuver can be completed safely and legally", "Overtake immediately because traffic is slow", "Use the sidewalk to pass"], correct: 0, difficulty: "Hard", topic: "Lane Changing & Overtaking", points: 30, exp: "Ang defensive driver ay laging naghihintay ng ligtas at legal na pagkakataon bago magsagawa ng anumang pag-overtake." }
 ];
 
+const SIMULATION_20_SCENARIOS = [
+    {
+        id: "sim_01",
+        number: 1,
+        title: "01 — Pedestrian Crossing",
+        shortTitle: "Pedestrian Crossing",
+        difficulty: "Easy",
+        speed: "30 KM/H",
+        weather: "🌤️ CLEAR · DAY",
+        env: "URBAN ARTERIAL ROAD",
+        svgType: "pedestrian_crossing",
+        situation: "You are driving at 30 km/h on an urban road. A pedestrian is standing at a marked pedestrian zebra crossing ahead, looking across and preparing to step onto the roadway.",
+        prompt: "What is the safest immediate action?",
+        options: [
+            { text: "Speed up slightly to clear the crosswalk before the pedestrian steps into the lane.", isCorrect: false, risk: "Extreme Collision Risk" },
+            { text: "Honk your horn repeatedly and proceed through at your current cruising speed.", isCorrect: false, risk: "Hazardous & Illegal" },
+            { text: "Decelerate smoothly, bring the vehicle to a complete stop before the stop line, and yield right-of-way.", isCorrect: true, risk: "Safest Decision (Legal & Defensive)" },
+            { text: "Swerve into the opposing lane to drive around the crossing without stopping.", isCorrect: false, risk: "Severe Multi-Vehicle Hazard" }
+        ],
+        aiFeedback: {
+            why: "Stopping well before the crosswalk grants full pedestrian priority, eliminates collision risk, and provides clear visual communication to surrounding motorists.",
+            hazard: "Vulnerable pedestrian entering designated crossing with active vehicular traffic.",
+            principle: "R.A. 4136 Art. III Sec. 42 (Right-of-Way at Crosswalks) & Defensive Pedestrian Anticipation.",
+            action: "Smoothly decelerate, stop before the marked stop line, maintain foot on brake, and wait until pedestrians fully reach the sidewalk.",
+            incorrectWhy: "Failing to stop or attempting to bypass pedestrians at a marked crosswalk violates Philippine right-of-way laws and causes catastrophic pedestrian impacts."
+        }
+    },
+    {
+        id: "sim_02",
+        number: 2,
+        title: "02 — Changing Traffic Light",
+        shortTitle: "Changing Traffic Light",
+        difficulty: "Easy",
+        speed: "45 KM/H",
+        weather: "🌤️ CLEAR · DAY",
+        env: "SIGNALIZED INTERSECTION",
+        svgType: "traffic_light",
+        situation: "Approaching an intersection at 45 km/h, approximately 35 meters away. The traffic signal abruptly changes from green to solid yellow/amber.",
+        prompt: "What is the safest and most legally compliant action?",
+        options: [
+            { text: "Accelerate quickly to beat the light before the red signal activates.", isCorrect: false, risk: "High Intersection Crash Risk" },
+            { text: "Check rearview mirror and apply controlled braking to stop safely before the stop line.", isCorrect: true, risk: "Safest Decision (Legal & Controlled)" },
+            { text: "Slam on emergency brakes instantly without verifying vehicles behind you.", isCorrect: false, risk: "Rear-End Collision Risk" },
+            { text: "Sound horn and coast through the intersection without slowing down.", isCorrect: false, risk: "Traffic Violation & Broadside Risk" }
+        ],
+        aiFeedback: {
+            why: "At 35 meters at 45 km/h, you have ample stopping distance. Yellow means 'prepare to stop unless unsafe to do so' — not an invitation to accelerate.",
+            hazard: "Impending red light phase and conflicting cross-traffic anticipating green.",
+            principle: "Philippine Traffic Code Signal Rules: Yellow Light Duty to Stop.",
+            action: "Check rear mirror, apply progressive braking, and come to a stable stop behind the white pavement stop bar.",
+            incorrectWhy: "Accelerating on amber creates right-angle T-bone collisions with cross-traffic starting their movement."
+        }
+    },
+    {
+        id: "sim_03",
+        number: 3,
+        title: "03 — Motorcycle Blind Spot",
+        shortTitle: "Motorcycle Blind Spot",
+        difficulty: "Easy",
+        speed: "40 KM/H",
+        weather: "🌤️ CLEAR · DRY",
+        env: "MULTI-LANE CITY ROAD",
+        svgType: "blind_spot",
+        situation: "You intend to change into the left lane. Side mirrors appear clear, but a quick shoulder head-check reveals a motorcycle traveling in your rear-quarter blind spot.",
+        prompt: "What should you do before initiating your lane change?",
+        options: [
+            { text: "Continue the lane change quickly since you already turned on your signal indicator.", isCorrect: false, risk: "Side-Swipe Collision" },
+            { text: "Hold your current lane, maintain safe speed, allow the motorcycle to pass, and re-verify mirrors.", isCorrect: true, risk: "Safest Decision (Defensive & Aware)" },
+            { text: "Abruptly brake in your lane to force the motorcycle to pass ahead faster.", isCorrect: false, risk: "Traffic Flow Disruption" },
+            { text: "Honk and gradually drift into the lane expecting the rider to brake for you.", isCorrect: false, risk: "Aggressive & Dangerous Maneuver" }
+        ],
+        aiFeedback: {
+            why: "A motorcycle in your blind spot cannot be seen in mirrors alone. Yielding until the rider clears eliminates fatal side-swipe collisions.",
+            hazard: "Two-wheeler concealed in vehicle's rear lateral blind zone during lane change.",
+            principle: "Mirror-Signal-Headcheck (MSH) Protocol & Safe Lateral Cushioning.",
+            action: "Cancel or maintain signal, hold lane alignment, confirm rider has passed, perform fresh head-check, and merge smoothly.",
+            incorrectWhy: "Signaling does not give automatic right-of-way; forcing lane entry when occupied leads to severe motorcycle crashes."
+        }
+    },
+    {
+        id: "sim_04",
+        number: 4,
+        title: "04 — Sudden Braking",
+        shortTitle: "Sudden Braking Ahead",
+        difficulty: "Easy",
+        speed: "50 KM/H",
+        weather: "🌤️ OVERCAST · DRY",
+        env: "NATIONAL HIGHWAY",
+        svgType: "sudden_braking",
+        situation: "Driving at 50 km/h maintaining a 3-second buffer. The passenger vehicle ahead abruptly slams on its brakes with illuminated brake lights.",
+        prompt: "What is your immediate, safest reaction?",
+        options: [
+            { text: "Apply firm, controlled braking in your own lane while monitoring your rear mirror.", isCorrect: true, risk: "Safest Decision (Controlled Buffer)" },
+            { text: "Immediately swerve onto the road shoulder without checking for pedestrians or obstacles.", isCorrect: false, risk: "Off-Road Rollover / Hazard" },
+            { text: "Swerve into the oncoming traffic lane to avoid braking.", isCorrect: false, risk: "Catastrophic Head-On Crash" },
+            { text: "Lightly tap brakes and flash high beams to tell the front car to accelerate.", isCorrect: false, risk: "Imminent Rear-End Impact" }
+        ],
+        aiFeedback: {
+            why: "A 3-second following distance is designed specifically to allow firm, controlled straight-line braking without panic swerving.",
+            hazard: "Rapid deceleration of leading vehicle creating sudden closing speed.",
+            principle: "3-Second Following Distance Buffer & Progressive Braking Technique.",
+            action: "Depress brake pedal firmly and progressively, steer straight, and tap hazards if traffic behind approaches rapidly.",
+            incorrectWhy: "Blind swerving into adjacent lanes or shoulders trades one hazard for an even deadlier collision."
+        }
+    },
+    {
+        id: "sim_05",
+        number: 5,
+        title: "05 — Heavy Rain",
+        shortTitle: "Heavy Rain & Low Visibility",
+        difficulty: "Easy",
+        speed: "60 KM/H (REDUCED TO 40)",
+        weather: "🌧️ HEAVY DOWNPOUR",
+        env: "PROVINCIAL HIGHWAY",
+        svgType: "heavy_rain",
+        situation: "Sudden tropical heavy downpour severely reduces visibility. Water is sheeting on the asphalt and windshield wipers are on high.",
+        prompt: "What set of driving adjustments must you make?",
+        options: [
+            { text: "Turn on hazard emergency flashers and drive at normal 60 km/h highway speed.", isCorrect: false, risk: "Misleading Signals & Hydroplaning" },
+            { text: "Reduce speed significantly, double following distance, turn on low-beam headlights, and avoid sudden steering.", isCorrect: true, risk: "Safest Decision (Hydroplane Prevention)" },
+            { text: "Turn on high beams and tailgate the car ahead to follow its tire tracks closely.", isCorrect: false, risk: "Glare Blinding & Tailgating Hazard" },
+            { text: "Brake sharply whenever entering standing water puddles.", isCorrect: false, risk: "Loss of Directional Traction" }
+        ],
+        aiFeedback: {
+            why: "Wet roads cut tire friction by up to 50% and increase hydroplaning risk. Low-beam lights enhance visibility without blinding others with high-beam rain glare.",
+            hazard: "Reduced tire traction, hydroplaning, extended braking distance, and impaired driver vision.",
+            principle: "Adverse Weather Speed Adjustment & 5-6 Second Wet Road Buffer.",
+            action: "Drop speed to 35-40 km/h, activate low beams and defogger, double spacing, and drive with smooth inputs.",
+            incorrectWhy: "Hazard flashers while moving confuse other drivers regarding whether you are stalled; excessive speed causes hydroplaning."
+        }
+    },
+    {
+        id: "sim_06",
+        number: 6,
+        title: "06 — Road Obstruction",
+        shortTitle: "Lane Road Obstruction",
+        difficulty: "Medium",
+        speed: "40 KM/H",
+        weather: "🌤️ CLEAR · DAY",
+        env: "TWO-LANE BARANGAY ROAD",
+        svgType: "road_obstruction",
+        situation: "A disabled cargo delivery van and road debris partially block your lane ahead. Oncoming traffic is approaching in the opposite lane.",
+        prompt: "How should you safely navigate past this obstruction?",
+        options: [
+            { text: "Speed up and squeeze past the obstacle before the oncoming vehicle reaches it.", isCorrect: false, risk: "High Collision & Pinch Risk" },
+            { text: "Slow down, stop behind the obstruction in your lane, yield to oncoming traffic, and pass only when clear.", isCorrect: true, risk: "Safest Decision (Right-of-Way Compliance)" },
+            { text: "Honk continuously and force oncoming vehicles to yield right-of-way to you.", isCorrect: false, risk: "Aggressive Road Conflict" },
+            { text: "Drive onto the pedestrian sidewalk to bypass the stalled delivery van.", isCorrect: false, risk: "Severe Pedestrian Hazard & Illegal" }
+        ],
+        aiFeedback: {
+            why: "The driver whose lane is obstructed MUST yield to opposing traffic having an unobstructed lane before maneuvering around the hazard.",
+            hazard: "Blocked travel lane with oncoming opposing traffic having legal right-of-way.",
+            principle: "Lane Obstruction Yielding Law & Safe Lateral Clearance.",
+            action: "Stop safely behind the blockage, signal left, wait for clear oncoming gap, check mirrors/blindspot, and pass with cushion.",
+            incorrectWhy: "Cutting into oncoming lanes when opposing traffic is present violates right-of-way and creates high-speed frontal impacts."
+        }
+    },
+    {
+        id: "sim_07",
+        number: 7,
+        title: "07 — Emergency Vehicle",
+        shortTitle: "Emergency Vehicle Approaching",
+        difficulty: "Medium",
+        speed: "35 KM/H",
+        weather: "🌤️ DAY · MODERATE TRAFFIC",
+        env: "CITY ARTERIAL BOULEVARD",
+        svgType: "emergency_vehicle",
+        situation: "An ambulance with active sirens and flashing red/blue strobe lights is rapidly approaching from behind in your travel lane.",
+        prompt: "What is your legal obligation and safest maneuver?",
+        options: [
+            { text: "Stop dead in your current travel lane immediately.", isCorrect: false, risk: "Blocks Emergency Path" },
+            { text: "Speed up to outrun the ambulance until you find a convenient turn-off.", isCorrect: false, risk: "Delays Emergency & High Crash Risk" },
+            { text: "Signal right, smoothly pull over as close as possible to the right edge/curb, and stop to give clear passage.", isCorrect: true, risk: "Safest Decision (Legal Yield Protocol)" },
+            { text: "Tailgate closely behind the ambulance to bypass heavy traffic.", isCorrect: false, risk: "Illegal Emergency Convoy Violation" }
+        ],
+        aiFeedback: {
+            why: "Philippine Law (R.A. 4136 Sec. 49) mandates all drivers to immediately yield right-of-way to emergency vehicles by pulling parallel to the right curb.",
+            hazard: "Fast-moving emergency response vehicle requiring unimpeded pathway.",
+            principle: "R.A. 4136 Sec. 49 (Right-of-Way for Police, Fire, and Ambulance Vehicles).",
+            action: "Check right mirror, signal right, steer safely to the rightmost edge, bring vehicle to a stop, and hold until vehicle has passed.",
+            incorrectWhy: "Stopping in place blocks the emergency path; tailgating emergency vehicles is illegal and carries heavy penalties."
+        }
+    },
+    {
+        id: "sim_08",
+        number: 8,
+        title: "08 — Unsafe Overtaking",
+        shortTitle: "Unsafe Overtaking on Curve",
+        difficulty: "Medium",
+        speed: "45 KM/H",
+        weather: "🌤️ CLEAR · DAY",
+        env: "TWO-LANE MOUNTAIN HIGHWAY",
+        svgType: "unsafe_overtaking",
+        situation: "You are stuck behind a slow-moving agricultural tricycle on an uphill winding road with a solid double yellow center line and an upcoming blind curve.",
+        prompt: "What is the only safe and lawful decision?",
+        options: [
+            { text: "Cross the double yellow line quickly to overtake while the tricycle is crawling.", isCorrect: false, risk: "Blind Curve Head-On Disaster" },
+            { text: "Maintain safe following distance, stay in your lane, be patient, and wait for a designated broken-line passing zone with clear visibility.", isCorrect: true, risk: "Safest Decision (Patience & Legality)" },
+            { text: "Tailgate the tricycle closely and honk until the rider pulls off into the ditch.", isCorrect: false, risk: "Harassment & Rear-End Hazard" },
+            { text: "Overtake on the unpaved right dirt shoulder around the tricycle.", isCorrect: false, risk: "Shoulder Rollover / Pedestrian Hit" }
+        ],
+        aiFeedback: {
+            why: "Solid double yellow lines prohibit overtaking under all circumstances due to zero sight distance on curves and crests.",
+            hazard: "Blind curve with invisible oncoming vehicles traveling at highway speeds.",
+            principle: "R.A. 4136 Sec. 41 (Restrictions on Overtaking and Passing) & Pavement Markings.",
+            action: "Drop back to a 3-second buffer, observe road signage, and only pass when you reach a flat, clear straightaway with broken lines.",
+            incorrectWhy: "Overtaking on blind curves across solid yellow lines is among the leading causes of fatal head-on highway collisions."
+        }
+    },
+    {
+        id: "sim_09",
+        number: 9,
+        title: "09 — School Zone",
+        shortTitle: "Active School Zone",
+        difficulty: "Medium",
+        speed: "40 KM/H (NEEDS SLOWING)",
+        weather: "🌤️ CLEAR · MORNING",
+        env: "COMMUNITY SCHOOL PRECINCT",
+        svgType: "school_zone",
+        situation: "Approaching a public elementary school zone during morning drop-off hours. School warning signs are visible, and children are walking along the roadside.",
+        prompt: "How should you adjust your driving behavior?",
+        options: [
+            { text: "Maintain 40 km/h while honking continuously to make children stand back.", isCorrect: false, risk: "Panics Children & High Risk" },
+            { text: "Reduce speed to 20 km/h or below, scan sidewalks and between parked cars, and be ready for sudden stops.", isCorrect: true, risk: "Safest Decision (Child Safety Standard)" },
+            { text: "Overtake waiting school transport tricycles to clear the zone quickly.", isCorrect: false, risk: "Extreme Pedestrian Impact Risk" },
+            { text: "Look only at the car ahead of you and ignore the sidewalk activity.", isCorrect: false, risk: "Severe Tunnel Vision Hazard" }
+        ],
+        aiFeedback: {
+            why: "Children have limited hazard perception and may dart unexpectedly into the roadway. 20 km/h gives a stopping distance of just a few meters.",
+            hazard: "Unpredictable child pedestrians and unloading school transport vehicles.",
+            principle: "R.A. 4136 Sec. 35 (20 km/h Maximum Speed in School Zones) & Pedestrian Anticipation.",
+            action: "Decelerate to under 20 km/h, hover foot over brake pedal, cover blind spots around parked tricycles, and yield generously.",
+            incorrectWhy: "Exceeding 20 km/h in school zones dramatically increases the likelihood of fatal injury if a child steps off the curb."
+        }
+    },
+    {
+        id: "sim_10",
+        number: 10,
+        title: "10 — Motorcycle Traffic",
+        shortTitle: "Dense Motorcycle Traffic",
+        difficulty: "Medium",
+        speed: "30 KM/H",
+        weather: "🌤️ CLEAR · EVENING RUSH",
+        env: "DENSE METRO CORRIDOR",
+        svgType: "motorcycle_traffic",
+        situation: "Driving in dense urban traffic surrounded by multiple motorcycles lane-filtering and riding closely along your vehicle's left and right sides.",
+        prompt: "What is the best defensive driving strategy?",
+        options: [
+            { text: "Weave within your lane to discourage riders from filtering past you.", isCorrect: false, risk: "Aggressive Lane-Blocking Crash" },
+            { text: "Maintain stable central lane position, avoid sudden swerves, check all mirrors and blind spots before any maneuver, and signal early.", isCorrect: true, risk: "Safest Decision (Predictable & Stable)" },
+            { text: "Open your car door slightly to block motorcycles passing on the right.", isCorrect: false, risk: "Intentional Harm & Criminal Act" },
+            { text: "Speed up rapidly whenever an opening appears to stay ahead of all bikes.", isCorrect: false, risk: "Erratic Acceleration Hazard" }
+        ],
+        aiFeedback: {
+            why: "Predictability is the foundation of defensive driving. Holding a steady lane position and signaling early allows two-wheelers to navigate safely around you.",
+            hazard: "Close-proximity riders filtering in multiple blind spots.",
+            principle: "Defensive Space Cushioning & Multi-Mirror Scanning in Congestion.",
+            action: "Maintain center-lane track, check side mirrors frequently, signal at least 30 meters before turning, and verify blind spots with head checks.",
+            incorrectWhy: "Erratic lane shifts and abrupt braking startle riders and cause multiple pile-ups in dense traffic corridors."
+        }
+    },
+    {
+        id: "sim_11",
+        number: 11,
+        title: "11 — Intersection Conflict",
+        shortTitle: "Uncontrolled Intersection Conflict",
+        difficulty: "Medium",
+        speed: "35 KM/H",
+        weather: "🌤️ CLEAR · DAY",
+        env: "4-WAY UNCONTROLLED INTERSECTION",
+        svgType: "intersection_conflict",
+        situation: "Approaching an uncontrolled 4-way intersection without signals. Another vehicle from the left approaches simultaneously and enters without slowing down.",
+        prompt: "Even if you technically have right-of-way from the right, what should you do?",
+        options: [
+            { text: "Accelerate and assert your legal right-of-way by forcing the other driver to stop.", isCorrect: false, risk: "Guaranteed Right-Angle Collision" },
+            { text: "Slow down, prepare to stop, and yield to prevent a collision despite having technical priority.", isCorrect: true, risk: "Safest Decision (Defensive Priority)" },
+            { text: "Close your eyes, honk your horn, and maintain current speed.", isCorrect: false, risk: "Extreme Recklessness" },
+            { text: "Swerve sharply into the sidewalk corner to avoid the intersection.", isCorrect: false, risk: "Pedestrian & Infrastructure Impact" }
+        ],
+        aiFeedback: {
+            why: "Right-of-way is something given, never taken. A defensive driver always yields to prevent a collision when another driver fails to follow priority rules.",
+            hazard: "Conflicting vehicle failing to yield at unsignalized junction.",
+            principle: "Defensive Right-of-Way: Collision Avoidance Supersedes Technical Priority.",
+            action: "Brake smoothly, allow the non-yielding vehicle to clear the crossing, scan remaining directions, and proceed when completely clear.",
+            incorrectWhy: "Insisting on technical right-of-way against an errant driver results in severe broadside crashes where legality won't prevent injuries."
+        }
+    },
+    {
+        id: "sim_12",
+        number: 12,
+        title: "12 — Night Driving",
+        shortTitle: "Night Driving & Low Visibility",
+        difficulty: "Medium",
+        speed: "55 KM/H (OVER-DRIVING LIGHTS)",
+        weather: "🌙 DARK · UNLIT RURAL ROAD",
+        env: "PROVINCIAL NATIONAL ROAD",
+        svgType: "night_driving",
+        situation: "Driving on an unlit provincial highway at night with oncoming vehicle headlights in the distance. An unlit pedestrian/cyclist is barely visible on the right shoulder.",
+        prompt: "What is the safest nighttime driving practice?",
+        options: [
+            { text: "Stare directly into the oncoming headlights to see the center lane markings.", isCorrect: false, risk: "Night-Blindness Flash Glare" },
+            { text: "Keep high beams on permanently regardless of oncoming traffic to spot shoulder hazards.", isCorrect: false, risk: "Blinds Oncoming Motorists" },
+            { text: "Switch to low beams, reduce speed to avoid over-driving headlights, and cast your gaze toward the right white fog line.", isCorrect: true, risk: "Safest Decision (Night Vision Protection)" },
+            { text: "Turn off headlights momentarily to let your eyes adjust to natural darkness.", isCorrect: false, risk: "Total Blind Driving Hazard" }
+        ],
+        aiFeedback: {
+            why: "Switching to low beams prevents blinding oncoming drivers, while guiding your eyes along the right edge white fog line protects your night vision and spots shoulder hazards.",
+            hazard: "Headlight glare, reduced sight distance, and unlit pedestrians on road margins.",
+            principle: "Night Driving Hazard Mitigation & Anti-Glare Gaze Technique.",
+            action: "Dim headlights for oncoming traffic within 200m, slow down so your stopping distance is within your headlight beam range, and track the right edge line.",
+            incorrectWhy: "Over-driving headlights means you cannot stop in time for hazards that appear in your light beams; high beam glare blinds oncoming drivers."
+        }
+    },
+    {
+        id: "sim_13",
+        number: 13,
+        title: "13 — Distracted Driving",
+        shortTitle: "Mobile Phone Distraction",
+        difficulty: "Medium",
+        speed: "45 KM/H",
+        weather: "🌤️ CLEAR · DAY",
+        env: "BUSY COMMERCIAL BOULEVARD",
+        svgType: "distracted_phone",
+        situation: "While cruising at 45 km/h in moderate traffic, your smartphone rings and vibrates on the dashboard mount with an incoming work notification.",
+        prompt: "In compliance with Philippine Law (R.A. 10913), what must you do?",
+        options: [
+            { text: "Quickly read and reply to the message with one hand while keeping one hand on the wheel.", isCorrect: false, risk: "Severe Distraction & Law Violation" },
+            { text: "Ignore the phone completely while driving, or safely pull over into a legal parking area before checking it.", isCorrect: true, risk: "Safest Decision (Anti-Distracted Driving Act)" },
+            { text: "Hold the phone at eye level so you can look at both the road and the screen simultaneously.", isCorrect: false, risk: "Cognitive Blindness & Illegal" },
+            { text: "Ask the passenger in the back seat to reach over and hold the phone in front of your face.", isCorrect: false, risk: "Physical Obstruction & Distraction" }
+        ],
+        aiFeedback: {
+            why: "Republic Act No. 10913 (Anti-Distracted Driving Act) strictly penalizes using mobile devices while driving or stopped at red lights.",
+            hazard: "Visual, manual, and cognitive distraction taking focus away from dynamic road conditions.",
+            principle: "R.A. 10913 (Anti-Distracted Driving Act of 2016) & Complete Road Focus.",
+            action: "Keep eyes on the road and hands on the wheel; only respond to calls or texts after coming to a full, legal parking stop with engine off or in park.",
+            incorrectWhy: "Looking away for even 3 seconds at 45 km/h means traveling nearly 40 meters blind, causing devastating rear-end and pedestrian collisions."
+        }
+    },
+    {
+        id: "sim_14",
+        number: 14,
+        title: "14 — Fatigued Driving",
+        shortTitle: "Driver Fatigue on Highway",
+        difficulty: "Medium",
+        speed: "70 KM/H",
+        weather: "🌙 LATE NIGHT",
+        env: "EXPRESSWAY / LONG HIGHWAY",
+        svgType: "fatigued_driver",
+        situation: "Driving for over 4 hours at night. Your eyes feel heavy, you find yourself yawning repeatedly, and the car slightly drifts toward the rumble strip.",
+        prompt: "What is the only effective and responsible solution for driver fatigue?",
+        options: [
+            { text: "Roll down the window and turn up the radio volume to maximum.", isCorrect: false, risk: "Temporary Ineffective Fix (Microsleep)" },
+            { text: "Drink an energy drink and speed up to reach your destination faster.", isCorrect: false, risk: "Dangerous Energy Crash & Speeding" },
+            { text: "Signal, exit at the nearest gas station / rest stop, park safely, and take a 20-30 minute power nap.", isCorrect: true, risk: "Safest Decision (Fatigue Elimination)" },
+            { text: "Slap your face periodically and continue driving in the fast lane.", isCorrect: false, risk: "High Microsleep Fatality Risk" }
+        ],
+        aiFeedback: {
+            why: "Fatigue impairs reaction time and judgment as severely as alcohol intoxication. Sleep is the only physiological cure for driver exhaustion.",
+            hazard: "Microsleep episodes leading to high-speed run-off-road or rear-end crashes.",
+            principle: "Driver Wellness, Rest Protocols, and Fatigue Management.",
+            action: "Exit expressway at next service area, lock doors, recline seat, take a 20-30 minute nap, hydrate, and stretch before resuming.",
+            incorrectWhy: "Loud music and open windows do not prevent involuntary microsleeps where drivers lose consciousness for 3-5 seconds at high speeds."
+        }
+    },
+    {
+        id: "sim_15",
+        number: 15,
+        title: "15 — Traffic Sign Recognition",
+        shortTitle: "Philippine Regulatory Sign",
+        difficulty: "Medium",
+        speed: "40 KM/H",
+        weather: "🌤️ CLEAR · DAY",
+        env: "URBAN SIGNALIZED INTERSECTION",
+        svgType: "traffic_sign",
+        situation: "You are in the rightmost lane intending to turn right on a red traffic signal. A regulatory signboard beside the light reads 'NO RIGHT TURN ON RED SIGNAL'.",
+        prompt: "What action is legally required?",
+        options: [
+            { text: "Turn right anyway if no cross-traffic or police officers are visible.", isCorrect: false, risk: "Red Light Violation & Fine" },
+            { text: "Stop completely behind the stop line and remain stopped until the green arrow/signal illuminates.", isCorrect: true, risk: "Safest Decision (Mandatory Compliance)" },
+            { text: "Honk twice and make a rolling right turn without stopping.", isCorrect: false, risk: "Pedestrian Threat & Violation" },
+            { text: "Switch on hazard lights and proceed with the right turn.", isCorrect: false, risk: "Illegal Turn Under Hazard Lights" }
+        ],
+        aiFeedback: {
+            why: "A 'NO RIGHT TURN ON RED' sign revokes default right-turn privileges to protect crossing pedestrians and protected cross-traffic movements.",
+            hazard: "Conflicting pedestrian streams and oncoming left-turners having green priority.",
+            principle: "Mandatory Compliance with Official Regulatory Signs (DPWH Traffic Standards).",
+            action: "Come to a complete stop before the stop bar, hold brake, and proceed only when green signal or green right-turn arrow activates.",
+            incorrectWhy: "Ignoring regulatory turn restrictions causes severe pedestrian impacts in the crosswalk and side-impact collisions with turning vehicles."
+        }
+    },
+    {
+        id: "sim_16",
+        number: 16,
+        title: "16 — Slippery Road",
+        shortTitle: "Wet Slippery Road & Skid Control",
+        difficulty: "Hard",
+        speed: "50 KM/H",
+        weather: "🌧️ POST-RAIN OIL SLICK",
+        env: "HIGHWAY BEND",
+        svgType: "slippery_road",
+        situation: "Entering an asphalt curve after a light rain that brought oil to the surface. You feel the rear of the car begin to fish-tail and skid slightly outward.",
+        prompt: "How do you regain steering control and prevent a spin-out?",
+        options: [
+            { text: "Slam the brake pedal to the floor and yank the steering wheel hard in the opposite direction.", isCorrect: false, risk: "Complete Spin-Out / Rollover" },
+            { text: "Ease off the accelerator smoothly, steer gently in the direction you want the front wheels to go (into the skid), and avoid sudden braking.", isCorrect: true, risk: "Safest Decision (Proper Skid Recovery)" },
+            { text: "Floor the accelerator pedal to power through the curve.", isCorrect: false, risk: "Catastrophic Loss of Traction" },
+            { text: "Pull the handbrake immediately while turning the steering wheel.", isCorrect: false, risk: "Locks Rear Wheels into Spin" }
+        ],
+        aiFeedback: {
+            why: "Slamming brakes during a skid locks tires and removes all steering capability. Smoothly easing off gas and steering into the skid restores tire grip.",
+            hazard: "Loss of lateral tire grip (oversteer skid) on low-friction oil-slicked road.",
+            principle: "Skid Recovery Physics: Weight Transfer & Smooth Counter-Steering.",
+            action: "Smoothly release accelerator, look where you want to go, steer gently in that direction, and only brake after traction is re-established.",
+            incorrectWhy: "Panic braking during a skid transfers vehicle weight forward, unloads the rear tires, and triggers an uncontrollable 360-degree spin."
+        }
+    },
+    {
+        id: "sim_17",
+        number: 17,
+        title: "17 — Aggressive Driver",
+        shortTitle: "Aggressive Tailgater & Road Rage",
+        difficulty: "Hard",
+        speed: "60 KM/H",
+        weather: "🌤️ CLEAR · DAY",
+        env: "MULTI-LANE HIGHWAY",
+        svgType: "aggressive_driver",
+        situation: "An aggressive SUV is tailgating inches from your rear bumper, flashing high beams, and honking aggressively to force you to speed up.",
+        prompt: "What is the safest defensive method to de-escalate this road conflict?",
+        options: [
+            { text: "Brake check the aggressive vehicle abruptly to teach the driver a lesson.", isCorrect: false, risk: "Severe High-Speed Crash / Road Rage" },
+            { text: "Maintain emotional control, signal right, safely change to the slower lane when clear, and let the aggressive vehicle pass.", isCorrect: true, risk: "Safest Decision (De-Escalation & Safety)" },
+            { text: "Match the driver's speed, roll down window, and exchange shouting gestures.", isCorrect: false, risk: "Violent Road Rage Incident" },
+            { text: "Block the passing lane deliberately to enforce the legal speed limit yourself.", isCorrect: false, risk: "Provocation & Lane Hogging" }
+        ],
+        aiFeedback: {
+            why: "Defensive driving requires emotional maturity. De-escalating by yielding the lane removes an extreme hazard and avoids dangerous road rage encounters.",
+            hazard: "Aggressive tailgater creating high risk of multi-vehicle pile-up and confrontation.",
+            principle: "Defensive De-Escalation & Non-Engagement Policy.",
+            action: "Keep calm, do not engage or make eye contact, check right mirror, signal, merge to right lane, and let aggressive traffic pass.",
+            incorrectWhy: "Brake checking is illegal and extremely dangerous, turning a traffic dispute into a fatal high-speed collision."
+        }
+    },
+    {
+        id: "sim_18",
+        number: 18,
+        title: "18 — Sudden Pedestrian Hazard",
+        shortTitle: "Sudden Pedestrian from Blind Spot",
+        difficulty: "Hard",
+        speed: "35 KM/H",
+        weather: "🌤️ CLEAR · DAY",
+        env: "CONGESTED JEEPNEY STOP",
+        svgType: "sudden_pedestrian",
+        situation: "You are passing a stopped passenger jeepney in the right lane. Suddenly, a pedestrian steps out directly from in front of the jeepney into your lane.",
+        prompt: "What is your critical split-second evasive action?",
+        options: [
+            { text: "Apply maximum threshold braking in your lane while gripping the wheel firmly and scanning for a safe escape path.", isCorrect: true, risk: "Safest Decision (Threshold Braking)" },
+            { text: "Swerve blindly into oncoming traffic to avoid braking.", isCorrect: false, risk: "Catastrophic Head-On Crash" },
+            { text: "Honk horn and keep driving, expecting the pedestrian to jump back.", isCorrect: false, risk: "Fatal Direct Pedestrian Impact" },
+            { text: "Accelerate to squeeze past before the pedestrian takes another step.", isCorrect: false, risk: "Fatal Collision Hazard" }
+        ],
+        aiFeedback: {
+            why: "When passing stopped public utility vehicles (jeepneys/buses), pedestrians frequently emerge blindly. Threshold braking brings the car to a halt in minimal distance.",
+            hazard: "Concealed pedestrian emerging from blind zone in front of stopped public vehicle.",
+            principle: "Threshold Braking, Blind Zone Cushioning, and Jeepney Stop Vigilance.",
+            action: "Apply immediate maximum controlled braking (allowing ABS to work), sound horn to alert pedestrian, and stop before impact without swerving into oncoming lanes.",
+            incorrectWhy: "Blind swerving into oncoming lanes at speed turns a localized hazard into a fatal multi-vehicle disaster."
+        }
+    },
+    {
+        id: "sim_19",
+        number: 19,
+        title: "19 — Vehicle/Tire Problem",
+        shortTitle: "High-Speed Tire Blowout",
+        difficulty: "Hard",
+        speed: "80 KM/H",
+        weather: "🌤️ CLEAR · DAY",
+        env: "EXPRESSWAY (SLEX/NLEX)",
+        svgType: "tire_problem",
+        situation: "Driving at 80 km/h on an expressway when you hear a loud pop, the steering wheel violently pulls to the left, and your front-left tire blows out.",
+        prompt: "What is the proper emergency procedure to maintain vehicle stability?",
+        options: [
+            { text: "Slam the brake pedal as hard as possible and jerk the steering wheel to the right shoulder.", isCorrect: false, risk: "Violent Rollover / Spin" },
+            { text: "Grip steering wheel firmly with both hands, ease off accelerator smoothly, avoid hard braking, and guide vehicle to shoulder as speed drops.", isCorrect: true, risk: "Safest Decision (Blowout Stability Protocol)" },
+            { text: "Shift immediately into reverse or park to stop the car instantly.", isCorrect: false, risk: "Transmission Explosion & Rollover" },
+            { text: "Accelerate to keep the blown tire spinning evenly on the rim.", isCorrect: false, risk: "Loss of All Wheel Control" }
+        ],
+        aiFeedback: {
+            why: "Hard braking during a blowout destabilizes the vehicle and causes violent rollovers. Firm steering and gradual deceleration maintain straight-line control.",
+            hazard: "Catastrophic loss of tire pressure at highway speeds creating severe directional pull.",
+            principle: "Tire Blowout Recovery Protocol: Grip, Ease Off, Coast, and Controlled Shoulder Merge.",
+            action: "Hold wheel tightly at 9 and 3 o'clock, maintain straight heading, allow vehicle to decelerate naturally, signal right, and pull off onto emergency shoulder.",
+            incorrectWhy: "Slamming brakes on a blown tire causes the bare wheel rim to dig into the pavement, flipping the vehicle at expressway speeds."
+        }
+    },
+    {
+        id: "sim_20",
+        number: 20,
+        title: "20 — Complex Road-Safety Scenario",
+        shortTitle: "Complex Multi-Hazard Scenario",
+        difficulty: "Hard",
+        speed: "40 KM/H (HIGH-RISK ZONE)",
+        weather: "🌧️ RAIN · DUSK · LOW VISIBILITY",
+        env: "MULTI-LANE URBAN INTERSECTION",
+        svgType: "complex_hazard",
+        situation: "Approaching a busy unsignalized intersection in heavy rain at dusk. A jeepney is unloading passengers on the right, two motorcycles are lane-splitting on your left, and a pedestrian is crossing with an umbrella.",
+        prompt: "How do you prioritize and execute the safest sequence of actions?",
+        options: [
+            { text: "Speed up through the intersection to get out of the dangerous multi-hazard area as fast as possible.", isCorrect: false, risk: "Multi-Vehicle & Pedestrian Disaster" },
+            { text: "Decelerate smoothly to low speed, increase following buffers, yield to the crossing pedestrian first, and monitor both mirrors for swerving motorcycles.", isCorrect: true, risk: "Safest Decision (Master Hazard Prioritization)" },
+            { text: "Honk continuously, turn on high beams, and force everyone else to stop for you.", isCorrect: false, risk: "Sensory Overload & Crash Provocation" },
+            { text: "Swerve left around the jeepney without checking for lane-splitting motorcycles.", isCorrect: false, risk: "Severe Motorcycle Side-Impact" }
+        ],
+        aiFeedback: {
+            why: "In complex multi-hazard environments, prioritize the most vulnerable road user first (pedestrian), lower speed to expand reaction time, and maintain 360-degree awareness.",
+            hazard: "Simultaneous compound hazards: Low friction, reduced visibility, pedestrian crossing, unloading jeepney, and filtering motorcycles.",
+            principle: "Comprehensive Defensive Driving: Risk Prioritization & 360-Degree Situational Awareness.",
+            action: "Drop speed to 15-20 km/h, activate low-beam lights, yield right-of-way to pedestrian, scan mirrors for motorcycles, and clear intersection cautiously.",
+            incorrectWhy: "Rushing through complex intersection hazards or making sudden blind swerves triggers fatal multi-party chain-reaction crashes."
+        }
+    }
+];
+
 const DEFAULT_SCENARIOS = [...SIMULATION_20_SCENARIOS];
 
 const DEFAULT_BADGES = [
@@ -4667,21 +5190,25 @@ function dismissSplashScreen() {
         setTimeout(() => {
             splash.style.display = 'none';
         }, 500);
-    }, 450);
+    }, 350);
 }
 
 document.addEventListener('DOMContentLoaded', () => {
     console.log('🛡️ RoadSafe AI — Complete Dual Portal Platform v3.5');
-    initAuth();
-    startListeners();
-    renderModulesList();
-    renderQuestionsList();
-    renderScenariosList();
-    renderBadgesCatalogList();
+    try {
+        initAuth();
+        startListeners();
+        renderModulesList();
+        renderQuestionsList();
+        renderScenariosList();
+        renderBadgesCatalogList();
 
-    // Initialize portal mode
-    switchPortalMode(currentPortalMode);
-    
-    // Smooth splash screen reveal
-    setTimeout(dismissSplashScreen, 600);
+        // Initialize portal mode
+        switchPortalMode(currentPortalMode);
+    } catch (err) {
+        console.warn('Initialization notice:', err);
+    } finally {
+        // Smooth splash screen reveal
+        setTimeout(dismissSplashScreen, 500);
+    }
 });

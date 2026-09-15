@@ -1931,7 +1931,17 @@
     <!-- ═══════════ TOAST NOTIFICATION CONTAINER ═══════════ -->
     <div class="toast-container" id="toast-container"></div>
 
-    <script src="app.js?v=4.2"></script>
+    <script src="app.js?v=5.0"></script>
+    <script>
+        // Failsafe auto-dismiss splash screen after 2.5 seconds
+        setTimeout(function() {
+            var splash = document.getElementById('admin-splash-screen');
+            if (splash && !splash.classList.contains('fade-out')) {
+                splash.classList.add('fade-out');
+                setTimeout(function() { splash.style.display = 'none'; }, 500);
+            }
+        }, 2500);
+    </script>
 </body>
 
 </html>
