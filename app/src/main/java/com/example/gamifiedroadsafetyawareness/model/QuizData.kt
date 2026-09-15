@@ -1629,168 +1629,808 @@ object QuizData {
     // ═══════════════════════════════════════════════════════════════════════════
     val quiz_hard = Quiz(
         id = "quiz_hard",
-        title = "Hard Quiz – Advanced Situational Driving",
+        title = "Hard Quiz – Advanced Situations",
         moduleType = ModuleType.HARD,
         questions = listOf(
             QuizQuestion(
                 id = 1,
-                question = "You approach an intersection with no traffic signal. Another vehicle is already approaching from a direction that has the applicable right-of-way. What should you do?",
-                options = listOf("Accelerate to reach the intersection first", "Yield according to the applicable right-of-way rule", "Ignore the vehicle", "Use the shoulder"),
-                correctAnswerIndex = 1,
-                questionFil = "Papalapit ka sa isang interseksyon na walang traffic light. May sasakyan nang papalapit mula sa direksyon na may karapatang mauna (right-of-way). Ano ang dapat mong gawin?",
-                optionsFil = listOf("Bilisan para makauna sa interseksyon", "Magbigay-daan ayon sa naaangkop na right-of-way rule", "Huwag pansinin ang sasakyan", "Gamitin ang shoulder")
+                question = "Two vehicles reach an intersection at approximately the same time. Vehicle A is on the left and Vehicle B is on the right. Who should yield?",
+                options = listOf("Vehicle A", "Vehicle B", "Both vehicles"),
+                correctAnswerIndex = 0,
+                questionFil = "Dalawang sasakyan ang sabay na dumating sa interseksyon. Ang Sasakyan A ay nasa kaliwa at ang Sasakyan B ay nasa kanan. Sino ang dapat magbigay-daan (yield)?",
+                optionsFil = listOf("Sasakyan A", "Sasakyan B", "Parehong sasakyan")
             ),
             QuizQuestion(
                 id = 2,
-                question = "You are driving at night and an oncoming vehicle has bright headlights. What is the safest response?",
-                options = listOf("Look directly into the headlights", "Reduce speed as necessary and avoid being blinded by staring at the lights", "Turn your headlights off", "Accelerate toward the vehicle"),
+                question = "A vehicle approaches an intersection while another vehicle is already within the intersection. Who generally has the right-of-way?",
+                options = listOf("The approaching vehicle", "The vehicle already within the intersection", "The faster vehicle"),
                 correctAnswerIndex = 1,
-                questionFil = "Nagmamaneho ka sa gabi at may paparating na sasakyan na may maliwanag na headlights. Ano ang pinakaligtas na gagawin?",
-                optionsFil = listOf("Tumingin diretso sa headlights", "Bagalan kung kinakailangan at iwasang mabulag sa pagtitig sa ilaw", "Patayin ang sariling headlights", "Bilisan patungo sa sasakyan")
+                questionFil = "Papalapit ang sasakyan sa interseksyon habang may isa nang sasakyan sa loob nito. Sino sa pangkalahatan ang may right-of-way?",
+                optionsFil = listOf("Ang paparating na sasakyan", "Ang sasakyang nasa loob na ng interseksyon", "Ang mas mabilis na sasakyan")
             ),
             QuizQuestion(
                 id = 3,
-                question = "You are approaching a curve where you cannot see vehicles coming from the opposite direction. Should you overtake?",
-                options = listOf("Yes, if you honk", "No, because visibility is insufficient", "Yes, if you accelerate", "Yes, if the vehicle ahead is slow"),
-                correctAnswerIndex = 1,
-                questionFil = "Papalapit ka sa isang liko kung saan hindi mo makita ang mga sasakyang paparating mula sa kabilang direksyon. Dapat ka bang mag-overtake?",
-                optionsFil = listOf("Oo, kung bubusina ka", "Hindi, dahil hindi sapat ang paningin", "Oo, kung bibilisan mo", "Oo, kung mabagal ang sasakyan sa unahan")
+                question = "A vehicle approaches an intersection and another vehicle is turning left across its line of travel. The turning vehicle has properly signaled. Who should yield?",
+                options = listOf("The approaching vehicle", "The turning vehicle", "Both must stop permanently"),
+                correctAnswerIndex = 0,
+                questionFil = "Papalapit ang sasakyan sa interseksyon at may isa pang sasakyan na lumiliko pakaliwa sa kanyang daraanan na maayos na nag-signal. Sino ang dapat magbigay-daan?",
+                optionsFil = listOf("Ang paparating na sasakyan", "Ang lumilikong sasakyan", "Parehong dapat permanenteng huminto")
             ),
             QuizQuestion(
                 id = 4,
-                question = "You are driving in heavy rain and notice water accumulating on the road. What is the safest approach?",
-                options = listOf("Increase speed to cross quickly", "Reduce speed and maintain control", "Follow the vehicle ahead closely", "Make sudden steering movements"),
+                question = "A driver is traveling at an unlawful speed and claims the right-of-way at an intersection. What happens to that right-of-way?",
+                options = listOf("It remains automatically valid", "It may be forfeited", "It becomes stronger"),
                 correctAnswerIndex = 1,
-                questionFil = "Nagmamaneho ka sa malakas na ulan at napansin mong may naiipong tubig sa daan. Ano ang pinakaligtas na paraan?",
-                optionsFil = listOf("Bilisan para makatawid agad", "Bagalan at panatilihin ang kontrol", "Sumunod nang malapit sa unahang sasakyan", "Gumawa ng biglaang galaw sa manibela")
+                questionFil = "Ang isang driver ay nagpapatakbo sa labag-sa-batas na bilis (speeding) at iginigiit ang right-of-way sa interseksyon. Ano ang mangyayari sa kanyang right-of-way?",
+                optionsFil = listOf("Kusang mananatiling balido ito", "Maaari itong mawala (forfeited)", "Lalo itong magiging matibay")
             ),
             QuizQuestion(
                 id = 5,
-                question = "You are approaching an intersection while an emergency vehicle is approaching with its warning devices activated. What should you do?",
-                options = listOf("Compete for the intersection", "Give way as required and avoid obstructing it", "Follow closely behind it", "Overtake it"),
+                question = "A vehicle enters a highway from a private driveway while another vehicle is approaching on the highway. Who must yield?",
+                options = listOf("The vehicle on the highway", "The vehicle entering from the private road", "Both vehicles"),
                 correctAnswerIndex = 1,
-                questionFil = "Papalapit ka sa interseksyon habang may paparating na emergency vehicle na naka-siren/ilaw. Ano ang dapat mong gawin?",
-                optionsFil = listOf("Makipagpaligsahan sa interseksyon", "Magbigay-daan ayon sa kinakailangan at iwasang harangin ito", "Sumunod nang malapit sa likod nito", "I-overtake ito")
+                questionFil = "Papasok ang sasakyan sa highway mula sa pribadong driveway habang may paparating na sasakyan sa highway. Sino ang dapat magbigay-daan?",
+                optionsFil = listOf("Ang sasakyang nasa highway", "Ang sasakyang pumapasok mula sa pribadong daan", "Parehong sasakyan")
             ),
             QuizQuestion(
                 id = 6,
-                question = "You are preparing to overtake, but the road markings and traffic conditions do not permit a safe maneuver. What should you do?",
-                options = listOf("Overtake anyway", "Wait until overtaking is legal and safe", "Drive on the sidewalk", "Use the opposite lane regardless of conditions"),
+                question = "A driver approaches a through highway from a side road. What is the proper action?",
+                options = listOf("Enter immediately if the vehicle is faster", "Yield to vehicles approaching on the through highway", "Sound the horn and continue without slowing"),
                 correctAnswerIndex = 1,
-                questionFil = "Naghahanda kang mag-overtake, pero hindi pinapayagan ng road markings at kalagayan ng trapiko ang ligtas na paggawa nito. Ano ang dapat mong gawin?",
-                optionsFil = listOf("Mag-overtake pa rin", "Maghintay hanggang legal at ligtas na mag-overtake", "Magmaneho sa bangketa", "Gamitin ang kabilang lane kahit ano pa ang kalagayan")
+                questionFil = "Papalapit ang driver sa through highway mula sa isang side road. Ano ang tamang aksyon?",
+                optionsFil = listOf("Pumasok agad kung mas mabilis ang sasakyan", "Magbigay-daan sa mga sasakyang papalapit sa through highway", "Bumusina at dumiretso nang hindi nagbabagal")
             ),
             QuizQuestion(
                 id = 7,
-                question = "A vehicle suddenly enters your lane from a side road. What should be your first priority?",
-                options = listOf("Maintain safety and avoid collision", "Sound the horn continuously", "Accelerate toward the vehicle", "Chase the vehicle"),
-                correctAnswerIndex = 0,
-                questionFil = "Biglang pumasok sa lane mo ang sasakyan mula sa isang side road. Ano ang dapat mong unang unahin?",
-                optionsFil = listOf("Panatilihin ang kaligtasan at iwasan ang banggaan", "Patuloy na bumusina", "Bilisan patungo sa sasakyan", "Habulin ang sasakyan")
+                question = "A pedestrian is crossing within a crosswalk in a business or residential district, and no traffic officer or signal is controlling the movement. Who generally has the right-of-way?",
+                options = listOf("The vehicle", "The pedestrian", "Whoever moves first"),
+                correctAnswerIndex = 1,
+                questionFil = "Tumatawid ang pedestrian sa loob ng crosswalk sa business o residential district nang walang traffic officer o signal. Sino ang may right-of-way?",
+                optionsFil = listOf("Ang sasakyan", "Ang pedestrian", "Kung sino ang unang gumalaw")
             ),
             QuizQuestion(
                 id = 8,
-                question = "You are driving behind a large truck that blocks your view of the road ahead. What should you do?",
-                options = listOf("Follow extremely closely", "Increase following distance to improve visibility and reaction time", "Overtake immediately without checking", "Drive beside the truck indefinitely"),
+                question = "A pedestrian crosses a business/residential highway outside a crosswalk. Under RA 4136, who generally has the right-of-way?",
+                options = listOf("The pedestrian", "The vehicle on the highway", "Both equally"),
                 correctAnswerIndex = 1,
-                questionFil = "Nagmamaneho ka sa likod ng malaking trak na humaharang sa iyong tanaw sa daan sa unahan. Ano ang dapat mong gawin?",
-                optionsFil = listOf("Sumunod nang sobrang lapit", "Dagdagan ang agwat sa pagsunod para mapabuti ang paningin at oras ng pag-react", "Agad mag-overtake nang hindi tumitingin", "Magmaneho sa tabi ng trak nang walang tigil")
+                questionFil = "Tumawid ang pedestrian sa labas ng crosswalk sa business/residential highway. Sa ilalim ng RA 4136, sino sa pangkalahatan ang may right-of-way?",
+                optionsFil = listOf("Ang pedestrian", "Ang sasakyan sa highway", "Pareho silang pantay")
             ),
             QuizQuestion(
                 id = 9,
-                question = "You miss your intended turn on a busy road. What is the safest choice?",
-                options = listOf("Stop and reverse immediately", "Continue safely and find a legal place to turn or reroute", "Make a sudden U-turn", "Drive against traffic"),
+                question = "An ambulance on official business approaches with an audible signal. What should other drivers do?",
+                options = listOf("Maintain speed", "Yield the right-of-way", "Follow closely behind it"),
                 correctAnswerIndex = 1,
-                questionFil = "Nalampasan mo ang balak mong likuan sa isang abalang daan. Ano ang pinakaligtas na pagpipilian?",
-                optionsFil = listOf("Tumigil at agad umatras", "Magpatuloy nang ligtas at humanap ng legal na lugar para lumiko o mag-iba ng ruta", "Gumawa ng biglaang U-turn", "Magmaneho laban sa daloy ng trapiko")
+                questionFil = "Papalapit ang ambulansyang nasa opisyal na tungkulin na may naririnig na sirena. Ano ang dapat gawin ng ibang driver?",
+                optionsFil = listOf("Panatilihin ang bilis", "Magbigay-daan sa right-of-way nito", "Buntutan ito nang malapitan")
             ),
             QuizQuestion(
                 id = 10,
-                question = "You are approaching a pedestrian crossing while another vehicle in the adjacent lane has stopped. Why should you be cautious?",
-                options = listOf("A pedestrian may be hidden from your view", "The road is always empty", "You should overtake the stopped vehicle immediately", "The stopped vehicle automatically gives you priority"),
+                question = "A police vehicle approaches with an audible signal. A driver should normally:",
+                options = listOf("Move as near as possible to the right and stop clear of the intersection", "Move to the left and accelerate", "Stop in the middle of the intersection"),
                 correctAnswerIndex = 0,
-                questionFil = "Papalapit ka sa tawiran habang nakatigil ang ibang sasakyan sa katabing lane. Bakit dapat kang mag-ingat?",
-                optionsFil = listOf("Maaaring may pedestrian na hindi mo makita", "Palaging walang laman ang daan", "Dapat mong agad i-overtake ang nakatigil na sasakyan", "Awtomatikong binibigyan ka ng priyoridad ng nakatigil na sasakyan")
+                questionFil = "Papalapit ang sasakyan ng pulis na may naririnig na sirena. Ang driver ay dapat karaniwang:",
+                optionsFil = listOf("Tumabi pakanan hangga't maaari at huminto malayo sa interseksyon", "Lumipat pakaliwa at bumilis", "Huminto sa gitna ng interseksyon")
             ),
             QuizQuestion(
                 id = 11,
-                question = "A driver behind you is following too closely. What is the safest response?",
-                options = listOf("Brake suddenly to teach the driver a lesson", "Maintain a safe pace and, when appropriate, allow the vehicle to pass", "Race the vehicle", "Block the vehicle"),
-                correctAnswerIndex = 1,
-                questionFil = "Sobrang lapit na sumusunod ang driver sa likod mo. Ano ang pinakaligtas na gagawin?",
-                optionsFil = listOf("Biglang magpreno para turuan ang driver", "Panatilihin ang ligtas na bilis at, kung angkop, payagan itong makadaan", "Karerahin ang sasakyan", "Harangin ang sasakyan")
+                question = "Under the general rule, a driver overtaking another vehicle should pass:",
+                options = listOf("On the left", "On the right", "On either side"),
+                correctAnswerIndex = 0,
+                questionFil = "Sa ilalim ng pangkalahatang patakaran, ang driver na nag-o-overtake sa ibang sasakyan ay dapat dumaan:",
+                optionsFil = listOf("Sa kaliwa", "Sa kanan", "Sa alinmang panig")
             ),
             QuizQuestion(
                 id = 12,
-                question = "Your vehicle begins to skid on a slippery surface. What should you avoid?",
-                options = listOf("Sudden, aggressive steering or braking", "Remaining calm", "Maintaining vehicle control", "Adjusting speed appropriately"),
+                question = "When may passing on the right generally be permitted on a highway within a business or residential district?",
+                options = listOf("When there are two or more lanes moving in the same direction", "Whenever the driver is in a hurry", "Only on a one-lane road"),
                 correctAnswerIndex = 0,
-                questionFil = "Nagsimulang mag-skid ang sasakyan mo sa madulas na daan. Ano ang dapat mong iwasan?",
-                optionsFil = listOf("Biglaan at agresibong pagliko ng manibela o pagpreno", "Panatilihing kalmado", "Panatilihin ang kontrol sa sasakyan", "Angkop na pag-aayos ng bilis")
+                questionFil = "Kailan maaaring pahintulutan ang pag-overtake sa kanan sa isang highway sa business o residential district?",
+                optionsFil = listOf("Kapag may dalawa o higit pang linyang bumibiyahe sa parehong direksyon", "Kahit kailan nagmamadali ang driver", "Sa isang one-lane road lamang")
             ),
             QuizQuestion(
                 id = 13,
-                question = "You are approaching a road intersection where your view is obstructed by a parked vehicle. What should you do?",
-                options = listOf("Proceed quickly", "Slow down and ensure the way is clear", "Accelerate through the intersection", "Ignore the obstruction"),
+                question = "A vehicle is about to be overtaken. The overtaking driver gives a suitable audible signal. What should the slower driver do?",
+                options = listOf("Increase speed", "Give way and avoid increasing speed", "Move immediately to the opposite lane"),
                 correctAnswerIndex = 1,
-                questionFil = "Papalapit ka sa isang interseksyon kung saan hinaharangan ng nakaparadang sasakyan ang iyong tanaw. Ano ang dapat mong gawin?",
-                optionsFil = listOf("Magpatuloy nang mabilis", "Bagalan at siguraduhing malinaw ang daan", "Bilisan papasok sa interseksyon", "Huwag pansinin ang harang")
+                questionFil = "Mao-overtake ang isang sasakyan at nagbigay ng angkop na busina ang nag-o-overtake. Ano ang dapat gawin ng mabagal na driver?",
+                optionsFil = listOf("Bilisan ang takbo", "Magbigay-daan at iwasang magpabilis hanggang makalagpas ito", "Agad na lumipat sa kabilang linya")
             ),
             QuizQuestion(
                 id = 14,
-                question = "You are tired, but you are only a few kilometers from your destination. What is the safest decision?",
-                options = listOf("Continue because the destination is close", "Stop and rest if you are not fit to drive", "Drive faster to arrive sooner", "Drink something and continue regardless of fatigue"),
-                correctAnswerIndex = 1,
-                questionFil = "Pagod ka na, pero ilang kilometro na lang ang layo sa iyong patutunguhan. Ano ang pinakaligtas na desisyon?",
-                optionsFil = listOf("Ituloy dahil malapit na ang patutunguhan", "Tumigil at magpahinga kung hindi ka na kayang magmaneho", "Magmaneho nang mas mabilis para makarating agad", "Uminom ng something at ituloy kahit pagod")
+                question = "Before moving to the left side of the center line to overtake, the driver must ensure that:",
+                options = listOf("The road ahead is clearly visible and sufficiently free of oncoming traffic", "The vehicle behind is close enough", "The road has a curve"),
+                correctAnswerIndex = 0,
+                questionFil = "Bago lumipat sa kaliwang bahagi ng center line upang mag-overtake, dapat tiyakin ng driver na:",
+                optionsFil = listOf("Malinaw na tanaw ang daan sa unahan at may sapat na ligtas na distansya sa kasalubong", "Napakalapit ng sasakyan sa likod", "May kurbada ang kalsada")
             ),
             QuizQuestion(
                 id = 15,
-                question = "You see a temporary traffic sign that differs from the normal road arrangement because of road construction. What should you do?",
-                options = listOf("Follow the temporary traffic control", "Ignore it", "Follow the old road arrangement", "Drive around the barriers"),
-                correctAnswerIndex = 0,
-                questionFil = "May nakita kang pansamantalang traffic sign na iba sa normal na ayos ng daan dahil sa konstruksyon. Ano ang dapat mong gawin?",
-                optionsFil = listOf("Sundin ang pansamantalang traffic control", "Huwag pansinin ito", "Sundin ang lumang ayos ng daan", "Umikot sa mga harang")
+                question = "A driver approaches the crest of a grade and cannot see far enough ahead. Is overtaking generally allowed?",
+                options = listOf("Yes", "No", "Only if the horn is used"),
+                correctAnswerIndex = 1,
+                questionFil = "Papalapit ang driver sa tuktok ng matarik na burol (crest of a grade) kung saan hindi tanaw ang unahan. Pinapayagan ba ang pag-overtake?",
+                optionsFil = listOf("Oo", "Hindi", "Kung bubusina lamang")
             ),
             QuizQuestion(
                 id = 16,
-                question = "You are entering a road where pedestrians, motorcycles, bicycles, and vehicles are all present. What is the best driving strategy?",
-                options = listOf("Assume everyone will move out of your way", "Maintain awareness, reduce risk, and anticipate possible movements", "Drive at maximum speed", "Focus only on vehicles"),
+                question = "A driver approaches a curve where the view is obstructed within 500 feet. May the driver overtake by crossing the center line?",
+                options = listOf("Yes, if the vehicle is powerful", "No, unless a statutory exception applies", "Yes, if the horn is sounded"),
                 correctAnswerIndex = 1,
-                questionFil = "Papasok ka sa daan kung saan magkakasamang naroroon ang mga pedestrian, motorsiklo, bisikleta, at sasakyan. Ano ang pinakamahusay na estratehiya sa pagmamaneho?",
-                optionsFil = listOf("Ipagpalagay na lahat ay aalis sa iyong daraanan", "Manatiling alerto, bawasan ang panganib, at asahan ang posibleng galaw ng iba", "Magmaneho nang pinakamabilis", "Pansinin lamang ang mga sasakyan")
+                questionFil = "Papalapit ang driver sa kurbada kung saan may harang sa paningin sa loob ng 500 talampakan. Maaari bang mag-overtake sa center line?",
+                optionsFil = listOf("Oo, kung malakas ang makina", "Hindi, maliban kung may statutory exception na umiiral", "Oo, kung bubusina")
             ),
             QuizQuestion(
                 id = 17,
-                question = "A vehicle ahead signals that it intends to turn, but you are also approaching the same area. What should you do?",
-                options = listOf("Ignore the signal", "Adjust your speed and position safely while considering the vehicle's movement", "Overtake immediately", "Drive beside it without checking"),
+                question = "A driver attempts to overtake another vehicle at a railway grade crossing. Under the general rule, this is:",
+                options = listOf("Permitted", "Prohibited", "Required"),
                 correctAnswerIndex = 1,
-                questionFil = "Nag-signal ang sasakyan sa unahan na balak nitong lumiko, pero papalapit ka rin sa parehong lugar. Ano ang dapat mong gawin?",
-                optionsFil = listOf("Huwag pansinin ang signal", "Iayos ang iyong bilis at posisyon nang ligtas habang isinasaalang-alang ang galaw ng sasakyan", "Agad mag-overtake", "Sumabay dito nang hindi tumitingin")
+                questionFil = "Sumubok mag-overtake ang driver sa isang railway grade crossing. Sa pangkalahatang patakaran, ito ay:",
+                optionsFil = listOf("Pinapayagan", "Ipinagbabawal", "Kinakailangan")
             ),
             QuizQuestion(
                 id = 18,
-                question = "You are driving on a road with a posted speed limit, but traffic, weather, and visibility conditions are poor. What should you prioritize?",
-                options = listOf("Maximum speed", "Safe speed appropriate to the conditions while obeying the applicable limit", "Keeping up with the fastest vehicle", "Driving faster than the posted limit"),
-                correctAnswerIndex = 1,
-                questionFil = "Nagmamaneho ka sa daan na may nakasaad na speed limit, pero masama ang kalagayan ng trapiko, panahon, at paningin. Ano ang dapat mong unahin?",
-                optionsFil = listOf("Pinakamabilis na bilis", "Ligtas na bilis na akma sa kalagayan habang sinusunod ang naaangkop na limitasyon", "Sabayan ang pinakamabilis na sasakyan", "Magmaneho nang mas mabilis sa nakasaad na limitasyon")
+                question = "Overtaking at an intersection is generally prohibited unless the intersection is:",
+                options = listOf("Controlled by a traffic signal or permitted by a watchman/peace officer", "Located in a residential area", "Empty of pedestrians"),
+                correctAnswerIndex = 0,
+                questionFil = "Ang pag-overtake sa interseksyon ay ipinagbabawal maliban kung ang interseksyon ay:",
+                optionsFil = listOf("Kinokontrol ng traffic signal o pinapayagan ng traffic officer", "Matatagpuan sa residential area", "Walang mga tumatawid na tao")
             ),
             QuizQuestion(
                 id = 19,
-                question = "A driver becomes angry after you make a legal maneuver. What is the best defensive-driving response?",
-                options = listOf("Confront the driver", "Maintain composure and create distance from the aggressive driver", "Follow the driver", "Make an aggressive maneuver"),
+                question = "Temporary warning signs indicate that workers are performing road work. May a driver overtake another vehicle between the indicated points?",
+                options = listOf("Yes", "No", "Only at night"),
                 correctAnswerIndex = 1,
-                questionFil = "Nagalit ang isang driver matapos mong gawin ang isang legal na galaw. Ano ang pinakamahusay na tugon sa defensive driving?",
-                optionsFil = listOf("Harapin ang driver", "Manatiling kalmado at lumayo sa agresibong driver", "Sundan ang driver", "Gumawa ng agresibong galaw")
+                questionFil = "May mga pansamantalang babala na may mga manggagawang nagtatrabaho sa kalsada. Maaari bang mag-overtake sa pagitan ng mga markang ito?",
+                optionsFil = listOf("Oo", "Hindi", "Sa gabi lamang")
             ),
             QuizQuestion(
                 id = 20,
-                question = "You are approaching an intersection with several potential hazards: a pedestrian near the crossing, a motorcycle beside you, and a vehicle approaching from another direction. What should you do?",
-                options = listOf("Focus only on the vehicle ahead", "Slow down, scan all relevant road users, and proceed only when safe and permitted", "Accelerate through the intersection", "Sound the horn and continue without checking"),
+                question = "A driver is inside an officially marked no-passing zone. What is the correct action?",
+                options = listOf("Overtake if the road looks clear", "Do not overtake", "Overtake only motorcycles"),
                 correctAnswerIndex = 1,
-                questionFil = "Papalapit ka sa isang interseksyon na may ilang posibleng panganib: pedestrian malapit sa tawiran, motorsiklo sa tabi mo, at sasakyang paparating mula sa ibang direksyon. Ano ang dapat mong gawin?",
-                optionsFil = listOf("Pansinin lamang ang sasakyan sa unahan", "Bagalan, tingnan ang lahat ng kaugnay na gumagamit ng daan, at magpatuloy lamang kapag ligtas at pinapayagan", "Bilisan papasok sa interseksyon", "Bumusina at magpatuloy nang hindi tumitingin")
+                questionFil = "Nasa loob ng opisyal na minarkahang no-passing zone ang driver. Ano ang tamang aksyon?",
+                optionsFil = listOf("Mag-overtake kung mukhang maluwag ang daan", "Huwag mag-overtake", "I-overtake ang mga motorsiklo lamang")
+            ),
+            QuizQuestion(
+                id = 21,
+                question = "Under RA 4136, the maximum speed for cars and motorcycles on city or municipal streets with light traffic, when not designated as through streets, is generally:",
+                options = listOf("20 km/h", "30 km/h", "40 km/h"),
+                correctAnswerIndex = 1,
+                questionFil = "Sa ilalim ng RA 4136, ano ang pangkalahatang speed limit ng mga kotse sa mga lansangan ng lungsod o bayan na may magaan na trapiko?",
+                optionsFil = listOf("20 km/h", "30 km/h", "40 km/h")
+            ),
+            QuizQuestion(
+                id = 22,
+                question = "A driver is passing through a crowded street or approaching a blind corner. The applicable statutory maximum under the listed circumstances is generally:",
+                options = listOf("20 km/h", "40 km/h", "60 km/h"),
+                correctAnswerIndex = 0,
+                questionFil = "Dumaraan ang driver sa mataong kalye o papalapit sa isang blind corner. Ano ang statutory maximum speed sa ilalim ng RA 4136?",
+                optionsFil = listOf("20 km/h", "40 km/h", "60 km/h")
+            ),
+            QuizQuestion(
+                id = 23,
+                question = "A driver is traveling on a designated through street or boulevard. For cars and motorcycles, the statutory maximum listed by RA 4136 is generally:",
+                options = listOf("30 km/h", "40 km/h", "80 km/h"),
+                correctAnswerIndex = 1,
+                questionFil = "Bumibiyahe ang driver sa isang itinalagang through street o boulevard. Para sa mga kotse, ano ang statutory maximum ayon sa RA 4136?",
+                optionsFil = listOf("30 km/h", "40 km/h", "80 km/h")
+            ),
+            QuizQuestion(
+                id = 24,
+                question = "A car is traveling on an open country road without blind corners and not closely bordered by habitations. The statutory maximum for cars/motorcycles is generally:",
+                options = listOf("40 km/h", "60 km/h", "80 km/h"),
+                correctAnswerIndex = 2,
+                questionFil = "Bumibiyahe ang kotse sa bukas na country road na walang blind corners at hindi matao. Ano ang statutory maximum speed?",
+                optionsFil = listOf("40 km/h", "60 km/h", "80 km/h")
+            ),
+            QuizQuestion(
+                id = 25,
+                question = "A driver is approaching a school zone. Even if the road normally permits a higher speed, the driver should:",
+                options = listOf("Maintain the normal maximum", "Observe the lower statutory limit applicable to the dangerous circumstance", "Accelerate to clear the area quickly"),
+                correctAnswerIndex = 1,
+                questionFil = "Papalapit ang driver sa school zone. Kahit mas mataas ang normal na bilis ng kalsada, ano ang dapat gawin?",
+                optionsFil = listOf("Panatilihin ang normal na bilis", "Sundin ang mas mababang statutory limit na 20 km/h para sa mapanganib na lugar", "Bumilis upang makalagpas agad")
+            ),
+            QuizQuestion(
+                id = 26,
+                question = "Which situation is specifically associated with the 20 km/h statutory speed limit?",
+                options = listOf("Open country road with no blind corners", "Approaching a blind corner", "Light-traffic through street"),
+                correctAnswerIndex = 1,
+                questionFil = "Aling sitwasyon ang partikular na itinakda sa ilalim ng 20 km/h statutory speed limit?",
+                optionsFil = listOf("Bukas na country road na walang kurbada", "Papalapit sa blind corner o interseksyon", "Through street na maluwag ang trapiko")
+            ),
+            QuizQuestion(
+                id = 27,
+                question = "A driver is passing a stationary vehicle on a road where the statutory dangerous-circumstance limit applies. What maximum speed is generally specified?",
+                options = listOf("20 km/h", "40 km/h", "80 km/h"),
+                correctAnswerIndex = 0,
+                questionFil = "Lalampas ang driver sa isang nakahintong pampasaherong sasakyan sa mapanganib na lugar. Ano ang statutory maximum speed?",
+                optionsFil = listOf("20 km/h", "40 km/h", "80 km/h")
+            ),
+            QuizQuestion(
+                id = 28,
+                question = "A driver argues that a local government can freely establish a different maximum speed from the statutory limits in RA 4136. Which statement is correct under Section 36?",
+                options = listOf("The Act provides uniform statutory maximum speeds", "Any local authority can replace them without restriction", "Drivers may choose their own maximum"),
+                correctAnswerIndex = 0,
+                questionFil = "Maaari bang basta magpalit ang lokal na pamahalaan ng speed limits na sumasalungat sa RA 4136 Section 36?",
+                optionsFil = listOf("Ang RA 4136 ay nagbibigay ng unipormeng statutory maximum speeds na dapat gabay", "Maaari itong palitan ng sinumang opisyal nang walang limitasyon", "Maaaring pumili ang driver ng sariling bilis")
+            ),
+            QuizQuestion(
+                id = 29,
+                question = "Which driver may fall under a statutory exception to the prescribed speed rates?",
+                options = listOf("A driver racing friends", "A hospital ambulance responding to an emergency", "A private driver running late"),
+                correctAnswerIndex = 1,
+                questionFil = "Aling driver ang sakop ng statutory emergency speed exception sa ilalim ng Section 35?",
+                optionsFil = listOf("Driver na nakikipagkarera sa kaibigan", "Ambulansya ng ospital na rumeresponde sa emergency", "Pribadong driver na nahuhuli sa trabaho")
+            ),
+            QuizQuestion(
+                id = 30,
+                question = "A statutory emergency speed exception means the driver may:",
+                options = listOf("Drive recklessly without limitation", "Ignore all traffic rules", "Respond under the circumstances specified by law, without allowing useless or unnecessary fast driving"),
+                correctAnswerIndex = 2,
+                questionFil = "Ano ang ibig sabihin ng statutory emergency speed exception?",
+                optionsFil = listOf("Maaaring magmaneho nang reckless nang walang pananagutan", "Balewalain ang lahat ng patakaran sa trapiko", "Rumesponde ayon sa itinakda ng batas, nang hindi pinahihintulutan ang walang saysay o mapanganib na bilis")
+            ),
+            QuizQuestion(
+                id = 31,
+                question = "Before turning from a direct line, a driver must first determine that the movement:",
+                options = listOf("Can be made safely", "Will be faster than other traffic", "Requires no signal"),
+                correctAnswerIndex = 0,
+                questionFil = "Bago lumihis mula sa tuwid na linya (turning), ano ang unang dapat tiyakin ng driver?",
+                optionsFil = listOf("Na magagawa ang maniobra nang ligtas", "Na mas mabilis ito kaysa sa ibang trapiko", "Na hindi na kailangan ng signal")
+            ),
+            QuizQuestion(
+                id = 32,
+                question = "When starting, stopping, or turning could affect another vehicle, the driver must give:",
+                options = listOf("A plainly visible signal", "No signal if traffic is light", "Only a verbal warning"),
+                correctAnswerIndex = 0,
+                questionFil = "Kapag ang pagsisimula, paghinto, o pagliko ay maaaring makaapekto sa ibang sasakyan, dapat magbigay ang driver ng:",
+                optionsFil = listOf("Isang malinaw na nakikitang signal (turn light o hand signal)", "Walang signal kung kakaunti ang sasakyan", "Pasalitang babala lamang")
+            ),
+            QuizQuestion(
+                id = 33,
+                question = "A driver intending to turn right at an intersection should generally approach in:",
+                options = listOf("The lane nearest the right side of the highway", "The lane nearest the center line", "Any lane"),
+                correctAnswerIndex = 0,
+                questionFil = "Bago kumanan (right turn) sa interseksyon, saang linya dapat pumuwesto ang driver sa paglapit?",
+                optionsFil = listOf("Sa linyang pinakamalapit sa kanang gilid ng highway", "Sa linyang pinakamalapit sa center line", "Sa kahit saang linya")
+            ),
+            QuizQuestion(
+                id = 34,
+                question = "When making a right turn, the driver should keep:",
+                options = listOf("As close as possible to the right curb or edge", "As close as possible to the center line", "On the opposite side of the road"),
+                correctAnswerIndex = 0,
+                questionFil = "Habang lumiliko pakanan sa interseksyon, saan dapat manatili ang driver?",
+                optionsFil = listOf("Kasing lapit hangga't maaari sa kanang bangketa o gilid ng kalsada", "Kasing lapit hangga't maaari sa center line", "Sa kabilang linya ng kasalubong")
+            ),
+            QuizQuestion(
+                id = 35,
+                question = "A driver intending to turn left should generally approach in the lane:",
+                options = listOf("To the right of and nearest the center line", "Nearest the right curb", "Intended for parking"),
+                correctAnswerIndex = 0,
+                questionFil = "Bago lumiko pakaliwa (left turn) sa two-way road, saang linya dapat pumuwesto ang driver?",
+                optionsFil = listOf("Sa linyang nasa kanan at pinakamalapit sa center line", "Sa pinakakanang bangketa", "Sa paradahan")
+            ),
+            QuizQuestion(
+                id = 36,
+                question = "In making a normal left turn at an intersection, the vehicle should pass:",
+                options = listOf("To the left of the center of the intersection", "To the right of the center of the intersection", "Over the sidewalk"),
+                correctAnswerIndex = 0,
+                questionFil = "Sa normal na pagliko pakaliwa sa interseksyon, saan dapat dumaan ang sasakyan?",
+                optionsFil = listOf("Sa kaliwa ng gitna ng interseksyon (left of center)", "Sa kanan ng gitna ng interseksyon", "Sa ibabaw ng bangketa")
+            ),
+            QuizQuestion(
+                id = 37,
+                question = "On a one-way highway, a left turn should generally be made from:",
+                options = listOf("The left lane in the direction of travel", "The right shoulder", "Any opposing lane"),
+                correctAnswerIndex = 0,
+                questionFil = "Sa isang one-way highway, saan dapat isagawa ang pagliko pakaliwa?",
+                optionsFil = listOf("Mula sa pinakakaliwang linya sa direksyon ng biyahe", "Mula sa kanang shoulder", "Mula sa kasalubong na linya")
+            ),
+            QuizQuestion(
+                id = 38,
+                question = "A driver turns without checking whether the movement is safe. Which requirement has been violated?",
+                options = listOf("The duty to ensure the movement can be made safely", "The parking rule", "The vehicle registration rule"),
+                correctAnswerIndex = 0,
+                questionFil = "Lumiko ang driver nang hindi muna sinusuri kung ligtas ang maniobra. Aling panuntunan ang nilabag?",
+                optionsFil = listOf("Ang tungkuling tiyaking ligtas ang paggalaw bago lumiko", "Ang patakaran sa paradahan", "Ang patakaran sa rehistro ng sasakyan")
+            ),
+            QuizQuestion(
+                id = 39,
+                question = "A driver’s turn may affect a pedestrian. Under the traffic rules, the driver should also provide:",
+                options = listOf("A clearly audible signal when required", "A high-speed maneuver", "No warning"),
+                correctAnswerIndex = 0,
+                questionFil = "Ang pagliko ng driver ay maaaring makaapekto sa tumatawid na pedestrian. Dapat ding magbigay ang driver ng:",
+                optionsFil = listOf("Isang malinaw na maririnig na busina kung kinakailangan", "Isang mabilis na maniobra", "Walang anumang babala")
+            ),
+            QuizQuestion(
+                id = 40,
+                question = "Which is the safest interpretation of signaling before a maneuver?",
+                options = listOf("Signal only after completing the maneuver", "Signal the intention before making the movement", "Signal only when a police officer is present"),
+                correctAnswerIndex = 1,
+                questionFil = "Ano ang pinakaligtas na interpretasyon sa pagbibigay ng signal bago magmaniobra?",
+                optionsFil = listOf("Mag-signal lamang pagkatapos lumiko", "Ipaalam ang intensyon sa pamamagitan ng signal bago simulan ang paggalaw", "Mag-signal lamang kung may pulis")
+            ),
+            QuizQuestion(
+                id = 41,
+                question = "Parking within an intersection is:",
+                options = listOf("Allowed for less than one minute", "Prohibited", "Allowed with hazard lights"),
+                correctAnswerIndex = 1,
+                questionFil = "Ang pagparada sa loob ng isang interseksyon ay:",
+                optionsFil = listOf("Pinapayagan nang mas mababa sa isang minuto", "Ipinagbabawal", "Pinapayagan kapag may hazard lights")
+            ),
+            QuizQuestion(
+                id = 42,
+                question = "Parking directly on a crosswalk is:",
+                options = listOf("Prohibited", "Allowed at night", "Allowed when no pedestrian is present"),
+                correctAnswerIndex = 0,
+                questionFil = "Ang pagparada mismo sa ibabaw ng pedestrian crosswalk ay:",
+                optionsFil = listOf("Ipinagbabawal", "Pinapayagan sa gabi", "Pinapayagan kung walang pedestrian")
+            ),
+            QuizQuestion(
+                id = 43,
+                question = "How far from the intersection of curb lines is parking prohibited under Section 46?",
+                options = listOf("Within 2 meters", "Within 4 meters", "Within 6 meters"),
+                correctAnswerIndex = 2,
+                questionFil = "Gaano kalayo mula sa tagpuan ng mga linya ng bangketa (curb lines) sa interseksyon ipinagbabawal ang pagparada sa Section 46?",
+                optionsFil = listOf("Sa loob ng 2 metro", "Sa loob ng 4 na metro", "Sa loob ng 6 na metro")
+            ),
+            QuizQuestion(
+                id = 44,
+                question = "Parking within four meters of a fire hydrant is:",
+                options = listOf("Permitted", "Prohibited", "Required"),
+                correctAnswerIndex = 1,
+                questionFil = "Ang pagparada sa loob ng apat na metro mula sa isang fire hydrant ay:",
+                optionsFil = listOf("Pinapayagan", "Ipinagbabawal", "Kinakailangan")
+            ),
+            QuizQuestion(
+                id = 45,
+                question = "Parking within four meters of a fire station driveway is:",
+                options = listOf("Prohibited", "Allowed if the engine is running", "Allowed during daytime"),
+                correctAnswerIndex = 0,
+                questionFil = "Ang pagparada sa loob ng apat na metro mula sa driveway ng fire station ay:",
+                optionsFil = listOf("Ipinagbabawal", "Pinapayagan kung umaandar ang makina", "Pinapayagan sa araw")
+            ),
+            QuizQuestion(
+                id = 46,
+                question = "A driver parks directly in front of a private driveway. This is:",
+                options = listOf("Permitted if hazard lights are on", "Prohibited", "Required during emergencies"),
+                correctAnswerIndex = 1,
+                questionFil = "Pumarada ang driver sa tapat ng pribadong driveway. Ito ay:",
+                optionsFil = listOf("Pinapayagan kung may hazard lights", "Ipinagbabawal", "Kinakailangan sa emergency")
+            ),
+            QuizQuestion(
+                id = 47,
+                question = "A driver parks beside another vehicle in a way that leaves the parked vehicle on the roadway side. This is commonly called double parking and is:",
+                options = listOf("Prohibited under the specified parking rule", "Required on narrow streets", "Allowed if the driver stays inside"),
+                correctAnswerIndex = 0,
+                questionFil = "Pumarada ang driver sa tabi ng isa pang nakaparadang sasakyan (double parking). Ito ay:",
+                optionsFil = listOf("Ipinagbabawal sa ilalim ng panuntunan sa paradahan", "Kinakailangan sa makikitid na kalye", "Pinapayagan kung nasa loob ang driver")
+            ),
+            QuizQuestion(
+                id = 48,
+                question = "An official no-parking sign is posted. The driver should:",
+                options = listOf("Park there briefly", "Avoid parking there", "Park only with hazard lights"),
+                correctAnswerIndex = 1,
+                questionFil = "May nakapaskil na opisyal na 'NO PARKING' sign. Ang driver ay dapat:",
+                optionsFil = listOf("Pumarada roon sandali", "Iwasang pumarada roon", "Pumarada lamang gamit ang hazard lights")
+            ),
+            QuizQuestion(
+                id = 49,
+                question = "When an unattended vehicle is parked on a highway, the driver must:",
+                options = listOf("Leave the engine running", "Turn off the ignition and effectively apply the hand brake", "Leave the transmission in neutral only"),
+                correctAnswerIndex = 1,
+                questionFil = "Kapag ipinaparada ang sasakyan sa highway nang walang bantay, dapat gawin ng driver ang:",
+                optionsFil = listOf("Iwanang umaandar ang makina", "Patayin ang ignition at epektibong ikabit ang handbrake", "Iwanang naka-neutral lamang")
+            ),
+            QuizQuestion(
+                id = 50,
+                question = "A driver stops only long enough to quickly pick up a waiting passenger and immediately continues. Under the definition in RA 4136, this is generally:",
+                options = listOf("Not considered parking if done without delay", "Always considered parking", "Illegal in all situations"),
+                correctAnswerIndex = 0,
+                questionFil = "Huminto ang driver nang panandalian lamang upang mabilis na magpasakay ng naghihintay na pasahero at agad umalis. Sa RA 4136, ito ay:",
+                optionsFil = listOf("Hindi itinuturing na parking kung ginawa nang walang pagkaantala (loading/unloading)", "Palaging itinuturing na parking", "Ilegal sa lahat ng sitwasyon")
+            ),
+            QuizQuestion(
+                id = 51,
+                question = "An ambulance with an audible signal approaches while you are near an intersection. Where should you stop?",
+                options = listOf("As near as possible to the right-hand edge, clear of the intersection", "In the center of the intersection", "On the left side"),
+                correctAnswerIndex = 0,
+                questionFil = "Papalapit ang ambulansyang may sirena habang ikaw ay malapit sa interseksyon. Saan ka dapat huminto?",
+                optionsFil = listOf("Kasing lapit hangga't maaari sa kanang gilid, malayo sa interseksyon", "Sa gitna mismo ng interseksyon", "Sa kaliwang bahagi")
+            ),
+            QuizQuestion(
+                id = 52,
+                question = "A fire department vehicle approaches with an audible signal. Other drivers should:",
+                options = listOf("Compete for the same lane", "Yield and stop as required", "Follow it closely"),
+                correctAnswerIndex = 1,
+                questionFil = "Papalapit ang rumerespondeng bumbero na may sirena. Ang ibang driver ay dapat:",
+                optionsFil = listOf("Makipag-agawan sa linya", "Magbigay-daan at huminto ayon sa kinakailangan", "Buntutan ito nang malapitan")
+            ),
+            QuizQuestion(
+                id = 53,
+                question = "A police vehicle approaches on official business but gives no audible signal. Does Section 43 automatically impose the same audible-signal emergency right-of-way requirement?",
+                options = listOf("Yes, regardless of signal", "No; the provision specifies an audible signal", "Only if it is blue"),
+                correctAnswerIndex = 1,
+                questionFil = "Bumibiyahe ang police car sa opisyal na tungkulin ngunit WALANG tunog ng sirena. Awtomatiko bang ipinapataw ng Section 43 ang emergency right-of-way?",
+                optionsFil = listOf("Oo, kahit walang sirena", "Hindi; ang probisyon ay partikular na nagtatakda ng audible signal (sirena)", "Kung kulay asul lamang ito")
+            ),
+            QuizQuestion(
+                id = 54,
+                question = "An emergency vehicle is approaching, but a peace officer gives a different direction. The driver should:",
+                options = listOf("Follow the peace officer's direction", "Ignore the officer", "Follow another private vehicle"),
+                correctAnswerIndex = 0,
+                questionFil = "May paparating na emergency vehicle, ngunit may peace officer na nagbibigay ng ibang direksyon. Ano ang dapat sundin ng driver?",
+                optionsFil = listOf("Sundin ang direksyon ng peace officer", "Huwag pansinin ang opisyal", "Sundan ang ibang pribadong sasakyan")
+            ),
+            QuizQuestion(
+                id = 55,
+                question = "A driver encounters a road condition requiring slower speed even though the posted/statutory maximum is higher. What should the driver do?",
+                options = listOf("Always drive at the maximum", "Adjust speed according to safety and road conditions", "Accelerate"),
+                correctAnswerIndex = 1,
+                questionFil = "May mapanganib na kondisyon sa daan na nangangailangan ng mabagal na takbo kahit mataas ang speed limit. Ano ang dapat gawin?",
+                optionsFil = listOf("Palaging magpatakbo sa maximum speed", "Iangkop ang bilis ayon sa kaligtasan at kondisyon ng kalsada", "Bumilis lalo")
+            ),
+            QuizQuestion(
+                id = 56,
+                question = "Which action is most consistent with the reckless-driving prohibition?",
+                options = listOf("Adjusting speed for visibility and traffic conditions", "Driving in a manner that endangers people or property", "Maintaining reasonable caution"),
+                correctAnswerIndex = 1,
+                questionFil = "Aling aksyon ang pinakatumutugma sa pagbabawal sa reckless driving (walang ingat na pagmamaneho)?",
+                optionsFil = listOf("Pag-aangkop ng bilis sa trapiko at panahon", "Pagmamaneho sa paraang naglalagay sa panganib sa tao o ari-arian", "Pagpapanatili ng makatwirang pag-iingat")
+            ),
+            QuizQuestion(
+                id = 57,
+                question = "A driver deliberately drives aggressively through heavy traffic and creates danger for other road users. This may constitute:",
+                options = listOf("Defensive driving", "Reckless driving", "Proper overtaking"),
+                correctAnswerIndex = 1,
+                questionFil = "Sinadyang magmaneho nang agresibo ng driver sa masikip na trapiko na nagdulot ng peligro sa iba. Ito ay maituturing na:",
+                optionsFil = listOf("Defensive driving", "Reckless driving (Section 48)", "Tamang pag-overtake")
+            ),
+            QuizQuestion(
+                id = 58,
+                question = "A driver uses a sidewalk as a shortcut to avoid traffic. Under RA 4136, this is:",
+                options = listOf("Permitted when traffic is heavy", "Prohibited", "Required during congestion"),
+                correctAnswerIndex = 1,
+                questionFil = "Ginamit ng driver ang bangketa (sidewalk) bilang shortcut upang makaiwas sa trapiko. Sa RA 4136, ito ay:",
+                optionsFil = listOf("Pinapayagan kung masikip ang trapiko", "Ipinagbabawal", "Kinakailangan tuwing rush hour")
+            ),
+            QuizQuestion(
+                id = 59,
+                question = "A driver stops in a way that blocks the free passage of other vehicles while loading passengers. This may violate the rule against:",
+                options = listOf("Obstruction of traffic", "Overtaking", "Right-side driving"),
+                correctAnswerIndex = 0,
+                questionFil = "Huminto ang driver sa paraang humaharang sa malayang daanan ng ibang sasakyan habang nagpapasakay. Nilabag nito ang:",
+                optionsFil = listOf("Obstruction of traffic (Section 54)", "Overtaking rule", "Right-side driving rule")
+            ),
+            QuizQuestion(
+                id = 60,
+                question = "A passenger hangs on the outside rear portion of a moving vehicle. The driver knowingly permits it. This is:",
+                options = listOf("Allowed at low speed", "Prohibited", "Allowed in residential areas"),
+                correctAnswerIndex = 1,
+                questionFil = "May pasaherong nakakapit o nakasabit sa labas na likurang bahagi ng umaandar na sasakyan nang may pahintulot ng driver. Ito ay:",
+                optionsFil = listOf("Pinapayagan sa mabagal na bilis", "Ipinagbabawal (Section 51)", "Pinapayagan sa residential areas")
+            ),
+            QuizQuestion(
+                id = 61,
+                question = "After a vehicular accident, the driver present should provide:",
+                options = listOf("Only the vehicle plate number", "Driver's license, true name, and address, plus the owner's true name and address", "Only an insurance policy"),
+                correctAnswerIndex = 1,
+                questionFil = "Matapos ang aksidente sa kalsada, ano ang dapat ibigay ng driver na sangkot?",
+                optionsFil = listOf("Plate number lamang", "Driver's license, tunay na pangalan at tirahan, at tunay na pangalan at tirahan ng may-ari", "Insurance policy lamang")
+            ),
+            QuizQuestion(
+                id = 62,
+                question = "A driver involved in an accident leaves immediately without assisting the victim or meeting a legal exception. This may violate the driver's duty to:",
+                options = listOf("Remain and aid the victim", "Overtake another vehicle", "Park on the sidewalk"),
+                correctAnswerIndex = 0,
+                questionFil = "Umalis agad ang driver sa pinangyarihan ng aksidente nang hindi tinutulungan ang biktima at walang legal na exception. Nilabag nito ang:",
+                optionsFil = listOf("Tungkuling manatili at tumulong sa biktima (Duty in case of accident)", "Tungkulin sa pag-overtake", "Tungkulin sa bangketa")
+            ),
+            QuizQuestion(
+                id = 63,
+                question = "Which is an exception that may justify leaving the accident scene?",
+                options = listOf("The driver wants to avoid traffic", "The driver is in imminent danger of serious harm", "The driver does not want to wait"),
+                correctAnswerIndex = 1,
+                questionFil = "Alin sa mga sumusunod ang legal na eksepsiyon na nagpapahintulot sa driver na pansamantalang umalis sa aksidente?",
+                optionsFil = listOf("Gusto ng driver na makaiwas sa trapiko", "Ang driver ay nasa napipintong panganib ng malubhang pananakit (imminent danger)", "Ayaw maghintay ng driver")
+            ),
+            QuizQuestion(
+                id = 64,
+                question = "After an accident, a driver may leave the scene to:",
+                options = listOf("Buy food", "Summon a physician or nurse to aid the victim", "Repair the vehicle immediately"),
+                correctAnswerIndex = 1,
+                questionFil = "Matapos ang aksidente, pinapayagan ang driver na umalis sa pinangyarihan upang:",
+                optionsFil = listOf("Bumili ng pagkain", "Tumawag o magdala ng doktor o nars upang saklolohan ang biktima", "Ipaayos agad ang sasakyan")
+            ),
+            QuizQuestion(
+                id = 65,
+                question = "A driver leaves an accident scene to report the accident to the nearest law officer. This is:",
+                options = listOf("One of the specified exceptions", "Always prohibited", "Considered reckless overtaking"),
+                correctAnswerIndex = 0,
+                questionFil = "Umalis ang driver sa pinangyarihan ng aksidente upang agad itong i-report sa pinakamalapit na opisyal ng batas. Ito ay:",
+                optionsFil = listOf("Isa sa mga kinikilalang legal na eksepsiyon sa Section 55", "Palaging ilegal", "Itinuturing na reckless overtaking")
+            ),
+            QuizQuestion(
+                id = 66,
+                question = "Which information must an accident-involved driver provide under Section 55?",
+                options = listOf("Only the driver's nickname", "True name and address and relevant owner information", "Only the vehicle color"),
+                correctAnswerIndex = 1,
+                questionFil = "Anong impormasyon ang DAPAT ibigay ng driver na nasangkot sa aksidente ayon sa Section 55?",
+                optionsFil = listOf("Palayaw lamang", "Tunay na pangalan, tirahan, at impormasyon ng may-ari ng sasakyan", "Kulay lamang ng sasakyan")
+            ),
+            QuizQuestion(
+                id = 67,
+                question = "A driver causes an accident and refuses to identify himself to the authorities. Which duty is potentially violated?",
+                options = listOf("Duty of a driver involved in an accident", "Parking duty only", "Overtaking duty only"),
+                correctAnswerIndex = 0,
+                questionFil = "Nagdulot ng aksidente ang driver at tumangging magpakilala sa mga awtoridad. Aling tungkulin ang nilabag?",
+                optionsFil = listOf("Tungkulin ng driver na nasangkot sa aksidente (Section 55)", "Tungkulin sa paradahan lamang", "Tungkulin sa pag-overtake lamang")
+            ),
+            QuizQuestion(
+                id = 68,
+                question = "A driver leaves the scene solely because he is afraid of receiving a traffic ticket. Is this one of the listed exceptions?",
+                options = listOf("Yes", "No", "Only at night"),
+                correctAnswerIndex = 1,
+                questionFil = "Umalis ang driver sa aksidente dahil natatakot lamang siyang matiketan ng traffic violation. Ito ba ay legal na eksepsiyon?",
+                optionsFil = listOf("Oo", "Hindi", "Sa gabi lamang")
+            ),
+            QuizQuestion(
+                id = 69,
+                question = "Which situation most clearly satisfies the purpose of the accident-scene duty?",
+                options = listOf("Providing or obtaining necessary assistance for an injured victim", "Leaving immediately to avoid responsibility", "Moving to another city"),
+                correctAnswerIndex = 0,
+                questionFil = "Aling sitwasyon ang pinakamalinaw na tumutugon sa layunin ng tungkulin sa aksidente?",
+                optionsFil = listOf("Pagbibigay o pagkuha ng kinakailangang tulong para sa nasugatang biktima", "Agad na pagtakas upang makaiwas sa pananagutan", "Paglipat sa ibang lungsod")
+            ),
+            QuizQuestion(
+                id = 70,
+                question = "A driver involved in an accident needs medical assistance for the victim and leaves specifically to summon a physician. Under Section 55, this may be:",
+                options = listOf("A recognized exception", "Automatically illegal", "Considered parking"),
+                correctAnswerIndex = 0,
+                questionFil = "Kailangan ng biktima ng agarang medikal na tulong at umalis ang driver partikular upang tumawag ng doktor. Sa Section 55, ito ay:",
+                optionsFil = listOf("Isang kinikilalang legal na eksepsiyon", "Awtomatikong ilegal", "Itinuturing na parking violation")
+            ),
+            QuizQuestion(
+                id = 71,
+                question = "Two vehicles arrive at an intersection simultaneously. Your vehicle is on the left. Even if you believe you can cross first, the legal default is to:",
+                options = listOf("Yield to the vehicle on the right", "Accelerate", "Sound the horn and proceed"),
+                correctAnswerIndex = 0,
+                questionFil = "Sabay na dumating sa interseksyon ang dalawang sasakyan. Nasa kaliwa ang iyong sasakyan. Kahit sa tingin mo ay kaya mong mauna, ano ang legal na default?",
+                optionsFil = listOf("Magbigay-daan sa sasakyang nasa kanan", "Bumilis", "Bumusina at dumiretso")
+            ),
+            QuizQuestion(
+                id = 72,
+                question = "You are approaching a crosswalk and see a pedestrian already crossing. The safest legal decision is to:",
+                options = listOf("Continue because the vehicle is larger", "Yield", "Overtake another vehicle"),
+                correctAnswerIndex = 1,
+                questionFil = "Papalapit ka sa crosswalk at may pedestrian na tumatawid na. Ano ang pinakaligtas at legal na desisyon?",
+                optionsFil = listOf("Magpatuloy dahil mas malaki ang sasakyan", "Magbigay-daan at huminto", "I-overtake ang ibang sasakyan")
+            ),
+            QuizQuestion(
+                id = 73,
+                question = "You are about to overtake, but the oncoming lane is not clearly visible. What should you do?",
+                options = listOf("Overtake quickly", "Wait until it is clearly visible and safe", "Sound the horn and cross"),
+                correctAnswerIndex = 1,
+                questionFil = "Mao-overtake ka ngunit hindi malinaw na tanaw ang kasalubong na linya. Ano ang dapat mong gawin?",
+                optionsFil = listOf("Mabilis na mag-overtake", "Maghintay hanggang maging malinaw at ligtas ang pananaw", "Bumusina at tumawid sa linya")
+            ),
+            QuizQuestion(
+                id = 74,
+                question = "You are behind a slow vehicle near the crest of a hill. What is the best legal decision?",
+                options = listOf("Overtake immediately", "Wait until overtaking can be done legally and safely", "Use the shoulder"),
+                correctAnswerIndex = 1,
+                questionFil = "Nasa likod ka ng mabagal na sasakyan malapit sa tuktok ng burol. Ano ang pinakamahusay na legal na desisyon?",
+                optionsFil = listOf("Mag-overtake agad", "Maghintay hanggang sa makalagpas sa tuktok kung saan legal at ligtas na", "Gamitin ang shoulder")
+            ),
+            QuizQuestion(
+                id = 75,
+                question = "You are approaching a railway crossing and want to pass a slower vehicle. What should you do?",
+                options = listOf("Overtake before reaching the crossing", "Do not overtake at the railway crossing", "Use the opposite shoulder"),
+                correctAnswerIndex = 1,
+                questionFil = "Papalapit ka sa tawiran ng tren (railway crossing) at nais mong lagpasan ang mabagal na sasakyan. Ano ang dapat gawin?",
+                optionsFil = listOf("Mag-overtake bago marating ang tawiran", "Huwag mag-overtake sa railway crossing", "Gamitin ang kabilang shoulder")
+            ),
+            QuizQuestion(
+                id = 76,
+                question = "You see temporary signs indicating highway workers ahead. A vehicle in front is moving slowly. What should you do?",
+                options = listOf("Overtake within the restricted area", "Avoid overtaking between the warning points", "Drive on the sidewalk"),
+                correctAnswerIndex = 1,
+                questionFil = "May mga pansamantalang babala na may highway workers sa unahan. Mabagal ang sasakyan sa harap. Ano ang dapat mong gawin?",
+                optionsFil = listOf("Mag-overtake sa loob ng restricted zone", "Iwasang mag-overtake sa pagitan ng mga babalang karatula", "Magmaneho sa bangketa")
+            ),
+            QuizQuestion(
+                id = 77,
+                question = "You are entering a highway from a private driveway and see a motorcycle approaching. Who has priority?",
+                options = listOf("Your vehicle because you are entering", "The motorcycle already on the highway", "Whoever sounds the horn first"),
+                correctAnswerIndex = 1,
+                questionFil = "Papasok ka sa highway mula sa pribadong driveway at may paparating na motorsiklo. Sino ang may prayoridad?",
+                optionsFil = listOf("Ang iyong sasakyan dahil ikaw ang pumapasok", "Ang motorsiklong nasa highway na", "Kung sino ang unang bumusina")
+            ),
+            QuizQuestion(
+                id = 78,
+                question = "You are approaching a through highway. Traffic appears light. What should you do before entering?",
+                options = listOf("Yield as required and ensure it is safe", "Enter without slowing", "Assume through traffic will stop"),
+                correctAnswerIndex = 0,
+                questionFil = "Papalapit ka sa through highway at tila maluwag ang trapiko. Ano ang dapat gawin bago pumasok?",
+                optionsFil = listOf("Magbigay-daan ayon sa batas at tiyaking ligtas", "Pumasok nang hindi nagbabagal", "Ipagpalagay na hihinto ang trapiko sa highway")
+            ),
+            QuizQuestion(
+                id = 79,
+                question = "You are traveling at the statutory maximum but visibility suddenly becomes poor. What is the proper decision?",
+                options = listOf("Maintain maximum speed because it is legal", "Reduce speed as needed for safety", "Accelerate through the area"),
+                correctAnswerIndex = 1,
+                questionFil = "Bumibiyahe ka sa statutory maximum speed ngunit biglang lumabo ang paningin dahil sa sama ng panahon. Ano ang tamang desisyon?",
+                optionsFil = listOf("Panatilihin ang bilis dahil legal naman ito", "Bawasan ang bilis ayon sa kinakailangan para sa kaligtasan", "Bumilis upang makalabas agad sa lugar")
+            ),
+            QuizQuestion(
+                id = 80,
+                question = "You are carrying passengers and need to stop briefly, but your vehicle would block moving traffic. What should you prioritize?",
+                options = listOf("Avoid obstructing traffic", "Stop wherever convenient", "Stop in the middle of the lane"),
+                correctAnswerIndex = 0,
+                questionFil = "May sakay kang pasahero at kailangang huminto sandali, ngunit mahaharangan ang gumagalaw na trapiko. Ano ang dapat mong unahin?",
+                optionsFil = listOf("Iwasang makaharang sa trapiko (Section 54)", "Huminto kahit saan maginhawa", "Huminto sa gitna ng linya")
+            ),
+            QuizQuestion(
+                id = 81,
+                question = "Vehicle A is approaching an intersection from the left. Vehicle B is already inside the intersection and turning left across A's path with a visible signal. Who should yield?",
+                options = listOf("Vehicle A", "Vehicle B", "Neither"),
+                correctAnswerIndex = 0,
+                questionFil = "Papalapit ang Sasakyan A sa interseksyon mula sa kaliwa. Ang Sasakyan B ay nasa loob na ng interseksyon at lumiliko pakaliwa na may malinaw na signal. Sino ang dapat magbigay-daan?",
+                optionsFil = listOf("Sasakyan A", "Sasakyan B", "Wala sa dalawa")
+            ),
+            QuizQuestion(
+                id = 82,
+                question = "Vehicle A is traveling above the lawful speed and reaches an intersection at the same time as Vehicle B on its right. Can A claim the normal right-of-way?",
+                options = listOf("Yes, because A arrived first", "No, unlawful speed can cause forfeiture of right-of-way", "Yes, if A sounds the horn"),
+                correctAnswerIndex = 1,
+                questionFil = "Ang Sasakyan A ay nagpapatakbo nang lampas sa speed limit at sabay na nakarating sa interseksyon sa Sasakyan B na nasa kanyang kanan. Maaari bang igiit ni A ang normal na right-of-way?",
+                optionsFil = listOf("Oo, dahil nauna si A", "Hindi, ang labag sa batas na bilis ay nagdudulot ng pagkawala (forfeiture) ng right-of-way", "Oo, kung bubusina si A")
+            ),
+            QuizQuestion(
+                id = 83,
+                question = "A driver approaches a curve with an obstructed view but the road has two or more lanes moving in the same direction. Which statement is most accurate?",
+                options = listOf("The general prohibition has an exception for passing on such multi-lane roads under the conditions stated in the law", "Passing is always prohibited in every circumstance", "Passing is required"),
+                correctAnswerIndex = 0,
+                questionFil = "Papalapit ang driver sa kurbadang limitado ang paningin ngunit may 2 o higit pang linyang pareho ang direksyon. Aling pahayag ang pinakatumpak?",
+                optionsFil = listOf("Ang pangkalahatang pagbabawal ay may eksepsiyon para sa paglagpas sa kalsadang may maraming linya ayon sa batas", "Palaging bawal mag-overtake sa anumang sitwasyon", "Obligadong mag-overtake")
+            ),
+            QuizQuestion(
+                id = 84,
+                question = "A driver wants to pass another vehicle at an intersection. The intersection is controlled by a traffic signal. Under Section 41, this situation may fall under:",
+                options = listOf("An exception to the general intersection overtaking prohibition", "An absolute prohibition with no exception", "A parking violation"),
+                correctAnswerIndex = 0,
+                questionFil = "Nais lagpasan ng driver ang sasakyan sa interseksyon na kontrolado ng traffic signal. Sa ilalim ng Section 41, ito ay:",
+                optionsFil = listOf("Isang legal na eksepsiyon sa pangkalahatang pagbabawal sa pag-overtake sa interseksyon", "Isang ganap na pagbabawal na walang eksepsiyon", "Isang parking violation")
+            ),
+            QuizQuestion(
+                id = 85,
+                question = "A driver wants to pass on the right because the vehicle ahead is about to make a left turn. Under RA 4136, this maneuver may be permitted when:",
+                options = listOf("It can be done safely and under the applicable rule", "The driver is speeding", "The road is a sidewalk"),
+                correctAnswerIndex = 0,
+                questionFil = "Nais lagpasan ng driver sa kanan ang sasakyan sa unahan na liliko pakaliwa. Sa RA 4136, pinapayagan ito kapag:",
+                optionsFil = listOf("Magagawa ito nang ligtas at sa ilalim ng angkop na patakaran (Section 39)", "Mabilis ang takbo ng driver", "Bangketa ang kalsada")
+            ),
+            QuizQuestion(
+                id = 86,
+                question = "You are overtaking a vehicle and have not yet safely cleared it. When should you return to the right side?",
+                options = listOf("Immediately after entering the opposite lane", "Only after safely clearing the overtaken vehicle", "Before passing it"),
+                correctAnswerIndex = 1,
+                questionFil = "Nag-o-overtake ka at hindi mo pa ganap na nalalagpasan ang kabilang sasakyan. Kailan ka dapat bumalik sa kanang linya?",
+                optionsFil = listOf("Agad pagkapasok sa kabilang linya", "Kapag ligtas at malinaw nang nakalagpas sa sasakyan", "Bago ito malagpasan")
+            ),
+            QuizQuestion(
+                id = 87,
+                question = "A driver is about to be overtaken and accelerates to prevent the other vehicle from passing. This is:",
+                options = listOf("Correct defensive driving", "Contrary to the rule requiring the overtaken driver not to increase speed until completely passed", "Required by RA 4136"),
+                correctAnswerIndex = 1,
+                questionFil = "Mao-overtake ang isang driver at binilisan niya ang takbo upang pigilan ang kabilang sasakyan na makalagpas. Ito ay:",
+                optionsFil = listOf("Tamang defensive driving", "Labag sa patakarang nagbabawal sa pagpapabilis hanggang ganap na makalagpas ang nag-o-overtake", "Iniaatas ng RA 4136")
+            ),
+            QuizQuestion(
+                id = 88,
+                question = "A driver is approaching a blind corner and sees a stopped vehicle ahead. Which consideration is most important?",
+                options = listOf("The higher statutory speed", "The dangerous road condition requiring reduced speed", "The vehicle's engine power"),
+                correctAnswerIndex = 1,
+                questionFil = "Papalapit ang driver sa blind corner at may nakitang nakahintong sasakyan. Aling konsiderasyon ang pinakamahalaga?",
+                optionsFil = listOf("Ang mas mataas na statutory speed", "Ang mapanganib na kondisyon ng daan na nag-aatas ng pinababang bilis (20 km/h)", "Ang lakas ng makina ng sasakyan")
+            ),
+            QuizQuestion(
+                id = 89,
+                question = "A driver parks four meters from a fire hydrant but the vehicle is unattended. Is the parking permitted?",
+                options = listOf("Yes, because it is exactly four meters away", "No, because parking within four meters is prohibited", "Yes, if hazard lights are on"),
+                correctAnswerIndex = 1,
+                questionFil = "Pumarada ang driver nang 4 na metro mula sa fire hydrant at iniwang walang bantay. Pinapayagan ba ang paradahan?",
+                optionsFil = listOf("Oo, dahil sakto itong 4 na metro", "Hindi, dahil ipinagbabawal ang pagparada sa loob ng 4 na metro", "Oo, kung may hazard lights")
+            ),
+            QuizQuestion(
+                id = 90,
+                question = "A vehicle is parked within six meters of an intersection's curb-line intersection. The driver argues that the road is empty. Is the parking still prohibited?",
+                options = listOf("Yes", "No", "Only during rush hour"),
+                correctAnswerIndex = 0,
+                questionFil = "Pumarada ang sasakyan sa loob ng 6 na metro mula sa kanto ng interseksyon. Iginiit ng driver na bakante naman ang kalye. Ipinagbabawal pa rin ba ito?",
+                optionsFil = listOf("Oo", "Hindi", "Tuwing rush hour lamang")
+            ),
+            QuizQuestion(
+                id = 91,
+                question = "Which combination is correct?",
+                options = listOf("Crosswalk—pedestrian right-of-way; private driveway—entering vehicle yields", "Crosswalk—vehicle always has priority; private driveway—entering vehicle has priority", "Both are always controlled by the faster vehicle"),
+                correctAnswerIndex = 0,
+                questionFil = "Aling kumbinasyon ang TAMA ayon sa batas-trapiko?",
+                optionsFil = listOf("Crosswalk — pedestrian ang may right-of-way; Pribadong driveway — ang pumapasok na sasakyan ang magbibigay-daan", "Crosswalk — sasakyan ang may prayoridad; Driveway — pumapasok na sasakyan ang may prayoridad", "Pareho silang kontrolado ng mas mabilis na sasakyan")
+            ),
+            QuizQuestion(
+                id = 92,
+                question = "Which situation can cause a driver to lose an otherwise available right-of-way?",
+                options = listOf("Traveling at an unlawful speed", "Driving slowly", "Using a signal"),
+                correctAnswerIndex = 0,
+                questionFil = "Aling sitwasyon ang maaaring maging dahilan upang MAWALA ng driver ang kanyang right-of-way?",
+                optionsFil = listOf("Pagmamaneho sa labag sa batas na bilis (unlawful speed)", "Mabagal na pagpapatakbo", "Paggamit ng turn signal")
+            ),
+            QuizQuestion(
+                id = 93,
+                question = "Which combination correctly describes overtaking?",
+                options = listOf("Generally pass left; return right only after safely clearing", "Always pass right; return left immediately", "Pass on any side without checking traffic"),
+                correctAnswerIndex = 0,
+                questionFil = "Aling kumbinasyon ang wastong naglalarawan ng pag-overtake?",
+                optionsFil = listOf("Karaniwang mag-overtake sa kaliwa; bumalik sa kanan kapag ligtas at malinaw nang nakalagpas", "Palaging mag-overtake sa kanan; bumalik agad sa kaliwa", "Mag-overtake sa alinmang panig nang hindi tumitingin")
+            ),
+            QuizQuestion(
+                id = 94,
+                question = "Which situation is specifically prohibited?",
+                options = listOf("Overtaking within a no-passing zone", "Waiting for a safe passing opportunity", "Yielding to an overtaking vehicle"),
+                correctAnswerIndex = 0,
+                questionFil = "Aling sitwasyon ang partikular na IPINAGBABAWAL sa batas?",
+                optionsFil = listOf("Pag-overtake sa loob ng isang no-passing zone", "Paghintay sa ligtas na pagkakataon sa pag-overtake", "Pagbibigay-daan sa nag-o-overtake na sasakyan")
+            ),
+            QuizQuestion(
+                id = 95,
+                question = "A driver wants to make a left turn at a normal two-way intersection. Which approach is generally correct?",
+                options = listOf("Approach in the lane to the right of and nearest the center line", "Approach from the far-right lane", "Approach from the shoulder"),
+                correctAnswerIndex = 0,
+                questionFil = "Nais lumiko pakaliwa ng driver sa normal na two-way intersection. Aling paglapit ang tama?",
+                optionsFil = listOf("Lumapit sa linyang nasa kanan at pinakamalapit sa center line", "Lumapit mula sa pinakakanang linya", "Lumapit mula sa shoulder")
+            ),
+            QuizQuestion(
+                id = 96,
+                question = "Which combination contains only places where parking is prohibited under Section 46?",
+                options = listOf("Crosswalk, intersection, in front of a private driveway", "Legal parking area, private garage, designated parking space", "Open parking lot, legal shoulder, private garage"),
+                correctAnswerIndex = 0,
+                questionFil = "Aling kumbinasyon ang naglalaman LAMANG ng mga lugar kung saan bawal pumarada sa ilalim ng Section 46?",
+                optionsFil = listOf("Crosswalk, intersection, tapat ng pribadong driveway", "Legal parking area, pribadong garahe, designated parking space", "Bukas na parking lot, legal shoulder, garahe")
+            ),
+            QuizQuestion(
+                id = 97,
+                question = "A driver hears an ambulance's audible signal while approaching an intersection. Which sequence is most appropriate?",
+                options = listOf("Stop clear of the intersection near the right edge and allow the ambulance to pass", "Stop in the center and wait", "Race the ambulance through the intersection"),
+                correctAnswerIndex = 0,
+                questionFil = "Narinig ng driver ang sirena ng ambulansya habang papalapit sa interseksyon. Aling hakbang ang pinaka-angkop?",
+                optionsFil = listOf("Huminto sa kanang gilid ng kalsada malayo sa interseksyon at hayaang makadaan ang ambulansya", "Huminto sa gitna at maghintay", "Makipagkarera sa ambulansya sa interseksyon")
+            ),
+            QuizQuestion(
+                id = 98,
+                question = "Which action best follows the rule against obstruction of traffic?",
+                options = listOf("Loading passengers while blocking the free passage of vehicles", "Loading or unloading without unnecessarily blocking traffic", "Stopping in the middle of the roadway whenever convenient"),
+                correctAnswerIndex = 1,
+                questionFil = "Aling aksyon ang pinakamahusay na sumusunod sa patakaran laban sa obstruction of traffic?",
+                optionsFil = listOf("Pagsasakay ng pasahero habang humaharang sa daan", "Pagsasakay o pagbababa nang hindi kinakailangang humaharang sa trapiko", "Paghinto sa gitna ng kalsada kahit kailan maginhawa")
+            ),
+            QuizQuestion(
+                id = 99,
+                question = "Which situation is most consistent with RA 4136's reckless-driving prohibition?",
+                options = listOf("Driving with reasonable caution according to traffic and road conditions", "Operating a vehicle recklessly in a manner that endangers persons or property", "Reducing speed near a dangerous area"),
+                correctAnswerIndex = 1,
+                questionFil = "Aling sitwasyon ang pinakatumutugma sa pagbabawal sa reckless driving sa RA 4136?",
+                optionsFil = listOf("Pagmamaneho nang may makatwirang pag-iingat ayon sa trapiko", "Pagpapatakbo nang walang ingat na naglalagay sa panganib sa mga tao o ari-arian", "Pagbabawas ng bilis malapit sa mapanganib na lugar")
+            ),
+            QuizQuestion(
+                id = 100,
+                question = "A driver must choose between legally overtaking a vehicle and waiting because visibility is insufficient. What is the best decision?",
+                options = listOf("Wait until the maneuver can be completed safely and legally", "Overtake immediately because traffic is slow", "Use the sidewalk to pass"),
+                correctAnswerIndex = 0,
+                questionFil = "Dapat pumili ang driver sa pagitan ng pag-overtake o paghintay dahil hindi malinaw ang pananaw sa kalsada. Ano ang pinakamahusay na desisyon?",
+                optionsFil = listOf("Maghintay hanggang sa magawa ang maniobra nang ligtas at legal", "Mag-overtake agad dahil mabagal ang trapiko", "Gamitin ang bangketa upang lumagpas")
             )
         )
     )

@@ -91,7 +91,7 @@ const DEFAULT_MOBILE_MODULES = [
     {
         id: "mod_hard_quiz",
         title: "🔴 Hard Quiz",
-        description: "20 advanced situational questions on right-of-way, night driving, skid control, and multi-hazard intersections.",
+        description: "100 LTO-based question pool (20 randomly selected per attempt) covering RA 4136 statutory provisions, complex right-of-way, accident duties, and emergency procedures.",
         typeBadge: "HARD MODULE",
         xpReward: "+300 XP",
         enabled: true
@@ -316,550 +316,107 @@ const DEFAULT_QUESTIONS = [
     { id: "q_m99", text: "Why should hazard lights not be used as a substitute for proper signaling while driving normally?", options: ["They can confuse other road users about the vehicle's intentions", "They make the vehicle faster", "They replace all traffic signs"], correct: 0, difficulty: "Medium", topic: "Vehicle Communication", points: 20, exp: "Ang hazard lights ay para lamang sa mga nakahintong sasakyan sa emergency; ang paggamit nito habang tumatakbo ay nagdudulot ng kalituhan." },
     { id: "q_m100", text: "What is the best response when a sudden hazard appears ahead?", options: ["Stay calm, assess the situation, and take safe corrective action", "Panic and turn sharply without checking", "Accelerate toward the hazard"], correct: 0, difficulty: "Medium", topic: "Defensive Driving", points: 20, exp: "Ang mahinahong pagtatasa at kontroladong pagpepreno o pag-iwas ang pinakamabisang paraan upang maiwasan ang sakuna." },
 
-    // 🔴 HARD MODULE (20 Questions)
-    { id: "q_h1", text: "You approach an intersection with no traffic signal. Another vehicle is already approaching from a direction that has the applicable right-of-way. What should you do?", options: ["Accelerate to reach the intersection first", "Yield according to the applicable right-of-way rule", "Ignore the vehicle", "Use the shoulder"], correct: 1, difficulty: "Hard", topic: "Right-of-Way", points: 30, exp: "Under R.A. 4136, at uncontrolled intersections, vehicles on the right or already within have priority." },
-    { id: "q_h2", text: "You are driving at night and an oncoming vehicle has bright headlights. What is the safest response?", options: ["Look directly into the headlights", "Reduce speed as necessary and avoid being blinded by staring at the lights", "Turn your headlights off", "Accelerate toward the vehicle"], correct: 1, difficulty: "Hard", topic: "Night & Low Visibility Driving", points: 30, exp: "Look toward the right edge line of the roadway to guide your steering without retinal glare blindness." },
-    { id: "q_h3", text: "You are approaching a curve where you cannot see vehicles coming from the opposite direction. Should you overtake?", options: ["Yes, if you honk", "No, because visibility is insufficient", "Yes, if you accelerate", "Yes, if the vehicle ahead is slow"], correct: 1, difficulty: "Hard", topic: "Lane Changing & Overtaking", points: 30, exp: "Overtaking on blind curves is strictly prohibited by law due to zero forward sight distance." },
-    { id: "q_h4", text: "You are driving in heavy rain and notice water accumulating on the road. What is the safest approach?", options: ["Increase speed to cross quickly", "Reduce speed and maintain control", "Follow the vehicle ahead closely", "Make sudden steering movements"], correct: 1, difficulty: "Hard", topic: "Weather & Hazard Driving", points: 30, exp: "Standing water causes hydroplaning (loss of tire-pavement contact); ease off the throttle smoothly." },
-    { id: "q_h5", text: "You are approaching an intersection while an emergency vehicle is approaching with its warning devices activated. What should you do?", options: ["Compete for the intersection", "Give way as required and avoid obstructing it", "Follow closely behind it", "Overtake it"], correct: 1, difficulty: "Hard", topic: "Emergency Vehicles & Sirens", points: 30, exp: "Pull over as close as possible to the right side of the road and halt until emergency vehicles pass." },
-    { id: "q_h6", text: "You are preparing to overtake, but the road markings and traffic conditions do not permit a safe maneuver. What should you do?", options: ["Overtake anyway", "Wait until overtaking is legal and safe", "Drive on the sidewalk", "Use the opposite lane regardless of conditions"], correct: 1, difficulty: "Hard", topic: "Lane Changing & Overtaking", points: 30, exp: "Solid white or yellow centerlines strictly forbid passing; exercise patience until marked broken zones." },
-    { id: "q_h7", text: "A vehicle suddenly enters your lane from a side road. What should be your first priority?", options: ["Maintain safety and avoid collision", "Sound the horn continuously", "Accelerate toward the vehicle", "Chase the vehicle"], correct: 0, difficulty: "Hard", topic: "Defensive Driving", points: 30, exp: "Execute controlled braking and maneuver into your safety escape cushion to prevent collision." },
-    { id: "q_h8", text: "You are driving behind a large truck that blocks your view of the road ahead. What should you do?", options: ["Follow extremely closely", "Increase following distance to improve visibility and reaction time", "Overtake immediately without checking", "Drive beside the truck indefinitely"], correct: 1, difficulty: "Hard", topic: "Following Distance", points: 30, exp: "Dropping back widens your viewing angle around the truck body and avoids truck blind spots (No-Zones)." },
-    { id: "q_h9", text: "You miss your intended turn on a busy road. What is the safest choice?", options: ["Stop and reverse immediately", "Continue safely and find a legal place to turn or reroute", "Make a sudden U-turn", "Drive against traffic"], correct: 1, difficulty: "Hard", topic: "Defensive Driving", points: 30, exp: "Never stop or reverse on active roadways; proceed to the next roundabout or legal U-turn slot." },
-    { id: "q_h10", text: "You are approaching a pedestrian crossing while another vehicle in the adjacent lane has stopped. Why should you be cautious?", options: ["A pedestrian may be hidden from your view", "The road is always empty", "You should overtake the stopped vehicle immediately", "The stopped vehicle automatically gives you priority"], correct: 0, difficulty: "Hard", topic: "Pedestrian Safety", points: 30, exp: "A stopped vehicle at a crosswalk blocks your view of pedestrians; passing is strictly illegal and fatal." },
-    { id: "q_h11", text: "A driver behind you is following too closely. What is the safest response?", options: ["Brake suddenly to teach the driver a lesson", "Maintain a safe pace and, when appropriate, allow the vehicle to pass", "Race the vehicle", "Block the vehicle"], correct: 1, difficulty: "Hard", topic: "Road Courtesy & Defensive Driving", points: 30, exp: "Increase your forward cushion to allow gentle stops and encourage tailgaters to overtake safely." },
-    { id: "q_h12", text: "Your vehicle begins to skid on a slippery surface. What should you avoid?", options: ["Sudden, aggressive steering or braking", "Remaining calm", "Maintaining vehicle control", "Adjusting speed appropriately"], correct: 0, difficulty: "Hard", topic: "Weather & Hazard Driving", points: 30, exp: "Slamming brakes or violent steering locks wheels; steer smoothly into the direction of the skid." },
-    { id: "q_h13", text: "You are approaching a road intersection where your view is obstructed by a parked vehicle. What should you do?", options: ["Proceed quickly", "Slow down and ensure the way is clear", "Accelerate through the intersection", "Ignore the obstruction"], correct: 1, difficulty: "Hard", topic: "Right-of-Way", points: 30, exp: "Creep forward slowly until your sightlines to cross-traffic are clear before committing to enter." },
-    { id: "q_h14", text: "You are tired, but you are only a few kilometers from your destination. What is the safest decision?", options: ["Continue because the destination is close", "Stop and rest if you are not fit to drive", "Drive faster to arrive sooner", "Drink something and continue regardless of fatigue"], correct: 1, difficulty: "Hard", topic: "Driver Condition & Fatigue", points: 30, exp: "Microsleeps happen in seconds, especially near the end of long drives; stop in a safe lit area to rest." },
-    { id: "q_h15", text: "You see a temporary traffic sign that differs from the normal road arrangement because of road construction. What should you do?", options: ["Follow the temporary traffic control", "Ignore it", "Follow the old road arrangement", "Drive around the barriers"], correct: 0, difficulty: "Hard", topic: "Traffic Signs & Signals", points: 30, exp: "Work-zone signs supersede permanent striping and lane layouts to protect lives." },
-    { id: "q_h16", text: "You are entering a road where pedestrians, motorcycles, bicycles, and vehicles are all present. What is the best driving strategy?", options: ["Assume everyone will move out of your way", "Maintain awareness, reduce risk, and anticipate possible movements", "Drive at maximum speed", "Focus only on vehicles"], correct: 1, difficulty: "Hard", topic: "Defensive Driving", points: 30, exp: "Mixed-traffic roads demand vigilant scanning for vulnerable road users and wider lateral passing buffers." },
-    { id: "q_h17", text: "A vehicle ahead signals that it intends to turn, but you are also approaching the same area. What should you do?", options: ["Ignore the signal", "Adjust your speed and position safely while considering the vehicle's movement", "Overtake immediately", "Drive beside it without checking"], correct: 1, difficulty: "Hard", topic: "Defensive Driving", points: 30, exp: "Anticipate the turning vehicle's deceleration path and maintain safe following gap." },
-    { id: "q_h18", text: "You are driving on a road with a posted speed limit, but traffic, weather, and visibility conditions are poor. What should you prioritize?", options: ["Maximum speed", "Safe speed appropriate to the conditions while obeying the applicable limit", "Keeping up with the fastest vehicle", "Driving faster than the posted limit"], correct: 1, difficulty: "Hard", topic: "Speed Management", points: 30, exp: "The Basic Speed Rule dictates driving at a prudent speed suited to environmental conditions." },
-    { id: "q_h19", text: "A driver becomes angry after you make a legal maneuver. What is the best defensive-driving response?", options: ["Confront the driver", "Maintain composure and create distance from the aggressive driver", "Follow the driver", "Make an aggressive maneuver"], correct: 1, difficulty: "Hard", topic: "Road Courtesy & Defensive Driving", points: 30, exp: "Never engage or retaliate; preserve a calm demeanor and navigate toward safe, populated areas." },
-    { id: "q_h20", text: "You are approaching an intersection with several potential hazards: a pedestrian near the crossing, a motorcycle beside you, and a vehicle approaching from another direction. What should you do?", options: ["Focus only on the vehicle ahead", "Slow down, scan all relevant road users, and proceed only when safe and permitted", "Accelerate through the intersection", "Sound the horn and continue without checking"], correct: 1, difficulty: "Hard", topic: "Defensive Driving", points: 30, exp: "Multi-hazard situations require early speed reduction, systematic scanning, and defensive yielding." }
-];
-
-const SIMULATION_20_SCENARIOS = [
-    {
-        id: "sim_01",
-        number: 1,
-        title: "01 — Pedestrian Crossing",
-        shortTitle: "Pedestrian Crossing",
-        difficulty: "Easy",
-        speed: "30 KM/H",
-        weather: "🌤️ CLEAR · DAY",
-        env: "URBAN ARTERIAL ROAD",
-        svgType: "pedestrian_crossing",
-        situation: "You are driving at 30 km/h on an urban road. A pedestrian is standing at a marked pedestrian zebra crossing ahead, looking across and preparing to step onto the roadway.",
-        prompt: "What is the safest immediate action?",
-        options: [
-            { text: "Speed up slightly to clear the crosswalk before the pedestrian steps into the lane.", isCorrect: false, risk: "Extreme Collision Risk" },
-            { text: "Honk your horn repeatedly and proceed through at your current cruising speed.", isCorrect: false, risk: "Hazardous & Illegal" },
-            { text: "Decelerate smoothly, bring the vehicle to a complete stop before the stop line, and yield right-of-way.", isCorrect: true, risk: "Safest Decision (Legal & Defensive)" },
-            { text: "Swerve into the opposing lane to drive around the crossing without stopping.", isCorrect: false, risk: "Severe Multi-Vehicle Hazard" }
-        ],
-        aiFeedback: {
-            why: "Stopping well before the crosswalk grants full pedestrian priority, eliminates collision risk, and provides clear visual communication to surrounding motorists.",
-            hazard: "Vulnerable pedestrian entering designated crossing with active vehicular traffic.",
-            principle: "R.A. 4136 Art. III Sec. 42 (Right-of-Way at Crosswalks) & Defensive Pedestrian Anticipation.",
-            action: "Smoothly decelerate, stop before the marked stop line, maintain foot on brake, and wait until pedestrians fully reach the sidewalk.",
-            incorrectWhy: "Failing to stop or attempting to bypass pedestrians at a marked crosswalk violates Philippine right-of-way laws and causes catastrophic pedestrian impacts."
-        }
-    },
-    {
-        id: "sim_02",
-        number: 2,
-        title: "02 — Changing Traffic Light",
-        shortTitle: "Changing Traffic Light",
-        difficulty: "Easy",
-        speed: "45 KM/H",
-        weather: "🌤️ CLEAR · DAY",
-        env: "SIGNALIZED INTERSECTION",
-        svgType: "traffic_light",
-        situation: "Approaching an intersection at 45 km/h, approximately 35 meters away. The traffic signal abruptly changes from green to solid yellow/amber.",
-        prompt: "What is the safest and most legally compliant action?",
-        options: [
-            { text: "Accelerate quickly to beat the light before the red signal activates.", isCorrect: false, risk: "High Intersection Crash Risk" },
-            { text: "Check rearview mirror and apply controlled braking to stop safely before the stop line.", isCorrect: true, risk: "Safest Decision (Legal & Controlled)" },
-            { text: "Slam on emergency brakes instantly without verifying vehicles behind you.", isCorrect: false, risk: "Rear-End Collision Risk" },
-            { text: "Sound horn and coast through the intersection without slowing down.", isCorrect: false, risk: "Traffic Violation & Broadside Risk" }
-        ],
-        aiFeedback: {
-            why: "At 35 meters at 45 km/h, you have ample stopping distance. Yellow means 'prepare to stop unless unsafe to do so' — not an invitation to accelerate.",
-            hazard: "Impending red light phase and conflicting cross-traffic anticipating green.",
-            principle: "Philippine Traffic Code Signal Rules: Yellow Light Duty to Stop.",
-            action: "Check rear mirror, apply progressive braking, and come to a stable stop behind the white pavement stop bar.",
-            incorrectWhy: "Accelerating on amber creates right-angle T-bone collisions with cross-traffic starting their movement."
-        }
-    },
-    {
-        id: "sim_03",
-        number: 3,
-        title: "03 — Motorcycle Blind Spot",
-        shortTitle: "Motorcycle Blind Spot",
-        difficulty: "Easy",
-        speed: "40 KM/H",
-        weather: "🌤️ CLEAR · DRY",
-        env: "MULTI-LANE CITY ROAD",
-        svgType: "blind_spot",
-        situation: "You intend to change into the left lane. Side mirrors appear clear, but a quick shoulder head-check reveals a motorcycle traveling in your rear-quarter blind spot.",
-        prompt: "What should you do before initiating your lane change?",
-        options: [
-            { text: "Continue the lane change quickly since you already turned on your signal indicator.", isCorrect: false, risk: "Side-Swipe Collision" },
-            { text: "Hold your current lane, maintain safe speed, allow the motorcycle to pass, and re-verify mirrors.", isCorrect: true, risk: "Safest Decision (Defensive & Aware)" },
-            { text: "Abruptly brake in your lane to force the motorcycle to pass ahead faster.", isCorrect: false, risk: "Traffic Flow Disruption" },
-            { text: "Honk and gradually drift into the lane expecting the rider to brake for you.", isCorrect: false, risk: "Aggressive & Dangerous Maneuver" }
-        ],
-        aiFeedback: {
-            why: "A motorcycle in your blind spot cannot be seen in mirrors alone. Yielding until the rider clears eliminates fatal side-swipe collisions.",
-            hazard: "Two-wheeler concealed in vehicle's rear lateral blind zone during lane change.",
-            principle: "Mirror-Signal-Headcheck (MSH) Protocol & Safe Lateral Cushioning.",
-            action: "Cancel or maintain signal, hold lane alignment, confirm rider has passed, perform fresh head-check, and merge smoothly.",
-            incorrectWhy: "Signaling does not give automatic right-of-way; forcing lane entry when occupied leads to severe motorcycle crashes."
-        }
-    },
-    {
-        id: "sim_04",
-        number: 4,
-        title: "04 — Sudden Braking",
-        shortTitle: "Sudden Braking Ahead",
-        difficulty: "Easy",
-        speed: "50 KM/H",
-        weather: "🌤️ OVERCAST · DRY",
-        env: "NATIONAL HIGHWAY",
-        svgType: "sudden_braking",
-        situation: "Driving at 50 km/h maintaining a 3-second buffer. The passenger vehicle ahead abruptly slams on its brakes with illuminated brake lights.",
-        prompt: "What is your immediate, safest reaction?",
-        options: [
-            { text: "Apply firm, controlled braking in your own lane while monitoring your rear mirror.", isCorrect: true, risk: "Safest Decision (Controlled Buffer)" },
-            { text: "Immediately swerve onto the road shoulder without checking for pedestrians or obstacles.", isCorrect: false, risk: "Off-Road Rollover / Hazard" },
-            { text: "Swerve into the oncoming traffic lane to avoid braking.", isCorrect: false, risk: "Catastrophic Head-On Crash" },
-            { text: "Lightly tap brakes and flash high beams to tell the front car to accelerate.", isCorrect: false, risk: "Imminent Rear-End Impact" }
-        ],
-        aiFeedback: {
-            why: "A 3-second following distance is designed specifically to allow firm, controlled straight-line braking without panic swerving.",
-            hazard: "Rapid deceleration of leading vehicle creating sudden closing speed.",
-            principle: "3-Second Following Distance Buffer & Progressive Braking Technique.",
-            action: "Depress brake pedal firmly and progressively, steer straight, and tap hazards if traffic behind approaches rapidly.",
-            incorrectWhy: "Blind swerving into adjacent lanes or shoulders trades one hazard for an even deadlier collision."
-        }
-    },
-    {
-        id: "sim_05",
-        number: 5,
-        title: "05 — Heavy Rain",
-        shortTitle: "Heavy Rain & Low Visibility",
-        difficulty: "Easy",
-        speed: "60 KM/H (REDUCED TO 40)",
-        weather: "🌧️ HEAVY DOWNPOUR",
-        env: "PROVINCIAL HIGHWAY",
-        svgType: "heavy_rain",
-        situation: "Sudden tropical heavy downpour severely reduces visibility. Water is sheeting on the asphalt and windshield wipers are on high.",
-        prompt: "What set of driving adjustments must you make?",
-        options: [
-            { text: "Turn on hazard emergency flashers and drive at normal 60 km/h highway speed.", isCorrect: false, risk: "Misleading Signals & Hydroplaning" },
-            { text: "Reduce speed significantly, double following distance, turn on low-beam headlights, and avoid sudden steering.", isCorrect: true, risk: "Safest Decision (Hydroplane Prevention)" },
-            { text: "Turn on high beams and tailgate the car ahead to follow its tire tracks closely.", isCorrect: false, risk: "Glare Blinding & Tailgating Hazard" },
-            { text: "Brake sharply whenever entering standing water puddles.", isCorrect: false, risk: "Loss of Directional Traction" }
-        ],
-        aiFeedback: {
-            why: "Wet roads cut tire friction by up to 50% and increase hydroplaning risk. Low-beam lights enhance visibility without blinding others with high-beam rain glare.",
-            hazard: "Reduced tire traction, hydroplaning, extended braking distance, and impaired driver vision.",
-            principle: "Adverse Weather Speed Adjustment & 5-6 Second Wet Road Buffer.",
-            action: "Drop speed to 35-40 km/h, activate low beams and defogger, double spacing, and drive with smooth inputs.",
-            incorrectWhy: "Hazard flashers while moving confuse other drivers regarding whether you are stalled; excessive speed causes hydroplaning."
-        }
-    },
-    {
-        id: "sim_06",
-        number: 6,
-        title: "06 — Road Obstruction",
-        shortTitle: "Lane Road Obstruction",
-        difficulty: "Medium",
-        speed: "40 KM/H",
-        weather: "🌤️ CLEAR · DAY",
-        env: "TWO-LANE BARANGAY ROAD",
-        svgType: "road_obstruction",
-        situation: "A disabled cargo delivery van and road debris partially block your lane ahead. Oncoming traffic is approaching in the opposite lane.",
-        prompt: "How should you safely navigate past this obstruction?",
-        options: [
-            { text: "Speed up and squeeze past the obstacle before the oncoming vehicle reaches it.", isCorrect: false, risk: "High Collision & Pinch Risk" },
-            { text: "Slow down, stop behind the obstruction in your lane, yield to oncoming traffic, and pass only when clear.", isCorrect: true, risk: "Safest Decision (Right-of-Way Compliance)" },
-            { text: "Honk continuously and force oncoming vehicles to yield right-of-way to you.", isCorrect: false, risk: "Aggressive Road Conflict" },
-            { text: "Drive onto the pedestrian sidewalk to bypass the stalled delivery van.", isCorrect: false, risk: "Severe Pedestrian Hazard & Illegal" }
-        ],
-        aiFeedback: {
-            why: "The driver whose lane is obstructed MUST yield to opposing traffic having an unobstructed lane before maneuvering around the hazard.",
-            hazard: "Blocked travel lane with oncoming opposing traffic having legal right-of-way.",
-            principle: "Lane Obstruction Yielding Law & Safe Lateral Clearance.",
-            action: "Stop safely behind the blockage, signal left, wait for clear oncoming gap, check mirrors/blindspot, and pass with cushion.",
-            incorrectWhy: "Cutting into oncoming lanes when opposing traffic is present violates right-of-way and creates high-speed frontal impacts."
-        }
-    },
-    {
-        id: "sim_07",
-        number: 7,
-        title: "07 — Emergency Vehicle",
-        shortTitle: "Emergency Vehicle Approaching",
-        difficulty: "Medium",
-        speed: "35 KM/H",
-        weather: "🌤️ DAY · MODERATE TRAFFIC",
-        env: "CITY ARTERIAL BOULEVARD",
-        svgType: "emergency_vehicle",
-        situation: "An ambulance with active sirens and flashing red/blue strobe lights is rapidly approaching from behind in your travel lane.",
-        prompt: "What is your legal obligation and safest maneuver?",
-        options: [
-            { text: "Stop dead in your current travel lane immediately.", isCorrect: false, risk: "Blocks Emergency Path" },
-            { text: "Speed up to outrun the ambulance until you find a convenient turn-off.", isCorrect: false, risk: "Delays Emergency & High Crash Risk" },
-            { text: "Signal right, smoothly pull over as close as possible to the right edge/curb, and stop to give clear passage.", isCorrect: true, risk: "Safest Decision (Legal Yield Protocol)" },
-            { text: "Tailgate closely behind the ambulance to bypass heavy traffic.", isCorrect: false, risk: "Illegal Emergency Convoy Violation" }
-        ],
-        aiFeedback: {
-            why: "Philippine Law (R.A. 4136 Sec. 49) mandates all drivers to immediately yield right-of-way to emergency vehicles by pulling parallel to the right curb.",
-            hazard: "Fast-moving emergency response vehicle requiring unimpeded pathway.",
-            principle: "R.A. 4136 Sec. 49 (Right-of-Way for Police, Fire, and Ambulance Vehicles).",
-            action: "Check right mirror, signal right, steer safely to the rightmost edge, bring vehicle to a stop, and hold until vehicle has passed.",
-            incorrectWhy: "Stopping in place blocks the emergency path; tailgating emergency vehicles is illegal and carries heavy penalties."
-        }
-    },
-    {
-        id: "sim_08",
-        number: 8,
-        title: "08 — Unsafe Overtaking",
-        shortTitle: "Unsafe Overtaking on Curve",
-        difficulty: "Medium",
-        speed: "45 KM/H",
-        weather: "🌤️ CLEAR · DAY",
-        env: "TWO-LANE MOUNTAIN HIGHWAY",
-        svgType: "unsafe_overtaking",
-        situation: "You are stuck behind a slow-moving agricultural tricycle on an uphill winding road with a solid double yellow center line and an upcoming blind curve.",
-        prompt: "What is the only safe and lawful decision?",
-        options: [
-            { text: "Cross the double yellow line quickly to overtake while the tricycle is crawling.", isCorrect: false, risk: "Blind Curve Head-On Disaster" },
-            { text: "Maintain safe following distance, stay in your lane, be patient, and wait for a designated broken-line passing zone with clear visibility.", isCorrect: true, risk: "Safest Decision (Patience & Legality)" },
-            { text: "Tailgate the tricycle closely and honk until the rider pulls off into the ditch.", isCorrect: false, risk: "Harassment & Rear-End Hazard" },
-            { text: "Overtake on the unpaved right dirt shoulder around the tricycle.", isCorrect: false, risk: "Shoulder Rollover / Pedestrian Hit" }
-        ],
-        aiFeedback: {
-            why: "Solid double yellow lines prohibit overtaking under all circumstances due to zero sight distance on curves and crests.",
-            hazard: "Blind curve with invisible oncoming vehicles traveling at highway speeds.",
-            principle: "R.A. 4136 Sec. 41 (Restrictions on Overtaking and Passing) & Pavement Markings.",
-            action: "Drop back to a 3-second buffer, observe road signage, and only pass when you reach a flat, clear straightaway with broken lines.",
-            incorrectWhy: "Overtaking on blind curves across solid yellow lines is among the leading causes of fatal head-on highway collisions."
-        }
-    },
-    {
-        id: "sim_09",
-        number: 9,
-        title: "09 — School Zone",
-        shortTitle: "Active School Zone",
-        difficulty: "Medium",
-        speed: "40 KM/H (NEEDS SLOWING)",
-        weather: "🌤️ CLEAR · MORNING",
-        env: "COMMUNITY SCHOOL PRECINCT",
-        svgType: "school_zone",
-        situation: "Approaching a public elementary school zone during morning drop-off hours. School warning signs are visible, and children are walking along the roadside.",
-        prompt: "How should you adjust your driving behavior?",
-        options: [
-            { text: "Maintain 40 km/h while honking continuously to make children stand back.", isCorrect: false, risk: "Panics Children & High Risk" },
-            { text: "Reduce speed to 20 km/h or below, scan sidewalks and between parked cars, and be ready for sudden stops.", isCorrect: true, risk: "Safest Decision (Child Safety Standard)" },
-            { text: "Overtake waiting school transport tricycles to clear the zone quickly.", isCorrect: false, risk: "Extreme Pedestrian Impact Risk" },
-            { text: "Look only at the car ahead of you and ignore the sidewalk activity.", isCorrect: false, risk: "Severe Tunnel Vision Hazard" }
-        ],
-        aiFeedback: {
-            why: "Children have limited hazard perception and may dart unexpectedly into the roadway. 20 km/h gives a stopping distance of just a few meters.",
-            hazard: "Unpredictable child pedestrians and unloading school transport vehicles.",
-            principle: "R.A. 4136 Sec. 35 (20 km/h Maximum Speed in School Zones) & Pedestrian Anticipation.",
-            action: "Decelerate to under 20 km/h, hover foot over brake pedal, cover blind spots around parked tricycles, and yield generously.",
-            incorrectWhy: "Exceeding 20 km/h in school zones dramatically increases the likelihood of fatal injury if a child steps off the curb."
-        }
-    },
-    {
-        id: "sim_10",
-        number: 10,
-        title: "10 — Motorcycle Traffic",
-        shortTitle: "Dense Motorcycle Traffic",
-        difficulty: "Medium",
-        speed: "30 KM/H",
-        weather: "🌤️ CLEAR · EVENING RUSH",
-        env: "DENSE METRO CORRIDOR",
-        svgType: "motorcycle_traffic",
-        situation: "Driving in dense urban traffic surrounded by multiple motorcycles lane-filtering and riding closely along your vehicle's left and right sides.",
-        prompt: "What is the best defensive driving strategy?",
-        options: [
-            { text: "Weave within your lane to discourage riders from filtering past you.", isCorrect: false, risk: "Aggressive Lane-Blocking Crash" },
-            { text: "Maintain stable central lane position, avoid sudden swerves, check all mirrors and blind spots before any maneuver, and signal early.", isCorrect: true, risk: "Safest Decision (Predictable & Stable)" },
-            { text: "Open your car door slightly to block motorcycles passing on the right.", isCorrect: false, risk: "Intentional Harm & Criminal Act" },
-            { text: "Speed up rapidly whenever an opening appears to stay ahead of all bikes.", isCorrect: false, risk: "Erratic Acceleration Hazard" }
-        ],
-        aiFeedback: {
-            why: "Predictability is the foundation of defensive driving. Holding a steady lane position and signaling early allows two-wheelers to navigate safely around you.",
-            hazard: "Close-proximity riders filtering in multiple blind spots.",
-            principle: "Defensive Space Cushioning & Multi-Mirror Scanning in Congestion.",
-            action: "Maintain center-lane track, check side mirrors frequently, signal at least 30 meters before turning, and verify blind spots with head checks.",
-            incorrectWhy: "Erratic lane shifts and abrupt braking startle riders and cause multiple pile-ups in dense traffic corridors."
-        }
-    },
-    {
-        id: "sim_11",
-        number: 11,
-        title: "11 — Intersection Conflict",
-        shortTitle: "Uncontrolled Intersection Conflict",
-        difficulty: "Medium",
-        speed: "35 KM/H",
-        weather: "🌤️ CLEAR · DAY",
-        env: "4-WAY UNCONTROLLED INTERSECTION",
-        svgType: "intersection_conflict",
-        situation: "Approaching an uncontrolled 4-way intersection without signals. Another vehicle from the left approaches simultaneously and enters without slowing down.",
-        prompt: "Even if you technically have right-of-way from the right, what should you do?",
-        options: [
-            { text: "Accelerate and assert your legal right-of-way by forcing the other driver to stop.", isCorrect: false, risk: "Guaranteed Right-Angle Collision" },
-            { text: "Slow down, prepare to stop, and yield to prevent a collision despite having technical priority.", isCorrect: true, risk: "Safest Decision (Defensive Priority)" },
-            { text: "Close your eyes, honk your horn, and maintain current speed.", isCorrect: false, risk: "Extreme Recklessness" },
-            { text: "Swerve sharply into the sidewalk corner to avoid the intersection.", isCorrect: false, risk: "Pedestrian & Infrastructure Impact" }
-        ],
-        aiFeedback: {
-            why: "Right-of-way is something given, never taken. A defensive driver always yields to prevent a collision when another driver fails to follow priority rules.",
-            hazard: "Conflicting vehicle failing to yield at unsignalized junction.",
-            principle: "Defensive Right-of-Way: Collision Avoidance Supersedes Technical Priority.",
-            action: "Brake smoothly, allow the non-yielding vehicle to clear the crossing, scan remaining directions, and proceed when completely clear.",
-            incorrectWhy: "Insisting on technical right-of-way against an errant driver results in severe broadside crashes where legality won't prevent injuries."
-        }
-    },
-    {
-        id: "sim_12",
-        number: 12,
-        title: "12 — Night Driving",
-        shortTitle: "Night Driving & Low Visibility",
-        difficulty: "Medium",
-        speed: "55 KM/H (OVER-DRIVING LIGHTS)",
-        weather: "🌙 DARK · UNLIT RURAL ROAD",
-        env: "PROVINCIAL NATIONAL ROAD",
-        svgType: "night_driving",
-        situation: "Driving on an unlit provincial highway at night with oncoming vehicle headlights in the distance. An unlit pedestrian/cyclist is barely visible on the right shoulder.",
-        prompt: "What is the safest nighttime driving practice?",
-        options: [
-            { text: "Stare directly into the oncoming headlights to see the center lane markings.", isCorrect: false, risk: "Night-Blindness Flash Glare" },
-            { text: "Keep high beams on permanently regardless of oncoming traffic to spot shoulder hazards.", isCorrect: false, risk: "Blinds Oncoming Motorists" },
-            { text: "Switch to low beams, reduce speed to avoid over-driving headlights, and cast your gaze toward the right white fog line.", isCorrect: true, risk: "Safest Decision (Night Vision Protection)" },
-            { text: "Turn off headlights momentarily to let your eyes adjust to natural darkness.", isCorrect: false, risk: "Total Blind Driving Hazard" }
-        ],
-        aiFeedback: {
-            why: "Switching to low beams prevents blinding oncoming drivers, while guiding your eyes along the right edge white fog line protects your night vision and spots shoulder hazards.",
-            hazard: "Headlight glare, reduced sight distance, and unlit pedestrians on road margins.",
-            principle: "Night Driving Hazard Mitigation & Anti-Glare Gaze Technique.",
-            action: "Dim headlights for oncoming traffic within 200m, slow down so your stopping distance is within your headlight beam range, and track the right edge line.",
-            incorrectWhy: "Over-driving headlights means you cannot stop in time for hazards that appear in your light beams; high beam glare blinds oncoming drivers."
-        }
-    },
-    {
-        id: "sim_13",
-        number: 13,
-        title: "13 — Distracted Driving",
-        shortTitle: "Mobile Phone Distraction",
-        difficulty: "Medium",
-        speed: "45 KM/H",
-        weather: "🌤️ CLEAR · DAY",
-        env: "BUSY COMMERCIAL BOULEVARD",
-        svgType: "distracted_phone",
-        situation: "While cruising at 45 km/h in moderate traffic, your smartphone rings and vibrates on the dashboard mount with an incoming work notification.",
-        prompt: "In compliance with Philippine Law (R.A. 10913), what must you do?",
-        options: [
-            { text: "Quickly read and reply to the message with one hand while keeping one hand on the wheel.", isCorrect: false, risk: "Severe Distraction & Law Violation" },
-            { text: "Ignore the phone completely while driving, or safely pull over into a legal parking area before checking it.", isCorrect: true, risk: "Safest Decision (Anti-Distracted Driving Act)" },
-            { text: "Hold the phone at eye level so you can look at both the road and the screen simultaneously.", isCorrect: false, risk: "Cognitive Blindness & Illegal" },
-            { text: "Ask the passenger in the back seat to reach over and hold the phone in front of your face.", isCorrect: false, risk: "Physical Obstruction & Distraction" }
-        ],
-        aiFeedback: {
-            why: "Republic Act No. 10913 (Anti-Distracted Driving Act) strictly penalizes using mobile devices while driving or stopped at red lights.",
-            hazard: "Visual, manual, and cognitive distraction taking focus away from dynamic road conditions.",
-            principle: "R.A. 10913 (Anti-Distracted Driving Act of 2016) & Complete Road Focus.",
-            action: "Keep eyes on the road and hands on the wheel; only respond to calls or texts after coming to a full, legal parking stop with engine off or in park.",
-            incorrectWhy: "Looking away for even 3 seconds at 45 km/h means traveling nearly 40 meters blind, causing devastating rear-end and pedestrian collisions."
-        }
-    },
-    {
-        id: "sim_14",
-        number: 14,
-        title: "14 — Fatigued Driving",
-        shortTitle: "Driver Fatigue on Highway",
-        difficulty: "Medium",
-        speed: "70 KM/H",
-        weather: "🌙 LATE NIGHT",
-        env: "EXPRESSWAY / LONG HIGHWAY",
-        svgType: "fatigued_driver",
-        situation: "Driving for over 4 hours at night. Your eyes feel heavy, you find yourself yawning repeatedly, and the car slightly drifts toward the rumble strip.",
-        prompt: "What is the only effective and responsible solution for driver fatigue?",
-        options: [
-            { text: "Roll down the window and turn up the radio volume to maximum.", isCorrect: false, risk: "Temporary Ineffective Fix (Microsleep)" },
-            { text: "Drink an energy drink and speed up to reach your destination faster.", isCorrect: false, risk: "Dangerous Energy Crash & Speeding" },
-            { text: "Signal, exit at the nearest gas station / rest stop, park safely, and take a 20-30 minute power nap.", isCorrect: true, risk: "Safest Decision (Fatigue Elimination)" },
-            { text: "Slap your face periodically and continue driving in the fast lane.", isCorrect: false, risk: "High Microsleep Fatality Risk" }
-        ],
-        aiFeedback: {
-            why: "Fatigue impairs reaction time and judgment as severely as alcohol intoxication. Sleep is the only physiological cure for driver exhaustion.",
-            hazard: "Microsleep episodes leading to high-speed run-off-road or rear-end crashes.",
-            principle: "Driver Wellness, Rest Protocols, and Fatigue Management.",
-            action: "Exit expressway at next service area, lock doors, recline seat, take a 20-30 minute nap, hydrate, and stretch before resuming.",
-            incorrectWhy: "Loud music and open windows do not prevent involuntary microsleeps where drivers lose consciousness for 3-5 seconds at high speeds."
-        }
-    },
-    {
-        id: "sim_15",
-        number: 15,
-        title: "15 — Traffic Sign Recognition",
-        shortTitle: "Philippine Regulatory Sign",
-        difficulty: "Medium",
-        speed: "40 KM/H",
-        weather: "🌤️ CLEAR · DAY",
-        env: "URBAN SIGNALIZED INTERSECTION",
-        svgType: "traffic_sign",
-        situation: "You are in the rightmost lane intending to turn right on a red traffic signal. A regulatory signboard beside the light reads 'NO RIGHT TURN ON RED SIGNAL'.",
-        prompt: "What action is legally required?",
-        options: [
-            { text: "Turn right anyway if no cross-traffic or police officers are visible.", isCorrect: false, risk: "Red Light Violation & Fine" },
-            { text: "Stop completely behind the stop line and remain stopped until the green arrow/signal illuminates.", isCorrect: true, risk: "Safest Decision (Mandatory Compliance)" },
-            { text: "Honk twice and make a rolling right turn without stopping.", isCorrect: false, risk: "Pedestrian Threat & Violation" },
-            { text: "Switch on hazard lights and proceed with the right turn.", isCorrect: false, risk: "Illegal Turn Under Hazard Lights" }
-        ],
-        aiFeedback: {
-            why: "A 'NO RIGHT TURN ON RED' sign revokes default right-turn privileges to protect crossing pedestrians and protected cross-traffic movements.",
-            hazard: "Conflicting pedestrian streams and oncoming left-turners having green priority.",
-            principle: "Mandatory Compliance with Official Regulatory Signs (DPWH Traffic Standards).",
-            action: "Come to a complete stop before the stop bar, hold brake, and proceed only when green signal or green right-turn arrow activates.",
-            incorrectWhy: "Ignoring regulatory turn restrictions causes severe pedestrian impacts in the crosswalk and side-impact collisions with turning vehicles."
-        }
-    },
-    {
-        id: "sim_16",
-        number: 16,
-        title: "16 — Slippery Road",
-        shortTitle: "Wet Slippery Road & Skid Control",
-        difficulty: "Hard",
-        speed: "50 KM/H",
-        weather: "🌧️ POST-RAIN OIL SLICK",
-        env: "HIGHWAY BEND",
-        svgType: "slippery_road",
-        situation: "Entering an asphalt curve after a light rain that brought oil to the surface. You feel the rear of the car begin to fish-tail and skid slightly outward.",
-        prompt: "How do you regain steering control and prevent a spin-out?",
-        options: [
-            { text: "Slam the brake pedal to the floor and yank the steering wheel hard in the opposite direction.", isCorrect: false, risk: "Complete Spin-Out / Rollover" },
-            { text: "Ease off the accelerator smoothly, steer gently in the direction you want the front wheels to go (into the skid), and avoid sudden braking.", isCorrect: true, risk: "Safest Decision (Proper Skid Recovery)" },
-            { text: "Floor the accelerator pedal to power through the curve.", isCorrect: false, risk: "Catastrophic Loss of Traction" },
-            { text: "Pull the handbrake immediately while turning the steering wheel.", isCorrect: false, risk: "Locks Rear Wheels into Spin" }
-        ],
-        aiFeedback: {
-            why: "Slamming brakes during a skid locks tires and removes all steering capability. Smoothly easing off gas and steering into the skid restores tire grip.",
-            hazard: "Loss of lateral tire grip (oversteer skid) on low-friction oil-slicked road.",
-            principle: "Skid Recovery Physics: Weight Transfer & Smooth Counter-Steering.",
-            action: "Smoothly release accelerator, look where you want to go, steer gently in that direction, and only brake after traction is re-established.",
-            incorrectWhy: "Panic braking during a skid transfers vehicle weight forward, unloads the rear tires, and triggers an uncontrollable 360-degree spin."
-        }
-    },
-    {
-        id: "sim_17",
-        number: 17,
-        title: "17 — Aggressive Driver",
-        shortTitle: "Aggressive Tailgater & Road Rage",
-        difficulty: "Hard",
-        speed: "60 KM/H",
-        weather: "🌤️ CLEAR · DAY",
-        env: "MULTI-LANE HIGHWAY",
-        svgType: "aggressive_driver",
-        situation: "An aggressive SUV is tailgating inches from your rear bumper, flashing high beams, and honking aggressively to force you to speed up.",
-        prompt: "What is the safest defensive method to de-escalate this road conflict?",
-        options: [
-            { text: "Brake check the aggressive vehicle abruptly to teach the driver a lesson.", isCorrect: false, risk: "Severe High-Speed Crash / Road Rage" },
-            { text: "Maintain emotional control, signal right, safely change to the slower lane when clear, and let the aggressive vehicle pass.", isCorrect: true, risk: "Safest Decision (De-Escalation & Safety)" },
-            { text: "Match the driver's speed, roll down window, and exchange shouting gestures.", isCorrect: false, risk: "Violent Road Rage Incident" },
-            { text: "Block the passing lane deliberately to enforce the legal speed limit yourself.", isCorrect: false, risk: "Provocation & Lane Hogging" }
-        ],
-        aiFeedback: {
-            why: "Defensive driving requires emotional maturity. De-escalating by yielding the lane removes an extreme hazard and avoids dangerous road rage encounters.",
-            hazard: "Aggressive tailgater creating high risk of multi-vehicle pile-up and confrontation.",
-            principle: "Defensive De-Escalation & Non-Engagement Policy.",
-            action: "Keep calm, do not engage or make eye contact, check right mirror, signal, merge to right lane, and let aggressive traffic pass.",
-            incorrectWhy: "Brake checking is illegal and extremely dangerous, turning a traffic dispute into a fatal high-speed collision."
-        }
-    },
-    {
-        id: "sim_18",
-        number: 18,
-        title: "18 — Sudden Pedestrian Hazard",
-        shortTitle: "Sudden Pedestrian from Blind Spot",
-        difficulty: "Hard",
-        speed: "35 KM/H",
-        weather: "🌤️ CLEAR · DAY",
-        env: "CONGESTED JEEPNEY STOP",
-        svgType: "sudden_pedestrian",
-        situation: "You are passing a stopped passenger jeepney in the right lane. Suddenly, a pedestrian steps out directly from in front of the jeepney into your lane.",
-        prompt: "What is your critical split-second evasive action?",
-        options: [
-            { text: "Apply maximum threshold braking in your lane while gripping the wheel firmly and scanning for a safe escape path.", isCorrect: true, risk: "Safest Decision (Threshold Braking)" },
-            { text: "Swerve blindly into oncoming traffic to avoid braking.", isCorrect: false, risk: "Catastrophic Head-On Crash" },
-            { text: "Honk horn and keep driving, expecting the pedestrian to jump back.", isCorrect: false, risk: "Fatal Direct Pedestrian Impact" },
-            { text: "Accelerate to squeeze past before the pedestrian takes another step.", isCorrect: false, risk: "Fatal Collision Hazard" }
-        ],
-        aiFeedback: {
-            why: "When passing stopped public utility vehicles (jeepneys/buses), pedestrians frequently emerge blindly. Threshold braking brings the car to a halt in minimal distance.",
-            hazard: "Concealed pedestrian emerging from blind zone in front of stopped public vehicle.",
-            principle: "Threshold Braking, Blind Zone Cushioning, and Jeepney Stop Vigilance.",
-            action: "Apply immediate maximum controlled braking (allowing ABS to work), sound horn to alert pedestrian, and stop before impact without swerving into oncoming lanes.",
-            incorrectWhy: "Blind swerving into oncoming lanes at speed turns a localized hazard into a fatal multi-vehicle disaster."
-        }
-    },
-    {
-        id: "sim_19",
-        number: 19,
-        title: "19 — Vehicle/Tire Problem",
-        shortTitle: "High-Speed Tire Blowout",
-        difficulty: "Hard",
-        speed: "80 KM/H",
-        weather: "🌤️ CLEAR · DAY",
-        env: "EXPRESSWAY (SLEX/NLEX)",
-        svgType: "tire_problem",
-        situation: "Driving at 80 km/h on an expressway when you hear a loud pop, the steering wheel violently pulls to the left, and your front-left tire blows out.",
-        prompt: "What is the proper emergency procedure to maintain vehicle stability?",
-        options: [
-            { text: "Slam the brake pedal as hard as possible and jerk the steering wheel to the right shoulder.", isCorrect: false, risk: "Violent Rollover / Spin" },
-            { text: "Grip steering wheel firmly with both hands, ease off accelerator smoothly, avoid hard braking, and guide vehicle to shoulder as speed drops.", isCorrect: true, risk: "Safest Decision (Blowout Stability Protocol)" },
-            { text: "Shift immediately into reverse or park to stop the car instantly.", isCorrect: false, risk: "Transmission Explosion & Rollover" },
-            { text: "Accelerate to keep the blown tire spinning evenly on the rim.", isCorrect: false, risk: "Loss of All Wheel Control" }
-        ],
-        aiFeedback: {
-            why: "Hard braking during a blowout destabilizes the vehicle and causes violent rollovers. Firm steering and gradual deceleration maintain straight-line control.",
-            hazard: "Catastrophic loss of tire pressure at highway speeds creating severe directional pull.",
-            principle: "Tire Blowout Recovery Protocol: Grip, Ease Off, Coast, and Controlled Shoulder Merge.",
-            action: "Hold wheel tightly at 9 and 3 o'clock, maintain straight heading, allow vehicle to decelerate naturally, signal right, and pull off onto emergency shoulder.",
-            incorrectWhy: "Slamming brakes on a blown tire causes the bare wheel rim to dig into the pavement, flipping the vehicle at expressway speeds."
-        }
-    },
-    {
-        id: "sim_20",
-        number: 20,
-        title: "20 — Complex Road-Safety Scenario",
-        shortTitle: "Complex Multi-Hazard Scenario",
-        difficulty: "Hard",
-        speed: "40 KM/H (HIGH-RISK ZONE)",
-        weather: "🌧️ RAIN · DUSK · LOW VISIBILITY",
-        env: "MULTI-LANE URBAN INTERSECTION",
-        svgType: "complex_hazard",
-        situation: "Approaching a busy unsignalized intersection in heavy rain at dusk. A jeepney is unloading passengers on the right, two motorcycles are lane-splitting on your left, and a pedestrian is crossing with an umbrella.",
-        prompt: "How do you prioritize and execute the safest sequence of actions?",
-        options: [
-            { text: "Speed up through the intersection to get out of the dangerous multi-hazard area as fast as possible.", isCorrect: false, risk: "Multi-Vehicle & Pedestrian Disaster" },
-            { text: "Decelerate smoothly to low speed, increase following buffers, yield to the crossing pedestrian first, and monitor both mirrors for swerving motorcycles.", isCorrect: true, risk: "Safest Decision (Master Hazard Prioritization)" },
-            { text: "Honk continuously, turn on high beams, and force everyone else to stop for you.", isCorrect: false, risk: "Sensory Overload & Crash Provocation" },
-            { text: "Swerve left around the jeepney without checking for lane-splitting motorcycles.", isCorrect: false, risk: "Severe Motorcycle Side-Impact" }
-        ],
-        aiFeedback: {
-            why: "In complex multi-hazard environments, prioritize the most vulnerable road user first (pedestrian), lower speed to expand reaction time, and maintain 360-degree awareness.",
-            hazard: "Simultaneous compound hazards: Low friction, reduced visibility, pedestrian crossing, unloading jeepney, and filtering motorcycles.",
-            principle: "Comprehensive Defensive Driving: Risk Prioritization & 360-Degree Situational Awareness.",
-            action: "Drop speed to 15-20 km/h, activate low-beam lights, yield right-of-way to pedestrian, scan mirrors for motorcycles, and clear intersection cautiously.",
-            incorrectWhy: "Rushing through complex intersection hazards or making sudden blind swerves triggers fatal multi-party chain-reaction crashes."
-        }
-    }
+    // 🔴 HARD MODULE (100 LTO-Based Questions — 20 Random per attempt)
+    { id: "q_h1", text: "Two vehicles reach an intersection at approximately the same time. Vehicle A is on the left and Vehicle B is on the right. Who should yield?", options: ["Vehicle A", "Vehicle B", "Both vehicles"], correct: 0, difficulty: "Hard", topic: "Right-of-Way & Intersections", points: 30, exp: "Ayon sa RA 4136 Section 42(a), kapag sabay na dumating sa intersection, ang sasakyang nasa kaliwa (A) ang dapat magbigay-daan sa sasakyang nasa kanan (B)." },
+    { id: "q_h2", text: "A vehicle approaches an intersection while another vehicle is already within the intersection. Who generally has the right-of-way?", options: ["The approaching vehicle", "The vehicle already within the intersection", "The faster vehicle"], correct: 1, difficulty: "Hard", topic: "Right-of-Way & Intersections", points: 30, exp: "Ang sasakyang unang nakapasok na sa loob ng intersection ay may legal na karapatang tapusin ang pagtawid bago pumasok ang iba." },
+    { id: "q_h3", text: "A vehicle approaches an intersection and another vehicle is turning left across its line of travel. The turning vehicle has properly signaled. Who should yield?", options: ["The approaching vehicle", "The turning vehicle", "Both must stop permanently"], correct: 0, difficulty: "Hard", topic: "Right-of-Way & Intersections", points: 30, exp: "Ayon sa Section 42(b), kung ang lumilikong sasakyan ay nasa loob na ng intersection at nag-signal nang tama, ang paparating na sasakyan ang dapat magbigay-daan." },
+    { id: "q_h4", text: "A driver is traveling at an unlawful speed and claims the right-of-way at an intersection. What happens to that right-of-way?", options: ["It remains automatically valid", "It may be forfeited", "It becomes stronger"], correct: 1, difficulty: "Hard", topic: "Right-of-Way & Intersections", points: 30, exp: "Ayon sa RA 4136 Section 42(a), ang driver na nagmamaneho sa labag sa batas na bilis ay nawawalan ng anumang karapatan sa right-of-way." },
+    { id: "q_h5", text: "A vehicle enters a highway from a private driveway while another vehicle is approaching on the highway. Who must yield?", options: ["The vehicle on the highway", "The vehicle entering from the private road", "Both vehicles"], correct: 1, difficulty: "Hard", topic: "Right-of-Way & Intersections", points: 30, exp: "Ayon sa Section 42(c), ang sasakyang nagmumula sa private road o driveway ay dapat magbigay-daan sa lahat ng sasakyang nasa highway." },
+    { id: "q_h6", text: "A driver approaches a through highway from a side road. What is the proper action?", options: ["Enter immediately if the vehicle is faster", "Yield to vehicles approaching on the through highway", "Sound the horn and continue without slowing"], correct: 1, difficulty: "Hard", topic: "Right-of-Way & Intersections", points: 30, exp: "Sa ilalim ng Section 42(d), ang mga sasakyang pumapasok sa through highway o stop intersection ay dapat magbigay-daan sa mga sasakyang nasa pangunahing daan." },
+    { id: "q_h7", text: "A pedestrian is crossing within a crosswalk in a business or residential district, and no traffic officer or signal is controlling the movement. Who generally has the right-of-way?", options: ["The vehicle", "The pedestrian", "Whoever moves first"], correct: 1, difficulty: "Hard", topic: "Pedestrian Safety", points: 30, exp: "Sa ilalim ng Section 42(c), ang mga pedestrian na nasa minarkahang tawiran sa business o residential areas ay may ganap na karapatan sa daan." },
+    { id: "q_h8", text: "A pedestrian crosses a business/residential highway outside a crosswalk. Under RA 4136, who generally has the right-of-way?", options: ["The pedestrian", "The vehicle on the highway", "Both equally"], correct: 1, difficulty: "Hard", topic: "Pedestrian Safety", points: 30, exp: "Kapag tumatawid sa labas ng crosswalk, ang pedestrian ang dapat magbigay-daan sa mga sasakyang nasa kalsada (Section 42(c))." },
+    { id: "q_h9", text: "An ambulance on official business approaches with an audible signal. What should other drivers do?", options: ["Maintain speed", "Yield the right-of-way", "Follow closely behind it"], correct: 1, difficulty: "Hard", topic: "Emergency Vehicles & Sirens", points: 30, exp: "Ayon sa Section 43, ang mga rumerespondeng ambulansya na may sirena ay may karapatan sa prayoridad; dapat magbigay-daan ang lahat ng sasakyan." },
+    { id: "q_h10", text: "A police vehicle approaches with an audible signal. A driver should normally:", options: ["Move as near as possible to the right and stop clear of the intersection", "Move to the left and accelerate", "Stop in the middle of the intersection"], correct: 0, difficulty: "Hard", topic: "Emergency Vehicles & Sirens", points: 30, exp: "Sa ilalim ng Section 43, dapat ligtas na itabi ang sasakyan sa kanang gilid ng kalsada at huminto hanggang sa makalagpas ang emergency vehicle." },
+    { id: "q_h11", text: "Under the general rule, a driver overtaking another vehicle should pass:", options: ["On the left", "On the right", "On either side"], correct: 0, difficulty: "Hard", topic: "Lane Changing & Overtaking", points: 30, exp: "Ayon sa RA 4136 Section 39, ang pag-overtake sa ibang sasakyan ay dapat isagawa sa kaliwang bahagi." },
+    { id: "q_h12", text: "When may passing on the right generally be permitted on a highway within a business or residential district?", options: ["When there are two or more lanes moving in the same direction", "Whenever the driver is in a hurry", "Only on a one-lane road"], correct: 0, difficulty: "Hard", topic: "Lane Changing & Overtaking", points: 30, exp: "Ayon sa Section 39, pinapayagan ang paglagpas sa kanan kung ang highway ay may 2 o higit pang linya sa iisang direksyon at malinaw ang daan." },
+    { id: "q_h13", text: "A vehicle is about to be overtaken. The overtaking driver gives a suitable audible signal. What should the slower driver do?", options: ["Increase speed", "Give way and avoid increasing speed", "Move immediately to the opposite lane"], correct: 1, difficulty: "Hard", topic: "Lane Changing & Overtaking", points: 30, exp: "Ayon sa Section 40, ang driver na nao-overtake ay dapat magbigay-daan pakanan at hindi dapat magpabilis hanggang ganap na makalagpas ang kabilang sasakyan." },
+    { id: "q_h14", text: "Before moving to the left side of the center line to overtake, the driver must ensure that:", options: ["The road ahead is clearly visible and sufficiently free of oncoming traffic", "The vehicle behind is close enough", "The road has a curve"], correct: 0, difficulty: "Hard", topic: "Lane Changing & Overtaking", points: 30, exp: "Ayon sa Section 41(a), bawal tumawid sa center line upang mag-overtake maliban kung malinaw ang pananaw at ligtas sa kasalubong." },
+    { id: "q_h15", text: "A driver approaches the crest of a grade and cannot see far enough ahead. Is overtaking generally allowed?", options: ["Yes", "No", "Only if the horn is used"], correct: 1, difficulty: "Hard", topic: "Lane Changing & Overtaking", points: 30, exp: "Ayon sa Section 41(b), ipinagbabawal ang pag-overtake sa tuktok ng burol o anumang lugar na limitado ang pananaw." },
+    { id: "q_h16", text: "A driver approaches a curve where the view is obstructed within 500 feet. May the driver overtake by crossing the center line?", options: ["Yes, if the vehicle is powerful", "No, unless a statutory exception applies", "Yes, if the horn is sounded"], correct: 1, difficulty: "Hard", topic: "Lane Changing & Overtaking", points: 30, exp: "Ipinagbabawal ng Section 41(b) ang pag-overtake sa blind curve na walang 500 feet na unobstructed forward view." },
+    { id: "q_h17", text: "A driver attempts to overtake another vehicle at a railway grade crossing. Under the general rule, this is:", options: ["Permitted", "Prohibited", "Required"], correct: 1, difficulty: "Hard", topic: "Lane Changing & Overtaking", points: 30, exp: "Ayon sa Section 41(c), mahigpit na ipinagbabawal ang pag-overtake sa anumang railway grade crossing o intersection." },
+    { id: "q_h18", text: "Overtaking at an intersection is generally prohibited unless the intersection is:", options: ["Controlled by a traffic signal or permitted by a watchman/peace officer", "Located in a residential area", "Empty of pedestrians"], correct: 0, difficulty: "Hard", topic: "Lane Changing & Overtaking", points: 30, exp: "Ayon sa Section 41(c), bawal mag-overtake sa intersection maliban kung ito ay kontrolado ng traffic lights o peace officer." },
+    { id: "q_h19", text: "Temporary warning signs indicate that workers are performing road work. May a driver overtake another vehicle between the indicated points?", options: ["Yes", "No", "Only at night"], correct: 1, difficulty: "Hard", topic: "Lane Changing & Overtaking", points: 30, exp: "Ayon sa Section 41(d), ipinagbabawal ang pag-overtake sa pagitan ng mga babalang karatula sa road construction zones." },
+    { id: "q_h20", text: "A driver is inside an officially marked no-passing zone. What is the correct action?", options: ["Overtake if the road looks clear", "Do not overtake", "Overtake only motorcycles"], correct: 1, difficulty: "Hard", topic: "Traffic Signs & Signals", points: 30, exp: "Sa no-passing zones (solid yellow/white lines), mahigpit na ipinagbabawal ang pag-overtake sa anumang pagkakataon." },
+    { id: "q_h21", text: "Under RA 4136, the maximum speed for cars and motorcycles on city or municipal streets with light traffic, when not designated as through streets, is generally:", options: ["20 km/h", "30 km/h", "40 km/h"], correct: 1, difficulty: "Hard", topic: "Speed Limits (RA 4136 Section 35)", points: 30, exp: "Ayon sa Section 35(b)(3), ang limitasyon para sa mga kotse at motorsiklo sa city/municipal streets na light traffic ay 30 km/h." },
+    { id: "q_h22", text: "A driver is passing through a crowded street or approaching a blind corner. The applicable statutory maximum under the listed circumstances is generally:", options: ["20 km/h", "40 km/h", "60 km/h"], correct: 0, difficulty: "Hard", topic: "Speed Limits (RA 4136 Section 35)", points: 30, exp: "Ayon sa Section 35(b)(4), ang statutory limit sa masisikip na lansangan, blind corners, at school zones ay 20 km/h." },
+    { id: "q_h23", text: "A driver is traveling on a designated through street or boulevard. For cars and motorcycles, the statutory maximum listed by RA 4136 is generally:", options: ["30 km/h", "40 km/h", "80 km/h"], correct: 1, difficulty: "Hard", topic: "Speed Limits (RA 4136 Section 35)", points: 30, exp: "Ayon sa Section 35(b)(2), ang speed limit sa through streets at boulevards na walang blind corners ay 40 km/h." },
+    { id: "q_h24", text: "A car is traveling on an open country road without blind corners and not closely bordered by habitations. The statutory maximum for cars/motorcycles is generally:", options: ["40 km/h", "60 km/h", "80 km/h"], correct: 2, difficulty: "Hard", topic: "Speed Limits (RA 4136 Section 35)", points: 30, exp: "Ayon sa Section 35(b)(1), ang maximum speed para sa mga kotse sa bukas na national country roads ay 80 km/h." },
+    { id: "q_h25", text: "A driver is approaching a school zone. Even if the road normally permits a higher speed, the driver should:", options: ["Maintain the normal maximum", "Observe the lower statutory limit applicable to the dangerous circumstance", "Accelerate to clear the area quickly"], correct: 1, difficulty: "Hard", topic: "Pedestrian Safety", points: 30, exp: "Sa school zones, mandatory ang pagbawas ng takbo sa 20 km/h upang maprotektahan ang mga tumatawid na mag-aaral." },
+    { id: "q_h26", text: "Which situation is specifically associated with the 20 km/h statutory speed limit?", options: ["Open country road with no blind corners", "Approaching a blind corner", "Light-traffic through street"], correct: 1, difficulty: "Hard", topic: "Speed Limits (RA 4136 Section 35)", points: 30, exp: "Ang 20 km/h limit ay partikular na itinakda kapag papalapit sa blind corners, intersections, school zones, at crowded streets." },
+    { id: "q_h27", text: "A driver is passing a stationary vehicle on a road where the statutory dangerous-circumstance limit applies. What maximum speed is generally specified?", options: ["20 km/h", "40 km/h", "80 km/h"], correct: 0, difficulty: "Hard", topic: "Speed Limits (RA 4136 Section 35)", points: 30, exp: "Ayon sa Section 35(b)(4), ang pagdaan sa nakahintong sasakyan kung saan may mga pasaherong bumababa ay may statutory limit na 20 km/h." },
+    { id: "q_h28", text: "A driver argues that a local government can freely establish a different maximum speed from the statutory limits in RA 4136. Which statement is correct under Section 36?", options: ["The Act provides uniform statutory maximum speeds", "Any local authority can replace them without restriction", "Drivers may choose their own maximum"], correct: 0, difficulty: "Hard", topic: "Speed Limits (RA 4136 Section 35)", points: 30, exp: "Ayon sa Section 36, ang mga statutory speed limits ay pambansang pamantayan na dapat sundin nang may legal na koordinasyon." },
+    { id: "q_h29", text: "Which driver may fall under a statutory exception to the prescribed speed rates?", options: ["A driver racing friends", "A hospital ambulance responding to an emergency", "A private driver running late"], correct: 1, difficulty: "Hard", topic: "Emergency Vehicles & Sirens", points: 30, exp: "Ang emergency speed exceptions ay eksklusibong nakalaan sa mga rumerespondeng bumbero, pulis, at ambulansya." },
+    { id: "q_h30", text: "A statutory emergency speed exception means the driver may:", options: ["Drive recklessly without limitation", "Ignore all traffic rules", "Respond under the circumstances specified by law, without allowing useless or unnecessary fast driving"], correct: 2, difficulty: "Hard", topic: "Emergency Vehicles & Sirens", points: 30, exp: "Kahit may exception, obligasyon pa rin ng emergency driver na mag-ingat para sa kaligtasan ng ibang tao sa daan." },
+    { id: "q_h31", text: "Before turning from a direct line, a driver must first determine that the movement:", options: ["Can be made safely", "Will be faster than other traffic", "Requires no signal"], correct: 0, difficulty: "Hard", topic: "Turning & Signaling", points: 30, exp: "Ayon sa Section 44, bawal lumiko o lumipat ng direksyon maliban kung natiyak na magagawa ito nang may lubos na kaligtasan." },
+    { id: "q_h32", text: "When starting, stopping, or turning could affect another vehicle, the driver must give:", options: ["A plainly visible signal", "No signal if traffic is light", "Only a verbal warning"], correct: 0, difficulty: "Hard", topic: "Turning & Signaling", points: 30, exp: "Ayon sa Section 44, mandatory ang pagbibigay ng malinaw na senyas bago simulan ang anumang pagliko o pagbagal." },
+    { id: "q_h33", text: "A driver intending to turn right at an intersection should generally approach in:", options: ["The lane nearest the right side of the highway", "The lane nearest the center line", "Any lane"], correct: 0, difficulty: "Hard", topic: "Turning & Signaling", points: 30, exp: "Ayon sa Section 45(a), ang paglapit at pagliko pakanan ay dapat gawin sa pinakakanang linya o gilid ng kalsada." },
+    { id: "q_h34", text: "When making a right turn, the driver should keep:", options: ["As close as possible to the right curb or edge", "As close as possible to the center line", "On the opposite side of the road"], correct: 0, difficulty: "Hard", topic: "Turning & Signaling", points: 30, exp: "Panatilihing masinsin sa kanang bahagi ang pagliko pakanan upang hindi makaharang sa kabilang linyang kasalubong." },
+    { id: "q_h35", text: "A driver intending to turn left should generally approach in the lane:", options: ["To the right of and nearest the center line", "Nearest the right curb", "Intended for parking"], correct: 0, difficulty: "Hard", topic: "Turning & Signaling", points: 30, exp: "Ayon sa Section 45(b), ang paglapit sa left turn ay dapat gawin sa linyang pinakamalapit sa gitnang linya ng kalsada." },
+    { id: "q_h36", text: "In making a normal left turn at an intersection, the vehicle should pass:", options: ["To the left of the center of the intersection", "To the right of the center of the intersection", "Over the sidewalk"], correct: 0, difficulty: "Hard", topic: "Turning & Signaling", points: 30, exp: "Ayon sa Section 45(b), dapat dumaan sa kaliwa ng center point ng intersection upang maayos na makapasok sa bagong linya." },
+    { id: "q_h37", text: "On a one-way highway, a left turn should generally be made from:", options: ["The left lane in the direction of travel", "The right shoulder", "Any opposing lane"], correct: 0, difficulty: "Hard", topic: "Turning & Signaling", points: 30, exp: "Sa one-way street, pumuwesto sa pinakakaliwang linya bago kumaliwa upang hindi sumalubong sa ibang linya." },
+    { id: "q_h38", text: "A driver turns without checking whether the movement is safe. Which requirement has been violated?", options: ["The duty to ensure the movement can be made safely", "The parking rule", "The vehicle registration rule"], correct: 0, difficulty: "Hard", topic: "Turning & Signaling", points: 30, exp: "Nilabag nito ang Section 44 ng RA 4136 na nag-aatas na suriin ang kaligtasan bago lumiko o magbago ng direksyon." },
+    { id: "q_h39", text: "A driver’s turn may affect a pedestrian. Under the traffic rules, the driver should also provide:", options: ["A clearly audible signal when required", "A high-speed maneuver", "No warning"], correct: 0, difficulty: "Hard", topic: "Pedestrian Safety", points: 30, exp: "Ayon sa Section 44, dapat magbigay ng angkop na babala o busina sa pedestrian bago isagawa ang pagliko." },
+    { id: "q_h40", text: "Which is the safest interpretation of signaling before a maneuver?", options: ["Signal only after completing the maneuver", "Signal the intention before making the movement", "Signal only when a police officer is present"], correct: 1, difficulty: "Hard", topic: "Turning & Signaling", points: 30, exp: "Laging magbigay ng turn signal nang hindi bababa sa 30 metro bago ang aktwal na pagliko upang makapaghanda ang iba." },
+    { id: "q_h41", text: "Parking within an intersection is:", options: ["Allowed for less than one minute", "Prohibited", "Allowed with hazard lights"], correct: 1, difficulty: "Hard", topic: "Parking Rules (RA 4136 Section 46)", points: 30, exp: "Ayon sa RA 4136 Section 46(a), mahigpit na ipinagbabawal ang pagparada sa loob ng anumang intersection." },
+    { id: "q_h42", text: "Parking directly on a crosswalk is:", options: ["Prohibited", "Allowed at night", "Allowed when no pedestrian is present"], correct: 0, difficulty: "Hard", topic: "Parking Rules (RA 4136 Section 46)", points: 30, exp: "Ayon sa Section 46(b), bawal pumarada sa ibabaw ng pedestrian crosswalk sa anumang oras." },
+    { id: "q_h43", text: "How far from the intersection of curb lines is parking prohibited under Section 46?", options: ["Within 2 meters", "Within 4 meters", "Within 6 meters"], correct: 2, difficulty: "Hard", topic: "Parking Rules (RA 4136 Section 46)", points: 30, exp: "Ayon sa Section 46(c), ipinagbabawal ang pagparada sa loob ng 6 na metro mula sa interseksyon ng curb lines." },
+    { id: "q_h44", text: "Parking within four meters of a fire hydrant is:", options: ["Permitted", "Prohibited", "Required"], correct: 1, difficulty: "Hard", topic: "Parking Rules (RA 4136 Section 46)", points: 30, exp: "Ayon sa Section 46(d), ipinagbabawal ang pagparada sa loob ng 4 na metro mula sa fire hydrant." },
+    { id: "q_h45", text: "Parking within four meters of a fire station driveway is:", options: ["Prohibited", "Allowed if the engine is running", "Allowed during daytime"], correct: 0, difficulty: "Hard", topic: "Parking Rules (RA 4136 Section 46)", points: 30, exp: "Ayon sa Section 46(e), bawal pumarada sa loob ng 4 na metro mula sa pasukan ng fire station." },
+    { id: "q_h46", text: "A driver parks directly in front of a private driveway. This is:", options: ["Permitted if hazard lights are on", "Prohibited", "Required during emergencies"], correct: 1, difficulty: "Hard", topic: "Parking Rules (RA 4136 Section 46)", points: 30, exp: "Ayon sa Section 46(f), ipinagbabawal ang pagparada sa harap ng pribadong driveway." },
+    { id: "q_h47", text: "A driver parks beside another vehicle in a way that leaves the parked vehicle on the roadway side. This is commonly called double parking and is:", options: ["Prohibited under the specified parking rule", "Required on narrow streets", "Allowed if the driver stays inside"], correct: 0, difficulty: "Hard", topic: "Parking Rules (RA 4136 Section 46)", points: 30, exp: "Ayon sa Section 46(g), bawal pumarada sa roadway side ng anumang sasakyang nakaparada na sa gilid ng kalsada." },
+    { id: "q_h48", text: "An official no-parking sign is posted. The driver should:", options: ["Park there briefly", "Avoid parking there", "Park only with hazard lights"], correct: 1, difficulty: "Hard", topic: "Parking Rules (RA 4136 Section 46)", points: 30, exp: "Ayon sa Section 46(h), bawal pumarada sa anumang lugar kung saan may opisyal na No Parking signs." },
+    { id: "q_h49", text: "When an unattended vehicle is parked on a highway, the driver must:", options: ["Leave the engine running", "Turn off the ignition and effectively apply the hand brake", "Leave the transmission in neutral only"], correct: 1, difficulty: "Hard", topic: "Parking Rules (RA 4136 Section 46)", points: 30, exp: "Ayon sa Section 47, bago iwanan ang sasakyan, dapat patayin ang makina, ikabit ang handbrake, at i-lock ang manibela." },
+    { id: "q_h50", text: "A driver stops only long enough to quickly pick up a waiting passenger and immediately continues. Under the definition in RA 4136, this is generally:", options: ["Not considered parking if done without delay", "Always considered parking", "Illegal in all situations"], correct: 0, difficulty: "Hard", topic: "Parking Rules (RA 4136 Section 46)", points: 30, exp: "Sa ilalim ng RA 4136, ang paghinto upang mabilis na magbaba o magsakay ng pasahero nang walang pagkaantala ay hindi itinuturing na parking." },
+    { id: "q_h51", text: "An ambulance with an audible signal approaches while you are near an intersection. Where should you stop?", options: ["As near as possible to the right-hand edge, clear of the intersection", "In the center of the intersection", "On the left side"], correct: 0, difficulty: "Hard", topic: "Emergency Vehicles & Sirens", points: 30, exp: "Ayon sa Section 43, tumabi sa kanang gilid ng kalsada at huwag harangan ang intersection hanggang makalagpas ang ambulansya." },
+    { id: "q_h52", text: "A fire department vehicle approaches with an audible signal. Other drivers should:", options: ["Compete for the same lane", "Yield and stop as required", "Follow it closely"], correct: 1, difficulty: "Hard", topic: "Emergency Vehicles & Sirens", points: 30, exp: "Lahat ng motorista ay inaatasan ng Section 43 na magbigay ng prayoridad sa mga sasakyan ng bumbero." },
+    { id: "q_h53", text: "A police vehicle approaches on official business but gives no audible signal. Does Section 43 automatically impose the same audible-signal emergency right-of-way requirement?", options: ["Yes, regardless of signal", "No; the provision specifies an audible signal", "Only if it is blue"], correct: 1, difficulty: "Hard", topic: "Emergency Vehicles & Sirens", points: 30, exp: "Ayon sa Section 43, ang emergency right-of-way ay nalalapat kapag nagbibigay ng audible signal (sirena o bell) ang rumerespondeng sasakyan." },
+    { id: "q_h54", text: "An emergency vehicle is approaching, but a peace officer gives a different direction. The driver should:", options: ["Follow the peace officer's direction", "Ignore the officer", "Follow another private vehicle"], correct: 0, difficulty: "Hard", topic: "Traffic Signs & Signals", points: 30, exp: "Ang mga direktiba ng aktibong peace officer na namamahala sa trapiko ay may prayoridad upang matiyak ang maayos na daloy." },
+    { id: "q_h55", text: "A driver encounters a road condition requiring slower speed even though the posted/statutory maximum is higher. What should the driver do?", options: ["Always drive at the maximum", "Adjust speed according to safety and road conditions", "Accelerate"], correct: 1, difficulty: "Hard", topic: "Speed Management", points: 30, exp: "Ayon sa Section 35(a), ang driver ay dapat magpatakbo sa maingat at makatwirang bilis batay sa aktwal na kalagayan ng daan." },
+    { id: "q_h56", text: "Which action is most consistent with the reckless-driving prohibition?", options: ["Adjusting speed for visibility and traffic conditions", "Driving in a manner that endangers people or property", "Maintaining reasonable caution"], correct: 1, difficulty: "Hard", topic: "Driver Responsibilities & Discipline", points: 30, exp: "Ang Section 48 ay nagbabawal sa pagpapatakbo nang walang ingat at may kapabayaan na nagdudulot ng panganib sa buhay at ari-arian." },
+    { id: "q_h57", text: "A driver deliberately drives aggressively through heavy traffic and creates danger for other road users. This may constitute:", options: ["Defensive driving", "Reckless driving", "Proper overtaking"], correct: 1, difficulty: "Hard", topic: "Driver Responsibilities & Discipline", points: 30, exp: "Ang agresibong pagmamaneho at pagwawalang-bahala sa kaligtasan ng iba ay bumubuo ng paglabag sa Reckless Driving." },
+    { id: "q_h58", text: "A driver uses a sidewalk as a shortcut to avoid traffic. Under RA 4136, this is:", options: ["Permitted when traffic is heavy", "Prohibited", "Required during congestion"], correct: 1, difficulty: "Hard", topic: "Basic Traffic Rules", points: 30, exp: "Ayon sa RA 4136 Section 52, mahigpit na ipinagbabawal ang pagpapatakbo ng anumang sasakyang de-motor sa ibabaw ng bangketa." },
+    { id: "q_h59", text: "A driver stops in a way that blocks the free passage of other vehicles while loading passengers. This may violate the rule against:", options: ["Obstruction of traffic", "Overtaking", "Right-side driving"], correct: 0, difficulty: "Hard", topic: "Basic Traffic Rules", points: 30, exp: "Ayon sa Section 54, bawal huminto o magmaneho sa paraang haharang o makakaabala sa libreng daloy ng trapiko (Obstruction)." },
+    { id: "q_h60", text: "A passenger hangs on the outside rear portion of a moving vehicle. The driver knowingly permits it. This is:", options: ["Allowed at low speed", "Prohibited", "Allowed in residential areas"], correct: 1, difficulty: "Hard", topic: "Basic Traffic Rules", points: 30, exp: "Ayon sa Section 51, bawal pahintulutan ng driver ang sinumang sumakay o sumabit sa labas o running board ng sasakyan." },
+    { id: "q_h61", text: "After a vehicular accident, the driver present should provide:", options: ["Only the vehicle plate number", "Driver's license, true name, and address, plus the owner's true name and address", "Only an insurance policy"], correct: 1, difficulty: "Hard", topic: "Accidents & Driver Duty (RA 4136 Section 55)", points: 30, exp: "Ayon sa Section 55, obligasyon ng driver na magpakita ng lisensya at ibigay ang kumpletong impormasyon sa mga biktima o pulis." },
+    { id: "q_h62", text: "A driver involved in an accident leaves immediately without assisting the victim or meeting a legal exception. This may violate the driver's duty to:", options: ["Remain and aid the victim", "Overtake another vehicle", "Park on the sidewalk"], correct: 0, difficulty: "Hard", topic: "Accidents & Driver Duty (RA 4136 Section 55)", points: 30, exp: "Ang pagtakas sa aksidente (Hit and Run) nang walang legal na exception ay isang mabigat na krimen sa ilalim ng Section 55." },
+    { id: "q_h63", text: "Which is an exception that may justify leaving the accident scene?", options: ["The driver wants to avoid traffic", "The driver is in imminent danger of serious harm", "The driver does not want to wait"], correct: 1, difficulty: "Hard", topic: "Accidents & Driver Duty (RA 4136 Section 55)", points: 30, exp: "Pinapayagan ang pag-alis kung may panganib sa buhay ng driver mula sa ibang tao, basta't magre-report agad sa pinakamalapit na pulis." },
+    { id: "q_h64", text: "After an accident, a driver may leave the scene to:", options: ["Buy food", "Summon a physician or nurse to aid the victim", "Repair the vehicle immediately"], correct: 1, difficulty: "Hard", topic: "Accidents & Driver Duty (RA 4136 Section 55)", points: 30, exp: "Ayon sa Section 55(2), legal na eksepsiyon ang pag-alis upang humingi ng agarang tulong-medikal para sa biktima." },
+    { id: "q_h65", text: "A driver leaves an accident scene to report the accident to the nearest law officer. This is:", options: ["One of the specified exceptions", "Always prohibited", "Considered reckless overtaking"], correct: 0, difficulty: "Hard", topic: "Accidents & Driver Duty (RA 4136 Section 55)", points: 30, exp: "Ayon sa Section 55(3), legal na eksepsiyon ang pagpunta sa pinakamalapit na himpilan ng pulisya upang i-report ang insidente." },
+    { id: "q_h66", text: "Which information must an accident-involved driver provide under Section 55?", options: ["Only the driver's nickname", "True name and address and relevant owner information", "Only the vehicle color"], correct: 1, difficulty: "Hard", topic: "Accidents & Driver Duty (RA 4136 Section 55)", points: 30, exp: "Itinatakda ng batas ang buong pagkakakilanlan ng driver at may-ari ng sasakyan sa mga apektadong partido." },
+    { id: "q_h67", text: "A driver causes an accident and refuses to identify himself to the authorities. Which duty is potentially violated?", options: ["Duty of a driver involved in an accident", "Parking duty only", "Overtaking duty only"], correct: 0, difficulty: "Hard", topic: "Accidents & Driver Duty (RA 4136 Section 55)", points: 30, exp: "Ang pagtangging magpakilala o magpakita ng lisensya matapos ang aksidente ay direktang paglabag sa Section 55." },
+    { id: "q_h68", text: "A driver leaves the scene solely because he is afraid of receiving a traffic ticket. Is this one of the listed exceptions?", options: ["Yes", "No", "Only at night"], correct: 1, difficulty: "Hard", topic: "Accidents & Driver Duty (RA 4136 Section 55)", points: 30, exp: "Ang takot sa multa o ticket ay HINDI legal na dahilan upang iwanan ang biktima o pinangyarihan ng aksidente." },
+    { id: "q_h69", text: "Which situation most clearly satisfies the purpose of the accident-scene duty?", options: ["Providing or obtaining necessary assistance for an injured victim", "Leaving immediately to avoid responsibility", "Moving to another city"], correct: 0, difficulty: "Hard", topic: "Accidents & Driver Duty (RA 4136 Section 55)", points: 30, exp: "Ang pangunahing layunin ng Section 55 ay iligtas ang buhay at kalusugan ng mga nasugatang biktima ng aksidente." },
+    { id: "q_h70", text: "A driver involved in an accident needs medical assistance for the victim and leaves specifically to summon a physician. Under Section 55, this may be:", options: ["A recognized exception", "Automatically illegal", "Considered parking"], correct: 0, difficulty: "Hard", topic: "Accidents & Driver Duty (RA 4136 Section 55)", points: 30, exp: "Ang paghingi ng saklolong medikal para sa biktima ay hayagang pinapahintulutan bilang legal na eksepsiyon sa pag-alis sa lugar." },
+    { id: "q_h71", text: "Two vehicles arrive at an intersection simultaneously. Your vehicle is on the left. Even if you believe you can cross first, the legal default is to:", options: ["Yield to the vehicle on the right", "Accelerate", "Sound the horn and proceed"], correct: 0, difficulty: "Hard", topic: "Right-of-Way & Intersections", points: 30, exp: "Ayon sa Section 42(a), kapag sabay na dumating, ang sasakyang nasa kaliwa ay dapat laging magbigay-daan sa nasa kanan." },
+    { id: "q_h72", text: "You are approaching a crosswalk and see a pedestrian already crossing. The safest legal decision is to:", options: ["Continue because the vehicle is larger", "Yield", "Overtake another vehicle"], correct: 1, difficulty: "Hard", topic: "Pedestrian Safety", points: 30, exp: "Laging magbigay-daan sa mga taong tumatawid sa pedestrian lane; ang buhay ng tao ang may pinakamataas na prayoridad." },
+    { id: "q_h73", text: "You are about to overtake, but the oncoming lane is not clearly visible. What should you do?", options: ["Overtake quickly", "Wait until it is clearly visible and safe", "Sound the horn and cross"], correct: 1, difficulty: "Hard", topic: "Lane Changing & Overtaking", points: 30, exp: "Huwag kailanman mag-overtake kung hindi 100% siguradong malinaw ang daan sa unahan." },
+    { id: "q_h74", text: "You are behind a slow vehicle near the crest of a hill. What is the best legal decision?", options: ["Overtake immediately", "Wait until overtaking can be done legally and safely", "Use the shoulder"], correct: 1, difficulty: "Hard", topic: "Lane Changing & Overtaking", points: 30, exp: "Ipinagbabawal ang pag-overtake sa crest ng burol; maghintay hanggang maging patag at may broken line." },
+    { id: "q_h75", text: "You are approaching a railway crossing and want to pass a slower vehicle. What should you do?", options: ["Overtake before reaching the crossing", "Do not overtake at the railway crossing", "Use the opposite shoulder"], correct: 1, difficulty: "Hard", topic: "Lane Changing & Overtaking", points: 30, exp: "Bawal mag-overtake sa loob ng 30 metro bago ang railway crossing ayon sa Section 41(c)." },
+    { id: "q_h76", text: "You see temporary signs indicating highway workers ahead. A vehicle in front is moving slowly. What should you do?", options: ["Overtake within the restricted area", "Avoid overtaking between the warning points", "Drive on the sidewalk"], correct: 1, difficulty: "Hard", topic: "Lane Changing & Overtaking", points: 30, exp: "Ayon sa Section 41(d), bawal mag-overtake sa road construction zones upang maprotektahan ang mga manggagawa." },
+    { id: "q_h77", text: "You are entering a highway from a private driveway and see a motorcycle approaching. Who has priority?", options: ["Your vehicle because you are entering", "The motorcycle already on the highway", "Whoever sounds the horn first"], correct: 1, difficulty: "Hard", topic: "Right-of-Way & Intersections", points: 30, exp: "Ang trapikong nasa highway ay may prayoridad kaysa sa mga sasakyang nagmumula sa pribadong driveway." },
+    { id: "q_h78", text: "You are approaching a through highway. Traffic appears light. What should you do before entering?", options: ["Yield as required and ensure it is safe", "Enter without slowing", "Assume through traffic will stop"], correct: 0, difficulty: "Hard", topic: "Right-of-Way & Intersections", points: 30, exp: "Laging magbagal o huminto nang buo at suriin ang magkabilang direksyon bago pumasok sa through highway." },
+    { id: "q_h79", text: "You are traveling at the statutory maximum but visibility suddenly becomes poor. What is the proper decision?", options: ["Maintain maximum speed because it is legal", "Reduce speed as needed for safety", "Accelerate through the area"], correct: 1, difficulty: "Hard", topic: "Speed Management", points: 30, exp: "Ang kaligtasan ang laging nangingibabaw; dapat magbawas ng bilis kapag mababa ang visibility." },
+    { id: "q_h80", text: "You are carrying passengers and need to stop briefly, but your vehicle would block moving traffic. What should you prioritize?", options: ["Avoid obstructing traffic", "Stop wherever convenient", "Stop in the middle of the lane"], correct: 0, difficulty: "Hard", topic: "Basic Traffic Rules", points: 30, exp: "Humanap muna ng ligtas na loading bay o gilid ng kalsada upang hindi maging sanhi ng pagbara sa trapiko." },
+    { id: "q_h81", text: "Vehicle A is approaching an intersection from the left. Vehicle B is already inside the intersection and turning left across A's path with a visible signal. Who should yield?", options: ["Vehicle A", "Vehicle B", "Neither"], correct: 0, difficulty: "Hard", topic: "Right-of-Way & Intersections", points: 30, exp: "Ayon sa Section 42(b), dapat magbigay-daan ang Sasakyan A dahil ang Sasakyan B ay nasa loob na ng intersection at nag-signal nang tama." },
+    { id: "q_h82", text: "Vehicle A is traveling above the lawful speed and reaches an intersection at the same time as Vehicle B on its right. Can A claim the normal right-of-way?", options: ["Yes, because A arrived first", "No, unlawful speed can cause forfeiture of right-of-way", "Yes, if A sounds the horn"], correct: 1, difficulty: "Hard", topic: "Right-of-Way & Intersections", points: 30, exp: "Ayon sa RA 4136 Section 42(a), nawawalan ng karapatan sa right-of-way ang driver na nagpapatakbo sa labag sa batas na bilis." },
+    { id: "q_h83", text: "A driver approaches a curve with an obstructed view but the road has two or more lanes moving in the same direction. Which statement is most accurate?", options: ["The general prohibition has an exception for passing on such multi-lane roads under the conditions stated in the law", "Passing is always prohibited in every circumstance", "Passing is required"], correct: 0, difficulty: "Hard", topic: "Lane Changing & Overtaking", points: 30, exp: "Sa multi-lane roads sa iisang direksyon, pinapayagan ang paglagpas sa sariling lane nang hindi tumatawid sa kasalubong." },
+    { id: "q_h84", text: "A driver wants to pass another vehicle at an intersection. The intersection is controlled by a traffic signal. Under Section 41, this situation may fall under:", options: ["An exception to the general intersection overtaking prohibition", "An absolute prohibition with no exception", "A parking violation"], correct: 0, difficulty: "Hard", topic: "Lane Changing & Overtaking", points: 30, exp: "Ayon sa Section 41(c), pinapayagan ang paglagpas sa intersection kung ito ay kontrolado ng traffic signal lights." },
+    { id: "q_h85", text: "A driver wants to pass on the right because the vehicle ahead is about to make a left turn. Under RA 4136, this maneuver may be permitted when:", options: ["It can be done safely and under the applicable rule", "The driver is speeding", "The road is a sidewalk"], correct: 0, difficulty: "Hard", topic: "Lane Changing & Overtaking", points: 30, exp: "Ayon sa Section 39, pinapayagan ang pagdaan sa kanan kung ang nasa unahan ay nag-signal at aktwal na lumiliko pakaliwa." },
+    { id: "q_h86", text: "You are overtaking a vehicle and have not yet safely cleared it. When should you return to the right side?", options: ["Immediately after entering the opposite lane", "Only after safely clearing the overtaken vehicle", "Before passing it"], correct: 1, difficulty: "Hard", topic: "Lane Changing & Overtaking", points: 30, exp: "Bumalik lamang sa kanang linya kapag tanaw mo na sa iyong rearview mirror ang buong unahan ng sasakyang na-overtake mo." },
+    { id: "q_h87", text: "A driver is about to be overtaken and accelerates to prevent the other vehicle from passing. This is:", options: ["Correct defensive driving", "Contrary to the rule requiring the overtaken driver not to increase speed until completely passed", "Required by RA 4136"], correct: 1, difficulty: "Hard", topic: "Lane Changing & Overtaking", points: 30, exp: "Ayon sa Section 40, bawal magpabilis ang driver na nao-overtake hanggang sa ganap na makabalik sa lane ang nag-overtake." },
+    { id: "q_h88", text: "A driver is approaching a blind corner and sees a stopped vehicle ahead. Which consideration is most important?", options: ["The higher statutory speed", "The dangerous road condition requiring reduced speed", "The vehicle's engine power"], correct: 1, difficulty: "Hard", topic: "Speed Management", points: 30, exp: "Sa ilalim ng Section 35(b)(4), ang blind corners at stationary vehicles ay nag-aatas ng maximum na 20 km/h." },
+    { id: "q_h89", text: "A driver parks four meters from a fire hydrant but the vehicle is unattended. Is the parking permitted?", options: ["Yes, because it is exactly four meters away", "No, because parking within four meters is prohibited", "Yes, if hazard lights are on"], correct: 1, difficulty: "Hard", topic: "Parking Rules (RA 4136 Section 46)", points: 30, exp: "Ayon sa Section 46(d), bawal pumarada sa loob ng 4 na metro mula sa anumang fire hydrant." },
+    { id: "q_h90", text: "A vehicle is parked within six meters of an intersection's curb-line intersection. The driver argues that the road is empty. Is the parking still prohibited?", options: ["Yes", "No", "Only during rush hour"], correct: 0, difficulty: "Hard", topic: "Parking Rules (RA 4136 Section 46)", points: 30, exp: "Ayon sa Section 46(c), ang pagparada sa loob ng 6 na metro mula sa interseksyon ay mahigpit na ipinagbabawal kahit walang trapiko." },
+    { id: "q_h91", text: "Which combination is correct?", options: ["Crosswalk\u2014pedestrian right-of-way; private driveway\u2014entering vehicle yields", "Crosswalk\u2014vehicle always has priority; private driveway\u2014entering vehicle has priority", "Both are always controlled by the faster vehicle"], correct: 0, difficulty: "Hard", topic: "Right-of-Way & Intersections", points: 30, exp: "Ang pedestrian ang may right-of-way sa crosswalk, at ang sasakyang nasa highway ang may right-of-way kaysa sa lumalabas sa driveway." },
+    { id: "q_h92", text: "Which situation can cause a driver to lose an otherwise available right-of-way?", options: ["Traveling at an unlawful speed", "Driving slowly", "Using a signal"], correct: 0, difficulty: "Hard", topic: "Right-of-Way & Intersections", points: 30, exp: "Ayon sa RA 4136 Section 42(a), ang speeding driver ay awtomatikong nawawalan ng anumang right-of-way." },
+    { id: "q_h93", text: "Which combination correctly describes overtaking?", options: ["Generally pass left; return right only after safely clearing", "Always pass right; return left immediately", "Pass on any side without checking traffic"], correct: 0, difficulty: "Hard", topic: "Lane Changing & Overtaking", points: 30, exp: "Ayon sa Sections 39 at 40, overtake on the left and return to the right only after safely clearing the vehicle." },
+    { id: "q_h94", text: "Which situation is specifically prohibited?", options: ["Overtaking within a no-passing zone", "Waiting for a safe passing opportunity", "Yielding to an overtaking vehicle"], correct: 0, difficulty: "Hard", topic: "Lane Changing & Overtaking", points: 30, exp: "Ang pag-overtake sa no-passing zones o solid lines ay hayagang ipinagbabawal at may kaukulang multa." },
+    { id: "q_h95", text: "A driver wants to make a left turn at a normal two-way intersection. Which approach is generally correct?", options: ["Approach in the lane to the right of and nearest the center line", "Approach from the far-right lane", "Approach from the shoulder"], correct: 0, difficulty: "Hard", topic: "Turning & Signaling", points: 30, exp: "Ayon sa Section 45(b), pumuwesto sa linyang pinakamalapit sa center line bago kumaliwa." },
+    { id: "q_h96", text: "Which combination contains only places where parking is prohibited under Section 46?", options: ["Crosswalk, intersection, in front of a private driveway", "Legal parking area, private garage, designated parking space", "Open parking lot, legal shoulder, private garage"], correct: 0, difficulty: "Hard", topic: "Parking Rules (RA 4136 Section 46)", points: 30, exp: "Ang Section 46 ay hayagang nagbabawal sa crosswalks, intersections, fire hydrants, driveways, at double parking." },
+    { id: "q_h97", text: "A driver hears an ambulance's audible signal while approaching an intersection. Which sequence is most appropriate?", options: ["Stop clear of the intersection near the right edge and allow the ambulance to pass", "Stop in the center and wait", "Race the ambulance through the intersection"], correct: 0, difficulty: "Hard", topic: "Emergency Vehicles & Sirens", points: 30, exp: "Ayon sa Section 43, tumabi sa kanan, huminto bago ang intersection, at bigyang-daan ang emergency vehicle." },
+    { id: "q_h98", text: "Which action best follows the rule against obstruction of traffic?", options: ["Loading passengers while blocking the free passage of vehicles", "Loading or unloading without unnecessarily blocking traffic", "Stopping in the middle of the roadway whenever convenient"], correct: 1, difficulty: "Hard", topic: "Basic Traffic Rules", points: 30, exp: "Ayon sa Section 54, dapat magsakay at magbaba nang maayos sa tabi upang hindi maantala ang libreng daloy ng ibang sasakyan." },
+    { id: "q_h99", text: "Which situation is most consistent with RA 4136's reckless-driving prohibition?", options: ["Driving with reasonable caution according to traffic and road conditions", "Operating a vehicle recklessly in a manner that endangers persons or property", "Reducing speed near a dangerous area"], correct: 1, difficulty: "Hard", topic: "Driver Responsibilities & Discipline", points: 30, exp: "Ang Section 48 ay nagpaparusa sa reckless driving na nagdudulot ng panganib sa buhay, kalusugan, o ari-arian." },
+    { id: "q_h100", text: "A driver must choose between legally overtaking a vehicle and waiting because visibility is insufficient. What is the best decision?", options: ["Wait until the maneuver can be completed safely and legally", "Overtake immediately because traffic is slow", "Use the sidewalk to pass"], correct: 0, difficulty: "Hard", topic: "Lane Changing & Overtaking", points: 30, exp: "Ang defensive driver ay laging naghihintay ng ligtas at legal na pagkakataon bago magsagawa ng anumang pag-overtake." }
 ];
 
 const DEFAULT_SCENARIOS = [...SIMULATION_20_SCENARIOS];
