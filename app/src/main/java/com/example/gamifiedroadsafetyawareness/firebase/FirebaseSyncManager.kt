@@ -104,6 +104,9 @@ class FirebaseSyncManager {
             val data = hashMapOf(
                 "userId" to attempt.userId,
                 "quizId" to attempt.quizId,
+                "moduleId" to attempt.moduleId,
+                "quizTitle" to attempt.quizTitle,
+                "difficulty" to attempt.difficulty,
                 "score" to attempt.correctCount,
                 "totalQuestions" to attempt.totalQuestions,
                 "percentage" to attempt.scorePercent,

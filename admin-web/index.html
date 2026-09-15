@@ -681,10 +681,25 @@
             <!-- 14. USER ANALYTICS & RECENT ACTIVITY STREAM -->
             <div class="dashboard-body">
                 <div class="card chart-card">
-                    <div class="card-header">
+                    <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
                         <h3 class="font-h3"><span class="material-icons-round">bar_chart</span> Quiz Performance &amp; Passing Rate</h3>
+                        <div class="chart-header-controls" style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+                            <select id="quiz-chart-module-filter" class="form-input font-body-sm" style="padding: 4px 10px; font-size: 12px; height: 32px; width: auto; border-radius: 6px; background: var(--navy-surface); color: var(--text-primary); border: 1px solid var(--border-subtle);" onchange="updateQuizChart()">
+                                <option value="all">📚 All Modules &amp; Quizzes</option>
+                                <option value="mod_easy_quiz">🟢 Easy Module (Basics)</option>
+                                <option value="mod_medium_quiz">🟡 Medium Module (Defensive)</option>
+                                <option value="mod_hard_quiz">🔴 Hard Module (Right-of-Way)</option>
+                            </select>
+                            <div class="btn-group-segmented" style="display: flex; background: rgba(255,255,255,0.06); padding: 2px; border-radius: 6px; border: 1px solid var(--border-subtle);">
+                                <button id="btn-quiz-chart-takers" class="chart-view-btn active" style="padding: 4px 10px; font-size: 11px; border: none; background: #3B82F6; color: #fff; border-radius: 4px; cursor: pointer; font-weight: 600;" onclick="setQuizChartMode('takers')">👥 Takers</button>
+                                <button id="btn-quiz-chart-attempts" class="chart-view-btn" style="padding: 4px 10px; font-size: 11px; border: none; background: transparent; color: var(--text-secondary); border-radius: 4px; cursor: pointer; font-weight: 600;" onclick="setQuizChartMode('attempts')">📝 Attempts</button>
+                            </div>
+                        </div>
                     </div>
-                    <div class="chart-container">
+                    <div id="quiz-chart-stats-summary" class="quiz-summary-strip" style="display: flex; gap: 12px; padding: 10px 18px; background: rgba(0, 56, 168, 0.05); border-bottom: 1px solid var(--border-subtle); flex-wrap: wrap; font-size: 12px;">
+                        <!-- Dynamically populated by JS: Total Takers, Total Attempts, Passing Rate %, Avg Score % -->
+                    </div>
+                    <div class="chart-container" style="position: relative;">
                         <canvas id="quizChart"></canvas>
                     </div>
                 </div>

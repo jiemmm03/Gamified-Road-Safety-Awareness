@@ -2264,6 +2264,25 @@ body {
     color: var(--badge-gold-bright);
 }
 
+.chart-header-controls {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.chart-view-btn {
+    transition: background 0.2s ease, color 0.2s ease;
+}
+
+.chart-view-btn:hover:not(.active) {
+    background: rgba(255, 255, 255, 0.1) !important;
+    color: var(--text-primary) !important;
+}
+
+.quiz-summary-strip {
+    transition: all 0.2s ease;
+}
+
 .chart-container {
     padding: 20px;
     height: 320px;
