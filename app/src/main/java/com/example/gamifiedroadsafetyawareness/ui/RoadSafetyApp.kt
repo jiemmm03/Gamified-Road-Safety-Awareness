@@ -2,6 +2,12 @@ package com.example.gamifiedroadsafetyawareness.ui
 
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -41,6 +47,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDrawerState
 import com.example.gamifiedroadsafetyawareness.ui.components.AppNavigationDrawer
 import com.example.gamifiedroadsafetyawareness.ui.components.AppTopBar
+import com.example.gamifiedroadsafetyawareness.ui.components.FocusTopBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -146,6 +153,49 @@ sealed class Screen(
     object AdminQuizAttempts : Screen("admin_quiz_attempts", "Quiz Attempts", { Icons.Rounded.Quiz }, Permission.VIEW_SYSTEM_OVERVIEW)
     object AdminAnswerReview : Screen("admin_answer_review", "Answer Review", { Icons.Rounded.RateReview }, Permission.VIEW_SYSTEM_OVERVIEW)
     object CloudMonitoring : Screen("cloud_monitoring", "Cloud Monitor", { Icons.Rounded.CloudSync }, Permission.VIEW_SYSTEM_OVERVIEW)
+}
+
+// ─── Context-Aware Focus Mode ────────────────────────────────────────────────
+
+/**
+ * Describes the navigation chrome that should be visible for a given screen.
+ *
+ * - NAVIGATION    → full top bar (hamburger + streak + AI shortcut) + bottom nav bar
+ * - FOCUS_QUIZ    → minimal FocusTopBar (Back + title) only; no bottom bar
+ * - FOCUS_AI      → minimal FocusTopBar (Back + title) only; no bottom bar
+ * - FOCUS_RESULTS → minimal FocusTopBar (Back + title) only; no bottom bar
+ * - FOCUS_SETTINGS→ minimal FocusTopBar (Back + title) only; no bottom bar
+ * - AUTH          → no bars at all (handled before the Scaffold)
+ */
+enum class FocusMode { NAVIGATION, FOCUS_QUIZ, FOCUS_AI, FOCUS_RESULTS, FOCUS_SETTINGS, AUTH }
+
+val Screen.focusMode: FocusMode get() = when (this) {
+    // Auth
+    Screen.Login, Screen.SignUp -> FocusMode.AUTH
+    // Full navigation screens
+    Screen.Dashboard,
+    Screen.Assessment,
+    Screen.Gamification,
+    Screen.Analytics,
+    Screen.XpHistory,
+    Screen.LearningHistory,
+    Screen.Profile,
+    Screen.AdminDashboard,
+    Screen.AdminManagement,
+    Screen.AdminReports,
+    Screen.AdminXpManagement,
+    Screen.AuditDashboard -> FocusMode.NAVIGATION
+    // Focused quiz / simulation screens
+    Screen.QuizTaking,
+    Screen.Simulation,
+    Screen.Feedback -> FocusMode.FOCUS_QUIZ
+    // AI assistant
+    Screen.AiTutor -> FocusMode.FOCUS_AI
+    // Results / review screens
+    Screen.ModuleSummary,
+    Screen.ModuleReview -> FocusMode.FOCUS_RESULTS
+    // Settings / admin sub-screens
+    else -> FocusMode.FOCUS_SETTINGS
 }
 
 @Composable
@@ -325,8 +375,14 @@ fun RoadSafetyApp() {
         UserRole.ADMIN, UserRole.SUPER_ADMIN -> adminPrimaryScreens
     }
 
-    val showTopBar = currentScreen != Screen.Login
-            && currentScreen != Screen.SignUp
+    val focusMode = currentScreen.focusMode
+    val isAuthScreen   = focusMode == FocusMode.AUTH
+    val isInFocusMode  = focusMode != FocusMode.NAVIGATION && !isAuthScreen
+    val showBottomBar  = !isAuthScreen && !isInFocusMode && currentUserRole == UserRole.USER
+    val showFullTopBar = !isAuthScreen && !isInFocusMode
+    val showFocusTopBar= !isAuthScreen && isInFocusMode
+    // Keep the original name so the rest of the file (drawer gesturesEnabled) still compiles
+    val showTopBar = !isAuthScreen
     ProvideLocalizedContext(languageCode = languageCode) {
         if (isCheckingSession) {
             Box(
@@ -389,7 +445,9 @@ fun RoadSafetyApp() {
 
         ModalNavigationDrawer(
             drawerState = drawerState,
-            gesturesEnabled = currentScreen != Screen.Login && currentScreen != Screen.SignUp,
+            // Disable swipe-to-open during focused learning so users cannot accidentally
+            // trigger the drawer mid-quiz or mid-AI conversation.
+            gesturesEnabled = !isAuthScreen && !isInFocusMode,
             drawerContent = {
                 AppNavigationDrawer(
                     currentScreen = currentScreen,
@@ -421,7 +479,12 @@ fun RoadSafetyApp() {
     ) {
     Scaffold(
         topBar = {
-            if (showTopBar) {
+            // ── Full navigation top bar (Dashboard, Modules, Progress, Profile, Admin) ──
+            AnimatedVisibility(
+                visible = showFullTopBar,
+                enter = slideInVertically(animationSpec = tween(300)) { -it } + fadeIn(tween(300)),
+                exit  = slideOutVertically(animationSpec = tween(300)) { -it } + fadeOut(tween(300))
+            ) {
                 AppTopBar(
                     title = if (currentScreen == Screen.Dashboard) "RoadSafe AI"
                            else if (currentScreen == Screen.AdminDashboard) "Dashboard"
@@ -451,9 +514,49 @@ fun RoadSafetyApp() {
                     } else null
                 )
             }
+            // ── Focus top bar (Quiz, AI Tutor, Simulation, Results, Settings sub-screens) ──
+            AnimatedVisibility(
+                visible = showFocusTopBar,
+                enter = slideInVertically(animationSpec = tween(300)) { -it } + fadeIn(tween(300)),
+                exit  = slideOutVertically(animationSpec = tween(300)) { -it } + fadeOut(tween(300))
+            ) {
+                FocusTopBar(
+                    title = when (currentScreen) {
+                        Screen.QuizTaking   -> "Quiz"
+                        Screen.Simulation   -> "Simulation"
+                        Screen.Feedback     -> "Results"
+                        Screen.AiTutor      -> "RoadSafe AI"
+                        Screen.ModuleSummary -> "Module Summary"
+                        Screen.ModuleReview  -> "Review Answers"
+                        Screen.Settings      -> "Settings"
+                        Screen.AccountSecurity -> "Account & Security"
+                        Screen.CloudMonitoring -> "Cloud Monitor"
+                        Screen.AdminUserManagement -> "Users"
+                        Screen.AdminModuleManagement -> "Modules"
+                        Screen.AdminModuleAnalytics -> "Module Analytics"
+                        Screen.AdminQuizAttempts -> "Quiz Attempts"
+                        Screen.AdminAnswerReview -> "Answer Review"
+                        else -> currentScreen.title
+                    },
+                    subtitle = when (currentScreen) {
+                        Screen.AiTutor     -> "AI Road Safety Assistant"
+                        Screen.QuizTaking  -> "Focus Mode"
+                        Screen.Simulation  -> "Decision Training"
+                        else -> null
+                    },
+                    onBackClick = { goBack() }
+                )
+            }
         },
         bottomBar = {
-            if (showTopBar && currentUserRole == UserRole.USER) {
+            // Animate the bottom bar out when the user enters a focused learning activity.
+            // AnimatedVisibility inside the Scaffold bottomBar slot is the correct pattern:
+            // Scaffold recalculates innerPadding automatically, preventing layout jumps.
+            AnimatedVisibility(
+                visible = showBottomBar,
+                enter = slideInVertically(animationSpec = tween(300)) { it } + fadeIn(tween(300)),
+                exit  = slideOutVertically(animationSpec = tween(300)) { it } + fadeOut(tween(300))
+            ) {
                 Surface(
                     shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
                     color = MaterialTheme.colorScheme.surface,
