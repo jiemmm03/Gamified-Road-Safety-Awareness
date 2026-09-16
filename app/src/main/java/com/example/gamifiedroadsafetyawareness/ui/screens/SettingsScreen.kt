@@ -24,6 +24,7 @@ import androidx.compose.material.icons.rounded.Language
 import androidx.compose.material.icons.rounded.Notifications
 import androidx.compose.material.icons.rounded.Person
 import androidx.compose.material.icons.rounded.PrivacyTip
+import androidx.compose.material.icons.rounded.Security
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -52,6 +53,9 @@ fun SettingsScreen(
     currentLanguage: String,
     onLanguageChange: (String) -> Unit,
     onNavigateToAccountSecurity: () -> Unit,
+    onNavigateToFeedback: () -> Unit = {},
+    onNavigateToPrivacyPolicy: () -> Unit = {},
+    onNavigateToTermsOfService: () -> Unit = {},
     onLogout: () -> Unit,
     onDeleteAccount: () -> Unit,
     onBackClick: () -> Unit,
@@ -74,23 +78,7 @@ fun SettingsScreen(
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         item {
-            Spacer(modifier = Modifier.height(16.dp))
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                IconButton(onClick = onBackClick) {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
-                        contentDescription = stringResource(R.string.common_back),
-                        tint = MaterialTheme.colorScheme.onBackground
-                    )
-                }
-                Spacer(modifier = Modifier.width(4.dp))
-                Text(
-                    text = stringResource(R.string.settings_title),
-                    style = MaterialTheme.typography.titleLarge,
-                    color = MaterialTheme.colorScheme.onBackground,
-                    fontWeight = FontWeight.Bold
-                )
-            }
+            Spacer(modifier = Modifier.height(8.dp))
         }
 
         item { SectionLabel(stringResource(R.string.settings_section_account)) }
@@ -98,13 +86,8 @@ fun SettingsScreen(
             AppCard(modifier = Modifier.fillMaxWidth()) {
                 Column {
                     SettingsRow(
-                        icon = Icons.Rounded.Person,
-                        label = stringResource(R.string.settings_profile_information),
-                        onClick = onNavigateToAccountSecurity
-                    )
-                    SettingsRow(
-                        icon = Icons.Rounded.Person,
-                        label = stringResource(R.string.settings_change_password),
+                        icon = Icons.Rounded.Security,
+                        label = "Account & Security",
                         onClick = onNavigateToAccountSecurity
                     )
                 }

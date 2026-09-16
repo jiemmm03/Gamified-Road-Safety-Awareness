@@ -102,14 +102,6 @@ fun ModuleSummaryScreen(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            IconButton(onClick = onDone, modifier = Modifier.align(Alignment.Start)) {
-                Icon(
-                    imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
-                    contentDescription = "Back",
-                    tint = MaterialTheme.colorScheme.onBackground
-                )
-            }
-
             AnimatedProgressRing(
                 progress = attempt.scorePercent / 100f,
                 size = 120.dp,

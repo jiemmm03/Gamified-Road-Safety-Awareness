@@ -66,14 +66,6 @@ fun FeedbackScreen(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            IconButton(onClick = onReturnHome, modifier = Modifier.align(Alignment.Start)) {
-                Icon(
-                    imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
-                    contentDescription = "Back",
-                    tint = MaterialTheme.colorScheme.onBackground
-                )
-            }
-
             // AI Analysis Card
             AppCard(
                 modifier = Modifier.fillMaxWidth(),

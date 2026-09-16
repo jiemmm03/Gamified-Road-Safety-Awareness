@@ -112,14 +112,13 @@ fun SimulationScreen(
                     .verticalScroll(rememberScrollState())
                     .padding(horizontal = 16.dp, vertical = 12.dp)
             ) {
-                // Header Bar: Navigation, Progress, Score, XP & Difficulty
+                // Header Bar: Progress, Score & XP
                 SimulationHeader(
                     currentIndex = currentScenarioIndex + 1,
                     total = totalScenarios,
                     score = correctCount,
                     totalXp = totalXpEarned,
-                    difficulty = currentScenario.difficulty,
-                    onExit = { requestExit() }
+                    difficulty = currentScenario.difficulty
                 )
 
                 Spacer(modifier = Modifier.height(12.dp))
@@ -376,28 +375,13 @@ private fun SimulationHeader(
     total: Int,
     score: Int,
     totalXp: Int,
-    difficulty: SimulationDifficulty,
-    onExit: () -> Unit
+    difficulty: SimulationDifficulty
 ) {
     Row(
         modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween,
+        horizontalArrangement = Arrangement.End,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        IconButton(
-            onClick = onExit,
-            modifier = Modifier
-                .clip(RoundedCornerShape(12.dp))
-                .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.6f))
-                .size(40.dp)
-        ) {
-            Icon(
-                imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
-                contentDescription = "Back",
-                tint = MaterialTheme.colorScheme.onSurface
-            )
-        }
-
         Row(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             verticalAlignment = Alignment.CenterVertically

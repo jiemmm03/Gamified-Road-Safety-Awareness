@@ -133,29 +133,7 @@ fun AdminReportsScreen(
     ) {
         // ── Header ──────────────────────────────────────────────────────────
         item {
-            Spacer(modifier = Modifier.height(Dimens.spacingLarge))
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                IconButton(onClick = onBackClick) {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
-                        contentDescription = "Back",
-                        tint = MaterialTheme.colorScheme.onBackground
-                    )
-                }
-                Spacer(modifier = Modifier.width(Dimens.spacingSmall))
-                Column {
-                    Text(
-                        text = "Reports & Analytics",
-                        style = MaterialTheme.typography.titleLarge,
-                        color = MaterialTheme.colorScheme.onBackground
-                    )
-                    Text(
-                        text = "System-wide engagement and progress metrics",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                }
-            }
+            Spacer(modifier = Modifier.height(Dimens.spacingMedium))
         }
 
         // ── ① Summary Stats (2×2 grid) ─────────────────────────────────────

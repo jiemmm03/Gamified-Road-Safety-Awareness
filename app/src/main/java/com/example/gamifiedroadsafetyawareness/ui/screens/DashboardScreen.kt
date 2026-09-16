@@ -466,62 +466,6 @@ fun DashboardScreen(
             }
         }
 
-        // ── ⑤ Quiz & Challenge Card ─────────────────────────────────────────
-        item {
-            DashboardCard(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable(
-                        onClickLabel = stringResource(R.string.dashboard_start_quiz),
-                        role = Role.Button,
-                        onClick = onLaunchSimulation
-                    )
-            ) {
-                Row(
-                    modifier = Modifier.padding(Dimens.cardPadding),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Box(
-                        modifier = Modifier
-                            .size(Dimens.iconContainerSize)
-                            .clip(CircleShape)
-                            .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.12f)),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Icon(
-                            imageVector = Icons.Rounded.Quiz,
-                            contentDescription = null,
-                            tint = MaterialTheme.colorScheme.primary,
-                            modifier = Modifier.size(28.dp)
-                        )
-                    }
-
-                    Spacer(modifier = Modifier.width(Dimens.spacingMedium))
-
-                    Column(modifier = Modifier.weight(1f)) {
-                        Text(
-                            text = stringResource(R.string.dashboard_quiz_title),
-                            style = MaterialTheme.typography.titleSmall,
-                            color = MaterialTheme.colorScheme.onSurface
-                        )
-                        Spacer(modifier = Modifier.height(Dimens.spacingTiny))
-                        Text(
-                            text = stringResource(R.string.dashboard_quiz_description),
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                    }
-
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Rounded.ArrowForward,
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.primary,
-                        modifier = Modifier.size(20.dp)
-                    )
-                }
-            }
-        }
-
         // ── ⑥ Gamification Quick Stats ──────────────────────────────────────
         item {
             Row(
@@ -590,15 +534,6 @@ fun DashboardScreen(
                     }
                 }
             }
-        }
-
-        // ── Level progress summary ──────────────────────────────────────────
-        item {
-            Text(
-                text = stringResource(R.string.dashboard_level_progress_summary, userLevel, xpIntoLevel, xpForNextLevel, (levelProgress * 100).toInt()),
-                style = MaterialTheme.typography.labelMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
         }
 
         // ── ⑦ AI Recommendation Card ────────────────────────────────────────

@@ -173,11 +173,6 @@ fun CloudMonitoringScreen(
                         )
                     }
                 },
-                navigationIcon = {
-                    IconButton(onClick = onBackClick) {
-                        Icon(Icons.AutoMirrored.Rounded.ArrowBack, contentDescription = "Back")
-                    }
-                },
                 actions = {
                     IconButton(
                         onClick = { refreshData() },
