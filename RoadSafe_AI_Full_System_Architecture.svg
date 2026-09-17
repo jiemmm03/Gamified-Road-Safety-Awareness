@@ -1,0 +1,567 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2400 1520" width="2400" height="1520" style="background:#0a0f1d; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
+  <defs>
+    <!-- Gradients -->
+    <linearGradient id="headerGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#1e3a8a" stop-opacity="0.8"/>
+      <stop offset="50%" stop-color="#312e81" stop-opacity="0.6"/>
+      <stop offset="100%" stop-color="#0f172a" stop-opacity="0.9"/>
+    </linearGradient>
+
+    <linearGradient id="mobileGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#0f1e36"/>
+      <stop offset="100%" stop-color="#091322"/>
+    </linearGradient>
+
+    <linearGradient id="cloudGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#24140b"/>
+      <stop offset="100%" stop-color="#130b06"/>
+    </linearGradient>
+
+    <linearGradient id="adminGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#200d3d"/>
+      <stop offset="100%" stop-color="#120724"/>
+    </linearGradient>
+
+    <!-- Card Backgrounds -->
+    <linearGradient id="blueCard" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e293b"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </linearGradient>
+
+    <!-- Arrow Markers -->
+    <marker id="arrow-cyan" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#06b6d4"/>
+    </marker>
+    <marker id="arrow-emerald" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#10b981"/>
+    </marker>
+    <marker id="arrow-purple" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#a855f7"/>
+    </marker>
+    <marker id="arrow-amber" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#f59e0b"/>
+    </marker>
+    <marker id="arrow-blue" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#3b82f6"/>
+    </marker>
+
+    <!-- Drop Shadows -->
+    <filter id="shadow" x="-5%" y="-5%" width="110%" height="110%">
+      <feDropShadow dx="0" dy="6" stdDeviation="8" flood-color="#000000" flood-opacity="0.5"/>
+    </filter>
+  </defs>
+
+  <!-- ================= TOP HEADER BANNER ================= -->
+  <g filter="url(#shadow)">
+    <rect x="40" y="30" width="2320" height="90" rx="16" fill="url(#headerGrad)" stroke="#1e293b" stroke-width="1.5"/>
+    <text x="75" y="70" fill="#38bdf8" font-size="28" font-weight="800" letter-spacing="0.5">🛡️ RoadSafe AI — Full System Architecture &amp; Data Flow Diagram</text>
+    <text x="75" y="98" fill="#94a3b8" font-size="14" font-weight="500">Municipality of Dagami, Leyte • Gamified Road Safety Awareness, Traffic Rule Education &amp; Driver Decision-Making System (v2.0 Production)</text>
+    
+    <g transform="translate(1620, 52)">
+      <rect x="0" y="0" width="165" height="32" rx="8" fill="#10b981" fill-opacity="0.15" stroke="#10b981" stroke-opacity="0.4"/>
+      <text x="82" y="21" fill="#34d399" font-size="12" font-weight="700" text-anchor="middle">● Android Compose</text>
+
+      <rect x="180" y="0" width="165" height="32" rx="8" fill="#f59e0b" fill-opacity="0.15" stroke="#f59e0b" stroke-opacity="0.4"/>
+      <text x="262" y="21" fill="#fbbf24" font-size="12" font-weight="700" text-anchor="middle">● Offline Room SQLite</text>
+
+      <rect x="360" y="0" width="165" height="32" rx="8" fill="#06b6d4" fill-opacity="0.15" stroke="#06b6d4" stroke-opacity="0.4"/>
+      <text x="442" y="21" fill="#22d3ee" font-size="12" font-weight="700" text-anchor="middle">● Cloud Firestore</text>
+
+      <rect x="540" y="0" width="175" height="32" rx="8" fill="#a855f7" fill-opacity="0.15" stroke="#a855f7" stroke-opacity="0.4"/>
+      <text x="627" y="21" fill="#c084fc" font-size="12" font-weight="700" text-anchor="middle">● 12-Tab Admin Web</text>
+    </g>
+  </g>
+
+  <!-- ================= COLUMN 1: MOBILE CLIENT ================= -->
+  <g transform="translate(40, 150)" filter="url(#shadow)">
+    <!-- Swimlane Frame -->
+    <rect x="0" y="0" width="750" height="1330" rx="16" fill="url(#mobileGrad)" stroke="#1d4ed8" stroke-width="1.5"/>
+    <rect x="0" y="0" width="750" height="46" rx="16" fill="#1e3a8a" fill-opacity="0.4"/>
+    <text x="24" y="30" fill="#60a5fa" font-size="16" font-weight="700">📱 ANDROID MOBILE CLIENT (Kotlin 2.0 + Jetpack Compose) — Offline-First</text>
+
+    <!-- Actors -->
+    <g transform="translate(20, 65)">
+      <rect x="0" y="0" width="710" height="60" rx="10" fill="#1e293b" stroke="#334155"/>
+      <text x="18" y="26" fill="#38bdf8" font-size="13" font-weight="700">Field Actors / App Users</text>
+      <text x="18" y="46" fill="#cbd5e1" font-size="12">• <tspan fill="#f1f5f9" font-weight="600">USER:</tspan> Dagami Drivers, Tricycle Operators, Citizens &nbsp;|&nbsp; • <tspan fill="#f1f5f9" font-weight="600">ADMIN / SUPER_ADMIN:</tspan> Dagami MPS Officers</text>
+    </g>
+
+    <!-- Section: App Shell & Auth -->
+    <g transform="translate(20, 140)">
+      <rect x="0" y="0" width="710" height="150" rx="10" fill="#0f172a" stroke="#2563eb" stroke-width="1.2"/>
+      <text x="18" y="24" fill="#93c5fd" font-size="13" font-weight="700">App Shell &amp; Security Layer</text>
+
+      <rect x="15" y="38" width="215" height="98" rx="8" fill="#1e293b" stroke="#334155"/>
+      <text x="25" y="58" fill="#38bdf8" font-size="12" font-weight="700">RoadSafetyApp.kt</text>
+      <text x="25" y="76" fill="#94a3b8" font-size="11">• Navigation Drawer</text>
+      <text x="25" y="93" fill="#94a3b8" font-size="11">• TopBar / FocusBar</text>
+      <text x="25" y="110" fill="#94a3b8" font-size="11">• 20+ Screen Routes</text>
+
+      <rect x="245" y="38" width="220" height="98" rx="8" fill="#1e293b" stroke="#334155"/>
+      <text x="255" y="58" fill="#38bdf8" font-size="12" font-weight="700">AuthManager.kt</text>
+      <text x="255" y="76" fill="#94a3b8" font-size="11">• SHA-256 + Salt Hash</text>
+      <text x="255" y="93" fill="#94a3b8" font-size="11">• Permission.kt Matrix</text>
+      <text x="255" y="110" fill="#94a3b8" font-size="11">• Hardware Telemetry</text>
+
+      <rect x="480" y="38" width="215" height="98" rx="8" fill="#1e293b" stroke="#334155"/>
+      <text x="490" y="58" fill="#38bdf8" font-size="12" font-weight="700">Security Screens</text>
+      <text x="490" y="76" fill="#94a3b8" font-size="11">• Login / Sign-Up</text>
+      <text x="490" y="93" fill="#94a3b8" font-size="11">• AccountSecurityScreen</text>
+      <text x="490" y="110" fill="#94a3b8" font-size="11">• Role Verification</text>
+    </g>
+
+    <!-- Section: 3 Core Learning Engines -->
+    <g transform="translate(20, 305)">
+      <rect x="0" y="0" width="710" height="235" rx="10" fill="#0f172a" stroke="#10b981" stroke-width="1.2"/>
+      <text x="18" y="24" fill="#6ee7b7" font-size="13" font-weight="700">Core Interactive Driver Education &amp; Decision Engines</text>
+
+      <!-- Engine 1: Quizzes -->
+      <rect x="15" y="38" width="215" height="182" rx="8" fill="#064e3b" fill-opacity="0.4" stroke="#059669"/>
+      <text x="25" y="58" fill="#a7f3d0" font-size="12" font-weight="700">Adaptive Quizzes</text>
+      <text x="25" y="75" fill="#6ee7b7" font-size="10.5">QuizScreen.kt • QuizData.kt</text>
+      <text x="25" y="95" fill="#e2e8f0" font-size="11">• <tspan fill="#34d399" font-weight="600">60 Question Bank</tspan></text>
+      <text x="25" y="112" fill="#cbd5e1" font-size="10.5">  (🟢20 Easy, 🟡20 Med, 🔴20 Hard)</text>
+      <text x="25" y="129" fill="#e2e8f0" font-size="11">• Bilingual (EN / FIL)</text>
+      <text x="25" y="146" fill="#e2e8f0" font-size="11">• 15s Timer Challenge (+50XP)</text>
+      <text x="25" y="163" fill="#e2e8f0" font-size="11">• Combo Multiplier (1.0x-2.5x)</text>
+      <text x="25" y="180" fill="#e2e8f0" font-size="11">• R.A. 4136 Legal Basis Review</text>
+
+      <!-- Engine 2: Hazard Perception -->
+      <rect x="245" y="38" width="220" height="182" rx="8" fill="#78350f" fill-opacity="0.4" stroke="#d97706"/>
+      <text x="255" y="58" fill="#fde68a" font-size="12" font-weight="700">Hazard Perception</text>
+      <text x="255" y="75" fill="#fcd34d" font-size="10.5">SimulationScreen.kt</text>
+      <text x="255" y="95" fill="#e2e8f0" font-size="11">• <tspan fill="#fbbf24" font-weight="600">20 Situational Scenarios</tspan></text>
+      <text x="255" y="112" fill="#cbd5e1" font-size="10.5">  (School zones, blind curves, rain)</text>
+      <text x="255" y="129" fill="#e2e8f0" font-size="11">• Weather &amp; Grip Loss (0%-35%)</text>
+      <text x="255" y="146" fill="#e2e8f0" font-size="11">• 20s Decision Loop</text>
+      <text x="255" y="163" fill="#e2e8f0" font-size="11">• Consequence Tiers (Safe/Crit)</text>
+      <text x="255" y="180" fill="#e2e8f0" font-size="11">• Audio-Visual Feedback</text>
+
+      <!-- Engine 3: AI Tutor -->
+      <rect x="480" y="38" width="215" height="182" rx="8" fill="#164e63" fill-opacity="0.4" stroke="#0891b2"/>
+      <text x="490" y="58" fill="#bae6fd" font-size="12" font-weight="700">Local AI Traffic Coach</text>
+      <text x="490" y="75" fill="#7dd3fc" font-size="10.5">AiTutorEngine.kt (v2.0)</text>
+      <text x="490" y="95" fill="#e2e8f0" font-size="11">• <tspan fill="#38bdf8" font-weight="600">100% Offline Intelligence</tspan></text>
+      <text x="490" y="112" fill="#e2e8f0" font-size="11">• Bilingual Auto-Detect (EN/FIL)</text>
+      <text x="490" y="129" fill="#e2e8f0" font-size="11">• On-Topic Safety Guard</text>
+      <text x="490" y="146" fill="#e2e8f0" font-size="11">• 12 Topics (RA 4136, DPWH)</text>
+      <text x="490" y="163" fill="#e2e8f0" font-size="11">• Structured: Ans → Exp → Tip</text>
+      <text x="490" y="180" fill="#e2e8f0" font-size="11">• Rolling Accuracy Adaptive Loop</text>
+    </g>
+
+    <!-- Section: Gamification & Economy -->
+    <g transform="translate(20, 555)">
+      <rect x="0" y="0" width="710" height="145" rx="10" fill="#0f172a" stroke="#f59e0b" stroke-width="1.2"/>
+      <text x="18" y="24" fill="#fde68a" font-size="13" font-weight="700">Gamification, Economy &amp; Progression Engine</text>
+
+      <rect x="15" y="38" width="215" height="92" rx="8" fill="#1e293b" stroke="#334155"/>
+      <text x="25" y="58" fill="#fbbf24" font-size="12" font-weight="700">XpManager.kt</text>
+      <text x="25" y="76" fill="#94a3b8" font-size="11">• Level 1-10+ Curve</text>
+      <text x="25" y="93" fill="#94a3b8" font-size="11">• Multiplier Multi-Tiers</text>
+      <text x="25" y="110" fill="#94a3b8" font-size="11">• Speed Challenge Bonus</text>
+
+      <rect x="245" y="38" width="220" height="92" rx="8" fill="#1e293b" stroke="#334155"/>
+      <text x="255" y="58" fill="#fbbf24" font-size="12" font-weight="700">Streaks &amp; Medals</text>
+      <text x="255" y="76" fill="#94a3b8" font-size="11">• Consecutive Days</text>
+      <text x="255" y="93" fill="#94a3b8" font-size="11">• Auto Streak Freeze</text>
+      <text x="255" y="110" fill="#94a3b8" font-size="11">• 10 Milestone Badges</text>
+
+      <rect x="480" y="38" width="215" height="92" rx="8" fill="#1e293b" stroke="#334155"/>
+      <text x="490" y="58" fill="#fbbf24" font-size="12" font-weight="700">Feedback Modals</text>
+      <text x="490" y="76" fill="#94a3b8" font-size="11">• LevelUpModal.kt</text>
+      <text x="490" y="93" fill="#94a3b8" font-size="11">• FloatingRewardPopup</text>
+      <text x="490" y="110" fill="#94a3b8" font-size="11">• DailyStreakBanner</text>
+    </g>
+
+    <!-- Section: Mobile Admin Panel -->
+    <g transform="translate(20, 715)">
+      <rect x="0" y="0" width="710" height="75" rx="10" fill="#0f172a" stroke="#8b5cf6" stroke-width="1.2"/>
+      <text x="18" y="22" fill="#c4b5fd" font-size="12" font-weight="700">In-App Mobile Admin Suite</text>
+      <text x="18" y="44" fill="#cbd5e1" font-size="11">• AdminDashboardScreen • AdminUserManagementScreen • AdminModuleManagementScreen</text>
+      <text x="18" y="62" fill="#cbd5e1" font-size="11">• AdminXpManagementScreen • AdminQuizAttemptsScreen • CloudMonitoringScreen</text>
+    </g>
+
+    <!-- Section: Local Room SQLite DB -->
+    <g transform="translate(20, 805)">
+      <rect x="0" y="0" width="710" height="195" rx="10" fill="#022c22" fill-opacity="0.8" stroke="#10b981" stroke-width="1.5"/>
+      <text x="18" y="24" fill="#a7f3d0" font-size="13" font-weight="700">Local Room SQLite Database (AppDatabase.kt) — 100% Offline Persistence</text>
+
+      <rect x="15" y="38" width="160" height="142" rx="8" fill="#064e3b" stroke="#059669"/>
+      <text x="25" y="58" fill="#6ee7b7" font-size="11.5" font-weight="700">UserProgressDao</text>
+      <text x="25" y="78" fill="#d1fae5" font-size="10.5">• userId (PK)</text>
+      <text x="25" y="95" fill="#d1fae5" font-size="10.5">• currentXp, totalXp</text>
+      <text x="25" y="112" fill="#d1fae5" font-size="10.5">• currentLevel</text>
+      <text x="25" y="129" fill="#d1fae5" font-size="10.5">• streakCount</text>
+      <text x="25" y="146" fill="#d1fae5" font-size="10.5">• lastSyncedTime</text>
+
+      <rect x="185" y="38" width="160" height="142" rx="8" fill="#064e3b" stroke="#059669"/>
+      <text x="195" y="58" fill="#6ee7b7" font-size="11.5" font-weight="700">QuizAttemptDao</text>
+      <text x="195" y="78" fill="#d1fae5" font-size="10.5">• attemptId (PK)</text>
+      <text x="195" y="95" fill="#d1fae5" font-size="10.5">• score / total</text>
+      <text x="195" y="112" fill="#d1fae5" font-size="10.5">• percentage, passed</text>
+      <text x="195" y="129" fill="#d1fae5" font-size="10.5">• timeSpentSeconds</text>
+      <text x="195" y="146" fill="#d1fae5" font-size="10.5">• timestamp</text>
+
+      <rect x="355" y="38" width="165" height="142" rx="8" fill="#064e3b" stroke="#059669"/>
+      <text x="365" y="58" fill="#6ee7b7" font-size="11.5" font-weight="700">XpHistoryDao</text>
+      <text x="365" y="78" fill="#d1fae5" font-size="10.5">• logId (PK)</text>
+      <text x="365" y="95" fill="#d1fae5" font-size="10.5">• activityType</text>
+      <text x="365" y="112" fill="#d1fae5" font-size="10.5">• base Xp, combo</text>
+      <text x="365" y="129" fill="#d1fae5" font-size="10.5">• multiplier</text>
+      <text x="365" y="146" fill="#d1fae5" font-size="10.5">• timestamp</text>
+
+      <rect x="530" y="38" width="165" height="142" rx="8" fill="#064e3b" stroke="#059669"/>
+      <text x="540" y="58" fill="#6ee7b7" font-size="11.5" font-weight="700">AchievementDao</text>
+      <text x="540" y="78" fill="#d1fae5" font-size="10.5">• badgeId (PK)</text>
+      <text x="540" y="95" fill="#d1fae5" font-size="10.5">• userId (FK)</text>
+      <text x="540" y="112" fill="#d1fae5" font-size="10.5">• unlockedAtTime</text>
+      <text x="540" y="129" fill="#d1fae5" font-size="10.5">• syncStatus</text>
+      <text x="540" y="146" fill="#d1fae5" font-size="10.5">• isViewedInApp</text>
+    </g>
+
+    <!-- Section: Firebase Sync Manager -->
+    <g transform="translate(20, 1015)">
+      <rect x="0" y="0" width="710" height="120" rx="10" fill="#1e1b4b" stroke="#6366f1" stroke-width="1.5"/>
+      <text x="18" y="24" fill="#a5b4fc" font-size="13" font-weight="700">FirebaseSyncManager.kt (Asynchronous Coroutine Worker)</text>
+      <text x="18" y="46" fill="#e0e7ff" font-size="11">• Real-Time Online/Offline Network Monitor &amp; Retry Exponential Backoff</text>
+      <text x="18" y="65" fill="#e0e7ff" font-size="11">• Methods: syncUserProgress(), syncQuizAttempt(), syncAiInteraction(), syncAuditLog()</text>
+      <text x="18" y="84" fill="#e0e7ff" font-size="11">• Real-Time Module Lock Listener: listenToModuleSettings() (Instant curriculum toggle)</text>
+      <text x="18" y="103" fill="#38bdf8" font-size="11" font-weight="600">➔ Dispatches uncommitted local events to Cloud Firestore over secure HTTPS</text>
+    </g>
+
+    <!-- Section: Telemetry & Audit -->
+    <g transform="translate(20, 1150)">
+      <rect x="0" y="0" width="710" height="65" rx="10" fill="#1e293b" stroke="#ef4444" stroke-width="1.2"/>
+      <text x="18" y="22" fill="#fca5a5" font-size="12" font-weight="700">Audit &amp; Telemetry Manager (AuditManager.kt)</text>
+      <text x="18" y="44" fill="#cbd5e1" font-size="11">• Hardware brand, model, Android OS version, IP, UTC timestamps • Severity: LOW, MED, HIGH, CRITICAL</text>
+    </g>
+
+    <!-- Section: Field Hardware -->
+    <g transform="translate(20, 1230)">
+      <rect x="0" y="0" width="710" height="75" rx="10" fill="#0f172a" stroke="#3b82f6" stroke-width="1"/>
+      <text x="18" y="24" fill="#93c5fd" font-size="12" font-weight="700">Field Physical Devices</text>
+      <text x="18" y="45" fill="#94a3b8" font-size="11">Android Smartphones &amp; Tablets (Android 11 to 15) • Offline/Online Transition • GPS/Location</text>
+    </g>
+  </g>
+
+
+  <!-- ================= COLUMN 2: CLOUD & BACKEND ================= -->
+  <g transform="translate(830, 150)" filter="url(#shadow)">
+    <!-- Swimlane Frame -->
+    <rect x="0" y="0" width="740" height="1330" rx="16" fill="url(#cloudGrad)" stroke="#ea580c" stroke-width="1.5"/>
+    <rect x="0" y="0" width="740" height="46" rx="16" fill="#c2410c" fill-opacity="0.3"/>
+    <text x="24" y="30" fill="#fdba74" font-size="16" font-weight="700">☁️ GOOGLE FIREBASE CLOUD &amp; CI/CD INFRASTRUCTURE</text>
+
+    <!-- Cloud Firestore Main Container -->
+    <g transform="translate(20, 65)">
+      <rect x="0" y="0" width="700" height="760" rx="12" fill="#1c1917" stroke="#f97316" stroke-width="1.5"/>
+      <text x="20" y="30" fill="#fdba74" font-size="14" font-weight="700">Google Cloud Firestore (Real-Time NoSQL Database)</text>
+
+      <!-- Col: users -->
+      <rect x="15" y="46" width="325" height="110" rx="8" fill="#292524" stroke="#44403c"/>
+      <text x="25" y="68" fill="#fb923c" font-size="12" font-weight="700">📁 Collection: "users"</text>
+      <text x="25" y="86" fill="#e7e5e4" font-size="11">• username (Doc ID), displayName</text>
+      <text x="25" y="103" fill="#e7e5e4" font-size="11">• passwordHash, salt, role (USER/ADMIN)</text>
+      <text x="25" y="120" fill="#e7e5e4" font-size="11">• age, gender, contact, deviceInfo, isOnline</text>
+      <text x="25" y="137" fill="#e7e5e4" font-size="11">• lastLoginAt, createdAtTimestamp</text>
+
+      <!-- Col: user_progress -->
+      <rect x="360" y="46" width="325" height="110" rx="8" fill="#292524" stroke="#44403c"/>
+      <text x="370" y="68" fill="#fb923c" font-size="12" font-weight="700">📁 Collection: "user_progress"</text>
+      <text x="370" y="86" fill="#e7e5e4" font-size="11">• userId (Doc ID)</text>
+      <text x="370" y="103" fill="#e7e5e4" font-size="11">• currentXp, totalXp, currentLevel</text>
+      <text x="370" y="120" fill="#e7e5e4" font-size="11">• currentStreak, longestStreak</text>
+      <text x="370" y="137" fill="#e7e5e4" font-size="11">• quizzesCompleted, unlockedBadges[]</text>
+
+      <!-- Col: quiz_attempts -->
+      <rect x="15" y="168" width="325" height="115" rx="8" fill="#292524" stroke="#44403c"/>
+      <text x="25" y="190" fill="#fb923c" font-size="12" font-weight="700">📁 Collection: "quiz_attempts"</text>
+      <text x="25" y="208" fill="#e7e5e4" font-size="11">• attemptId (Doc ID / UUID)</text>
+      <text x="25" y="225" fill="#e7e5e4" font-size="11">• userId, quizId, moduleId, quizTitle</text>
+      <text x="25" y="242" fill="#e7e5e4" font-size="11">• difficulty (Easy/Med/Hard), score, total</text>
+      <text x="25" y="259" fill="#e7e5e4" font-size="11">• percentage, passed, timeSpent, timestamp</text>
+
+      <!-- Col: ai_interactions -->
+      <rect x="360" y="168" width="325" height="115" rx="8" fill="#292524" stroke="#44403c"/>
+      <text x="370" y="190" fill="#fb923c" font-size="12" font-weight="700">📁 Collection: "ai_interactions"</text>
+      <text x="370" y="208" fill="#e7e5e4" font-size="11">• docId (Doc ID), userId</text>
+      <text x="370" y="225" fill="#e7e5e4" font-size="11">• prompt (Driver Query)</text>
+      <text x="370" y="242" fill="#e7e5e4" font-size="11">• response (Structured Coach Output)</text>
+      <text x="370" y="259" fill="#e7e5e4" font-size="11">• topic, language (EN/FIL), timestamp</text>
+
+      <!-- Col: user_logins -->
+      <rect x="15" y="295" width="325" height="100" rx="8" fill="#292524" stroke="#44403c"/>
+      <text x="25" y="317" fill="#fb923c" font-size="12" font-weight="700">📁 Collection: "user_logins"</text>
+      <text x="25" y="335" fill="#e7e5e4" font-size="11">• eventId (Doc ID)</text>
+      <text x="25" y="352" fill="#e7e5e4" font-size="11">• username, eventType (LOGIN/OUT)</text>
+      <text x="25" y="369" fill="#e7e5e4" font-size="11">• status, deviceInfo, timestamp</text>
+
+      <!-- Col: audit_logs -->
+      <rect x="360" y="295" width="325" height="100" rx="8" fill="#292524" stroke="#44403c"/>
+      <text x="370" y="317" fill="#fb923c" font-size="12" font-weight="700">📁 Collection: "audit_logs"</text>
+      <text x="370" y="335" fill="#e7e5e4" font-size="11">• auditId (Doc ID)</text>
+      <text x="370" y="352" fill="#e7e5e4" font-size="11">• actionType, module, username</text>
+      <text x="370" y="369" fill="#e7e5e4" font-size="11">• riskLevel (LOW-CRIT), result, timestampUtc</text>
+
+      <!-- Col: system_settings -->
+      <rect x="15" y="408" width="670" height="85" rx="8" fill="#292524" stroke="#44403c"/>
+      <text x="25" y="430" fill="#fb923c" font-size="12" font-weight="700">📁 Document: "system_settings/modules" (Curriculum Controls)</text>
+      <text x="25" y="449" fill="#e7e5e4" font-size="11">• moduleAvailability: Map&lt;ModuleId, Boolean&gt; (Real-Time Dynamic Locks)</text>
+      <text x="25" y="468" fill="#e7e5e4" font-size="11">• maintenanceMode: Boolean &nbsp;|&nbsp; • updatedAtTimestamp</text>
+
+      <!-- Realtime Snapshot Engine -->
+      <rect x="15" y="505" width="670" height="80" rx="8" fill="#0c0a09" stroke="#78350f"/>
+      <text x="25" y="528" fill="#fcd34d" font-size="12" font-weight="700">Firestore Real-Time Snapshots Engine (onSnapshot)</text>
+      <text x="25" y="548" fill="#fed7aa" font-size="11">• Instantaneous bi-directional socket streaming between Cloud and Admin Web SPA</text>
+      <text x="25" y="567" fill="#fed7aa" font-size="11">• Zero manual page refresh required • Automatic retry reconnection listeners</text>
+
+      <!-- Firestore Rules -->
+      <rect x="15" y="597" width="670" height="70" rx="8" fill="#0c0a09" stroke="#78350f"/>
+      <text x="25" y="620" fill="#fcd34d" font-size="12" font-weight="700">Firestore Security Rules &amp; RBAC Access Matrix</text>
+      <text x="25" y="640" fill="#fed7aa" font-size="11">• Write validations preventing unauthorized XP inflation or attempt falsification</text>
+
+      <!-- Compound Indexes -->
+      <rect x="15" y="679" width="670" height="65" rx="8" fill="#0c0a09" stroke="#78350f"/>
+      <text x="25" y="700" fill="#fcd34d" font-size="12" font-weight="700">Cloud Indexed Queries</text>
+      <text x="25" y="720" fill="#fed7aa" font-size="11">• Indexed by userId + timestamp DESC &nbsp;|&nbsp; • Unique taker aggregations</text>
+    </g>
+
+    <!-- Firebase Hosting -->
+    <g transform="translate(20, 840)">
+      <rect x="0" y="0" width="700" height="110" rx="10" fill="#1e293b" stroke="#38bdf8" stroke-width="1.2"/>
+      <text x="18" y="24" fill="#38bdf8" font-size="13" font-weight="700">Firebase Hosting (Global Edge CDN)</text>
+      <text x="18" y="46" fill="#e0f2fe" font-size="11.5">• Production URL: <tspan fill="#38bdf8" font-weight="700">https://gamifiedroadsafetyawareness.web.app</tspan></text>
+      <text x="18" y="66" fill="#bae6fd" font-size="11">• Hosts Admin Single-Page Application (index.html, styles.css, app.js)</text>
+      <text x="18" y="86" fill="#bae6fd" font-size="11">• Wireless Fleet Onboarding Portal: <tspan fill="#f1f5f9" font-weight="600">download.html</tspan> with Dynamic Canvas QR</text>
+    </g>
+
+    <!-- CI/CD GitHub Actions -->
+    <g transform="translate(20, 965)">
+      <rect x="0" y="0" width="700" height="215" rx="10" fill="#0f172a" stroke="#22c55e" stroke-width="1.2"/>
+      <text x="18" y="24" fill="#86efac" font-size="13" font-weight="700">Automated CI/CD Pipeline (GitHub Actions &amp; Gradle Matrix)</text>
+      <text x="18" y="48" fill="#4ade80" font-size="11" font-weight="600">.github/workflows/build-and-release.yml</text>
+      <text x="18" y="70" fill="#cbd5e1" font-size="11">1. <tspan fill="#f1f5f9" font-weight="600">Trigger:</tspan> On push / pull request to <tspan fill="#86efac">main</tspan> branch</text>
+      <text x="18" y="90" fill="#cbd5e1" font-size="11">2. <tspan fill="#f1f5f9" font-weight="600">Runner Environment:</tspan> Ubuntu 22.04 LTS + JDK 17 (Temurin) + Android SDK 34</text>
+      <text x="18" y="110" fill="#cbd5e1" font-size="11">3. <tspan fill="#f1f5f9" font-weight="600">Build Tool:</tspan> Gradle 8.11 Daemon (./gradlew assembleRelease / assembleDebug)</text>
+      <text x="18" y="130" fill="#cbd5e1" font-size="11">4. <tspan fill="#f1f5f9" font-weight="600">Validation:</tspan> KSP Room Schema verification, Compose linting, Unit checks</text>
+      <text x="18" y="150" fill="#cbd5e1" font-size="11">5. <tspan fill="#f1f5f9" font-weight="600">Packaging:</tspan> Signed binary compilation: <tspan fill="#34d399" font-weight="700">RoadSafe-AI.apk</tspan></text>
+      <text x="18" y="170" fill="#cbd5e1" font-size="11">6. <tspan fill="#f1f5f9" font-weight="600">Release Distribution:</tspan> Pushes direct APK download link to GitHub Releases</text>
+      <text x="18" y="190" fill="#cbd5e1" font-size="11">7. <tspan fill="#f1f5f9" font-weight="600">Auto Deployment:</tspan> Deploys updated admin web assets to Firebase Hosting</text>
+    </g>
+
+    <!-- Cloud Diagnostics -->
+    <g transform="translate(20, 1195)">
+      <rect x="0" y="0" width="700" height="110" rx="10" fill="#1e293b" stroke="#94a3b8" stroke-width="1"/>
+      <text x="18" y="24" fill="#cbd5e1" font-size="12" font-weight="700">Cloud Health Diagnostics &amp; Security</text>
+      <text x="18" y="46" fill="#94a3b8" font-size="11">• Real-time connection heartbeats &amp; active device count</text>
+      <text x="18" y="66" fill="#94a3b8" font-size="11">• Read/write quota metrics &amp; tamper-evident logging</text>
+      <text x="18" y="86" fill="#94a3b8" font-size="11">• Firebase Authentication Token Verification</text>
+    </g>
+  </g>
+
+
+  <!-- ================= COLUMN 3: ADMIN WEB COMMAND CENTER ================= -->
+  <g transform="translate(1600, 150)" filter="url(#shadow)">
+    <!-- Swimlane Frame -->
+    <rect x="0" y="0" width="760" height="1330" rx="16" fill="url(#adminGrad)" stroke="#7c3aed" stroke-width="1.5"/>
+    <rect x="0" y="0" width="760" height="46" rx="16" fill="#581c87" fill-opacity="0.4"/>
+    <text x="24" y="30" fill="#c4b5fd" font-size="16" font-weight="700">🖥️ DAGAMI MPS ADMIN WEB COMMAND CENTER (/admin-web SPA)</text>
+
+    <!-- SPA Architecture Shell -->
+    <g transform="translate(20, 65)">
+      <rect x="0" y="0" width="720" height="95" rx="10" fill="#1e1b4b" stroke="#8b5cf6" stroke-width="1.2"/>
+      <text x="18" y="24" fill="#ddd6fe" font-size="13" font-weight="700">Single-Page Architecture &amp; Glassmorphic UI</text>
+      <text x="18" y="44" fill="#f5f3ff" font-size="11">• <tspan fill="#a78bfa" font-weight="600">index.html:</tspan> 12-Tab Responsive Command Dashboard &amp; Sidebar Drawer</text>
+      <text x="18" y="62" fill="#f5f3ff" font-size="11">• <tspan fill="#a78bfa" font-weight="600">app.js:</tspan> 4,900+ Lines Vanilla ES6+ &amp; Real-Time Firebase Listeners</text>
+      <text x="18" y="80" fill="#f5f3ff" font-size="11">• <tspan fill="#a78bfa" font-weight="600">styles.css:</tspan> Custom CSS3 Tokens &nbsp;|&nbsp; • <tspan fill="#a78bfa" font-weight="600">Chart.js 4.4:</tspan> Dynamic High-Res Canvases</text>
+    </g>
+
+    <!-- 12 Dedicated Subsystems -->
+    <g transform="translate(20, 175)">
+      <rect x="0" y="0" width="720" height="885" rx="12" fill="#120724" stroke="#a855f7" stroke-width="1.5"/>
+      <text x="18" y="24" fill="#f3e8ff" font-size="13" font-weight="700">12 Dedicated Operational Command Subsystems (Tabs 1 to 12)</text>
+
+      <!-- Row 1 -->
+      <rect x="15" y="38" width="220" height="98" rx="8" fill="#3b0764" stroke="#7e22ce"/>
+      <text x="25" y="58" fill="#f3e8ff" font-size="11.5" font-weight="700">Tab 1: Dashboard</text>
+      <text x="25" y="75" fill="#e9d5ff" font-size="10.5">• Real-Time KPI Cards</text>
+      <text x="25" y="92" fill="#e9d5ff" font-size="10.5">• Pass Rate Metric</text>
+      <text x="25" y="109" fill="#e9d5ff" font-size="10.5">• Online Drivers Count</text>
+      <text x="25" y="126" fill="#e9d5ff" font-size="10.5">• Daily Trend Curves</text>
+
+      <rect x="250" y="38" width="220" height="98" rx="8" fill="#3b0764" stroke="#7e22ce"/>
+      <text x="260" y="58" fill="#f3e8ff" font-size="11.5" font-weight="700">Tab 2: User Mgmt</text>
+      <text x="260" y="75" fill="#e9d5ff" font-size="10.5">• Driver Directory</text>
+      <text x="260" y="92" fill="#e9d5ff" font-size="10.5">• Role Elevation Matrix</text>
+      <text x="260" y="109" fill="#e9d5ff" font-size="10.5">• User Detail Drawer</text>
+      <text x="260" y="126" fill="#e9d5ff" font-size="10.5">• Progress Reset Tool</text>
+
+      <rect x="485" y="38" width="220" height="98" rx="8" fill="#3b0764" stroke="#7e22ce"/>
+      <text x="495" y="58" fill="#f3e8ff" font-size="11.5" font-weight="700">Tab 3: Curriculum</text>
+      <text x="495" y="75" fill="#e9d5ff" font-size="10.5">• 10 Traffic Modules</text>
+      <text x="495" y="92" fill="#e9d5ff" font-size="10.5">• Live Remote Locks</text>
+      <text x="495" y="109" fill="#e9d5ff" font-size="10.5">• Updates Cloud Settings</text>
+      <text x="495" y="126" fill="#e9d5ff" font-size="10.5">• Instant Mobile Lock</text>
+
+      <!-- Row 2 -->
+      <rect x="15" y="148" width="220" height="98" rx="8" fill="#3b0764" stroke="#7e22ce"/>
+      <text x="25" y="168" fill="#f3e8ff" font-size="11.5" font-weight="700">Tab 4: Assessment Bank</text>
+      <text x="25" y="185" fill="#e9d5ff" font-size="10.5">• 60 Verified Questions</text>
+      <text x="25" y="202" fill="#e9d5ff" font-size="10.5">• Filter: Easy/Med/Hard</text>
+      <text x="25" y="219" fill="#e9d5ff" font-size="10.5">• Bilingual Inspection</text>
+      <text x="25" y="236" fill="#e9d5ff" font-size="10.5">• Legal Explanation</text>
+
+      <rect x="250" y="148" width="220" height="98" rx="8" fill="#3b0764" stroke="#7e22ce"/>
+      <text x="260" y="168" fill="#f3e8ff" font-size="11.5" font-weight="700">Tab 5: Hazard Trials</text>
+      <text x="260" y="185" fill="#e9d5ff" font-size="10.5">• 20 Scenarios Review</text>
+      <text x="260" y="202" fill="#e9d5ff" font-size="10.5">• Weather Risk Factors</text>
+      <text x="260" y="219" fill="#e9d5ff" font-size="10.5">• Wet Asphalt Friction</text>
+      <text x="260" y="236" fill="#e9d5ff" font-size="10.5">• Consequence Tiers</text>
+
+      <rect x="485" y="148" width="220" height="98" rx="8" fill="#3b0764" stroke="#7e22ce"/>
+      <text x="495" y="168" fill="#f3e8ff" font-size="11.5" font-weight="700">Tab 6: Ranks &amp; Medals</text>
+      <text x="495" y="185" fill="#e9d5ff" font-size="10.5">• Municipal Leaderboard</text>
+      <text x="495" y="202" fill="#e9d5ff" font-size="10.5">• XP Distribution Strip</text>
+      <text x="495" y="219" fill="#e9d5ff" font-size="10.5">• Badge Unlock Stats</text>
+      <text x="495" y="236" fill="#e9d5ff" font-size="10.5">• Top Driver Roster</text>
+
+      <!-- Row 3 -->
+      <rect x="15" y="258" width="220" height="98" rx="8" fill="#164e63" stroke="#0891b2"/>
+      <text x="25" y="278" fill="#cffafe" font-size="11.5" font-weight="700">Tab 7: AI Coach Feed</text>
+      <text x="25" y="295" fill="#a5f3fc" font-size="10.5">• Live Stream of Queries</text>
+      <text x="25" y="312" fill="#a5f3fc" font-size="10.5">• Auto EN/FIL Badge</text>
+      <text x="25" y="329" fill="#a5f3fc" font-size="10.5">• Traffic Topic Mapping</text>
+      <text x="25" y="346" fill="#a5f3fc" font-size="10.5">• Zero Latency Push</text>
+
+      <rect x="250" y="258" width="220" height="98" rx="8" fill="#1e293b" stroke="#38bdf8"/>
+      <text x="260" y="278" fill="#e0f2fe" font-size="11.5" font-weight="700">Tab 8: Device Fleet</text>
+      <text x="260" y="295" fill="#bae6fd" font-size="10.5">• Active Android Phones</text>
+      <text x="260" y="312" fill="#bae6fd" font-size="10.5">• OS: Android 11 to 15</text>
+      <text x="260" y="329" fill="#bae6fd" font-size="10.5">• Brand &amp; Resolution</text>
+      <text x="260" y="346" fill="#bae6fd" font-size="10.5">• Online Heartbeats</text>
+
+      <rect x="485" y="258" width="220" height="98" rx="8" fill="#1e293b" stroke="#f59e0b"/>
+      <text x="495" y="278" fill="#fef3c7" font-size="11.5" font-weight="700">Tab 9: Access Logs</text>
+      <text x="495" y="295" fill="#fde68a" font-size="10.5">• Authentication Trail</text>
+      <text x="495" y="312" fill="#fde68a" font-size="10.5">• Success / Failure Log</text>
+      <text x="495" y="329" fill="#fde68a" font-size="10.5">• Device Fingerprints</text>
+      <text x="495" y="346" fill="#fde68a" font-size="10.5">• Active Token Kills</text>
+
+      <!-- Row 4 -->
+      <rect x="15" y="368" width="220" height="98" rx="8" fill="#064e3b" stroke="#10b981"/>
+      <text x="25" y="388" fill="#d1fae5" font-size="11.5" font-weight="700">Tab 10: Analytics</text>
+      <text x="25" y="405" fill="#a7f3d0" font-size="10.5">• Takers vs Attempts</text>
+      <text x="25" y="422" fill="#a7f3d0" font-size="10.5">• Pass/Fail Breakdown</text>
+      <text x="25" y="439" fill="#a7f3d0" font-size="10.5">• Hard Topic Hotspots</text>
+      <text x="25" y="456" fill="#a7f3d0" font-size="10.5">• Module Filters</text>
+
+      <rect x="250" y="368" width="220" height="98" rx="8" fill="#450a0a" stroke="#ef4444"/>
+      <text x="260" y="388" fill="#fee2e2" font-size="11.5" font-weight="700">Tab 11: Audit Ledger</text>
+      <text x="260" y="405" fill="#fecaca" font-size="10.5">• Tamper-Evident Trail</text>
+      <text x="260" y="422" fill="#fecaca" font-size="10.5">• LOW/MED/HIGH/CRIT</text>
+      <text x="260" y="439" fill="#fecaca" font-size="10.5">• Admin Overrides</text>
+      <text x="260" y="456" fill="#fecaca" font-size="10.5">• Police Export Format</text>
+
+      <rect x="485" y="368" width="220" height="98" rx="8" fill="#1e293b" stroke="#94a3b8"/>
+      <text x="495" y="388" fill="#f1f5f9" font-size="11.5" font-weight="700">Tab 12: Protocols</text>
+      <text x="495" y="405" fill="#cbd5e1" font-size="10.5">• Cloud JSON Backup</text>
+      <text x="495" y="422" fill="#cbd5e1" font-size="10.5">• Cache Flush Controls</text>
+      <text x="495" y="439" fill="#cbd5e1" font-size="10.5">• DB Re-seeding Script</text>
+      <text x="495" y="456" fill="#cbd5e1" font-size="10.5">• Factory Reset State</text>
+
+      <!-- Deep Analytics Detail Box -->
+      <rect x="15" y="480" width="690" height="385" rx="10" fill="#1e1b4b" stroke="#818cf8" stroke-width="1.2"/>
+      <text x="30" y="508" fill="#e0e7ff" font-size="13" font-weight="700">Chart.js Telemetry &amp; Real-Time Data Visualization Hub</text>
+
+      <!-- Chart 1 mock -->
+      <rect x="30" y="525" width="315" height="155" rx="8" fill="#0f172a" stroke="#3730a3"/>
+      <text x="42" y="546" fill="#a5b4fc" font-size="11" font-weight="700">📈 Quiz Attempts Timeline</text>
+      <path d="M 45 640 Q 95 610 145 625 T 245 580 T 325 560" fill="none" stroke="#6366f1" stroke-width="2.5"/>
+      <path d="M 45 640 Q 95 610 145 625 T 245 580 T 325 560 L 325 650 L 45 650 Z" fill="#6366f1" fill-opacity="0.15"/>
+      <text x="42" y="665" fill="#94a3b8" font-size="10">Temporal activity &amp; peak driver testing hours</text>
+
+      <!-- Chart 2 mock -->
+      <rect x="375" y="525" width="315" height="155" rx="8" fill="#0f172a" stroke="#3730a3"/>
+      <text x="387" y="546" fill="#a5b4fc" font-size="11" font-weight="700">🍩 Municipal Competency Ratio</text>
+      <circle cx="532" cy="610" r="42" fill="none" stroke="#10b981" stroke-width="16" stroke-dasharray="190 75"/>
+      <circle cx="532" cy="610" r="42" fill="none" stroke="#ef4444" stroke-width="16" stroke-dasharray="75 190" stroke-dashoffset="-190"/>
+      <text x="532" y="615" fill="#f8fafc" font-size="13" font-weight="700" text-anchor="middle">72% Pass</text>
+      <text x="387" y="665" fill="#94a3b8" font-size="10">Aggregated driver licensing qualification index</text>
+
+      <!-- Chart 3 mock -->
+      <rect x="30" y="695" width="660" height="155" rx="8" fill="#0f172a" stroke="#3730a3"/>
+      <text x="42" y="718" fill="#a5b4fc" font-size="11" font-weight="700">📊 Taker-Based Evaluation: Unique Drivers vs. Total Attempts</text>
+      <rect x="55" y="750" width="35" height="70" rx="4" fill="#3b82f6"/>
+      <rect x="95" y="730" width="35" height="90" rx="4" fill="#8b5cf6"/>
+      <rect x="175" y="765" width="35" height="55" rx="4" fill="#3b82f6"/>
+      <rect x="215" y="740" width="35" height="80" rx="4" fill="#8b5cf6"/>
+      <rect x="295" y="745" width="35" height="75" rx="4" fill="#3b82f6"/>
+      <rect x="335" y="720" width="35" height="100" rx="4" fill="#8b5cf6"/>
+      <rect x="415" y="770" width="35" height="50" rx="4" fill="#3b82f6"/>
+      <rect x="455" y="755" width="35" height="65" rx="4" fill="#8b5cf6"/>
+      <text x="540" y="760" fill="#3b82f6" font-size="11">■ Unique Takers</text>
+      <text x="540" y="780" fill="#8b5cf6" font-size="11">■ Total Attempts</text>
+      <text x="540" y="805" fill="#94a3b8" font-size="10">Filters by Module &amp; Date</text>
+    </g>
+
+    <!-- Wireless Fleet Onboarding QR -->
+    <g transform="translate(20, 1075)">
+      <rect x="0" y="0" width="720" height="110" rx="10" fill="#1e293b" stroke="#38bdf8" stroke-width="1.2"/>
+      <text x="18" y="24" fill="#38bdf8" font-size="13" font-weight="700">Wireless Fleet QR Onboarding Portal (download.html)</text>
+      <text x="18" y="46" fill="#e0f2fe" font-size="11">• Instant HTML5 Canvas QR code rendering linked to latest compiled APK release</text>
+      <text x="18" y="66" fill="#e0f2fe" font-size="11">• Enables instant Over-The-Air deployment to Dagami patrol officers and citizen vehicles</text>
+      <text x="18" y="86" fill="#38bdf8" font-size="11" font-weight="600">➔ Download URL: https://gamifiedroadsafetyawareness.web.app/download.html</text>
+    </g>
+
+    <!-- Physical Station Workstations -->
+    <g transform="translate(20, 1200)">
+      <rect x="0" y="0" width="720" height="105" rx="10" fill="#1e1b4b" stroke="#a855f7" stroke-width="1"/>
+      <text x="18" y="24" fill="#e9d5ff" font-size="12" font-weight="700">Dagami MPS Command Center Workstations</text>
+      <text x="18" y="46" fill="#c4b5fd" font-size="11">• Hardware: Desktop Dual-Monitor Workstations &amp; Field Tablets (Headquarters)</text>
+      <text x="18" y="66" fill="#c4b5fd" font-size="11">• Web Browsers: Chrome 120+, Microsoft Edge, Firefox, Safari</text>
+      <text x="18" y="86" fill="#c4b5fd" font-size="11">• 24/7 Real-Time Municipal Traffic Monitoring and Safety Compliance</text>
+    </g>
+  </g>
+
+
+  <!-- ================= CRITICAL FLOW CONNECTORS & ARROWS ================= -->
+
+  <!-- Flow 1: Mobile Sync Manager -> Cloud Firestore -->
+  <g>
+    <path d="M 790 1220 L 850 1220 L 850 480 L 870 480" fill="none" stroke="#06b6d4" stroke-width="4" marker-end="url(#arrow-cyan)"/>
+    <rect x="760" y="640" width="130" height="42" rx="6" fill="#083344" stroke="#06b6d4" stroke-width="1.2"/>
+    <text x="825" y="658" fill="#67e8f9" font-size="11" font-weight="700" text-anchor="middle">HTTPS Batch Sync</text>
+    <text x="825" y="674" fill="#a5f3fc" font-size="9.5" text-anchor="middle">(When Online)</text>
+  </g>
+
+  <!-- Flow 2: Cloud Firestore -> Admin Web (Real-Time Snapshots) -->
+  <g>
+    <path d="M 1570 480 L 1620 480" fill="none" stroke="#a855f7" stroke-width="4" marker-end="url(#arrow-purple)"/>
+    <rect x="1540" y="445" width="110" height="42" rx="6" fill="#3b0764" stroke="#a855f7" stroke-width="1.2"/>
+    <text x="1595" y="463" fill="#e9d5ff" font-size="11" font-weight="700" text-anchor="middle">onSnapshot</text>
+    <text x="1595" y="479" fill="#f3e8ff" font-size="9.5" text-anchor="middle">Live Socket Stream</text>
+  </g>
+
+  <!-- Flow 3: Admin Web Tab 3 (Curriculum Lock) -> Cloud Settings -> Mobile App -->
+  <g>
+    <path d="M 1620 280 L 1570 280 L 1570 600" fill="none" stroke="#f59e0b" stroke-width="3" stroke-dasharray="6 4" marker-end="url(#arrow-amber)"/>
+    <rect x="1540" y="320" width="110" height="38" rx="6" fill="#451a03" stroke="#f59e0b" stroke-width="1.2"/>
+    <text x="1595" y="336" fill="#fde68a" font-size="10.5" font-weight="700" text-anchor="middle">Remote Lock</text>
+    <text x="1595" y="350" fill="#fef3c7" font-size="9.5" text-anchor="middle">Write system_settings</text>
+
+    <!-- Cloud Settings -> Mobile App -->
+    <path d="M 870 600 L 820 600 L 820 500 L 790 500" fill="none" stroke="#f59e0b" stroke-width="3" stroke-dasharray="6 4" marker-end="url(#arrow-amber)"/>
+    <rect x="760" y="530" width="130" height="36" rx="6" fill="#451a03" stroke="#f59e0b" stroke-width="1.2"/>
+    <text x="825" y="546" fill="#fde68a" font-size="10.5" font-weight="700" text-anchor="middle">Live Lock Dispatch</text>
+    <text x="825" y="559" fill="#fef3c7" font-size="9" text-anchor="middle">Locks In-App Access</text>
+  </g>
+
+  <!-- Flow 4: CI/CD -> Hosting & Dynamic QR -->
+  <g>
+    <path d="M 1200 1115 L 1200 990" fill="none" stroke="#22c55e" stroke-width="2.5" stroke-dasharray="5 3" marker-end="url(#arrow-emerald)"/>
+    <path d="M 1570 1020 L 1620 1020 L 1620 1230" fill="none" stroke="#38bdf8" stroke-width="2.5" marker-end="url(#arrow-blue)"/>
+  </g>
+
+  <!-- Footer Watermark -->
+  <text x="1200" y="1500" fill="#64748b" font-size="12" font-weight="500" text-anchor="middle">RoadSafe AI Platform • Built for Municipality of Dagami, Leyte • Production Release v2.0 • 100% Offline-First + Cloud Firestore Sync</text>
+</svg>

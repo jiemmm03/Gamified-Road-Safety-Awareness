@@ -16,7 +16,7 @@ import androidx.sqlite.db.SupportSQLiteDatabase
         QuizAttemptAnswerEntity::class
     ],
     version = 6,
-    exportSchema = false
+    exportSchema = true
 )
 abstract class AppDatabase : RoomDatabase() {
     abstract fun userProgressDao(): UserProgressDao

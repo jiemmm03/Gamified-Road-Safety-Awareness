@@ -129,6 +129,11 @@ fun LoginScreen(
                 showError = true
                 triggerShake()
             }
+            is LoginResult.AccountLocked -> {
+                errorMessage = "Account locked. Try again in ${result.remainingSeconds} seconds."
+                showError = true
+                triggerShake()
+            }
         }
     }
 

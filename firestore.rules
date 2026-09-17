@@ -5,37 +5,46 @@ service cloud.firestore {
 
     // User profiles & active online presence
     match /users/{userId} {
-      allow read: if true;
-      allow write: if true;
+      allow read, write: if true;
     }
 
     // User login, logout, and failed authentication activity timeline
     match /user_logins/{loginId} {
-      allow read: if true;
-      allow create, write: if true;
+      allow read, create, update: if true;
+      allow delete: if false;
     }
 
     // Learner progress, XP, levels, and streak records
     match /user_progress/{userId} {
-      allow read: if true;
-      allow write: if true;
+      allow read, write: if true;
     }
 
     // Completed quiz attempts, answers, and scores
     match /quiz_attempts/{attemptId} {
-      allow read: if true;
-      allow create, write: if true;
+      allow read, create, update: if true;
+      allow delete: if false;
     }
 
-    // Administrative security audit trail
+    // Administrative security audit trail (append-only)
     match /audit_logs/{logId} {
-      allow read: if true;
-      allow create, write: if true;
+      allow read, create: if true;
+      allow update, delete: if false;
     }
 
-    // Default match
-    match /{document=**} {
+    // AI interaction logs
+    match /ai_interactions/{interactionId} {
       allow read, write: if true;
+    }
+
+    // System-wide settings (module enable/disable, XP config)
+    match /system_settings/{settingId} {
+      allow read, write: if true;
+    }
+
+    // XP Transactions Ledger Stream
+    match /xp_transactions/{txId} {
+      allow read, create, update: if true;
+      allow delete: if false;
     }
   }
 }

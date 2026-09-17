@@ -10,6 +10,9 @@ import com.example.gamifiedroadsafetyawareness.audit.AuditResult
 import com.example.gamifiedroadsafetyawareness.audit.RiskLevel
 import com.example.gamifiedroadsafetyawareness.firebase.FirebaseSyncManager
 import java.security.MessageDigest
+import java.security.SecureRandom
+import javax.crypto.SecretKeyFactory
+import javax.crypto.spec.PBEKeySpec
 
 /**
  * Local authentication manager using SharedPreferences.
@@ -39,6 +42,16 @@ class AuthManager(context: Context) {
         const val DEFAULT_USER_PASS = "user123"
 
         const val MIN_PASSWORD_LENGTH = 8
+
+        // ── S-06: Rate limiting constants ──────────────────────────────────
+        private const val MAX_FAILED_ATTEMPTS = 5
+        private const val BASE_LOCKOUT_DURATION_MS = 30_000L // 30 seconds
+        private const val MAX_LOCKOUT_DURATION_MS = 300_000L // 5 minutes
+
+        // ── S-04: PBKDF2 constants ─────────────────────────────────────────
+        private const val PBKDF2_ITERATIONS = 120_000
+        private const val PBKDF2_KEY_LENGTH = 256
+        private const val SALT_LENGTH_BYTES = 16
     }
 
     init {
@@ -49,22 +62,135 @@ class AuthManager(context: Context) {
         if (!prefs.getBoolean(KEY_SEEDED, false)) {
             registerAccount(DEFAULT_ADMIN_USER, DEFAULT_ADMIN_PASS, UserRole.ADMIN, "Administrator")
             registerAccount(DEFAULT_USER_USER, DEFAULT_USER_PASS, UserRole.USER, "Juan D.")
+            // S-03: Flag seeded accounts for forced password change on first login
+            userPrefs.edit()
+                .putBoolean("${DEFAULT_ADMIN_USER}_must_change_password", true)
+                .putBoolean("${DEFAULT_USER_USER}_must_change_password", true)
+                .apply()
             prefs.edit().putBoolean(KEY_SEEDED, true).apply()
         }
     }
 
+    // ── S-03: Check if user must change their default password ─────────────
+    fun mustChangePassword(username: String): Boolean {
+        val trimmedUser = username.trim().lowercase()
+        return userPrefs.getBoolean("${trimmedUser}_must_change_password", false)
+    }
+
+    fun clearMustChangePassword(username: String) {
+        val trimmedUser = username.trim().lowercase()
+        userPrefs.edit().remove("${trimmedUser}_must_change_password").apply()
+    }
+
+    // ── S-04: PBKDF2 + per-user salt password hashing ──────────────────────
+    private fun generateSalt(): ByteArray {
+        val salt = ByteArray(SALT_LENGTH_BYTES)
+        SecureRandom().nextBytes(salt)
+        return salt
+    }
+
+    private fun hashWithPbkdf2(password: String, salt: ByteArray): String {
+        val spec = PBEKeySpec(password.toCharArray(), salt, PBKDF2_ITERATIONS, PBKDF2_KEY_LENGTH)
+        val factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256")
+        val hash = factory.generateSecret(spec).encoded
+        val saltHex = salt.joinToString("") { "%02x".format(it) }
+        val hashHex = hash.joinToString("") { "%02x".format(it) }
+        return "pbkdf2:$saltHex:$hashHex"
+    }
+
+    /**
+     * Hash a password. Uses PBKDF2 with a random salt for new passwords.
+     * Retained for backward compatibility — call [hashAndStorePassword] for new registrations
+     * and [verifyPassword] for login checks.
+     */
     fun hashPassword(password: String): String {
+        // Legacy SHA-256 for backward compat (only used during migration check)
         val bytes = MessageDigest.getInstance("SHA-256").digest(password.toByteArray())
         return bytes.joinToString("") { "%02x".format(it) }
     }
+
+    private fun hashAndStorePassword(username: String, password: String) {
+        val salt = generateSalt()
+        val hash = hashWithPbkdf2(password, salt)
+        userPrefs.edit().putString("${username}_hash", hash).apply()
+    }
+
+    /**
+     * Verify a password against the stored hash. Supports both legacy SHA-256
+     * (auto-upgraded to PBKDF2 on successful match) and PBKDF2 hashes.
+     */
+    private fun verifyPassword(username: String, password: String): Boolean {
+        val storedHash = userPrefs.getString("${username}_hash", null) ?: return false
+
+        return if (storedHash.startsWith("pbkdf2:")) {
+            // PBKDF2 hash format: "pbkdf2:<saltHex>:<hashHex>"
+            val parts = storedHash.split(":")
+            if (parts.size != 3) return false
+            val salt = parts[1].chunked(2).map { it.toInt(16).toByte() }.toByteArray()
+            val expectedHash = hashWithPbkdf2(password, salt)
+            storedHash == expectedHash
+        } else {
+            // Legacy SHA-256 — verify and auto-upgrade to PBKDF2
+            val legacyHash = hashPassword(password)
+            if (storedHash == legacyHash) {
+                // Auto-upgrade: re-hash with PBKDF2 + salt
+                hashAndStorePassword(username, password)
+                true
+            } else {
+                false
+            }
+        }
+    }
+
+    // ── S-06: Login rate limiting ──────────────────────────────────────────
+    private fun getFailedAttemptCount(username: String): Int =
+        prefs.getInt("failed_attempts_$username", 0)
+
+    private fun getLastFailedTime(username: String): Long =
+        prefs.getLong("failed_time_$username", 0L)
+
+    private fun recordFailedAttempt(username: String) {
+        val count = getFailedAttemptCount(username) + 1
+        prefs.edit()
+            .putInt("failed_attempts_$username", count)
+            .putLong("failed_time_$username", System.currentTimeMillis())
+            .apply()
+    }
+
+    private fun clearFailedAttempts(username: String) {
+        prefs.edit()
+            .remove("failed_attempts_$username")
+            .remove("failed_time_$username")
+            .apply()
+    }
+
+    private fun getLockoutRemainingMs(username: String): Long {
+        val failCount = getFailedAttemptCount(username)
+        if (failCount < MAX_FAILED_ATTEMPTS) return 0L
+        val lockoutDuration = (BASE_LOCKOUT_DURATION_MS * (1 shl (failCount - MAX_FAILED_ATTEMPTS).coerceAtMost(3)))
+            .coerceAtMost(MAX_LOCKOUT_DURATION_MS)
+        val elapsed = System.currentTimeMillis() - getLastFailedTime(username)
+        return (lockoutDuration - elapsed).coerceAtLeast(0L)
+    }
+
+    fun getLockoutRemainingSeconds(username: String): Int =
+        (getLockoutRemainingMs(username.trim().lowercase()) / 1000).toInt()
 
     fun login(username: String, password: String): LoginResult {
         val trimmedUser = username.trim().lowercase()
         val storedHash = userPrefs.getString("${trimmedUser}_hash", null)
             ?: return LoginResult.InvalidCredentials
 
-        val inputHash = hashPassword(password)
-        if (storedHash != inputHash) {
+        // S-06: Check rate limiting before attempting password verification
+        val lockoutRemaining = getLockoutRemainingMs(trimmedUser)
+        if (lockoutRemaining > 0) {
+            val seconds = (lockoutRemaining / 1000).toInt()
+            return LoginResult.AccountLocked(seconds)
+        }
+
+        if (!verifyPassword(trimmedUser, password)) {
+            recordFailedAttempt(trimmedUser)
+            val attemptsLeft = MAX_FAILED_ATTEMPTS - getFailedAttemptCount(trimmedUser)
             auditManager.logAction(
                 userId = "UNKNOWN",
                 fullName = "Unknown",
@@ -72,9 +198,10 @@ class AuthManager(context: Context) {
                 role = "UNKNOWN",
                 actionType = ActionType.FAILED_LOGIN,
                 module = Module.AUTHENTICATION,
-                description = "Failed login attempt for user: $trimmedUser",
+                description = "Failed login attempt for user: $trimmedUser" +
+                    if (attemptsLeft <= 0) " (ACCOUNT LOCKED)" else " ($attemptsLeft attempts remaining)",
                 result = AuditResult.FAILED,
-                riskLevel = RiskLevel.MEDIUM
+                riskLevel = if (attemptsLeft <= 0) RiskLevel.HIGH else RiskLevel.MEDIUM
             )
             syncManager.recordUserLogin(
                 username = trimmedUser,
@@ -85,6 +212,9 @@ class AuthManager(context: Context) {
             )
             return LoginResult.InvalidCredentials
         }
+
+        // Successful password match — clear failed attempts
+        clearFailedAttempts(trimmedUser)
 
         val role = userPrefs.getString("${trimmedUser}_role", "USER") ?: "USER"
         val displayName = userPrefs.getString("${trimmedUser}_display", trimmedUser) ?: trimmedUser
@@ -283,10 +413,11 @@ class AuthManager(context: Context) {
     /** Changes a user's password after verifying their current one and validating the new one. */
     fun changePassword(username: String, currentPassword: String, newPassword: String): PasswordChangeResult {
         val trimmedUser = username.trim().lowercase()
-        val storedHash = userPrefs.getString("${trimmedUser}_hash", null)
-            ?: return PasswordChangeResult.WrongCurrentPassword
+        if (userPrefs.getString("${trimmedUser}_hash", null) == null) {
+            return PasswordChangeResult.WrongCurrentPassword
+        }
 
-        if (hashPassword(currentPassword) != storedHash) {
+        if (!verifyPassword(trimmedUser, currentPassword)) {
             return PasswordChangeResult.WrongCurrentPassword
         }
         if (newPassword.length < MIN_PASSWORD_LENGTH) {
@@ -295,11 +426,14 @@ class AuthManager(context: Context) {
         if (!newPassword.any { it.isLetter() } || !newPassword.any { it.isDigit() }) {
             return PasswordChangeResult.PasswordTooWeak
         }
-        if (hashPassword(newPassword) == storedHash) {
+        if (verifyPassword(trimmedUser, newPassword)) {
             return PasswordChangeResult.SamePassword
         }
 
-        userPrefs.edit().putString("${trimmedUser}_hash", hashPassword(newPassword)).apply()
+        // Use PBKDF2 for the new password
+        hashAndStorePassword(trimmedUser, newPassword)
+        // S-03: Clear forced password change flag after successful change
+        clearMustChangePassword(trimmedUser)
 
         val role = userPrefs.getString("${trimmedUser}_role", "USER") ?: "USER"
         val displayName = userPrefs.getString("${trimmedUser}_display", trimmedUser) ?: trimmedUser
@@ -364,7 +498,9 @@ class AuthManager(context: Context) {
             // Update existing
         }
 
-        val hash = hashPassword(password)
+        // Use PBKDF2 with random salt for new registrations
+        val salt = generateSalt()
+        val hash = hashWithPbkdf2(password, salt)
         val defaultPerms = RolePermissions.getPermissions(role)
 
         val editor = userPrefs.edit()
@@ -440,12 +576,24 @@ class AuthManager(context: Context) {
 
         val targetDisplayName = userPrefs.getString("${trimmedUser}_display", trimmedUser) ?: trimmedUser
 
+        // S-09: Remove ALL user fields, including personal data
         userPrefs.edit()
             .remove("${trimmedUser}_hash")
             .remove("${trimmedUser}_role")
             .remove("${trimmedUser}_display")
             .remove("${trimmedUser}_created")
             .remove("${trimmedUser}_permissions")
+            .remove("${trimmedUser}_active")          // was missing
+            .remove("${trimmedUser}_gender")          // was missing — personal data
+            .remove("${trimmedUser}_contact")         // was missing — personal data
+            .remove("${trimmedUser}_age")             // was missing — personal data
+            .remove("${trimmedUser}_must_change_password") // S-03 flag cleanup
+            .apply()
+
+        // Clear rate-limiting state for the deleted account
+        prefs.edit()
+            .remove("failed_attempts_$trimmedUser")
+            .remove("failed_time_$trimmedUser")
             .apply()
 
         val userList = userPrefs.getStringSet("all_users", mutableSetOf())?.toMutableSet()
@@ -498,6 +646,8 @@ sealed class LoginResult {
     data class Success(val role: UserRole, val displayName: String, val permissions: Set<Permission>) : LoginResult()
     object InvalidCredentials : LoginResult()
     object AccountDeactivated : LoginResult()
+    /** S-06: Account is temporarily locked due to too many failed attempts. */
+    data class AccountLocked(val remainingSeconds: Int) : LoginResult()
 }
 
 sealed class PasswordChangeResult {

@@ -1,0 +1,309 @@
+<mxfile host="app.diagrams.net" modified="2026-09-16T12:30:00.000Z" agent="Mozilla/5.0" version="24.7.8">
+  <diagram id="roadsafe-full-system" name="RoadSafe AI Full System Architecture">
+    <mxGraphModel dx="2400" dy="1600" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2600" pageHeight="1800" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- ================= TITLE BANNER ================= -->
+        <mxCell id="title_bg" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0F172A;strokeColor=#1E293B;arcSize=6;" vertex="1" parent="1">
+          <mxGeometry x="40" y="30" width="2520" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="title_text" value="&lt;font color=&quot;#38BDF8&quot; style=&quot;font-size: 26px;&quot;&gt;&lt;b&gt;🛡️ RoadSafe AI — Full System Architecture &amp; Data Flow Diagram&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;font color=&quot;#94A3B8&quot; style=&quot;font-size: 14px;&quot;&gt;Municipality of Dagami, Leyte • Gamified Road Safety Awareness, Traffic Rule Education &amp; Driver Decision-Making System (v2.0 Production)&lt;/font&gt;" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="70" y="42" width="1800" height="65" as="geometry" />
+        </mxCell>
+        <mxCell id="title_badges" value="&lt;font color=&quot;#10B981&quot;&gt;&lt;b&gt;● Android Kotlin/Compose&lt;/b&gt;&lt;/font&gt;&amp;nbsp;&amp;nbsp;|&amp;nbsp;&amp;nbsp;&lt;font color=&quot;#F59E0B&quot;&gt;&lt;b&gt;● Offline Room SQLite&lt;/b&gt;&lt;/font&gt;&amp;nbsp;&amp;nbsp;|&amp;nbsp;&amp;nbsp;&lt;font color=&quot;#06B6D4&quot;&gt;&lt;b&gt;● Cloud Firestore&lt;/b&gt;&lt;/font&gt;&amp;nbsp;&amp;nbsp;|&amp;nbsp;&amp;nbsp;&lt;font color=&quot;#A855F7&quot;&gt;&lt;b&gt;● 12-Tab Admin Web&lt;/b&gt;&lt;/font&gt;" style="text;html=1;align=right;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="1900" y="55" width="620" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- ================= COLUMN 1: MOBILE CLIENT (ANDROID) ================= -->
+        <mxCell id="mobile_swimlane" value="📱 ANDROID MOBILE CLIENT (Kotlin 2.0 + Jetpack Compose) — Offline-First Architecture" style="swimlane;startSize=36;rounded=1;arcSize=4;fontStyle=1;fontSize=15;align=left;spacingLeft=15;fillColor=#091E3A;strokeColor=#1D4ED8;fontColor=#60A5FA;" vertex="1" parent="1">
+          <mxGeometry x="40" y="150" width="820" height="1580" as="geometry" />
+        </mxCell>
+
+        <!-- Section 1.1: Users / Actors -->
+        <mxCell id="actors_box" value="&lt;b&gt;Target End-Users / Field Actors&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#CBD5E1&quot;&gt;• &lt;b&gt;USER:&lt;/b&gt; Student Drivers, Tricycle Operators, Motorcyclists, Citizens of Dagami&lt;br&gt;• &lt;b&gt;ADMIN / SUPER_ADMIN:&lt;/b&gt; Dagami MPS Traffic Officers &amp; System Administrators&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1E293B;strokeColor=#334155;fontColor=#F8FAFC;align=left;spacingLeft=12;fontSize=12;" vertex="1" parent="mobile_swimlane">
+          <mxGeometry x="20" y="55" width="780" height="65" as="geometry" />
+        </mxCell>
+
+        <!-- Section 1.2: App Shell & Authentication -->
+        <mxCell id="auth_group" value="&lt;b&gt;UI Shell, Navigation &amp; Security Layer&lt;/b&gt;" style="swimlane;startSize=26;rounded=1;arcSize=6;fontSize=13;fontStyle=1;fillColor=#1E293B;strokeColor=#3B82F6;fontColor=#93C5FD;align=left;spacingLeft=10;" vertex="1" parent="mobile_swimlane">
+          <mxGeometry x="20" y="140" width="780" height="210" as="geometry" />
+        </mxCell>
+        <mxCell id="shell_nav" value="&lt;b&gt;RoadSafetyApp.kt (Main Scaffold)&lt;/b&gt;&lt;br&gt;• ModalNavigationDrawer&lt;br&gt;• AppTopBar &amp; FocusTopBar&lt;br&gt;• NavigationBar Bottom Bar&lt;br&gt;• 20+ Screen Route Graph" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0F172A;strokeColor=#2563EB;fontColor=#E2E8F0;fontSize=11;align=left;spacingLeft=8;" vertex="1" parent="auth_group">
+          <mxGeometry x="15" y="40" width="230" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="auth_mgr" value="&lt;b&gt;AuthManager.kt (Security &amp; RBAC)&lt;/b&gt;&lt;br&gt;• SHA-256 + Salt Password Hashing&lt;br&gt;• Role Enforcement (UserRole.kt)&lt;br&gt;• Permission.kt Access Matrix&lt;br&gt;• Session Token Persistence&lt;br&gt;• Demographic Profiling" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0F172A;strokeColor=#2563EB;fontColor=#E2E8F0;fontSize=11;align=left;spacingLeft=8;" vertex="1" parent="auth_group">
+          <mxGeometry x="260" y="40" width="240" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="auth_screens" value="&lt;b&gt;Auth &amp; Profile Screens&lt;/b&gt;&lt;br&gt;• LoginScreen.kt&lt;br&gt;• SignUpScreen.kt&lt;br&gt;• ProfileScreen.kt&lt;br&gt;• AccountSecurityScreen.kt&lt;br&gt;• AccessDeniedScreen.kt" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0F172A;strokeColor=#2563EB;fontColor=#E2E8F0;fontSize=11;align=left;spacingLeft=8;" vertex="1" parent="auth_group">
+          <mxGeometry x="515" y="40" width="250" height="150" as="geometry" />
+        </mxCell>
+
+        <!-- Section 1.3: Core Driver Learning Engines -->
+        <mxCell id="engines_group" value="&lt;b&gt;Core Interactive Driver Education &amp; Decision Engines&lt;/b&gt;" style="swimlane;startSize=26;rounded=1;arcSize=6;fontSize=13;fontStyle=1;fillColor=#1E293B;strokeColor=#10B981;fontColor=#6EE7B7;align=left;spacingLeft=10;" vertex="1" parent="mobile_swimlane">
+          <mxGeometry x="20" y="370" width="780" height="340" as="geometry" />
+        </mxCell>
+        <mxCell id="quiz_engine" value="&lt;b&gt;Adaptive Assessment Engine&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#94A3B8&quot;&gt;QuizScreen.kt • QuizData.kt&lt;/font&gt;&lt;br&gt;• &lt;b&gt;60 Verified Questions&lt;/b&gt; (🟢20 Easy, 🟡20 Med, 🔴20 Hard)&lt;br&gt;• Full &lt;b&gt;Filipino Translations&lt;/b&gt;&lt;br&gt;• &lt;b&gt;15s Timer Challenge&lt;/b&gt; (+50 XP)&lt;br&gt;• Combo Multiplier (&lt;b&gt;1.0x to 2.5x&lt;/b&gt;)&lt;br&gt;• Legal Rationale Post-Review" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#064E3B;strokeColor=#059669;fontColor=#ECFDF5;fontSize=11;align=left;spacingLeft=8;" vertex="1" parent="engines_group">
+          <mxGeometry x="15" y="40" width="240" height="280" as="geometry" />
+        </mxCell>
+        <mxCell id="sim_engine" value="&lt;b&gt;Hazard Perception Trials&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#94A3B8&quot;&gt;SimulationScreen.kt • ChatScenarios.kt&lt;/font&gt;&lt;br&gt;• &lt;b&gt;20 Situational Scenarios&lt;/b&gt;&lt;br&gt;• Dynamic Weather (Rain, Monsoon, Fog)&lt;br&gt;• Road Friction Loss (&lt;b&gt;0% to 35%&lt;/b&gt;)&lt;br&gt;• &lt;b&gt;20-Sec Decision Loop&lt;/b&gt;&lt;br&gt;• Consequence Tiers (Perfect / Safe / Critical)&lt;br&gt;• Immediate Audio-Visual Feedback" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#78350F;strokeColor=#D97706;fontColor=#FEF3C7;fontSize=11;align=left;spacingLeft=8;" vertex="1" parent="engines_group">
+          <mxGeometry x="270" y="40" width="240" height="280" as="geometry" />
+        </mxCell>
+        <mxCell id="ai_engine" value="&lt;b&gt;Local AI Traffic Tutor Coach&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#94A3B8&quot;&gt;AiTutorScreen.kt • AiTutorEngine.kt&lt;/font&gt;&lt;br&gt;• &lt;b&gt;100% Offline Edge Intelligence&lt;/b&gt;&lt;br&gt;• Bilingual Auto-Detector (&lt;b&gt;EN / FIL&lt;/b&gt;)&lt;br&gt;• &lt;b&gt;On-Topic Road Safety Guard&lt;/b&gt;&lt;br&gt;• 12 Philippine Traffic Topics (RA 4136)&lt;br&gt;• Structured Output (Ans/Exp/Tip)&lt;br&gt;• Rolling Accuracy Adaptive Loop" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#164E63;strokeColor=#0891B2;fontColor=#CFFAFE;fontSize=11;align=left;spacingLeft=8;" vertex="1" parent="engines_group">
+          <mxGeometry x="525" y="40" width="240" height="280" as="geometry" />
+        </mxCell>
+
+        <!-- Section 1.4: Gamification & Economy -->
+        <mxCell id="gamification_group" value="&lt;b&gt;Gamification, Economy &amp; Progression Engine&lt;/b&gt;" style="swimlane;startSize=26;rounded=1;arcSize=6;fontSize=13;fontStyle=1;fillColor=#1E293B;strokeColor=#F59E0B;fontColor=#FDE68A;align=left;spacingLeft=10;" vertex="1" parent="mobile_swimlane">
+          <mxGeometry x="20" y="730" width="780" height="210" as="geometry" />
+        </mxCell>
+        <mxCell id="xp_mgr" value="&lt;b&gt;XP &amp; Leveling Curve (XpManager.kt)&lt;/b&gt;&lt;br&gt;• Exponential Level 1-10+ Scaling&lt;br&gt;• Activity Base XP &amp; Bonuses&lt;br&gt;• Combo Multipliers (up to 2.5x)&lt;br&gt;• Time-Attack Speed Bonus (+50 XP)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0F172A;strokeColor=#D97706;fontColor=#FEF3C7;fontSize=11;align=left;spacingLeft=8;" vertex="1" parent="gamification_group">
+          <mxGeometry x="15" y="40" width="240" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="streaks_badges" value="&lt;b&gt;Daily Streaks &amp; Achievements&lt;/b&gt;&lt;br&gt;• Consecutive Learning Streak Tracker&lt;br&gt;• Automatic Streak Freeze Logic&lt;br&gt;• 10 Milestone Badges &amp; Medals&lt;br&gt;• AchievementDefinitions.kt" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0F172A;strokeColor=#D97706;fontColor=#FEF3C7;fontSize=11;align=left;spacingLeft=8;" vertex="1" parent="gamification_group">
+          <mxGeometry x="270" y="40" width="240" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="rewards_ui" value="&lt;b&gt;Gamification UI Components&lt;/b&gt;&lt;br&gt;• LevelUpModal.kt &amp; Confetti&lt;br&gt;• FloatingRewardPopup.kt&lt;br&gt;• DailyStreakBanner.kt&lt;br&gt;• QuizGamificationHud.kt&lt;br&gt;• MyProgressScreen.kt" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0F172A;strokeColor=#D97706;fontColor=#FEF3C7;fontSize=11;align=left;spacingLeft=8;" vertex="1" parent="gamification_group">
+          <mxGeometry x="525" y="40" width="240" height="150" as="geometry" />
+        </mxCell>
+
+        <!-- Section 1.5: In-App Mobile Admin Suite -->
+        <mxCell id="mobile_admin_group" value="&lt;b&gt;In-App Mobile Admin Management Suite&lt;/b&gt;" style="swimlane;startSize=26;rounded=1;arcSize=6;fontSize=13;fontStyle=1;fillColor=#1E293B;strokeColor=#8B5CF6;fontColor=#DDD6FE;align=left;spacingLeft=10;" vertex="1" parent="mobile_swimlane">
+          <mxGeometry x="20" y="960" width="780" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="mob_adm_cards" value="&lt;b&gt;Admin Mobile Screens:&lt;/b&gt; AdminDashboardScreen.kt • AdminUserManagementScreen.kt • AdminModuleManagementScreen.kt&lt;br&gt;AdminXpManagementScreen.kt • AdminQuizAttemptsScreen.kt • AdminModuleAnalyticsScreen.kt • CloudMonitoringScreen.kt" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0F172A;strokeColor=#7C3AED;fontColor=#EDE9FE;fontSize=11;align=left;spacingLeft=8;" vertex="1" parent="mobile_admin_group">
+          <mxGeometry x="15" y="40" width="750" height="85" as="geometry" />
+        </mxCell>
+
+        <!-- Section 1.6: Local Room SQLite Database -->
+        <mxCell id="room_group" value="&lt;b&gt;Local Room SQLite Persistence Layer (AppDatabase.kt) — 100% Offline Capable&lt;/b&gt;" style="swimlane;startSize=26;rounded=1;arcSize=6;fontSize=13;fontStyle=1;fillColor=#064E3B;strokeColor=#10B981;fontColor=#A7F3D0;align=left;spacingLeft=10;" vertex="1" parent="mobile_swimlane">
+          <mxGeometry x="20" y="1120" width="780" height="230" as="geometry" />
+        </mxCell>
+        <mxCell id="dao_progress" value="&lt;b&gt;UserProgressDao&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#94A3B8&quot;&gt;UserProgressEntity&lt;/font&gt;&lt;br&gt;• userId (PK)&lt;br&gt;• totalXp, level&lt;br&gt;• streakCount&lt;br&gt;• lastSyncTimestamp" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#022C22;strokeColor=#059669;fontColor=#D1FAE5;fontSize=11;align=left;spacingLeft=6;" vertex="1" parent="room_group">
+          <mxGeometry x="15" y="40" width="175" height="170" as="geometry" />
+        </mxCell>
+        <mxCell id="dao_quiz" value="&lt;b&gt;QuizAttemptDao&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#94A3B8&quot;&gt;QuizAttemptEntity&lt;/font&gt;&lt;br&gt;• attemptId (PK)&lt;br&gt;• score, totalQuestions&lt;br&gt;• percentage, passed&lt;br&gt;• timeSpentSeconds" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#022C22;strokeColor=#059669;fontColor=#D1FAE5;fontSize=11;align=left;spacingLeft=6;" vertex="1" parent="room_group">
+          <mxGeometry x="205" y="40" width="175" height="170" as="geometry" />
+        </mxCell>
+        <mxCell id="dao_xp" value="&lt;b&gt;XpHistoryDao&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#94A3B8&quot;&gt;XpHistoryEntity&lt;/font&gt;&lt;br&gt;• logId (PK)&lt;br&gt;• activityType&lt;br&gt;• xpAmount, multiplier&lt;br&gt;• timestamp" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#022C22;strokeColor=#059669;fontColor=#D1FAE5;fontSize=11;align=left;spacingLeft=6;" vertex="1" parent="room_group">
+          <mxGeometry x="395" y="40" width="175" height="170" as="geometry" />
+        </mxCell>
+        <mxCell id="dao_badges" value="&lt;b&gt;AchievementUnlockDao&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#94A3B8&quot;&gt;AchievementUnlockEntity&lt;/font&gt;&lt;br&gt;• badgeId, userId&lt;br&gt;• unlockedAtTimestamp&lt;br&gt;• syncStatus" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#022C22;strokeColor=#059669;fontColor=#D1FAE5;fontSize=11;align=left;spacingLeft=6;" vertex="1" parent="room_group">
+          <mxGeometry x="585" y="40" width="180" height="170" as="geometry" />
+        </mxCell>
+
+        <!-- Section 1.7: Firebase Sync Manager -->
+        <mxCell id="sync_manager_box" value="&lt;b&gt;FirebaseSyncManager.kt (Asynchronous Coroutine Background Worker)&lt;/b&gt;&lt;br&gt;• Network Connectivity State Monitor (Online / Offline)&lt;br&gt;• Local Sync Queue &amp; Retry Exponential Backoff&lt;br&gt;• Batch Sync: syncUserProgress(), syncQuizAttempt(), syncAiInteraction(), syncAuditLog()&lt;br&gt;• Real-time listener for remote curriculum lock updates: listenToModuleSettings()" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1E1B4B;strokeColor=#6366F1;fontColor=#E0E7FF;align=left;spacingLeft=12;fontSize=12;" vertex="1" parent="mobile_swimlane">
+          <mxGeometry x="20" y="1370" width="780" height="110" as="geometry" />
+        </mxCell>
+
+        <mxCell id="audit_box" value="&lt;b&gt;Audit &amp; Hardware Telemetry Logger (AuditManager.kt)&lt;/b&gt;&lt;br&gt;• Device Model, OS Version, Brand, IP, UTC Timestamps • Severity Tiers: LOW, MEDIUM, HIGH, CRITICAL" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1E293B;strokeColor=#EF4444;fontColor=#FCA5A5;align=left;spacingLeft=12;fontSize=11;" vertex="1" parent="mobile_swimlane">
+          <mxGeometry x="20" y="1495" width="780" height="60" as="geometry" />
+        </mxCell>
+
+
+        <!-- ================= COLUMN 2: CLOUD & BACKEND SERVICES ================= -->
+        <mxCell id="cloud_swimlane" value="☁️ GOOGLE FIREBASE CLOUD &amp; CI/CD BACKEND INFRASTRUCTURE" style="swimlane;startSize=36;rounded=1;arcSize=4;fontStyle=1;fontSize=15;align=left;spacingLeft=15;fillColor=#1C1917;strokeColor=#EA580C;fontColor=#FDBA74;" vertex="1" parent="1">
+          <mxGeometry x="900" y="150" width="800" height="1580" as="geometry" />
+        </mxCell>
+
+        <!-- Firestore DB Container -->
+        <mxCell id="firestore_group" value="&lt;b&gt;Google Cloud Firestore (Real-Time NoSQL Database Engine)&lt;/b&gt;" style="swimlane;startSize=26;rounded=1;arcSize=6;fontSize=13;fontStyle=1;fillColor=#292524;strokeColor=#F97316;fontColor=#FED7AA;align=left;spacingLeft=10;" vertex="1" parent="cloud_swimlane">
+          <mxGeometry x="20" y="55" width="760" height="880" as="geometry" />
+        </mxCell>
+
+        <!-- Firestore Collection 1: users -->
+        <mxCell id="col_users" value="&lt;b&gt;📁 Collection: &quot;users&quot;&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#CBD5E1&quot;&gt;• &lt;b&gt;username&lt;/b&gt; (Doc ID)&lt;br&gt;• displayName, passwordHash, salt&lt;br&gt;• role (USER / ADMIN / SUPER_ADMIN)&lt;br&gt;• age, gender, contactNumber&lt;br&gt;• deviceInfo, isOnline, lastLoginAt&lt;br&gt;• createdAtTimestamp&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1C1917;strokeColor=#F97316;fontColor=#FFF7ED;fontSize=11;align=left;spacingLeft=8;" vertex="1" parent="firestore_group">
+          <mxGeometry x="15" y="40" width="350" height="130" as="geometry" />
+        </mxCell>
+
+        <!-- Firestore Collection 2: user_progress -->
+        <mxCell id="col_progress" value="&lt;b&gt;📁 Collection: &quot;user_progress&quot;&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#CBD5E1&quot;&gt;• &lt;b&gt;userId&lt;/b&gt; (Doc ID)&lt;br&gt;• currentXp, totalXp, currentLevel&lt;br&gt;• currentStreak, longestStreak&lt;br&gt;• quizzesCompleted, perfectQuizCount&lt;br&gt;• unlockedBadges: [String]&lt;br&gt;• lastSyncedTimestamp&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1C1917;strokeColor=#F97316;fontColor=#FFF7ED;fontSize=11;align=left;spacingLeft=8;" vertex="1" parent="firestore_group">
+          <mxGeometry x="390" y="40" width="355" height="130" as="geometry" />
+        </mxCell>
+
+        <!-- Firestore Collection 3: quiz_attempts -->
+        <mxCell id="col_attempts" value="&lt;b&gt;📁 Collection: &quot;quiz_attempts&quot;&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#CBD5E1&quot;&gt;• &lt;b&gt;attemptId&lt;/b&gt; (Doc ID / UUID)&lt;br&gt;• userId (FK), quizId, moduleId, quizTitle&lt;br&gt;• difficulty (Easy / Medium / Hard)&lt;br&gt;• score, totalQuestions, percentage&lt;br&gt;• passed (Boolean), timeSpentSeconds&lt;br&gt;• timestamp&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1C1917;strokeColor=#F97316;fontColor=#FFF7ED;fontSize=11;align=left;spacingLeft=8;" vertex="1" parent="firestore_group">
+          <mxGeometry x="15" y="190" width="350" height="140" as="geometry" />
+        </mxCell>
+
+        <!-- Firestore Collection 4: ai_interactions -->
+        <mxCell id="col_ai" value="&lt;b&gt;📁 Collection: &quot;ai_interactions&quot;&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#CBD5E1&quot;&gt;• &lt;b&gt;interactionId&lt;/b&gt; (Doc ID)&lt;br&gt;• userId (FK)&lt;br&gt;• prompt (Driver Query)&lt;br&gt;• response (AI Structured Coach Output)&lt;br&gt;• topic (Traffic Topic Matched)&lt;br&gt;• language (EN / FIL)&lt;br&gt;• timestamp&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1C1917;strokeColor=#F97316;fontColor=#FFF7ED;fontSize=11;align=left;spacingLeft=8;" vertex="1" parent="firestore_group">
+          <mxGeometry x="390" y="190" width="355" height="140" as="geometry" />
+        </mxCell>
+
+        <!-- Firestore Collection 5: user_logins -->
+        <mxCell id="col_logins" value="&lt;b&gt;📁 Collection: &quot;user_logins&quot;&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#CBD5E1&quot;&gt;• &lt;b&gt;loginEventId&lt;/b&gt; (Doc ID)&lt;br&gt;• username (FK), eventType, status&lt;br&gt;• deviceInfo, appVersion&lt;br&gt;• timestamp&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1C1917;strokeColor=#F97316;fontColor=#FFF7ED;fontSize=11;align=left;spacingLeft=8;" vertex="1" parent="firestore_group">
+          <mxGeometry x="15" y="350" width="350" height="120" as="geometry" />
+        </mxCell>
+
+        <!-- Firestore Collection 6: audit_logs -->
+        <mxCell id="col_audit" value="&lt;b&gt;📁 Collection: &quot;audit_logs&quot;&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#CBD5E1&quot;&gt;• &lt;b&gt;auditId&lt;/b&gt; (Doc ID)&lt;br&gt;• actionType, module, username (FK)&lt;br&gt;• riskLevel (LOW / MED / HIGH / CRITICAL)&lt;br&gt;• result, timestampUtc&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1C1917;strokeColor=#F97316;fontColor=#FFF7ED;fontSize=11;align=left;spacingLeft=8;" vertex="1" parent="firestore_group">
+          <mxGeometry x="390" y="350" width="355" height="120" as="geometry" />
+        </mxCell>
+
+        <!-- Firestore Collection 7: system_settings -->
+        <mxCell id="col_settings" value="&lt;b&gt;📁 Document: &quot;system_settings/modules&quot;&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#CBD5E1&quot;&gt;• moduleAvailability: Map&amp;lt;ModuleId, Boolean&amp;gt; (Live Remote Locks)&lt;br&gt;• maintenanceMode: Boolean&lt;br&gt;• lastUpdatedAt: Timestamp&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1C1917;strokeColor=#F97316;fontColor=#FFF7ED;fontSize=11;align=left;spacingLeft=8;" vertex="1" parent="firestore_group">
+          <mxGeometry x="15" y="490" width="730" height="90" as="geometry" />
+        </mxCell>
+
+        <!-- Security Rules & Firestore Indexing -->
+        <mxCell id="sec_rules" value="&lt;b&gt;Firestore Security Rules &amp; Real-Time Snapshot Listeners (onSnapshot)&lt;/b&gt;&lt;br&gt;• RBAC read/write restrictions ensuring tamper prevention&lt;br&gt;• Zero-polling instantaneous socket streaming to Admin Web dashboard&lt;br&gt;• Offline client query caching &amp; indexed compound ordering (timestamp DESC)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0C0A09;strokeColor=#78350F;fontColor=#FED7AA;fontSize=11;align=left;spacingLeft=8;" vertex="1" parent="firestore_group">
+          <mxGeometry x="15" y="600" width="730" height="85" as="geometry" />
+        </mxCell>
+
+        <mxCell id="firebase_hosting_box" value="&lt;b&gt;Firebase Hosting &amp; Cloud Distribution (Production Web)&lt;/b&gt;&lt;br&gt;• Primary Domain: &lt;b&gt;https://gamifiedroadsafetyawareness.web.app&lt;/b&gt;&lt;br&gt;• High-speed Global CDN Edge Caching for Admin SPA and styles.css&lt;br&gt;• Wireless Android APK Onboarding Portal: &lt;b&gt;download.html&lt;/b&gt; with QR Code generator" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1E293B;strokeColor=#38BDF8;fontColor=#E0F2FE;align=left;spacingLeft=12;fontSize=12;" vertex="1" parent="cloud_swimlane">
+          <mxGeometry x="20" y="960" width="760" height="120" as="geometry" />
+        </mxCell>
+
+        <mxCell id="cicd_group" value="&lt;b&gt;Automated CI/CD Pipeline (GitHub Actions &amp; Gradle Build Matrix)&lt;/b&gt;" style="swimlane;startSize=26;rounded=1;arcSize=6;fontSize=13;fontStyle=1;fillColor=#1E293B;strokeColor=#22C55E;fontColor=#86EFAC;align=left;spacingLeft=10;" vertex="1" parent="cloud_swimlane">
+          <mxGeometry x="20" y="1110" width="760" height="250" as="geometry" />
+        </mxCell>
+        <mxCell id="cicd_steps" value="&lt;b&gt;.github/workflows/build-and-release.yml&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#CBD5E1&quot;&gt;1. Trigger: On push / pull request to &lt;b&gt;main&lt;/b&gt; branch&lt;br&gt;2. Environment Setup: Ubuntu Runner + JDK 17 (Eclipse Temurin) + Android SDK 34&lt;br&gt;3. Build Tool: Gradle 8.11 Daemon Execution (./gradlew assembleRelease / assembleDebug)&lt;br&gt;4. Security &amp; Code Analysis: KSP Room Schema verification &amp; lint checks&lt;br&gt;5. Automated Packaging: Signed binary output: &lt;b&gt;RoadSafe-AI.apk&lt;/b&gt;&lt;br&gt;6. Artifact Distribution: Pushes direct download link to GitHub Releases &amp; Admin Web Portal&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0F172A;strokeColor=#15803D;fontColor=#F0FDF4;fontSize=11;align=left;spacingLeft=8;" vertex="1" parent="cicd_group">
+          <mxGeometry x="15" y="40" width="730" height="190" as="geometry" />
+        </mxCell>
+
+        <mxCell id="cloud_monitoring_box" value="&lt;b&gt;Telemetry, Quota &amp; Cloud Health Diagnostics&lt;/b&gt;&lt;br&gt;• Real-time connection heartbeats • Document read/write metering • Tamper detection alerts" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1E293B;strokeColor=#94A3B8;fontColor=#CBD5E1;align=left;spacingLeft=12;fontSize=11;" vertex="1" parent="cloud_swimlane">
+          <mxGeometry x="20" y="1390" width="760" height="65" as="geometry" />
+        </mxCell>
+
+
+        <!-- ================= COLUMN 3: ADMIN WEB COMMAND CENTER ================= -->
+        <mxCell id="admin_swimlane" value="🖥️ DAGAMI MPS ADMIN WEB COMMAND CENTER (/admin-web SPA)" style="swimlane;startSize=36;rounded=1;arcSize=4;fontStyle=1;fontSize=15;align=left;spacingLeft=15;fillColor=#2E1065;strokeColor=#7C3AED;fontColor=#C4B5FD;" vertex="1" parent="1">
+          <mxGeometry x="1740" y="150" width="820" height="1580" as="geometry" />
+        </mxCell>
+
+        <mxCell id="admin_shell" value="&lt;b&gt;Admin Web Single-Page Architecture (SPA)&lt;/b&gt;&lt;br&gt;• &lt;b&gt;index.html:&lt;/b&gt; 12-Tab Responsive Glassmorphic Dashboard &amp; Sidebar Navigation&lt;br&gt;• &lt;b&gt;app.js:&lt;/b&gt; 4,900+ Lines of Pure Vanilla ES6+ &amp; Firebase Web SDK Real-Time Listeners&lt;br&gt;• &lt;b&gt;styles.css:&lt;/b&gt; Custom CSS3 Design Tokens, Glassmorphism, Theme Engine&lt;br&gt;• &lt;b&gt;Chart.js 4.4:&lt;/b&gt; High-Resolution Canvas Telemetry, Trend Lines &amp; Doughnuts" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1E1B4B;strokeColor=#8B5CF6;fontColor=#EDE9FE;align=left;spacingLeft=12;fontSize=12;" vertex="1" parent="admin_swimlane">
+          <mxGeometry x="20" y="55" width="780" height="110" as="geometry" />
+        </mxCell>
+
+        <!-- 12 Tabs Detailed Grid -->
+        <mxCell id="tabs_group" value="&lt;b&gt;12 Dedicated Operational Command Subsystems (Tabs 1 to 12)&lt;/b&gt;" style="swimlane;startSize=26;rounded=1;arcSize=6;fontSize=13;fontStyle=1;fillColor=#1E1B4B;strokeColor=#A855F7;fontColor=#F3E8FF;align=left;spacingLeft=10;" vertex="1" parent="admin_swimlane">
+          <mxGeometry x="20" y="185" width="780" height="1165" as="geometry" />
+        </mxCell>
+
+        <!-- Tab 1 -->
+        <mxCell id="tab_1" value="&lt;b&gt;Tab 1: Command Dashboard&lt;/b&gt;&lt;br&gt;• Real-time Telemetry KPI Cards&lt;br&gt;• Municipal Pass Rate Index&lt;br&gt;• Active Online Drivers Count&lt;br&gt;• Daily Activity Trend Charts" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#3B0764;strokeColor=#9333EA;fontColor=#FAF5FF;fontSize=11;align=left;spacingLeft=6;" vertex="1" parent="tabs_group">
+          <mxGeometry x="15" y="40" width="240" height="120" as="geometry" />
+        </mxCell>
+
+        <!-- Tab 2 -->
+        <mxCell id="tab_2" value="&lt;b&gt;Tab 2: User Management&lt;/b&gt;&lt;br&gt;• Registered Driver Directory&lt;br&gt;• Live Filter by Role &amp; Age&lt;br&gt;• Role Elevation (USER/ADMIN)&lt;br&gt;• User Detail Inspection Drawer" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#3B0764;strokeColor=#9333EA;fontColor=#FAF5FF;fontSize=11;align=left;spacingLeft=6;" vertex="1" parent="tabs_group">
+          <mxGeometry x="270" y="40" width="240" height="120" as="geometry" />
+        </mxCell>
+
+        <!-- Tab 3 -->
+        <mxCell id="tab_3" value="&lt;b&gt;Tab 3: Traffic Curriculum&lt;/b&gt;&lt;br&gt;• 10 Traffic Law Topic Modules&lt;br&gt;• Live Remote Locks / Unlocks&lt;br&gt;• Updates system_settings in Cloud&lt;br&gt;• Instantly locks mobile access" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#3B0764;strokeColor=#9333EA;fontColor=#FAF5FF;fontSize=11;align=left;spacingLeft=6;" vertex="1" parent="tabs_group">
+          <mxGeometry x="525" y="40" width="240" height="120" as="geometry" />
+        </mxCell>
+
+        <!-- Tab 4 -->
+        <mxCell id="tab_4" value="&lt;b&gt;Tab 4: Driver Assessment Bank&lt;/b&gt;&lt;br&gt;• 60 Verified Question Database&lt;br&gt;• Filter by Easy/Medium/Hard&lt;br&gt;• Bilingual (EN / FIL) Verification&lt;br&gt;• Legal Answer Explanations" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#3B0764;strokeColor=#9333EA;fontColor=#FAF5FF;fontSize=11;align=left;spacingLeft=6;" vertex="1" parent="tabs_group">
+          <mxGeometry x="15" y="175" width="240" height="120" as="geometry" />
+        </mxCell>
+
+        <!-- Tab 5 -->
+        <mxCell id="tab_5" value="&lt;b&gt;Tab 5: Hazard Decision Trials&lt;/b&gt;&lt;br&gt;• 20 Situational Scenario Inspector&lt;br&gt;• Environmental Risk Parameters&lt;br&gt;• Wet Road Friction Analysis&lt;br&gt;• Consequence Matrix Review" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#3B0764;strokeColor=#9333EA;fontColor=#FAF5FF;fontSize=11;align=left;spacingLeft=6;" vertex="1" parent="tabs_group">
+          <mxGeometry x="270" y="175" width="240" height="120" as="geometry" />
+        </mxCell>
+
+        <!-- Tab 6 -->
+        <mxCell id="tab_6" value="&lt;b&gt;Tab 6: Ranks &amp; Medals&lt;/b&gt;&lt;br&gt;• Dagami Municipal Leaderboard&lt;br&gt;• XP Distribution Analysis&lt;br&gt;• Badge Unlocking Statistics&lt;br&gt;• Top Driver Performance Honors" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#3B0764;strokeColor=#9333EA;fontColor=#FAF5FF;fontSize=11;align=left;spacingLeft=6;" vertex="1" parent="tabs_group">
+          <mxGeometry x="525" y="175" width="240" height="120" as="geometry" />
+        </mxCell>
+
+        <!-- Tab 7 -->
+        <mxCell id="tab_7" value="&lt;b&gt;Tab 7: AI Traffic Tutor Stream&lt;/b&gt;&lt;br&gt;• Real-time Feed of Driver Queries&lt;br&gt;• Automatic EN/FIL Badge&lt;br&gt;• Topic Category Classification&lt;br&gt;• Zero-Latency Live Monitoring" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#164E63;strokeColor=#06B6D4;fontColor=#ECFEFF;fontSize=11;align=left;spacingLeft=6;" vertex="1" parent="tabs_group">
+          <mxGeometry x="15" y="310" width="240" height="120" as="geometry" />
+        </mxCell>
+
+        <!-- Tab 8 -->
+        <mxCell id="tab_8" value="&lt;b&gt;Tab 8: Device Fleet Tracker&lt;/b&gt;&lt;br&gt;• Active Android Hardware Telemetry&lt;br&gt;• OS Versions (Android 11 - 15)&lt;br&gt;• Manufacturer / Model Tracking&lt;br&gt;• Screen Resolution &amp; Battery Status" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1E293B;strokeColor=#38BDF8;fontColor=#F0F9FF;fontSize=11;align=left;spacingLeft=6;" vertex="1" parent="tabs_group">
+          <mxGeometry x="270" y="310" width="240" height="120" as="geometry" />
+        </mxCell>
+
+        <!-- Tab 9 -->
+        <mxCell id="tab_9" value="&lt;b&gt;Tab 9: Access Security Logs&lt;/b&gt;&lt;br&gt;• Authentication Success/Failure Log&lt;br&gt;• Hardware Fingerprints &amp; Timestamps&lt;br&gt;• Suspicious Login Alert System&lt;br&gt;• Active Session Kill Controls" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1E293B;strokeColor=#F59E0B;fontColor=#FFFBEB;fontSize=11;align=left;spacingLeft=6;" vertex="1" parent="tabs_group">
+          <mxGeometry x="525" y="310" width="240" height="120" as="geometry" />
+        </mxCell>
+
+        <!-- Tab 10 -->
+        <mxCell id="tab_10" value="&lt;b&gt;Tab 10: Safety Analytics&lt;/b&gt;&lt;br&gt;• Unique Takers vs Total Attempts&lt;br&gt;• Difficulty Failure Hotspots&lt;br&gt;• Module Pass Rate Percentages&lt;br&gt;• Question Discrimination Indices" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#064E3B;strokeColor=#10B981;fontColor=#ECFDF5;fontSize=11;align=left;spacingLeft=6;" vertex="1" parent="tabs_group">
+          <mxGeometry x="15" y="445" width="240" height="120" as="geometry" />
+        </mxCell>
+
+        <!-- Tab 11 -->
+        <mxCell id="tab_11" value="&lt;b&gt;Tab 11: Security Audit Ledger&lt;/b&gt;&lt;br&gt;• Tamper-Evident Security Log&lt;br&gt;• Severity: LOW, MED, HIGH, CRIT&lt;br&gt;• Admin Override Justifications&lt;br&gt;• Regulatory Compliance Export" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#450A0A;strokeColor=#EF4444;fontColor=#FEF2F2;fontSize=11;align=left;spacingLeft=6;" vertex="1" parent="tabs_group">
+          <mxGeometry x="270" y="445" width="240" height="120" as="geometry" />
+        </mxCell>
+
+        <!-- Tab 12 -->
+        <mxCell id="tab_12" value="&lt;b&gt;Tab 12: System Protocols&lt;/b&gt;&lt;br&gt;• Cloud Firestore JSON Backup Export&lt;br&gt;• Local Cache Flushing Protocols&lt;br&gt;• Database Re-seeding Utilities&lt;br&gt;• Emergency Factory Reset Control" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1E293B;strokeColor=#94A3B8;fontColor=#F1F5F9;fontSize=11;align=left;spacingLeft=6;" vertex="1" parent="tabs_group">
+          <mxGeometry x="525" y="445" width="240" height="120" as="geometry" />
+        </mxCell>
+
+        <!-- Deep Analytics & Charting Detail Box -->
+        <mxCell id="charting_engine" value="&lt;b&gt;Integrated Chart.js Telemetry Engine (4 Canvas Views)&lt;/b&gt;&lt;br&gt;• 📈 &lt;b&gt;Quiz Attempts Timeline:&lt;/b&gt; Temporal density of completed evaluations&lt;br&gt;• 🍩 &lt;b&gt;Assessment Pass/Fail Ratio:&lt;/b&gt; Municipal competency benchmark&lt;br&gt;• 📊 &lt;b&gt;Taker-Based Analytics Strip:&lt;/b&gt; Unique drivers versus total attempts&lt;br&gt;• ⚡ &lt;b&gt;Real-Time AI Query Heatmap:&lt;/b&gt; Real-time traffic inquiries by category" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1E1B4B;strokeColor=#818CF8;fontColor=#EEF2FF;fontSize=11;align=left;spacingLeft=10;" vertex="1" parent="tabs_group">
+          <mxGeometry x="15" y="580" width="750" height="100" as="geometry" />
+        </mxCell>
+
+        <mxCell id="qr_portal" value="&lt;b&gt;Wireless Fleet Onboarding &amp; QR Portal (download.html)&lt;/b&gt;&lt;br&gt;• Automatic Canvas-rendered QR code targeting latest compiled Android build&lt;br&gt;• Instant Over-The-Air (OTA) distribution for field drivers and Dagami police patrol units" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1E293B;strokeColor=#38BDF8;fontColor=#E0F2FE;align=left;spacingLeft=12;fontSize=12;" vertex="1" parent="admin_swimlane">
+          <mxGeometry x="20" y="1370" width="780" height="75" as="geometry" />
+        </mxCell>
+
+        <mxCell id="admin_actor_box" value="&lt;b&gt;Command Station Workstations (Dagami MPS Headquarters)&lt;/b&gt;&lt;br&gt;• Desktop / Tablet Web Browsers (Chrome, Edge, Firefox) • Real-time Operations 24/7" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1E293B;strokeColor=#A855F7;fontColor=#F3E8FF;align=left;spacingLeft=12;fontSize=11;" vertex="1" parent="admin_swimlane">
+          <mxGeometry x="20" y="1465" width="780" height="60" as="geometry" />
+        </mxCell>
+
+
+        <!-- ================= CROSS-SUBSYSTEM CONNECTORS ================= -->
+
+        <!-- Mobile -> Room DB -->
+        <mxCell id="edge_mobile_to_room" value="Local Atomic Writes (0ms)" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#10B981;strokeWidth=3;fontColor=#6EE7B7;fontSize=11;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="gamification_group" target="room_group">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Room DB -> Sync Manager -->
+        <mxCell id="edge_room_to_sync" value="Uncommitted Queue" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#6366F1;strokeWidth=3;fontColor=#A5B4FC;fontSize=11;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="room_group" target="sync_manager_box">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Sync Manager -> Cloud Firestore -->
+        <mxCell id="edge_sync_to_cloud" value="Asynchronous HTTPS Batch Sync&lt;br&gt;(When Online)" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#06B6D4;strokeWidth=4;fontColor=#67E8F9;fontSize=12;fontStyle=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="sync_manager_box" target="firestore_group">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="870" y="1575" />
+              <mxPoint x="870" y="645" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Cloud Firestore -> Admin Web Listeners -->
+        <mxCell id="edge_cloud_to_admin" value="Real-Time WebSocket Snapshots (onSnapshot)&lt;br&gt;Zero Page Reloads" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#A855F7;strokeWidth=4;fontColor=#D8B4FE;fontSize=12;fontStyle=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="firestore_group" target="tabs_group">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Admin Web Remote Module Lock -> Cloud Settings -> Mobile App -->
+        <mxCell id="edge_admin_lock" value="Remote Curriculum Toggle (Write system_settings)" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#F59E0B;strokeWidth=3;fontColor=#FDE68A;fontSize=11;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="tab_3" target="col_settings">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Cloud Settings -> Mobile App Listeners -->
+        <mxCell id="edge_settings_to_mobile" value="Live Lock Dispatch" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#F59E0B;strokeWidth=3;dashed=1;fontColor=#FDE68A;fontSize=11;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="col_settings" target="engines_group">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- CI/CD -> Hosting & Mobile -->
+        <mxCell id="edge_cicd_to_hosting" value="Publish RoadSafe-AI.apk" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#22C55E;strokeWidth=2;dashed=1;fontColor=#86EFAC;fontSize=11;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="cicd_group" target="firebase_hosting_box">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="edge_hosting_to_qr" value="Dynamic APK QR Feed" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#38BDF8;strokeWidth=2;fontColor=#7DD3FC;fontSize=11;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="firebase_hosting_box" target="qr_portal">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

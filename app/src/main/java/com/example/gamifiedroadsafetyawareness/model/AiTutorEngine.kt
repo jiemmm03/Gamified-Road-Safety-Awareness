@@ -51,7 +51,7 @@ data class TutorMessage(
 class AiTutorEngine(
     private val xpManager: XpManager,
     private val username: String,
-    private val syncManager: FirebaseSyncManager = FirebaseSyncManager()
+    private val syncManager: FirebaseSyncManager = FirebaseSyncManager.getInstance()
 ) {
 
     companion object {
