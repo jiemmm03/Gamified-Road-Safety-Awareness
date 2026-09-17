@@ -178,7 +178,7 @@ graph TD
 
 ## 🖥️ Detailed Feature Audit: Admin Web Command Center
 
-The Admin Web Command Center is located in `/admin-web` and is live at **`https://gamifiedroadsafetyawareness.web.app`**.
+The Admin Web Command Center is located in `/admin-web` and is live at **`https://roadsafedrive.com`** (and `https://roadsafedrive.com/admin`).
 
 ```
 admin-web/
@@ -308,8 +308,8 @@ erDiagram
   - Builds `app-debug.apk` and signs release builds.
   - Automatically publishes binary artifacts to GitHub Releases as `RoadSafe-AI.apk`.
 - **Firebase Hosting**:
-  - Command Center URL: `https://gamifiedroadsafetyawareness.web.app`
-  - Download Portal: `https://gamifiedroadsafetyawareness.web.app/download.html`
+  - Command Center URL: `https://roadsafedrive.com` (and `https://roadsafedrive.com/admin`)
+  - Download Portal: `https://roadsafedrive.com/download.html`
 
 ---
 

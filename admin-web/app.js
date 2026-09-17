@@ -1413,7 +1413,82 @@ if (DOM.menuToggle && DOM.sidebar) {
     });
 }
 
-function switchTab(tab) {
+// ─── CLIENT-SIDE SPA ROUTING ENGINE FOR ROADSAFEDRIVE.COM ───
+const ROUTE_MAP = {
+    '/': 'dashboard',
+    '/dashboard': 'dashboard',
+    '/modules': 'modules',
+    '/quiz': 'quizzes',
+    '/quizzes': 'quizzes',
+    '/simulation': 'scenarios',
+    '/scenarios': 'scenarios',
+    '/history': 'logins',
+    '/logins': 'logins',
+    '/leaderboard': 'gamification',
+    '/gamification': 'gamification',
+    '/users': 'users',
+    '/ai': 'ai-activity',
+    '/ai-activity': 'ai-activity',
+    '/devices': 'devices',
+    '/analytics': 'analytics',
+    '/settings': 'settings',
+    '/download': 'apk-share',
+    '/apk': 'apk-share',
+    '/admin': 'dashboard'
+};
+
+function getRoutePath(tab) {
+    const reverseMap = {
+        'dashboard': '/dashboard',
+        'users': '/users',
+        'modules': '/modules',
+        'quizzes': '/quiz',
+        'scenarios': '/simulation',
+        'gamification': '/leaderboard',
+        'ai-activity': '/ai-activity',
+        'devices': '/devices',
+        'logins': '/history',
+        'analytics': '/analytics',
+        'settings': '/settings',
+        'apk-share': '/download'
+    };
+    return reverseMap[tab] || `/${tab}`;
+}
+
+function handleRoute(path, updateHistory = false) {
+    let cleanPath = (path || window.location.pathname || '/').toLowerCase().trim();
+    if (cleanPath.length > 1 && cleanPath.endsWith('/')) {
+        cleanPath = cleanPath.slice(0, -1);
+    }
+
+    if (cleanPath === '/login') {
+        switchTab('dashboard', false);
+        if ($('admin-auth-overlay')) $('admin-auth-overlay').style.display = 'flex';
+        return;
+    }
+
+    if (cleanPath === '/register') {
+        switchTab('users', false);
+        if (typeof window.openRegisterModal === 'function') {
+            window.openRegisterModal();
+        }
+        return;
+    }
+
+    const tab = ROUTE_MAP[cleanPath] || 'dashboard';
+    switchTab(tab, updateHistory);
+
+    if (cleanPath === '/leaderboard') {
+        const leadBtn = document.querySelector('.sub-tab-btn[data-subtab="gamif-leaderboard"]');
+        if (leadBtn) leadBtn.click();
+    }
+}
+
+window.addEventListener('popstate', (e) => {
+    handleRoute(window.location.pathname, false);
+});
+
+function switchTab(tab, updateHistory = true) {
     State.activeTab = tab;
     // Keep all sidebar nav items and dashboard grid tiles synchronized
     document.querySelectorAll('.nav-item, .nav-grid-tile').forEach(n => {
@@ -1424,6 +1499,14 @@ function switchTab(tab) {
     if (TAB_TITLES[tab]) {
         DOM.pageTitle.textContent = TAB_TITLES[tab].title;
         DOM.pageSubtitle.textContent = TAB_TITLES[tab].subtitle;
+    }
+
+    // Update browser URL bar history if requested for SPA bookmarkability
+    if (updateHistory && window.history && window.history.pushState) {
+        const route = getRoutePath(tab);
+        if (window.location.pathname !== route) {
+            window.history.pushState({ tab: tab }, TAB_TITLES[tab] ? TAB_TITLES[tab].title : 'RoadSafeDrive', route);
+        }
     }
 
     // Close mobile sidebar drawer if open
@@ -1775,6 +1858,108 @@ $('btn-profile-delete-user').addEventListener('click', () => {
     DOM.profileModalOverlay.classList.remove('visible');
     if (State.selectedUser) openDeleteModal(State.selectedUser.id || State.selectedUser.username);
 });
+
+// ─── DRIVER / USER REGISTRATION HANDLERS ───
+window.openRegisterModal = function() {
+    const overlay = $('register-user-modal-overlay');
+    if (overlay) overlay.style.display = 'flex';
+    const errBox = $('register-error-box');
+    if (errBox) errBox.style.display = 'none';
+};
+
+window.closeRegisterModal = function() {
+    const overlay = $('register-user-modal-overlay');
+    if (overlay) overlay.style.display = 'none';
+    const form = $('form-register-user');
+    if (form) form.reset();
+};
+
+window.handleRegisterUser = async function(e) {
+    if (e) e.preventDefault();
+    const name = ($('reg-fullname') ? $('reg-fullname').value : '').trim();
+    const username = ($('reg-username') ? $('reg-username').value : '').trim().toLowerCase().replace(/[^a-z0-9_]/g, '');
+    const contact = ($('reg-contact') ? $('reg-contact').value : '').trim();
+    const email = ($('reg-email') ? $('reg-email').value : '').trim();
+    const gender = $('reg-gender') ? $('reg-gender').value : 'Male';
+    const role = $('reg-role') ? $('reg-role').value : 'USER';
+    const password = ($('reg-password') ? $('reg-password').value : '').trim();
+    const errBox = $('register-error-box');
+    const errText = $('register-error-text');
+
+    if (!name || !username || !contact || !password) {
+        if (errBox) {
+            errBox.style.display = 'flex';
+            if (errText) errText.textContent = 'Please fill out all required fields (*).';
+        }
+        return;
+    }
+
+    if (password.length < 6) {
+        if (errBox) {
+            errBox.style.display = 'flex';
+            if (errText) errText.textContent = 'Password must be at least 6 characters.';
+        }
+        return;
+    }
+
+    const exists = State.users.some(u => (u.username || '').toLowerCase() === username || (u.id || '').toLowerCase() === username);
+    if (exists) {
+        if (errBox) {
+            errBox.style.display = 'flex';
+            if (errText) errText.textContent = `Username @${username} is already registered. Please choose another.`;
+        }
+        return;
+    }
+
+    const newUserDoc = {
+        name: name,
+        fullName: name,
+        username: username,
+        contact: contact,
+        phone: contact,
+        email: email || `${username}@roadsafedrive.com`,
+        gender: gender,
+        role: role,
+        password: password,
+        isActive: true,
+        xp: 0,
+        level: 1,
+        streak: 1,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+        lastActive: firebase.firestore.FieldValue.serverTimestamp()
+    };
+
+    try {
+        if (db) {
+            await db.collection('users').doc(username).set(newUserDoc);
+            await db.collection('user_progress').doc(username).set({
+                userId: username,
+                totalXp: 0,
+                currentLevel: 1,
+                streakDays: 1,
+                completedModules: [],
+                badges: [],
+                lastActiveDate: new Date().toISOString()
+            });
+            await db.collection('audit_logs').add({
+                action: 'USER_REGISTERED',
+                performedBy: State.currentAdmin || 'SYSTEM',
+                targetUser: username,
+                timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                details: `Registered new account @${username} (${role}) via RoadSafeDrive Portal`
+            });
+        }
+        showToast(`Driver @${username} (${name}) registered successfully!`, 'success');
+        closeRegisterModal();
+        switchTab('users');
+    } catch (err) {
+        console.error('Registration error:', err);
+        if (errBox) {
+            errBox.style.display = 'flex';
+            if (errText) errText.textContent = 'Registration failed: ' + (err.message || 'Firestore error');
+        }
+    }
+};
 
 // Gamification Inspector Modal Tabs & Close Listeners
 document.querySelectorAll('#gamif-inspect-tabs .profile-tab-btn').forEach(btn => {
@@ -4867,8 +5052,8 @@ const btnQrModePublic = $('btn-qr-mode-public');
 const btnQrModeLocal = $('btn-qr-mode-local');
 const qrDescText = $('qr-desc-text');
 
-const PUBLIC_PAGE_URL = 'https://gamifiedroadsafetyawareness.web.app/download.html';
-const PUBLIC_APK_URL = 'https://gamifiedroadsafetyawareness.web.app/RoadSafe-AI.apk';
+const PUBLIC_PAGE_URL = 'https://roadsafedrive.com/download.html';
+const PUBLIC_APK_URL = 'https://roadsafedrive.com/RoadSafe-AI.apk';
 const localDownloadPageUrl = window.location.origin + window.location.pathname.replace(/\/[^\/]*$/, '') + '/download.html';
 
 let currentQrUrl = PUBLIC_PAGE_URL;
@@ -5310,7 +5495,7 @@ window.handleAdminLogin = function(e) {
     if (!isValidAdmin) {
         if (errBox) {
             errBox.style.display = 'flex';
-            if (errText) errText.textContent = 'Invalid officer credentials or unauthorized passcode.';
+            if (errText) errText.textContent = 'Invalid officer credentials or unauthorized password.';
         }
         return;
     }
@@ -5685,6 +5870,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Initialize portal mode
         switchPortalMode(currentPortalMode);
+
+        // Resolve initial SPA route from URL bar
+        handleRoute(window.location.pathname, false);
 
         // Auto-refresh dynamic relative times and live active user presence counters every 30 seconds
         setInterval(() => {

@@ -330,7 +330,7 @@
     <g transform="translate(20, 840)">
       <rect x="0" y="0" width="700" height="110" rx="10" fill="#1e293b" stroke="#38bdf8" stroke-width="1.2"/>
       <text x="18" y="24" fill="#38bdf8" font-size="13" font-weight="700">Firebase Hosting (Global Edge CDN)</text>
-      <text x="18" y="46" fill="#e0f2fe" font-size="11.5">• Production URL: <tspan fill="#38bdf8" font-weight="700">https://gamifiedroadsafetyawareness.web.app</tspan></text>
+      <text x="18" y="46" fill="#e0f2fe" font-size="11.5">• Production URL: <tspan fill="#38bdf8" font-weight="700">https://roadsafedrive.com</tspan></text>
       <text x="18" y="66" fill="#bae6fd" font-size="11">• Hosts Admin Single-Page Application (index.html, styles.css, app.js)</text>
       <text x="18" y="86" fill="#bae6fd" font-size="11">• Wireless Fleet Onboarding Portal: <tspan fill="#f1f5f9" font-weight="600">download.html</tspan> with Dynamic Canvas QR</text>
     </g>
@@ -510,7 +510,7 @@
       <text x="18" y="24" fill="#38bdf8" font-size="13" font-weight="700">Wireless Fleet QR Onboarding Portal (download.html)</text>
       <text x="18" y="46" fill="#e0f2fe" font-size="11">• Instant HTML5 Canvas QR code rendering linked to latest compiled APK release</text>
       <text x="18" y="66" fill="#e0f2fe" font-size="11">• Enables instant Over-The-Air deployment to Dagami patrol officers and citizen vehicles</text>
-      <text x="18" y="86" fill="#38bdf8" font-size="11" font-weight="600">➔ Download URL: https://gamifiedroadsafetyawareness.web.app/download.html</text>
+      <text x="18" y="86" fill="#38bdf8" font-size="11" font-weight="600">➔ Download URL: https://roadsafedrive.com/download.html</text>
     </g>
 
     <!-- Physical Station Workstations -->

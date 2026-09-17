@@ -4,9 +4,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RoadSafe AI — Municipality of Dagami Traffic Safety Command Center</title>
+    <title>RoadSafeDrive | AI-Powered Road Safety &amp; Driver Education</title>
     <meta name="description"
-        content="Official Municipality of Dagami, Leyte AI Road Safety and Traffic Education Command Center.">
+        content="RoadSafeDrive is the official AI-Integrated Gamified Road Safety Awareness, Traffic Rule Education, and Driver Decision-Making System.">
+    <meta name="keywords" content="RoadSafeDrive, road safety, driver education, traffic rules, AI driver assistant, traffic simulator, Dagami Leyte">
+    <link rel="canonical" href="https://roadsafedrive.com/">
+    <link rel="icon" type="image/png" href="logo.png">
+
+    <!-- Open Graph / Facebook / WhatsApp -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://roadsafedrive.com/">
+    <meta property="og:title" content="RoadSafeDrive | AI-Powered Road Safety &amp; Driver Education">
+    <meta property="og:description" content="AI-Integrated Gamified Road Safety Awareness, Traffic Rule Education, and Driver Decision-Making System.">
+    <meta property="og:image" content="https://roadsafedrive.com/logo.png">
+    <meta property="og:site_name" content="RoadSafeDrive">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="https://roadsafedrive.com/">
+    <meta name="twitter:title" content="RoadSafeDrive | AI-Powered Road Safety &amp; Driver Education">
+    <meta name="twitter:description" content="AI-Integrated Gamified Road Safety Awareness, Traffic Rule Education, and Driver Decision-Making System.">
+    <meta name="twitter:image" content="https://roadsafedrive.com/logo.png">
 
     <!-- Primary Font: Inter (Google Fonts) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -720,13 +738,17 @@
 
         <!-- ═══════════ TAB 2: USER MANAGEMENT ═══════════ -->
         <section class="tab-content" id="tab-users">
-            <div class="tab-toolbar">
-                <div class="search-box">
+            <div class="tab-toolbar" style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;">
+                <div class="search-box" style="flex:1;min-width:240px;">
                     <span class="material-icons-round">search</span>
                     <input type="text" id="search-users" class="font-body"
                         placeholder="Search by name, username, email, contact, or device…">
                 </div>
-                <div class="filter-chips" id="users-filter-chips">
+                <button class="btn btn-primary font-button" id="btn-open-register-driver" onclick="openRegisterModal()" style="display:inline-flex;align-items:center;gap:6px;padding:8px 16px;white-space:nowrap;">
+                    <span class="material-icons-round" style="font-size:18px;">person_add</span>
+                    <span>Register Driver</span>
+                </button>
+                <div class="filter-chips" id="users-filter-chips" style="width:100%;">
                     <button class="chip active font-button" data-filter="all">
                         <span class="material-icons-round" style="color:#94A3B8;">group</span>
                         <span>All Users</span>
@@ -1309,6 +1331,90 @@
         </div>
     </div>
 
+    <!-- ═══════════ DRIVER / USER REGISTRATION MODAL ═══════════ -->
+    <div class="modal-overlay" id="register-user-modal-overlay" style="display:none;z-index:99992;">
+        <div class="modal" id="register-user-modal" style="max-width:560px;">
+            <div class="modal-header">
+                <div style="display:flex;align-items:center;gap:12px;">
+                    <div class="data-avatar user-avatar" style="background:rgba(0,56,168,0.25);">
+                        <span class="material-icons-round" style="color:#60A5FA;">person_add</span>
+                    </div>
+                    <div>
+                        <h3 class="font-h3" style="color:#FFFFFF;margin:0;">Register Driver / User</h3>
+                        <span class="font-caption" style="color:var(--badge-gold);font-size:10px;text-transform:uppercase;letter-spacing:1px;">
+                            RoadSafeDrive Municipal Registry
+                        </span>
+                    </div>
+                </div>
+                <button class="modal-close" id="register-user-modal-close" onclick="closeRegisterModal()">
+                    <span class="material-icons-round">close</span>
+                </button>
+            </div>
+
+            <form id="form-register-user" onsubmit="handleRegisterUser(event)">
+                <div class="modal-body" style="padding:16px 20px;display:flex;flex-direction:column;gap:14px;">
+                    <div id="register-error-box" style="display:none;background:rgba(206,17,38,0.15);border:1px solid #CE1126;color:#FCA5A5;padding:10px 14px;border-radius:8px;font-size:13px;align-items:center;gap:8px;">
+                        <span class="material-icons-round" style="font-size:18px;">error_outline</span>
+                        <span id="register-error-text">Please fill in all required fields.</span>
+                    </div>
+
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                        <div>
+                            <label class="font-label" style="display:block;margin-bottom:4px;font-size:12px;color:var(--text-secondary);">Full Name *</label>
+                            <input type="text" id="reg-fullname" class="form-input font-body-sm" placeholder="e.g. Juan Dela Cruz" required style="width:100%;">
+                        </div>
+                        <div>
+                            <label class="font-label" style="display:block;margin-bottom:4px;font-size:12px;color:var(--text-secondary);">Username *</label>
+                            <input type="text" id="reg-username" class="form-input font-body-sm" placeholder="e.g. juandelacruz" required style="width:100%;">
+                        </div>
+                    </div>
+
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                        <div>
+                            <label class="font-label" style="display:block;margin-bottom:4px;font-size:12px;color:var(--text-secondary);">Contact Number *</label>
+                            <input type="tel" id="reg-contact" class="form-input font-body-sm" placeholder="e.g. 09171234567" required style="width:100%;">
+                        </div>
+                        <div>
+                            <label class="font-label" style="display:block;margin-bottom:4px;font-size:12px;color:var(--text-secondary);">Email Address</label>
+                            <input type="email" id="reg-email" class="form-input font-body-sm" placeholder="e.g. juan@example.com" style="width:100%;">
+                        </div>
+                    </div>
+
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                        <div>
+                            <label class="font-label" style="display:block;margin-bottom:4px;font-size:12px;color:var(--text-secondary);">Gender *</label>
+                            <select id="reg-gender" class="form-input font-body-sm" style="width:100%;" required>
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                                <option value="Other">Other / Prefer not to say</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="font-label" style="display:block;margin-bottom:4px;font-size:12px;color:var(--text-secondary);">Account Role *</label>
+                            <select id="reg-role" class="form-input font-body-sm" style="width:100%;" required>
+                                <option value="USER">Driver / Learner (USER)</option>
+                                <option value="ADMIN">Traffic Officer (ADMIN)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="font-label" style="display:block;margin-bottom:4px;font-size:12px;color:var(--text-secondary);">Password *</label>
+                        <input type="password" id="reg-password" class="form-input font-body-sm" placeholder="Minimum 6 characters" minlength="6" required style="width:100%;">
+                    </div>
+                </div>
+
+                <div class="modal-actions" style="padding:12px 20px 16px;">
+                    <button type="button" class="btn btn-secondary font-button" onclick="closeRegisterModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary font-button" id="btn-submit-register">
+                        <span class="material-icons-round">save</span>
+                        <span>Complete Registration</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <!-- ═══════════ USER GAMIFICATION INSPECTION MODAL ═══════════ -->
     <div class="modal-overlay" id="gamif-inspect-overlay">
         <div class="modal modal-large" id="gamif-inspect-modal" style="max-width:740px;">
@@ -1783,7 +1889,7 @@
                         <div class="modal-section-title font-label" style="margin-top:2px;">Mobile Portal Link</div>
                         <div class="qr-url-input-wrap">
                             <input type="text" id="install-qr-url-input" class="form-input font-body-sm"
-                                value="https://gamifiedroadsafetyawareness.web.app/download.html" readonly>
+                                value="https://roadsafedrive.com/download.html" readonly>
                             <button class="btn btn-secondary font-button" id="btn-copy-qr-url"
                                 title="Copy Download Link">
                                 <span class="material-icons-round">content_copy</span>
@@ -1884,7 +1990,7 @@
                 </div>
 
                 <div class="admin-auth-input-group">
-                    <label for="admin-auth-pass">Access Security Passcode</label>
+                    <label for="admin-auth-pass">Password</label>
                     <div class="admin-auth-input-wrap">
                         <span class="material-icons-round">lock</span>
                         <input type="password" id="admin-auth-pass" class="admin-auth-input" placeholder="••••••••"
@@ -1897,8 +2003,8 @@
                 </button>
 
                 <div class="admin-auth-footer-text">
-                    Protected by Municipal Digital Security Protocols<br>
-                    Municipal Government of Dagami · Traffic Safety Division
+                    Protected by Municipal Police Digital Security Protocols<br>
+                    Municipal Police Station of Dagami · Traffic Safety
                 </div>
             </form>
         </div>

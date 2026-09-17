@@ -153,7 +153,7 @@
           <mxGeometry x="15" y="600" width="730" height="85" as="geometry" />
         </mxCell>
 
-        <mxCell id="firebase_hosting_box" value="&lt;b&gt;Firebase Hosting &amp; Cloud Distribution (Production Web)&lt;/b&gt;&lt;br&gt;• Primary Domain: &lt;b&gt;https://gamifiedroadsafetyawareness.web.app&lt;/b&gt;&lt;br&gt;• High-speed Global CDN Edge Caching for Admin SPA and styles.css&lt;br&gt;• Wireless Android APK Onboarding Portal: &lt;b&gt;download.html&lt;/b&gt; with QR Code generator" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1E293B;strokeColor=#38BDF8;fontColor=#E0F2FE;align=left;spacingLeft=12;fontSize=12;" vertex="1" parent="cloud_swimlane">
+        <mxCell id="firebase_hosting_box" value="&lt;b&gt;Firebase Hosting &amp; Cloud Distribution (Production Web)&lt;/b&gt;&lt;br&gt;• Primary Domain: &lt;b&gt;https://roadsafedrive.com&lt;/b&gt;&lt;br&gt;• High-speed Global CDN Edge Caching for Admin SPA and styles.css&lt;br&gt;• Wireless Android APK Onboarding Portal: &lt;b&gt;download.html&lt;/b&gt; with QR Code generator" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1E293B;strokeColor=#38BDF8;fontColor=#E0F2FE;align=left;spacingLeft=12;fontSize=12;" vertex="1" parent="cloud_swimlane">
           <mxGeometry x="20" y="960" width="760" height="120" as="geometry" />
         </mxCell>
 
