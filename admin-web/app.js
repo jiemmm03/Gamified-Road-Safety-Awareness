@@ -1192,20 +1192,91 @@ function setOfflineMode() {
 // 6. METRICS & COUNTERS
 // ═══════════════════════════════════════════════════════════════
 
-// ═══════════════════════════════════════════════════════════════
-// 6. METRICS & COUNTERS
-// ═══════════════════════════════════════════════════════════════
+/**
+ * Universal Accurate Active User Presence Checker
+ * Accurately determines whether a driver, learner, or administrator is currently active or online.
+ * Checks:
+ *  1. Explicit isOnline / online boolean/string flag on user document.
+ *  2. Recent activity timestamps (lastSeenAt, lastActive, lastLoginAt, lastLogin, updatedAt).
+ *  3. Recent real-time activity stream in activity_logs (within active window).
+ *  4. Recent real-time authentication session stream in user_logins.
+ *  5. Current authenticated dashboard session.
+ */
+function isUserOnline(u) {
+    if (!u) return false;
+
+    // 1. Direct presence boolean/string flag
+    if (u.isOnline === true || u.isOnline === 'true' || u.online === true || u.online === 'true') {
+        return true;
+    }
+
+    const now = Date.now();
+    const activeWindowMs = 15 * 60 * 1000; // 15-minute active window
+
+    // 2. Check profile timestamps
+    const userTimestamps = [
+        parseTimestampToMs(u.lastSeenAt),
+        parseTimestampToMs(u.lastActive),
+        parseTimestampToMs(u.lastLoginAt),
+        parseTimestampToMs(u.lastLogin),
+        parseTimestampToMs(u.updatedAt)
+    ];
+    const latestUserTime = Math.max(...userTimestamps, 0);
+    if (latestUserTime > (now - activeWindowMs)) {
+        return true;
+    }
+
+    const userId = String(u.username || u.id || u.email || '').trim().toLowerCase();
+    if (!userId) return false;
+
+    // 3. Match current active dashboard administrator session
+    if (State.currentAdmin && String(State.currentAdmin).trim().toLowerCase() === userId) {
+        return true;
+    }
+
+    // 4. Check recent activity stream in activity_logs (within active window and not explicitly logged out)
+    if (Array.isArray(State.activityLogs)) {
+        const recentAct = State.activityLogs.find(act => {
+            if (!act) return false;
+            const actUser = String(act.userId || act.username || '').trim().toLowerCase();
+            if (actUser !== userId) return false;
+            const timeMs = parseTimestampToMs(act.timestamp || act.timestampMillis);
+            return timeMs > (now - activeWindowMs);
+        });
+        if (recentAct && !String(recentAct.action || '').toLowerCase().includes('logout')) {
+            return true;
+        }
+    }
+
+    // 5. Check recent login stream in user_logins
+    if (Array.isArray(State.logins)) {
+        const recentLog = State.logins.find(l => {
+            if (!l) return false;
+            const logUser = String(l.username || l.userId || '').trim().toLowerCase();
+            if (logUser !== userId) return false;
+            const timeMs = parseTimestampToMs(l.timestamp || l.timestampUtc);
+            return timeMs > (now - activeWindowMs);
+        });
+        if (recentLog && (recentLog.eventType === 'LOGIN' || recentLog.status === 'SUCCESS' || recentLog.action === 'Login')) {
+            return true;
+        }
+    }
+
+    return false;
+}
 
 function updateMetrics() {
-    const fiveMinsAgo = Date.now() - 5 * 60 * 1000;
-    const onlineCount = State.users.filter(u => {
-        if (u.isOnline === true) return true;
-        if (u.lastActive) {
-            const t = u.lastActive.toMillis ? u.lastActive.toMillis() : new Date(u.lastActive).getTime();
-            return t > fiveMinsAgo;
+    // 1. Calculate accurate online user count
+    const activeUsers = State.users.filter(u => isUserOnline(u));
+    let onlineCount = activeUsers.length;
+
+    // If current dashboard admin session is active and not already counted in State.users
+    if (State.currentAdmin) {
+        const adminFound = activeUsers.some(u => String(u.username || u.id || '').toLowerCase() === String(State.currentAdmin).toLowerCase());
+        if (!adminFound) {
+            onlineCount = Math.max(1, onlineCount + 1);
         }
-        return false;
-    }).length;
+    }
 
     let totalXp = 0;
     State.progress.forEach(p => totalXp += (p.totalXp || p.xp || 0));
@@ -1259,6 +1330,47 @@ function updateMetrics() {
         document.querySelectorAll(`.${id}-val`).forEach(b => b.textContent = val);
     });
 }
+
+// ── Interactive Metric Card Navigators ──────────────────────────
+window.navigateToActiveUsers = function() {
+    switchTab('users');
+    const onlineChip = document.querySelector('#users-filter-chips [data-filter="online"]');
+    if (onlineChip) {
+        document.querySelectorAll('#users-filter-chips .chip').forEach(c => c.classList.remove('active'));
+        onlineChip.classList.add('active');
+    }
+    State.userFilter = 'online';
+    renderUsersList();
+};
+
+window.navigateToUserDirectory = function() {
+    switchTab('users');
+    const allChip = document.querySelector('#users-filter-chips [data-filter="all"]');
+    if (allChip) {
+        document.querySelectorAll('#users-filter-chips .chip').forEach(c => c.classList.remove('active'));
+        allChip.classList.add('active');
+    }
+    State.userFilter = 'all';
+    renderUsersList();
+};
+
+window.navigateToModules = function() {
+    switchTab('modules');
+};
+
+window.navigateToQuestionBank = function() {
+    switchTab('quizzes');
+    if (typeof switchQuizSubTab === 'function') {
+        switchQuizSubTab('quiz-bank');
+    }
+};
+
+window.navigateToQuizAttempts = function() {
+    switchTab('quizzes');
+    if (typeof switchQuizSubTab === 'function') {
+        switchQuizSubTab('quiz-attempts');
+    }
+};
 
 // ═══════════════════════════════════════════════════════════════
 // 7. TAB NAVIGATION & SUBTABS
@@ -1451,8 +1563,8 @@ function renderUsersList() {
     }
 
     // Filter chips
-    if (State.userFilter === 'online') list = list.filter(u => u.isOnline);
-    else if (State.userFilter === 'offline') list = list.filter(u => !u.isOnline);
+    if (State.userFilter === 'online') list = list.filter(u => isUserOnline(u));
+    else if (State.userFilter === 'offline') list = list.filter(u => !isUserOnline(u));
     else if (State.userFilter === 'admin') list = list.filter(u => (u.role || '').toLowerCase() === 'admin');
     else if (State.userFilter === 'user') list = list.filter(u => (u.role || '').toLowerCase() !== 'admin');
     else if (State.userFilter === 'male') list = list.filter(u => (u.gender || '').toLowerCase() === 'male');
@@ -1470,7 +1582,7 @@ function renderUsersList() {
     }
 
     DOM.usersList.innerHTML = list.map(u => {
-        const isOnline = !!u.isOnline;
+        const isOnline = isUserOnline(u);
         const role = (u.role || 'USER').toUpperCase();
         const progress = State.progress.find(p => p.userId === u.username || p.userId === u.id) || {};
         const xp = progress.totalXp || progress.xp || u.xp || 0;
@@ -3868,15 +3980,17 @@ function renderDevicesList() {
         );
     }
 
-    if (State.deviceFilter === 'online') list = list.filter(u => u.isOnline);
-    else if (State.deviceFilter === 'offline') list = list.filter(u => !u.isOnline);
+    if (State.deviceFilter === 'online') list = list.filter(u => isUserOnline(u));
+    else if (State.deviceFilter === 'offline') list = list.filter(u => !isUserOnline(u));
 
     if (list.length === 0) {
         DOM.devicesList.innerHTML = `<div class="empty-state"><p class="font-body">No device fleet records found matching filter (${State.deviceFilter}).</p></div>`;
         return;
     }
 
-    DOM.devicesList.innerHTML = list.map(u => `
+    DOM.devicesList.innerHTML = list.map(u => {
+        const isOnline = isUserOnline(u);
+        return `
         <div class="data-row">
             <div class="data-avatar"><span class="material-icons-round">phone_android</span></div>
             <div class="data-main-info">
@@ -3887,12 +4001,13 @@ function renderDevicesList() {
                 </div>
             </div>
             <div class="data-meta-cell">
-                <span class="status-badge ${u.isOnline ? 'online' : 'offline'} font-badge">
-                    ${u.isOnline ? 'ONLINE' : 'OFFLINE'}
+                <span class="status-badge ${isOnline ? 'online' : 'offline'} font-badge">
+                    ${isOnline ? 'ONLINE' : 'OFFLINE'}
                 </span>
             </div>
         </div>
-    `).join('');
+    `;
+    }).join('');
 }
 
 function renderLoginsList() {
@@ -4996,7 +5111,7 @@ function resolveUserProfile(identifier) {
         actualUsername = matched.username || matched.id || matched.name || matched.displayName || cleanId;
         displayName = matched.name || matched.displayName || matched.fullName || actualUsername;
         rawRole = matched.role || 'Learner';
-        isOnline = !!matched.isOnline;
+        isOnline = isUserOnline(matched);
     } else {
         if (cleanId.toLowerCase() === 'user' || cleanId.toLowerCase() === 'generic' || cleanId.toLowerCase() === 'unknown') {
             actualUsername = '';
@@ -5571,8 +5686,11 @@ document.addEventListener('DOMContentLoaded', () => {
         // Initialize portal mode
         switchPortalMode(currentPortalMode);
 
-        // Auto-refresh dynamic relative times in Recent User Activity feed every 30 seconds
+        // Auto-refresh dynamic relative times and live active user presence counters every 30 seconds
         setInterval(() => {
+            if (typeof updateMetrics === 'function') {
+                updateMetrics();
+            }
             if (typeof renderActivityFeed === 'function') {
                 renderActivityFeed();
             }
