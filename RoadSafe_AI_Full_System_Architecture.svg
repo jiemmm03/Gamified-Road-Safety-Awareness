@@ -54,7 +54,7 @@
   <!-- ================= TOP HEADER BANNER ================= -->
   <g filter="url(#shadow)">
     <rect x="40" y="30" width="2320" height="90" rx="16" fill="url(#headerGrad)" stroke="#1e293b" stroke-width="1.5"/>
-    <text x="75" y="70" fill="#38bdf8" font-size="28" font-weight="800" letter-spacing="0.5">🛡️ RoadSafe AI — Full System Architecture &amp; Data Flow Diagram</text>
+    <text x="75" y="70" fill="#38bdf8" font-size="28" font-weight="800" letter-spacing="0.5">RoadSafe AI — Full System Architecture &amp; Data Flow Diagram</text>
     <text x="75" y="98" fill="#94a3b8" font-size="14" font-weight="500">Municipality of Dagami, Leyte • Gamified Road Safety Awareness, Traffic Rule Education &amp; Driver Decision-Making System (v2.0 Production)</text>
     
     <g transform="translate(1620, 52)">

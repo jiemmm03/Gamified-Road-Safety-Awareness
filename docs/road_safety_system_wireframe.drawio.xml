@@ -15,7 +15,7 @@
         </mxCell>
 
         <!-- Top Navigation Bar -->
-        <mxCell id="s1_nav" value="&lt;b style='font-size:16px;'&gt;🛡️ RoadSafe AI&lt;/b&gt;&lt;span style='font-size:12px;margin-left:20px;'&gt;Dashboard&amp;nbsp;&amp;nbsp;|&amp;nbsp;&amp;nbsp;Modules&amp;nbsp;&amp;nbsp;|&amp;nbsp;&amp;nbsp;Simulations&amp;nbsp;&amp;nbsp;|&amp;nbsp;&amp;nbsp;Leaderboard&amp;nbsp;&amp;nbsp;|&amp;nbsp;&amp;nbsp;AI Coach&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#1a237e;strokeColor=none;fontColor=#ffffff;align=left;spacingLeft=15;" parent="screen1_frame" vertex="1">
+        <mxCell id="s1_nav" value="&lt;b style='font-size:16px;'&gt;RoadSafe AI&lt;/b&gt;&lt;span style='font-size:12px;margin-left:20px;'&gt;Dashboard&amp;nbsp;&amp;nbsp;|&amp;nbsp;&amp;nbsp;Modules&amp;nbsp;&amp;nbsp;|&amp;nbsp;&amp;nbsp;Simulations&amp;nbsp;&amp;nbsp;|&amp;nbsp;&amp;nbsp;Leaderboard&amp;nbsp;&amp;nbsp;|&amp;nbsp;&amp;nbsp;AI Coach&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#1a237e;strokeColor=none;fontColor=#ffffff;align=left;spacingLeft=15;" parent="screen1_frame" vertex="1">
           <mxGeometry x="0" y="35" width="660" height="50" as="geometry" />
         </mxCell>
 
@@ -72,7 +72,7 @@
         </mxCell>
 
         <!-- Gamification Widget Card -->
-        <mxCell id="s1_gamify_card" value="&lt;b style='font-size:14px;color:#e65100;'&gt;🏆 Gamification Hub &amp;amp; Leaderboards&lt;/b&gt;&lt;hr&gt;&lt;b&gt;Current Rank:&lt;/b&gt; #4 in Quezon City LGU League (Top 5%!)&lt;br&gt;&lt;b&gt;Recent Badge Earned:&lt;/b&gt; 🛡️ Defensive Driving Pro&lt;br&gt;&lt;b&gt;Next Milestone Reward:&lt;/b&gt; Reach Lvl 9 to unlock 'Night Driving Simulator Mode'&lt;br&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff8e1;strokeColor=#ffe082;fontColor=#333333;align=left;verticalAlign=top;spacingTop=12;spacingLeft=15;spacingRight=15;fontSize=12;" parent="screen1_frame" vertex="1">
+        <mxCell id="s1_gamify_card" value="&lt;b style='font-size:14px;color:#e65100;'&gt;🏆 Gamification Hub &amp;amp; Leaderboards&lt;/b&gt;&lt;hr&gt;&lt;b&gt;Current Rank:&lt;/b&gt; #4 in Quezon City LGU League (Top 5%!)&lt;br&gt;&lt;b&gt;Recent Badge Earned:&lt;/b&gt; 🎖️ Defensive Driving Pro&lt;br&gt;&lt;b&gt;Next Milestone Reward:&lt;/b&gt; Reach Lvl 9 to unlock 'Night Driving Simulator Mode'&lt;br&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff8e1;strokeColor=#ffe082;fontColor=#333333;align=left;verticalAlign=top;spacingTop=12;spacingLeft=15;spacingRight=15;fontSize=12;" parent="screen1_frame" vertex="1">
           <mxGeometry x="170" y="380" width="470" height="135" as="geometry" />
         </mxCell>
         <mxCell id="s1_leader_btn" value="View Full Leaderboards &amp;amp; Rewards" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ff8f00;strokeColor=#c67100;fontColor=#ffffff;fontStyle=1;fontSize=11;" parent="screen1_frame" vertex="1">
@@ -252,7 +252,7 @@
         </mxCell>
 
         <!-- Badge 1 -->
-        <mxCell id="s4_b1" value="&lt;b&gt;🛡️ Hazard Hunter&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:10px;color:#555;'&gt;Successfully avoided 50 sudden pedestrian hazards in simulations.&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e8f5e9;strokeColor=#81c784;fontColor=#1b5e20;align=left;verticalAlign=top;spacingTop=8;spacingLeft=8;" parent="screen4_frame" vertex="1">
+        <mxCell id="s4_b1" value="&lt;b&gt;🎖️ Hazard Hunter&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:10px;color:#555;'&gt;Successfully avoided 50 sudden pedestrian hazards in simulations.&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e8f5e9;strokeColor=#81c784;fontColor=#1b5e20;align=left;verticalAlign=top;spacingTop=8;spacingLeft=8;" parent="screen4_frame" vertex="1">
           <mxGeometry x="345" y="185" width="140" height="85" as="geometry" />
         </mxCell>
         <!-- Badge 2 -->

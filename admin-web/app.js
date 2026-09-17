@@ -951,7 +951,7 @@ const DEFAULT_BADGES = [
     { id: "knowledge_seeker", title: "Knowledge Seeker", icon: "📚", description: "Complete 5 learning modules", bonusXp: 200, req: "5 Modules Completed" },
     { id: "perfect_driver", title: "Perfect Driver", icon: "🎯", description: "Achieve a perfect 100% quiz score", bonusXp: 150, req: "100% Quiz Score" },
     { id: "night_hawk", title: "Night Hawk", icon: "🌙", description: "Complete evening safety assessments", bonusXp: 100, req: "Night Assessment" },
-    { id: "safety_sentinel", title: "Safety Sentinel", icon: "🛡️", description: "Master all driver decision scenarios", bonusXp: 300, req: "All Scenarios Cleared" }
+    { id: "safety_sentinel", title: "Safety Sentinel", icon: "🎖️", description: "Master all driver decision scenarios", bonusXp: 300, req: "All Scenarios Cleared" }
 ];
 
 // Initialize default data arrays
@@ -2783,7 +2783,7 @@ function renderSimulationSummary() {
     let levelTitle = 'EXCELLENT (90–100%)';
     let iconName = 'star';
     let advice = 'Outstanding hazard recognition and driver decision-making! You demonstrated mastery of Philippine traffic rules, emergency vehicle protocol, and adverse weather buffering.';
-    let chips = ['🚦 Mastery Certified', '🛡️ Defensive Driving Pro'];
+    let chips = ['🚦 Mastery Certified', '🎖️ Defensive Driving Pro'];
 
     if (accuracyPct < 50) {
         levelClass = 'needs-practice';
@@ -5162,7 +5162,7 @@ function initAuth() {
                 if ($('admin-auth-overlay')) {
                     $('admin-auth-overlay').style.display = 'none';
                 }
-                console.log(`🛡️ Persistent admin session verified: @${session.username}`);
+                console.log(`Persistent admin session verified: @${session.username}`);
                 return true;
             }
         }
@@ -5559,7 +5559,7 @@ function dismissSplashScreen() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    console.log('🛡️ RoadSafe AI — Complete Dual Portal Platform v3.5');
+    console.log('RoadSafe AI — Complete Dual Portal Platform v3.5');
     try {
         initAuth();
         startListeners();
