@@ -10,7 +10,8 @@
       "**/node_modules/**",
       "**/*.bat",
       "**/*.exe",
-      "**/*.cmd"
+      "**/*.cmd",
+      "**/*.apk"
     ],
     "cleanUrls": true,
     "rewrites": [
