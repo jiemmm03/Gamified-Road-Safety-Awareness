@@ -46,5 +46,16 @@ service cloud.firestore {
       allow read, create, update: if true;
       allow delete: if false;
     }
+
+    // Dedicated Real-Time Activity Monitoring Stream
+    match /activity_logs/{activityId} {
+      allow read, create, update: if true;
+      allow delete: if false;
+    }
+
+    match /activityLogs/{activityId} {
+      allow read, create, update: if true;
+      allow delete: if false;
+    }
   }
 }

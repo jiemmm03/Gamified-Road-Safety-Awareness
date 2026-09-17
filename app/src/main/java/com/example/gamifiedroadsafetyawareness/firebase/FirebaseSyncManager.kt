@@ -129,6 +129,17 @@ class FirebaseSyncManager {
                 .addOnFailureListener { error ->
                     Log.w(tag, "Failed to upload quiz attempt to Firestore: ${error.message}")
                 }
+
+            // Also mirror structured event to activity_logs
+            recordActivityLog(
+                userId = attempt.userId,
+                username = attempt.userId,
+                role = "Driver",
+                action = "Completed Quiz: ${attempt.quizTitle} (Score: ${attempt.correctCount}/${attempt.totalQuestions}, ${attempt.scorePercent.toInt()}%)",
+                activityType = "Quiz",
+                details = "Difficulty: ${attempt.difficulty}, Passed: ${attempt.passed}",
+                status = if (attempt.passed) "Passed" else "Failed"
+            )
         } catch (e: Exception) {
             Log.e(tag, "Firebase attempt sync exception: ${e.message}")
         }
@@ -183,16 +194,21 @@ class FirebaseSyncManager {
 
             val data = hashMapOf(
                 "auditId" to log.auditId,
-                "actionType" to log.actionType.name,
-                "module" to log.module.name,
+                "adminId" to log.username,
                 "username" to log.username,
                 "fullName" to log.fullName,
                 "role" to log.role,
+                "action" to log.actionType.name,
+                "actionType" to log.actionType.name,
+                "module" to log.module.name,
                 "description" to log.description,
+                "targetUser" to (log.newValue ?: log.previousValue ?: ""),
+                "details" to log.description,
                 "riskLevel" to log.riskLevel.name,
                 "result" to log.result.name,
                 "deviceInfo" to log.deviceInfo,
                 "ipAddress" to log.ipAddress,
+                "timestamp" to log.timestampUtc,
                 "timestampUtc" to log.timestampUtc,
                 "syncedAt" to System.currentTimeMillis()
             )
@@ -203,6 +219,49 @@ class FirebaseSyncManager {
                 }
         } catch (e: Exception) {
             Log.e(tag, "Audit sync exception: ${e.message}")
+        }
+    }
+
+    /**
+     * Record a structured activity log to Cloud Firestore (activity_logs collection)
+     */
+    fun recordActivityLog(
+        userId: String,
+        username: String,
+        role: String,
+        action: String,
+        activityType: String = "Session",
+        details: String = "",
+        status: String = "Active",
+        sessionId: String = "session_${System.currentTimeMillis()}",
+        device: String = "${android.os.Build.MANUFACTURER} ${android.os.Build.MODEL}"
+    ) {
+        try {
+            val now = System.currentTimeMillis()
+            val activityId = "act_${username}_${now}"
+            val data = hashMapOf(
+                "userId" to userId,
+                "username" to username,
+                "role" to role,
+                "action" to action,
+                "activityType" to activityType,
+                "details" to details,
+                "timestamp" to com.google.firebase.firestore.FieldValue.serverTimestamp(),
+                "timestampMillis" to now,
+                "sessionId" to sessionId,
+                "device" to device,
+                "status" to status
+            )
+            firestore.collection(COLLECTION_ACTIVITY_LOGS).document(activityId)
+                .set(data, SetOptions.merge())
+                .addOnSuccessListener {
+                    Log.d(tag, "Activity log written to $COLLECTION_ACTIVITY_LOGS: $activityId ($action)")
+                }
+                .addOnFailureListener { e ->
+                    Log.w(tag, "Failed to write activity log: ${e.message}")
+                }
+        } catch (e: Exception) {
+            Log.e(tag, "recordActivityLog exception: ${e.message}")
         }
     }
 
@@ -244,7 +303,19 @@ class FirebaseSyncManager {
                     Log.w(tag, "Failed to log login event to Firestore: ${e.message}")
                 }
 
-            // 2. Update real-time presence and account status in users collection
+            // 2. Mirror to activity_logs collection
+            recordActivityLog(
+                userId = username,
+                username = username,
+                role = role,
+                action = if (isSuccess) "Logged in" else "Failed login attempt",
+                activityType = "Session",
+                details = if (isSuccess) "Device: $deviceInfo" else "Reason: ${failureReason ?: "Invalid credentials"}",
+                status = if (isSuccess) "Active" else "Failed",
+                device = deviceInfo
+            )
+
+            // 3. Update real-time presence and account status in users collection
             if (isSuccess) {
                 val userRef = firestore.collection(COLLECTION_USERS).document(username)
                 val userState = hashMapOf(
@@ -291,6 +362,18 @@ class FirebaseSyncManager {
             firestore.collection(COLLECTION_USER_LOGINS).document(eventId)
                 .set(logoutEvent, SetOptions.merge())
 
+            // Mirror to activity_logs collection
+            recordActivityLog(
+                userId = username,
+                username = username,
+                role = role,
+                action = "Logged out",
+                activityType = "Session",
+                details = "Device: $deviceInfo",
+                status = "Ended",
+                device = deviceInfo
+            )
+
             // Update user presence to offline
             val userRef = firestore.collection(COLLECTION_USERS).document(username)
             val userState = hashMapOf(
@@ -329,6 +412,17 @@ class FirebaseSyncManager {
                 "isActive" to true
             )
             userRef.set(data, SetOptions.merge())
+
+            // Also record to activity_logs
+            recordActivityLog(
+                userId = username,
+                username = username,
+                role = role,
+                action = "Registered account",
+                activityType = "Profile",
+                details = "Display Name: $displayName",
+                status = "Created"
+            )
         } catch (e: Exception) {
             Log.e(tag, "syncRegisteredUser exception: ${e.message}")
         }
@@ -662,6 +756,7 @@ class FirebaseSyncManager {
         const val COLLECTION_USERS = "users"
         const val COLLECTION_USER_LOGINS = "user_logins"
         const val COLLECTION_AI_INTERACTIONS = "ai_interactions"
+        const val COLLECTION_ACTIVITY_LOGS = "activity_logs"
 
         @Volatile
         private var INSTANCE: FirebaseSyncManager? = null

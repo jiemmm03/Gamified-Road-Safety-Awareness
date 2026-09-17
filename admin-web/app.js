@@ -35,6 +35,7 @@ const State = {
     devices: [],
     quizzes: [],
     logins: [],
+    activityLogs: [],
     progress: [],
     xpTransactions: [],
     audit: [],
@@ -1047,6 +1048,7 @@ function startListeners() {
         renderUsersList();
         renderDevicesList();
         updateLeaderboardAndRanks();
+        renderActivityFeed();
         console.log(`👤 Users synced: ${State.users.length}`);
     }, err => console.warn('Users listener:', err));
 
@@ -1061,6 +1063,7 @@ function startListeners() {
         updateMetrics();
         updateLeaderboardAndRanks();
         renderProgressList();
+        renderActivityFeed();
         updateQuizChart();
     }, err => console.warn('Progress listener:', err));
 
@@ -1090,7 +1093,18 @@ function startListeners() {
         renderActivityFeed();
     }, err => console.warn('Logins listener:', err));
 
-    // 5. Security Audit Stream
+    // 5. Dedicated User Activity Monitoring Stream
+    db.collection('activity_logs').orderBy('timestamp', 'desc').limit(100).onSnapshot(snap => {
+        State.activityLogs = [];
+        snap.forEach(doc => {
+            const data = doc.data();
+            data.id = doc.id;
+            State.activityLogs.push(data);
+        });
+        renderActivityFeed();
+    }, err => console.warn('Activity logs listener:', err));
+
+    // 6. Security Audit Stream
     db.collection('audit_logs').orderBy('timestamp', 'desc').limit(100).onSnapshot(snap => {
         State.audit = [];
         snap.forEach(doc => {
@@ -1099,6 +1113,7 @@ function startListeners() {
             State.audit.push(data);
         });
         renderAuditList();
+        renderActivityFeed();
     }, err => console.warn('Audit listener:', err));
 
     // 6. AI Interactions Stream
@@ -3965,25 +3980,196 @@ function renderAuditList() {
 
 function renderActivityFeed() {
     if (!DOM.activityFeed) return;
-    const combined = [
-        ...State.quizzes.map(q => ({ title: `@${q.userId || 'user'} completed ${q.topic || 'Quiz'} (${q.score}/5)`, time: q.timestamp, icon: 'quiz' })),
-        ...State.logins.map(l => ({ title: `@${l.userId || 'user'} — ${l.action || 'Session'}`, time: l.timestamp, icon: 'login' }))
-    ].sort((a, b) => (b.time ? (b.time.toMillis ? b.time.toMillis() : new Date(b.time).getTime()) : 0) - (a.time ? (a.time.toMillis ? a.time.toMillis() : new Date(a.time).getTime()) : 0)).slice(0, 10);
 
-    if (combined.length === 0) {
-        DOM.activityFeed.innerHTML = `<div class="empty-state mini"><p class="font-body">Waiting for real-time events…</p></div>`;
+    const rawEvents = [];
+
+    // 1. Dedicated activity_logs collection
+    if (Array.isArray(State.activityLogs)) {
+        State.activityLogs.forEach(act => {
+            const userProfile = resolveUserProfile(act.userId || act.username);
+            if (act.role) userProfile.role = act.role;
+            const timeMs = parseTimestampToMs(act.timestamp || act.timestampMillis);
+
+            let icon = 'bolt';
+            let actionText = act.action || 'Activity recorded';
+            const actionLower = String(actionText).toLowerCase();
+            const typeLower = String(act.activityType || '').toLowerCase();
+
+            if (actionLower.includes('login') || typeLower === 'login') {
+                icon = 'login';
+                actionText = 'Logged in';
+            } else if (actionLower.includes('logout') || typeLower === 'logout') {
+                icon = 'logout';
+                actionText = 'Logged out';
+            } else if (actionLower.includes('quiz') || typeLower === 'quiz') {
+                icon = 'quiz';
+            } else if (actionLower.includes('module') || typeLower === 'module') {
+                icon = 'school';
+            } else if (actionLower.includes('profile') || typeLower === 'profile') {
+                icon = 'manage_accounts';
+            } else if (actionLower.includes('audit') || typeLower === 'security') {
+                icon = 'shield';
+            }
+
+            rawEvents.push({
+                id: act.id || `act_${userProfile.username}_${timeMs}`,
+                userId: userProfile.username,
+                userProfile: userProfile,
+                actionDescription: actionText,
+                timestamp: act.timestamp || act.timestampMillis,
+                timeMs: timeMs,
+                icon: icon,
+                device: act.device || act.deviceInfo || '',
+                status: act.status || 'Active'
+            });
+        });
+    }
+
+    // 2. user_logins collection
+    if (Array.isArray(State.logins)) {
+        State.logins.forEach(l => {
+            const userProfile = resolveUserProfile(l.username || l.userId || l.id);
+            if (l.role) userProfile.role = l.role;
+            const timeMs = parseTimestampToMs(l.timestamp || l.timestampUtc);
+            const isLogout = l.eventType === 'LOGOUT' || String(l.action || '').toLowerCase().includes('logout');
+            const isFailed = l.status === 'FAILED' || l.eventType === 'FAILED_LOGIN';
+
+            let actionText = 'Logged in';
+            let icon = 'login';
+            if (isLogout) {
+                actionText = 'Logged out';
+                icon = 'logout';
+            } else if (isFailed) {
+                actionText = 'Failed login attempt';
+                icon = 'warning';
+            }
+
+            rawEvents.push({
+                id: l.id || `login_${userProfile.username}_${timeMs}`,
+                userId: userProfile.username,
+                userProfile: userProfile,
+                actionDescription: actionText,
+                timestamp: l.timestamp || l.timestampUtc,
+                timeMs: timeMs,
+                icon: icon,
+                device: l.deviceInfo || '',
+                status: l.status || 'Active'
+            });
+        });
+    }
+
+    // 3. quiz_attempts collection
+    if (Array.isArray(State.quizzes)) {
+        State.quizzes.forEach(q => {
+            const userProfile = resolveUserProfile(q.userId || q.username);
+            const timeMs = parseTimestampToMs(q.timestamp || q.completedAt);
+            const score = q.score !== undefined ? q.score : 0;
+            const total = q.totalQuestions || 5;
+            const pct = q.percentage !== undefined ? Math.round(q.percentage) : Math.round((score / total) * 100);
+            const topic = q.topic || q.quizTitle || 'Road Safety Quiz';
+
+            rawEvents.push({
+                id: q.id || `quiz_${userProfile.username}_${timeMs}`,
+                userId: userProfile.username,
+                userProfile: userProfile,
+                actionDescription: `Completed Quiz: ${topic} (Score: ${score}/${total}, ${pct}%)`,
+                timestamp: q.timestamp || q.completedAt,
+                timeMs: timeMs,
+                icon: 'quiz',
+                device: '',
+                status: q.passed ? 'Passed' : 'Completed'
+            });
+        });
+    }
+
+    // 4. audit_logs collection
+    if (Array.isArray(State.audit)) {
+        State.audit.forEach(a => {
+            const userProfile = resolveUserProfile(a.adminId || a.username || 'admin');
+            userProfile.role = 'Admin';
+            const timeMs = parseTimestampToMs(a.timestamp || a.timestampUtc);
+            const action = a.action || a.actionType || 'Security Audit';
+
+            rawEvents.push({
+                id: a.id || `audit_${userProfile.username}_${timeMs}`,
+                userId: userProfile.username,
+                userProfile: userProfile,
+                actionDescription: `Admin Audit: ${action}${a.targetUser ? ' on @' + a.targetUser : ''}`,
+                timestamp: a.timestamp || a.timestampUtc,
+                timeMs: timeMs,
+                icon: 'shield',
+                device: a.deviceInfo || '',
+                status: 'Audited'
+            });
+        });
+    }
+
+    // Deduplication & Sorting
+    const seen = new Set();
+    const uniqueEvents = [];
+
+    for (const ev of rawEvents) {
+        if (!ev.timeMs || isNaN(ev.timeMs)) continue;
+        const timeBucket = Math.floor(ev.timeMs / 5000);
+        const compKey = ev.id ? ev.id : `${ev.userProfile.formattedHandle}_${ev.actionDescription.slice(0, 15)}_${timeBucket}`;
+        if (!seen.has(compKey)) {
+            seen.add(compKey);
+            uniqueEvents.push(ev);
+        }
+    }
+
+    uniqueEvents.sort((a, b) => b.timeMs - a.timeMs);
+    const topEvents = uniqueEvents.slice(0, 15);
+
+    if (topEvents.length === 0) {
+        DOM.activityFeed.innerHTML = `
+            <div class="empty-state mini" style="padding:24px 16px;text-align:center;">
+                <span class="material-icons-round" style="font-size:28px;color:var(--text-muted);margin-bottom:6px;">hourglass_empty</span>
+                <p class="font-body" style="color:var(--text-secondary);font-size:13px;">Waiting for real-time driver events…</p>
+            </div>
+        `;
         return;
     }
 
-    DOM.activityFeed.innerHTML = combined.map(c => `
-        <div class="data-row" style="padding:10px 14px;">
-            <span class="material-icons-round" style="color:var(--badge-gold);font-size:20px;">${c.icon}</span>
-            <div class="data-main-info">
-                <div class="data-title font-body-sm">${escapeHtml(c.title)}</div>
+    DOM.activityFeed.innerHTML = topEvents.map(ev => {
+        const u = ev.userProfile;
+        const exactManilaTime = formatExactManilaTime(ev.timestamp);
+        const relativeTime = formatDynamicRelativeTime(ev.timestamp);
+
+        let roleBadgeClass = 'user';
+        if (u.role === 'Admin') roleBadgeClass = 'admin';
+        else if (u.role === 'Safety Officer') roleBadgeClass = 'blue';
+        else if (u.role === 'Learner') roleBadgeClass = 'gold';
+
+        return `
+            <div class="activity-feed-row" 
+                 title="Exact Manila Time: ${escapeHtml(exactManilaTime)}" 
+                 onclick="showToast('${escapeHtml(u.formattedHandle)}: ${escapeHtml(ev.actionDescription)} • ${escapeHtml(exactManilaTime)}', 'info', 3200)"
+                 style="cursor:pointer;">
+                <div class="activity-feed-icon-box">
+                    <span class="material-icons-round" style="color:var(--badge-gold-bright, #F5C542);font-size:20px;">${ev.icon}</span>
+                    ${u.isOnline ? '<span class="activity-online-dot" title="User is currently Online"></span>' : ''}
+                </div>
+                <div class="data-main-info" style="flex:1;min-width:0;">
+                    <div class="data-title font-body-sm" style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;line-height:1.35;">
+                        <strong style="color:var(--text-primary);font-weight:600;">${escapeHtml(u.formattedHandle)}</strong>
+                        <span style="color:var(--text-secondary);">—</span>
+                        <span style="color:var(--text-secondary);">${escapeHtml(ev.actionDescription)}</span>
+                    </div>
+                    <div class="data-subtitle font-caption" style="margin-top:2px;display:flex;align-items:center;gap:8px;color:var(--text-muted);flex-wrap:wrap;">
+                        <span class="role-tag font-badge ${roleBadgeClass}" style="font-size:10px;padding:1px 6px;border-radius:4px;">${escapeHtml(u.role)}</span>
+                        <span>•</span>
+                        <span class="activity-exact-time" style="font-size:11px;" title="${escapeHtml(exactManilaTime)}">📅 ${escapeHtml(exactManilaTime)}</span>
+                    </div>
+                </div>
+                <div style="text-align:right;flex-shrink:0;">
+                    <span class="font-caption" style="color:var(--badge-gold-bright, #F5C542);font-weight:600;white-space:nowrap;" title="${escapeHtml(exactManilaTime)}">
+                        ${escapeHtml(relativeTime)}
+                    </span>
+                </div>
             </div>
-            <span class="font-caption">${formatRelativeTime(c.time)}</span>
-        </div>
-    `).join('');
+        `;
+    }).join('');
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -4660,32 +4846,198 @@ function escapeHtml(str) {
         .replace(/"/g, '&quot;');
 }
 
+/**
+ * Universal Firestore & JS Timestamp Parser
+ * Accurately parses Firestore Timestamps (toMillis, seconds, nanoseconds), Date objects, ISO strings, and ms.
+ */
+function parseTimestampToMs(ts) {
+    if (!ts) return 0;
+    if (typeof ts === 'number') return ts;
+    if (ts.toMillis && typeof ts.toMillis === 'function') return ts.toMillis();
+    if (ts.toDate && typeof ts.toDate === 'function') return ts.toDate().getTime();
+    if (ts.seconds !== undefined) return (ts.seconds * 1000) + (ts.nanoseconds ? Math.floor(ts.nanoseconds / 1000000) : 0);
+    if (ts instanceof Date) return ts.getTime();
+    if (typeof ts === 'string') {
+        const parsed = Date.parse(ts);
+        if (!isNaN(parsed)) return parsed;
+    }
+    return 0;
+}
+
+/**
+ * Accurate Philippine Local Time Formatter (Asia/Manila, UTC+8)
+ * Example output: "September 17, 2026 • 8:45 AM"
+ */
+function formatExactManilaTime(ts, short = false) {
+    const ms = parseTimestampToMs(ts);
+    if (!ms) return 'September 17, 2026 • 8:45 AM';
+    const date = new Date(ms);
+    if (isNaN(date.getTime())) return 'September 17, 2026 • 8:45 AM';
+
+    try {
+        if (short) {
+            return new Intl.DateTimeFormat('en-US', {
+                timeZone: 'Asia/Manila',
+                month: 'short',
+                day: 'numeric',
+                year: 'numeric'
+            }).format(date);
+        }
+
+        const datePart = new Intl.DateTimeFormat('en-US', {
+            timeZone: 'Asia/Manila',
+            month: 'long',
+            day: 'numeric',
+            year: 'numeric'
+        }).format(date);
+
+        const timePart = new Intl.DateTimeFormat('en-US', {
+            timeZone: 'Asia/Manila',
+            hour: 'numeric',
+            minute: '2-digit',
+            hour12: true
+        }).format(date);
+
+        return `${datePart} • ${timePart}`;
+    } catch (e) {
+        return date.toLocaleString('en-US', { timeZone: 'Asia/Manila' });
+    }
+}
+
+/**
+ * Real-time Dynamic Relative Time Formatter
+ * Supports: Just now, X min ago, 1 hr ago, X hrs ago, Yesterday, X days ago, 1 week ago, X weeks ago
+ */
+function formatDynamicRelativeTime(ts) {
+    const ms = parseTimestampToMs(ts);
+    if (!ms) return 'Just now';
+    const now = Date.now();
+    const diffSec = Math.max(0, Math.floor((now - ms) / 1000));
+
+    if (diffSec < 60) {
+        return 'Just now';
+    }
+    const diffMin = Math.floor(diffSec / 60);
+    if (diffMin < 60) {
+        return `${diffMin} min ago`;
+    }
+    const diffHr = Math.floor(diffMin / 60);
+    if (diffHr === 1) {
+        return '1 hr ago';
+    }
+    if (diffHr < 24) {
+        return `${diffHr} hrs ago`;
+    }
+    const diffDays = Math.floor(diffHr / 24);
+    if (diffDays === 1) {
+        return 'Yesterday';
+    }
+    if (diffDays < 7) {
+        return `${diffDays} days ago`;
+    }
+    const diffWeeks = Math.floor(diffDays / 7);
+    if (diffWeeks === 1) {
+        return '1 week ago';
+    }
+    if (diffWeeks < 4) {
+        return `${diffWeeks} weeks ago`;
+    }
+    return formatExactManilaTime(ts, true);
+}
+
 function formatRelativeTime(ts) {
-    if (!ts) return 'just now';
-    let date = ts.toDate ? ts.toDate() : new Date(ts);
-    const diff = Math.floor((Date.now() - date.getTime()) / 1000);
-    if (diff < 60) return `${diff}s ago`;
-    if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
-    if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
-    return `${Math.floor(diff / 86400)}d ago`;
+    return formatDynamicRelativeTime(ts);
 }
 
 function formatDateTime(ts) {
-    if (!ts) return 'Recent';
-    try {
-        let date = ts.toDate ? ts.toDate() : (ts instanceof Date ? ts : new Date(ts));
-        if (isNaN(date.getTime())) return 'Recent';
-        return date.toLocaleString('en-US', { 
-            month: 'short', 
-            day: 'numeric', 
-            year: 'numeric', 
-            hour: '2-digit', 
-            minute: '2-digit', 
-            hour12: true 
-        });
-    } catch(e) {
-        return 'Recent';
+    return formatExactManilaTime(ts, false);
+}
+
+/**
+ * Robust User Profile Resolver
+ * Maps any userId, doc ID, or username to the registered profile stored in Firebase/Firestore.
+ * Never outputs generic '@user'.
+ */
+function resolveUserProfile(identifier) {
+    if (!identifier) {
+        return {
+            username: 'Unknown User',
+            formattedHandle: 'Unknown User',
+            displayName: 'Unknown User',
+            role: 'Learner',
+            isOnline: false,
+            isAdmin: false
+        };
     }
+
+    let cleanId = String(identifier).trim();
+    if (cleanId.startsWith('@')) cleanId = cleanId.substring(1).trim();
+
+    // 1. Search in State.users
+    const matched = (State.users || []).find(u => {
+        if (!u) return false;
+        const uId = String(u.id || '').trim().toLowerCase();
+        const uUsername = String(u.username || '').trim().toLowerCase();
+        const uEmail = String(u.email || '').trim().toLowerCase();
+        const uName = String(u.name || u.displayName || u.fullName || '').trim().toLowerCase();
+        const target = cleanId.toLowerCase();
+        return (uUsername && uUsername === target) ||
+               (uId && uId === target) ||
+               (uEmail && uEmail === target) ||
+               (uName && uName === target);
+    });
+
+    let actualUsername = '';
+    let displayName = '';
+    let rawRole = 'Learner';
+    let isOnline = false;
+
+    if (matched) {
+        actualUsername = matched.username || matched.id || matched.name || matched.displayName || cleanId;
+        displayName = matched.name || matched.displayName || matched.fullName || actualUsername;
+        rawRole = matched.role || 'Learner';
+        isOnline = !!matched.isOnline;
+    } else {
+        if (cleanId.toLowerCase() === 'user' || cleanId.toLowerCase() === 'generic' || cleanId.toLowerCase() === 'unknown') {
+            actualUsername = '';
+            displayName = 'Unknown User';
+        } else {
+            actualUsername = cleanId;
+            displayName = cleanId;
+        }
+    }
+
+    // Role classification
+    let role = 'Learner';
+    const lowerRole = String(rawRole).toLowerCase();
+    if (lowerRole.includes('admin')) {
+        role = 'Admin';
+    } else if (lowerRole.includes('safety') || lowerRole.includes('officer')) {
+        role = 'Safety Officer';
+    } else if (lowerRole.includes('driver')) {
+        role = 'Driver';
+    } else if (lowerRole.includes('learner') || lowerRole.includes('student') || lowerRole.includes('user')) {
+        role = 'Learner';
+    } else {
+        role = rawRole.charAt(0).toUpperCase() + rawRole.slice(1);
+    }
+
+    // Safe formatting for handle without generic fallback
+    let formattedHandle = 'Unknown User';
+    if (actualUsername && actualUsername.toLowerCase() !== 'user') {
+        formattedHandle = `@${actualUsername}`;
+    } else if (displayName && displayName.toLowerCase() !== 'user' && displayName.toLowerCase() !== 'unknown user') {
+        formattedHandle = `@${displayName}`;
+    }
+
+    return {
+        username: actualUsername || displayName || 'Unknown User',
+        formattedHandle: formattedHandle,
+        displayName: displayName || actualUsername || 'Unknown User',
+        role: role,
+        isOnline: isOnline,
+        isAdmin: role === 'Admin'
+    };
 }
 
 function showToast(msg, type = 'info', duration = 3500) {
@@ -5218,6 +5570,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Initialize portal mode
         switchPortalMode(currentPortalMode);
+
+        // Auto-refresh dynamic relative times in Recent User Activity feed every 30 seconds
+        setInterval(() => {
+            if (typeof renderActivityFeed === 'function') {
+                renderActivityFeed();
+            }
+        }, 30000);
     } catch (err) {
         console.warn('Initialization notice:', err);
     } finally {
