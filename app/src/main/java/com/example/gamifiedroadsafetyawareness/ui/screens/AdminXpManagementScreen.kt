@@ -76,7 +76,7 @@ fun AdminXpManagementScreen(
     LaunchedEffect(xpManager, refreshTrigger, learnerUsernames) {
         val manager = xpManager ?: return@LaunchedEffect
         val progress = manager.getAllUsersProgress()
-        allUsers = learnerUsernames?.let { names -> progress.filter { it.userId in names } } ?: progress
+        allUsers = progress.filter { it.userId != "admin" && (learnerUsernames == null || it.userId in learnerUsernames) }
     }
 
     LaunchedEffect(allUsers, preselectedUsername) {

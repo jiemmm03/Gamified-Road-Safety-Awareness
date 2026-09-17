@@ -58,12 +58,18 @@ class FirebaseSyncManager {
 
     /**
      * Synchronize a learner or officer's training progress to Cloud Firestore.
+     * Note: Administrative accounts are explicitly excluded from user_progress syncing
+     * to prevent them from recording to driver rankings or appearing on leaderboards.
      */
     fun syncUserProgress(
         progress: UserProgressEntity,
         displayName: String = "",
         unlockedAchievementIds: Collection<String> = emptyList()
     ) {
+        if (progress.userId.equals("admin", ignoreCase = true)) {
+            Log.d(tag, "Skipping cloud sync for admin account to prevent recording to leaderboard/ranks")
+            return
+        }
         try {
             val userDoc = firestore.collection(COLLECTION_USER_PROGRESS).document(progress.userId)
             val data = hashMapOf(
@@ -363,29 +369,41 @@ class FirebaseSyncManager {
 
     /**
      * Fetch real-time cloud leaderboard ranks across all registered devices.
+     * Administrative accounts are excluded from learner leaderboard rankings.
      */
     suspend fun getCloudLeaderboard(limit: Long = 25): List<CloudLeaderboardEntry> {
         return try {
             val snapshot = firestore.collection(COLLECTION_USER_PROGRESS)
                 .orderBy("totalXp", Query.Direction.DESCENDING)
-                .limit(limit)
+                .limit(limit + 10)
                 .get()
                 .await()
 
-            snapshot.documents.mapIndexedNotNull { index, doc ->
-                try {
-                    CloudLeaderboardEntry(
-                        rank = index + 1,
-                        userId = doc.safeString("userId", "Anonymous"),
-                        displayName = doc.safeString("displayName", doc.safeString("userId", "User")),
-                        totalXp = doc.safeInt("totalXp", 0),
-                        currentLevel = doc.safeInt("currentLevel", 1),
-                        streak = doc.safeInt("currentStreak", 0)
-                    )
-                } catch (e: Exception) {
-                    null
+            snapshot.documents
+                .mapNotNull { doc ->
+                    val userId = doc.safeString("userId", "Anonymous")
+                    val role = doc.safeString("role", "").lowercase()
+                    if (userId.equals("admin", ignoreCase = true) || role == "admin" || role == "officer") {
+                        null
+                    } else {
+                        doc
+                    }
                 }
-            }
+                .take(limit.toInt())
+                .mapIndexedNotNull { index, doc ->
+                    try {
+                        CloudLeaderboardEntry(
+                            rank = index + 1,
+                            userId = doc.safeString("userId", "Anonymous"),
+                            displayName = doc.safeString("displayName", doc.safeString("userId", "User")),
+                            totalXp = doc.safeInt("totalXp", 0),
+                            currentLevel = doc.safeInt("currentLevel", 1),
+                            streak = doc.safeInt("currentStreak", 0)
+                        )
+                    } catch (e: Exception) {
+                        null
+                    }
+                }
         } catch (e: Exception) {
             Log.w(tag, "Could not fetch cloud leaderboard: ${e.message}")
             emptyList()

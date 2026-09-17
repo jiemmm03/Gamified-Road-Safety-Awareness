@@ -2981,6 +2981,10 @@ function getAggregatedLeaderboard() {
     (State.users || []).forEach(u => {
         const uid = String(u.username || u.id || u.userId || '').trim().toLowerCase();
         if (!uid) return;
+        const role = String(u.role || '').toLowerCase();
+        // S-10: Exclude administrative and officer accounts from leaderboard & ranking monitors
+        if (role === 'admin' || role === 'officer' || uid === 'admin') return;
+
         userMap.set(uid, {
             id: uid,
             userId: uid,
@@ -3000,7 +3004,7 @@ function getAggregatedLeaderboard() {
     // 2. Process any user_progress docs for users that might not be in users table yet
     (State.progress || []).forEach(p => {
         const uid = String(p.userId || p.id || '').trim().toLowerCase();
-        if (!uid) return;
+        if (!uid || uid === 'admin') return;
         if (!userMap.has(uid)) {
             userMap.set(uid, {
                 id: uid,
@@ -3020,7 +3024,13 @@ function getAggregatedLeaderboard() {
     });
 
     // 3. Aggregate each user's activities with strict isolation
-    const aggregated = Array.from(userMap.values()).map(user => {
+    const aggregated = Array.from(userMap.values())
+        .filter(user => {
+            const role = String(user.role || '').toLowerCase();
+            const uname = String(user.username || user.userId || '').toLowerCase();
+            return role !== 'admin' && role !== 'officer' && uname !== 'admin';
+        })
+        .map(user => {
         const uid = user.userId;
         const progress = (State.progress || []).find(p => {
             const pUid = String(p.userId || p.id || '').trim().toLowerCase();
@@ -3719,9 +3729,13 @@ function renderBadgesCatalogList() {
 function renderRankHistoryList() {
     if (!DOM.rankHistoryList) return;
 
-    // Dynamically derive rank movements from recent quiz attempts and XP events
+    // Dynamically derive rank movements from recent quiz attempts and XP events (excluding admin)
     const recentEvents = [...(State.quizzes || [])]
-        .filter(q => q.userId)
+        .filter(q => {
+            if (!q.userId) return false;
+            const uid = String(q.userId).toLowerCase();
+            return uid !== 'admin';
+        })
         .slice(0, 10);
 
     if (recentEvents.length === 0) {

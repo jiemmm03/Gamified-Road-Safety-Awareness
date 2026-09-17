@@ -61,7 +61,7 @@ class XpManager(context: Context) {
         db.userProgressDao().observe(key(username))
 
     suspend fun getLeaderboardData(usernames: List<String>): List<UserProgressEntity> {
-        val userIds = usernames.map { key(it) }
+        val userIds = usernames.map { key(it) }.filter { it != "admin" }
         userIds.forEach { ensureMigrated(it) }
         return db.userProgressDao().getAll(userIds)
     }
@@ -70,7 +70,7 @@ class XpManager(context: Context) {
         db.achievementUnlockDao().getUnlockedIds(key(username)).toSet()
 
     suspend fun getWeeklyXp(usernames: List<String>): Map<String, Int> {
-        val userIds = usernames.map { key(it) }
+        val userIds = usernames.map { key(it) }.filter { it != "admin" }
         val weekStart = LocalDate.now().minusDays(7)
             .atStartOfDay(java.time.ZoneId.systemDefault())
             .toInstant()
