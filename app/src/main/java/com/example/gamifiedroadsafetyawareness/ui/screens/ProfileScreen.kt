@@ -165,7 +165,7 @@ fun ProfileScreen(
                 .padding(horizontal = 16.dp, vertical = 6.dp)
         ) {
             Text(
-                text = "ROLE: ${role.name}",
+                text = role.displayLabel.uppercase(),
                 color = roleColor,
                 style = AppTypeScale.eyebrowLabel
             )

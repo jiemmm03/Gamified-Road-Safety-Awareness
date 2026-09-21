@@ -1659,7 +1659,7 @@ function renderUsersList() {
             <div class="empty-state">
                 <span class="material-icons-round">person_search</span>
                 <h3 class="font-h3">No Users Found</h3>
-                <p class="font-body">No registered users match your selected filter (${State.userFilter}).</p>
+                <p class="font-body">No registered accounts match your selected filter (${State.userFilter}).</p>
             </div>
         `;
         return;
@@ -1667,7 +1667,10 @@ function renderUsersList() {
 
     DOM.usersList.innerHTML = list.map(u => {
         const isOnline = isUserOnline(u);
-        const role = (u.role || 'USER').toUpperCase();
+        const isOfficer = (u.role || '').toLowerCase() === 'admin';
+        const roleDisplay = isOfficer ? 'Traffic Officer (ADMIN)' : 'Driver / Learner (USER)';
+        const roleShort = isOfficer ? 'Traffic Officer' : 'Driver / Learner';
+        const roleTag = isOfficer ? 'OFFICER' : 'LEARNER';
         const progress = State.progress.find(p => p.userId === u.username || p.userId === u.id) || {};
         const xp = progress.totalXp || progress.xp || u.xp || 0;
         const level = progress.currentLevel || progress.level || u.level || 1;
@@ -1676,19 +1679,20 @@ function renderUsersList() {
         const regDate = u.createdAt ? (u.createdAt.toDate ? u.createdAt.toDate().toLocaleDateString() : (new Date(u.createdAt).toLocaleDateString() !== 'Invalid Date' ? new Date(u.createdAt).toLocaleDateString() : 'Active')) : 'Active';
         const lastActive = formatRelativeTime(u.lastActive || u.lastLogin || u.updatedAt);
         const isActiveAccount = u.isActive !== false;
+        const targetUsername = u.username || u.id;
 
         return `
             <div class="data-row">
-                <div class="data-avatar user-avatar" style="background:${role === 'ADMIN' ? 'rgba(212,175,55,0.2)' : 'rgba(0,56,168,0.25)'};">
-                    <span class="material-icons-round" style="color:${role === 'ADMIN' ? 'var(--badge-gold-bright)' : '#60A5FA'};">
-                        ${role === 'ADMIN' ? 'shield' : 'sports_motorsports'}
+                <div class="data-avatar user-avatar" style="background:${isOfficer ? 'rgba(212,175,55,0.2)' : 'rgba(0,56,168,0.25)'};">
+                    <span class="material-icons-round" style="color:${isOfficer ? 'var(--badge-gold-bright)' : '#60A5FA'};">
+                        ${isOfficer ? 'shield' : 'sports_motorsports'}
                     </span>
                 </div>
                 <div class="data-main-info">
                     <div class="data-title font-body" style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
-                        <span>${escapeHtml(u.name || u.fullName || u.username || 'Registered Driver')}</span>
-                        <span style="font-size:12px;color:var(--text-secondary);font-weight:normal;">@${escapeHtml(u.username || u.id)}</span>
-                        <span class="tag-badge ${role === 'ADMIN' ? 'gold' : 'blue'} font-badge" style="font-size:10px;padding:2px 6px;">${gender}</span>
+                        <span>${escapeHtml(u.name || u.fullName || u.username || 'Registered User')}</span>
+                        <span style="font-size:12px;color:var(--text-secondary);font-weight:normal;">@${escapeHtml(targetUsername)}</span>
+                        <span class="tag-badge ${isOfficer ? 'gold' : 'blue'} font-badge" style="font-size:10px;padding:2px 6px;">${gender}</span>
                     </div>
                     <div class="data-subtitle font-body-sm" style="margin-top:4px;display:flex;gap:12px;flex-wrap:wrap;color:var(--text-secondary);">
                         <span>📞 Contact: <strong>${escapeHtml(contact)}</strong></span>
@@ -1699,21 +1703,25 @@ function renderUsersList() {
                     </div>
                 </div>
                 <div class="data-meta-cell">
-                    <span class="role-tag ${role === 'ADMIN' ? 'admin' : 'user'} font-badge">${role}</span>
+                    <span class="role-tag ${isOfficer ? 'admin' : 'user'} font-badge" title="${roleDisplay}">${roleTag}</span>
                     <span class="status-badge ${isOnline ? 'online' : 'offline'} font-badge">
                         <span class="badge-dot"></span>${isOnline ? 'Online' : 'Offline'}
                     </span>
                     <span class="status-badge ${isActiveAccount ? 'online' : 'offline'} font-badge" style="font-size:10px;">
-                        ${isActiveAccount ? 'Active Status' : 'Deactivated'}
+                        ${isActiveAccount ? 'Active' : 'Deactivated'}
                     </span>
                 </div>
                 <div class="data-actions">
-                    <button class="btn btn-secondary font-button" onclick="viewUserProfile('${u.id || u.username}')" title="Inspect Complete Profile">
+                    <button class="btn btn-secondary font-button" onclick="viewUserProfile('${escapeHtml(targetUsername)}')" title="Inspect Complete Profile">
                         <span class="material-icons-round">visibility</span>
                         <span>Profile</span>
                     </button>
-                    ${role !== 'ADMIN' ? `
-                    <button class="btn btn-danger font-button" onclick="openDeleteModal('${u.id || u.username}')" title="Delete User">
+                    <button class="btn btn-secondary font-button" onclick="updateUserRole('${escapeHtml(targetUsername)}', '${isOfficer ? 'user' : 'admin'}')" title="Change Role to ${isOfficer ? 'Driver / Learner (USER)' : 'Traffic Officer (ADMIN)'}">
+                        <span class="material-icons-round">${isOfficer ? 'arrow_downward' : 'arrow_upward'}</span>
+                        <span>${isOfficer ? 'Make User' : 'Make Admin'}</span>
+                    </button>
+                    ${!isOfficer ? `
+                    <button class="btn btn-danger font-button" onclick="openDeleteModal('${escapeHtml(targetUsername)}')" title="Delete User">
                         <span class="material-icons-round">delete_forever</span>
                     </button>
                     ` : ''}
@@ -1729,7 +1737,7 @@ window.viewUserProfile = function(userId) {
     if (!user) return;
     State.selectedUser = user;
 
-    $('modal-profile-name').textContent = user.name || user.username;
+    $('modal-profile-name').textContent = user.name || user.fullName || user.username;
     $('modal-profile-handle').textContent = `@${user.username || user.id} · ${user.email || 'No email'}`;
 
     renderProfileTab('p-overview');
@@ -1746,6 +1754,8 @@ function renderProfileTab(tab) {
 
     const totalXp = Number(progress.totalXp || progress.xp || user.xp || 0);
     const levelInfo = getLevelProgressInfo(totalXp);
+    const isOfficer = (user.role || '').toLowerCase() === 'admin';
+    const targetUsername = user.username || user.id;
 
     const body = $('modal-profile-body');
     if (tab === 'p-overview') {
@@ -1769,9 +1779,21 @@ function renderProfileTab(tab) {
                 </div>
             </div>
             <div class="modal-section-title font-label">Account Details</div>
+            <div class="modal-detail-row"><span class="modal-detail-label font-caption">Full Name:</span><span class="modal-detail-value font-body-sm">${escapeHtml(user.name || user.fullName || user.username)}</span></div>
+            <div class="modal-detail-row"><span class="modal-detail-label font-caption">Username:</span><span class="modal-detail-value font-body-sm">@${escapeHtml(targetUsername)}</span></div>
+            <div class="modal-detail-row"><span class="modal-detail-label font-caption">Contact Number:</span><span class="modal-detail-value font-body-sm">${escapeHtml(user.contact || user.phone || 'N/A')}</span></div>
             <div class="modal-detail-row"><span class="modal-detail-label font-caption">Gender:</span><span class="modal-detail-value font-body-sm">${user.gender || 'Not specified'}</span></div>
-            <div class="modal-detail-row"><span class="modal-detail-label font-caption">Hardware Device:</span><span class="modal-detail-value font-body-sm">${user.deviceModel || 'Mobile Device'}</span></div>
-            <div class="modal-detail-row"><span class="modal-detail-label font-caption">Account Role:</span><span class="role-tag ${user.role === 'admin' ? 'admin' : 'user'} font-badge">${(user.role || 'User').toUpperCase()}</span></div>
+            <div class="modal-detail-row"><span class="modal-detail-label font-caption">Hardware Device:</span><span class="modal-detail-value font-body-sm">${user.deviceModel || user.deviceInfo || 'Mobile Device'}</span></div>
+            <div class="modal-detail-row" style="align-items:center;background:rgba(212,175,55,0.06);padding:8px 12px;border-radius:6px;border:1px solid rgba(212,175,55,0.2);">
+                <span class="modal-detail-label font-caption" style="font-weight:600;color:var(--badge-gold-bright);">Account Role:</span>
+                <div style="display:flex;align-items:center;gap:10px;">
+                    <select class="form-input font-body-sm" style="padding:4px 10px;font-size:12px;background:var(--navy-surface);color:var(--text-primary);border:1px solid var(--badge-gold-border);border-radius:4px;" onchange="updateUserRole('${escapeHtml(targetUsername)}', this.value)">
+                        <option value="user" ${!isOfficer ? 'selected' : ''}>Driver / Learner (USER)</option>
+                        <option value="admin" ${isOfficer ? 'selected' : ''}>Traffic Officer (ADMIN)</option>
+                    </select>
+                    <span class="role-tag ${isOfficer ? 'admin' : 'user'} font-badge">${isOfficer ? 'OFFICER' : 'LEARNER'}</span>
+                </div>
+            </div>
         `;
     } else if (tab === 'p-learning') {
         let completed = [];
@@ -1845,6 +1867,80 @@ function renderProfileTab(tab) {
     }
 }
 
+// Update User Role Handler
+window.updateUserRole = async function(userId, newRole) {
+    const canonicalRole = (newRole || '').toLowerCase() === 'admin' ? 'admin' : 'user';
+    const user = State.users.find(u => u.id === userId || u.username === userId);
+    if (!user) return;
+    const username = user.username || user.id || userId;
+    const prevRole = (user.role || 'user').toLowerCase() === 'admin' ? 'admin' : 'user';
+
+    if (prevRole === canonicalRole) {
+        showToast(`User @${username} is already ${canonicalRole === 'admin' ? 'Traffic Officer (ADMIN)' : 'Driver / Learner (USER)'}`, 'info');
+        return;
+    }
+
+    const adminUsername = State.currentAdmin || 'admin';
+    const newRoleDisplay = canonicalRole === 'admin' ? 'Traffic Officer (ADMIN)' : 'Driver / Learner (USER)';
+    const prevRoleDisplay = prevRole === 'admin' ? 'Traffic Officer (ADMIN)' : 'Driver / Learner (USER)';
+
+    const confirmChange = confirm(`Are you sure you want to change the role of @${username} from ${prevRoleDisplay} to ${newRoleDisplay}?`);
+    if (!confirmChange) {
+        renderUsersList();
+        if (State.selectedUser) renderProfileTab('p-overview');
+        return;
+    }
+
+    try {
+        if (db) {
+            // 1. Update Firestore user document
+            await db.collection('users').doc(username).set({
+                role: canonicalRole,
+                updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+            }, { merge: true });
+
+            // 2. Add audit log
+            await db.collection('audit_logs').add({
+                action: 'role_updated',
+                actionType: 'ROLE_UPDATED',
+                targetUserId: username,
+                targetUsername: username,
+                previousRole: prevRole,
+                newRole: canonicalRole,
+                adminId: adminUsername,
+                adminUsername: adminUsername,
+                performedBy: adminUsername,
+                timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                details: `Updated role for @${username} from ${prevRoleDisplay} to ${newRoleDisplay}`
+            });
+
+            // 3. Add activity log
+            await db.collection('activity_logs').add({
+                userId: username,
+                username: username,
+                role: canonicalRole,
+                action: `Role updated to ${canonicalRole === 'admin' ? 'Traffic Officer' : 'Driver / Learner'}`,
+                activityType: 'Role Management',
+                details: `Changed from ${prevRole} to ${canonicalRole} by ${adminUsername}`,
+                status: 'Updated',
+                timestamp: firebase.firestore.FieldValue.serverTimestamp()
+            });
+        }
+
+        user.role = canonicalRole;
+        user.updatedAt = new Date();
+        showToast(`Successfully updated @${username} role to ${newRoleDisplay}!`, 'success');
+        renderUsersList();
+        if (State.selectedUser && (State.selectedUser.id === username || State.selectedUser.username === username)) {
+            State.selectedUser.role = canonicalRole;
+            renderProfileTab('p-overview');
+        }
+    } catch (err) {
+        console.error('Error updating user role:', err);
+        showToast('Failed to update user role: ' + (err.message || 'Firestore error'), 'error');
+    }
+};
+
 // User Profile Modal Tabs
 document.querySelectorAll('#profile-modal .profile-tab-btn').forEach(btn => {
     btn.addEventListener('click', () => {
@@ -1882,7 +1978,8 @@ window.handleRegisterUser = async function(e) {
     const contact = ($('reg-contact') ? $('reg-contact').value : '').trim();
     const email = ($('reg-email') ? $('reg-email').value : '').trim();
     const gender = $('reg-gender') ? $('reg-gender').value : 'Male';
-    const role = $('reg-role') ? $('reg-role').value : 'USER';
+    const rawRole = $('reg-role') ? $('reg-role').value : 'user';
+    const role = rawRole.toLowerCase() === 'admin' ? 'admin' : 'user';
     const password = ($('reg-password') ? $('reg-password').value : '').trim();
     const errBox = $('register-error-box');
     const errText = $('register-error-text');
@@ -1927,8 +2024,12 @@ window.handleRegisterUser = async function(e) {
         level: 1,
         streak: 1,
         createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
         lastActive: firebase.firestore.FieldValue.serverTimestamp()
     };
+
+    const roleDisplay = role === 'admin' ? 'Traffic Officer (ADMIN)' : 'Driver / Learner (USER)';
+    const adminUsername = State.currentAdmin || 'admin';
 
     try {
         if (db) {
@@ -1944,13 +2045,29 @@ window.handleRegisterUser = async function(e) {
             });
             await db.collection('audit_logs').add({
                 action: 'USER_REGISTERED',
-                performedBy: State.currentAdmin || 'SYSTEM',
+                actionType: 'USER_REGISTERED',
+                adminId: adminUsername,
+                adminUsername: adminUsername,
+                performedBy: adminUsername,
                 targetUser: username,
+                targetUserId: username,
+                targetUsername: username,
+                role: role,
                 timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-                details: `Registered new account @${username} (${role}) via RoadSafeDrive Portal`
+                details: `Registered new account @${username} with role: ${roleDisplay}`
+            });
+            await db.collection('activity_logs').add({
+                userId: username,
+                username: username,
+                role: role,
+                action: 'Account Registered',
+                activityType: 'Profile',
+                details: `Registered by ${adminUsername} as ${role === 'admin' ? 'Traffic Officer' : 'Driver / Learner'}`,
+                status: 'Created',
+                timestamp: firebase.firestore.FieldValue.serverTimestamp()
             });
         }
-        showToast(`Driver @${username} (${name}) registered successfully!`, 'success');
+        showToast(`Account @${username} (${name}) registered successfully as ${roleDisplay}!`, 'success');
         closeRegisterModal();
         switchTab('users');
     } catch (err) {

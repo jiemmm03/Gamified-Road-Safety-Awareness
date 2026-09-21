@@ -1,6 +1,7 @@
 package com.example.gamifiedroadsafetyawareness.firebase
 
 import android.util.Log
+import com.example.gamifiedroadsafetyawareness.auth.UserRole
 import com.example.gamifiedroadsafetyawareness.audit.AuditLog
 import com.example.gamifiedroadsafetyawareness.model.db.QuizAttemptEntity
 import com.example.gamifiedroadsafetyawareness.model.db.UserProgressEntity
@@ -545,6 +546,53 @@ class FirebaseSyncManager {
         }
     }
 
+
+    /**
+     * Real-time stream to observe role updates for a specific user.
+     * Listens to users/{username} in Firestore to detect when an administrator updates their role.
+     */
+    fun observeUserRole(username: String): Flow<UserRole> = callbackFlow {
+        val trimmed = username.trim().lowercase()
+        if (trimmed.isBlank()) {
+            trySend(UserRole.USER)
+            close()
+            return@callbackFlow
+        }
+
+        val listener = firestore.collection(COLLECTION_USERS).document(trimmed)
+            .addSnapshotListener { snapshot, error ->
+                if (error != null) {
+                    Log.w(tag, "observeUserRole listener error for $trimmed: ${error.message}")
+                    return@addSnapshotListener
+                }
+                if (snapshot != null && snapshot.exists()) {
+                    val rawRole = snapshot.safeString("role", snapshot.safeString("accountRole", "user"))
+                    val role = UserRole.fromRoleString(rawRole)
+                    trySend(role)
+                }
+            }
+        awaitClose { listener.remove() }
+    }
+
+    /**
+     * Fetch user's authoritative role directly from Firestore.
+     */
+    suspend fun fetchUserRole(username: String): UserRole {
+        val trimmed = username.trim().lowercase()
+        if (trimmed.isBlank()) return UserRole.USER
+        return try {
+            val doc = firestore.collection(COLLECTION_USERS).document(trimmed).get().await()
+            if (doc.exists()) {
+                val rawRole = doc.safeString("role", doc.safeString("accountRole", "user"))
+                UserRole.fromRoleString(rawRole)
+            } else {
+                UserRole.USER
+            }
+        } catch (e: Exception) {
+            Log.w(tag, "fetchUserRole failed for $trimmed: ${e.message}")
+            UserRole.USER
+        }
+    }
 
     /**
      * Real-time stream of all users tracked in Cloud Firestore along with their online presence and stats.

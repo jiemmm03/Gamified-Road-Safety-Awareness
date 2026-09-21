@@ -216,9 +216,10 @@ class AuthManager(context: Context) {
         // Successful password match — clear failed attempts
         clearFailedAttempts(trimmedUser)
 
-        val role = userPrefs.getString("${trimmedUser}_role", "USER") ?: "USER"
+        val rawRole = userPrefs.getString("${trimmedUser}_role", "user") ?: "user"
         val displayName = userPrefs.getString("${trimmedUser}_display", trimmedUser) ?: trimmedUser
-        val userRole = if (role == "ADMIN") UserRole.ADMIN else UserRole.USER
+        val userRole = UserRole.fromRoleString(rawRole)
+        val canonicalRole = userRole.backendValue
         val permissions = getUserPermissions(trimmedUser, userRole)
 
         if (!userPrefs.getBoolean("${trimmedUser}_active", true)) {
@@ -226,7 +227,7 @@ class AuthManager(context: Context) {
                 userId = trimmedUser,
                 fullName = displayName,
                 username = trimmedUser,
-                role = role,
+                role = canonicalRole,
                 actionType = ActionType.FAILED_LOGIN,
                 module = Module.AUTHENTICATION,
                 description = "Login blocked for deactivated account: $trimmedUser",
@@ -236,27 +237,27 @@ class AuthManager(context: Context) {
             syncManager.recordUserLogin(
                 username = trimmedUser,
                 displayName = displayName,
-                role = role,
+                role = canonicalRole,
                 isSuccess = false,
                 failureReason = "Account deactivated"
             )
             return LoginResult.AccountDeactivated
         }
 
-        // Save session
+        // Save session with canonical role
         prefs.edit()
             .putString(KEY_LOGGED_IN_USER, trimmedUser)
-            .putString(KEY_LOGGED_IN_ROLE, role)
+            .putString(KEY_LOGGED_IN_ROLE, canonicalRole)
             .apply()
 
         auditManager.logAction(
             userId = trimmedUser,
             fullName = displayName,
             username = trimmedUser,
-            role = role,
+            role = canonicalRole,
             actionType = ActionType.LOGIN,
             module = Module.AUTHENTICATION,
-            description = "User $trimmedUser logged in successfully.",
+            description = "User $trimmedUser logged in successfully as ${userRole.displayLabel}.",
             result = AuditResult.SUCCESS,
             riskLevel = RiskLevel.LOW
         )
@@ -265,7 +266,7 @@ class AuthManager(context: Context) {
         syncManager.recordUserLogin(
             username = trimmedUser,
             displayName = displayName,
-            role = role,
+            role = canonicalRole,
             isSuccess = true
         )
 
@@ -331,7 +332,7 @@ class AuthManager(context: Context) {
             return LoginResult.AccountDeactivated
         }
         val displayName = userPrefs.getString("${user}_display", user) ?: user
-        val userRole = if (role == "ADMIN") UserRole.ADMIN else UserRole.USER
+        val userRole = UserRole.fromRoleString(role)
         val permissions = getUserPermissions(user, userRole)
         return LoginResult.Success(userRole, displayName, permissions)
     }
@@ -435,7 +436,7 @@ class AuthManager(context: Context) {
         // S-03: Clear forced password change flag after successful change
         clearMustChangePassword(trimmedUser)
 
-        val role = userPrefs.getString("${trimmedUser}_role", "USER") ?: "USER"
+        val role = userPrefs.getString("${trimmedUser}_role", "user") ?: "user"
         val displayName = userPrefs.getString("${trimmedUser}_display", trimmedUser) ?: trimmedUser
         auditManager.logAction(
             userId = trimmedUser,
@@ -462,7 +463,7 @@ class AuthManager(context: Context) {
         val oldName = userPrefs.getString("${trimmedUser}_display", trimmedUser) ?: trimmedUser
         userPrefs.edit().putString("${trimmedUser}_display", trimmedName).apply()
 
-        val role = userPrefs.getString("${trimmedUser}_role", "USER") ?: "USER"
+        val role = userPrefs.getString("${trimmedUser}_role", "user") ?: "user"
         auditManager.logAction(
             userId = trimmedUser,
             fullName = trimmedName,
@@ -502,10 +503,11 @@ class AuthManager(context: Context) {
         val salt = generateSalt()
         val hash = hashWithPbkdf2(password, salt)
         val defaultPerms = RolePermissions.getPermissions(role)
+        val canonicalRole = role.backendValue
 
         val editor = userPrefs.edit()
             .putString("${trimmedUser}_hash", hash)
-            .putString("${trimmedUser}_role", role.name)
+            .putString("${trimmedUser}_role", canonicalRole)
             .putString("${trimmedUser}_display", displayName)
             .putLong("${trimmedUser}_created", System.currentTimeMillis())
             .putStringSet("${trimmedUser}_permissions", defaultPerms.map { it.name }.toSet())
@@ -533,11 +535,11 @@ class AuthManager(context: Context) {
             userId = trimmedUser,
             fullName = displayName,
             username = trimmedUser,
-            role = role.name,
+            role = canonicalRole,
             actionType = ActionType.USER_CREATED,
             module = Module.USER_MANAGEMENT,
-            description = "New account registered: $displayName (@$trimmedUser, ${role.name})",
-            newValue = "Role: ${role.name}",
+            description = "New account registered: $displayName (@$trimmedUser, ${role.displayLabel})",
+            newValue = "Role: $canonicalRole",
             remarks = registrationSource,
             result = AuditResult.SUCCESS,
             riskLevel = RiskLevel.MEDIUM
@@ -547,7 +549,7 @@ class AuthManager(context: Context) {
         syncManager.syncRegisteredUser(
             username = trimmedUser,
             displayName = displayName,
-            role = role.name,
+            role = canonicalRole,
             gender = gender,
             age = age,
             contactNumber = contactNumber.trim()
@@ -619,15 +621,31 @@ class AuthManager(context: Context) {
         return true
     }
 
+    fun updateCachedRole(username: String, newRole: UserRole) {
+        val trimmedUser = username.trim().lowercase()
+        val canonicalRole = newRole.backendValue
+        val defaultPerms = RolePermissions.getPermissions(newRole)
+        userPrefs.edit()
+            .putString("${trimmedUser}_role", canonicalRole)
+            .putStringSet("${trimmedUser}_permissions", defaultPerms.map { it.name }.toSet())
+            .apply()
+
+        if (getLoggedInUsername() == trimmedUser) {
+            prefs.edit()
+                .putString(KEY_LOGGED_IN_ROLE, canonicalRole)
+                .apply()
+        }
+    }
+
     fun getAllAccounts(): List<UserAccount> {
         val userList = userPrefs.getStringSet("all_users", emptySet()) ?: emptySet()
         return userList.map { username ->
-            val roleStr = userPrefs.getString("${username}_role", "USER") ?: "USER"
-            val userRole = if (roleStr == "ADMIN") UserRole.ADMIN else UserRole.USER
+            val roleStr = userPrefs.getString("${username}_role", "user") ?: "user"
+            val userRole = UserRole.fromRoleString(roleStr)
             UserAccount(
                 username = username,
                 passwordHash = userPrefs.getString("${username}_hash", "") ?: "",
-                role = roleStr,
+                role = userRole.backendValue,
                 displayName = userPrefs.getString("${username}_display", username) ?: username,
                 permissions = getUserPermissions(username, userRole),
                 createdAt = userPrefs.getLong("${username}_created", 0L),

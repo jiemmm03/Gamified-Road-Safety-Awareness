@@ -253,12 +253,16 @@ fun RoadSafetyApp() {
         com.example.gamifiedroadsafetyawareness.firebase.FirebaseSyncManager.getInstance().listenToModuleSettings()
         val saved = authManager.getSavedSession()
         if (saved is com.example.gamifiedroadsafetyawareness.auth.LoginResult.Success) {
-            currentUserRole = saved.role
+            val user = authManager.getLoggedInUsername() ?: ""
+            loggedInUsername = user
+            val cloudRole = com.example.gamifiedroadsafetyawareness.firebase.FirebaseSyncManager.getInstance().fetchUserRole(user)
+            val effectiveRole = cloudRole
+            currentUserRole = effectiveRole
             loggedInDisplayName = saved.displayName
-            currentUserPermissions = saved.permissions
-            loggedInUsername = authManager.getLoggedInUsername() ?: ""
+            currentUserPermissions = authManager.getUserPermissions(user, effectiveRole)
+            authManager.updateCachedRole(user, effectiveRole)
             sessionId++
-            val startScreen = when (saved.role) {
+            val startScreen = when (effectiveRole) {
                 UserRole.ADMIN, UserRole.SUPER_ADMIN -> Screen.AdminDashboard
                 UserRole.USER -> Screen.Dashboard
             }
@@ -269,6 +273,24 @@ fun RoadSafetyApp() {
             screenStack.add(Screen.Login)
         }
         isCheckingSession = false
+    }
+
+    // Real-time synchronization of account role from Cloud Firestore
+    LaunchedEffect(loggedInUsername) {
+        if (loggedInUsername.isNotBlank()) {
+            com.example.gamifiedroadsafetyawareness.firebase.FirebaseSyncManager.getInstance()
+                .observeUserRole(loggedInUsername)
+                .collect { liveRole ->
+                    if (liveRole != currentUserRole) {
+                        currentUserRole = liveRole
+                        currentUserPermissions = authManager.getUserPermissions(loggedInUsername, liveRole)
+                        authManager.updateCachedRole(loggedInUsername, liveRole)
+                        if (!RolePermissions.hasPermission(liveRole, currentScreen.requiredPermission)) {
+                            resetStackTo(homeScreen())
+                        }
+                    }
+                }
+        }
     }
 
     val userProgress by remember(loggedInUsername) {
