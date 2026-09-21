@@ -517,21 +517,21 @@
                     <span class="material-icons-round" style="font-size:14px;">verified</span>
                     v1.2.0 Verified (300 Questions)
                 </span>
-                <span class="tag-badge">27.6 MB</span>
+                <span class="tag-badge">28.7 MB</span>
             </div>
         </div>
 
         <!-- Connection Status Banner -->
         <div class="status-banner ready" id="status-banner">
             <span class="material-icons-round">check_circle</span>
-            <span id="status-text"><strong>APK Ready</strong> — Official Release v1.2.0 with 300 Questions (27.6 MB)</span>
+            <span id="status-text"><strong>APK Ready</strong> — Official Release v1.2.0 with 300 Questions (28.7 MB)</span>
         </div>
 
         <!-- Direct Download Button Card -->
         <div class="download-card">
             <a href="https://github.com/jiemmm03/Gamified-Road-Safety-Awareness/raw/main/admin-web/RoadSafe-AI.apk" class="btn-download-apk" id="btn-download-apk" download="RoadSafe-AI.apk">
                 <span class="material-icons-round">file_download</span>
-                <span id="btn-download-text">Download APK (27.6 MB)</span>
+                <span id="btn-download-text">Download APK (28.7 MB)</span>
             </a>
 
             <!-- Progress indicator -->
@@ -627,7 +627,7 @@
         const DIRECT_APK_URL = 'https://github.com/jiemmm03/Gamified-Road-Safety-Awareness/raw/main/admin-web/RoadSafe-AI.apk';
 
         // ─── Determine download URL ───
-        const downloadPageUrl = (window.location.hostname.includes('roadsafedrive.com') || window.location.hostname.includes('web.app') || window.location.hostname.includes('firebaseapp.com'))
+        const downloadPageUrl = (window.location.protocol.startsWith('http') && window.location.href.length > 5)
             ? window.location.href
             : 'https://roadsafedrive.com/download.html';
 
@@ -641,20 +641,46 @@
         const progressFill = document.getElementById('progress-fill');
         const progressText = document.getElementById('progress-text');
 
-        if (downloadBtn) {
-            downloadBtn.href = DIRECT_APK_URL;
-        }
-
         // ─── Generate QR code pointing to THIS download page ───
         if (qrImg) {
-            qrImg.src = 'https://api.qrserver.com/v1/create-qr-code/?size=240x240&data=' + encodeURIComponent(downloadPageUrl);
+            qrImg.src = 'https://api.qrserver.com/v1/create-qr-code/?size=260x260&margin=10&data=' + encodeURIComponent(downloadPageUrl);
         }
         if (qrUrlDisplay) {
             qrUrlDisplay.textContent = downloadPageUrl;
         }
 
-        if (statusBanner) statusBanner.className = 'status-banner ready';
-        if (statusText) statusText.innerHTML = '<strong>APK Ready</strong> — Official Release v1.2.0 (300 Questions, 27.6 MB)';
+        function checkApkAvailability() {
+            // Check local or relative RoadSafe-AI.apk
+            fetch('RoadSafe-AI.apk', { method: 'HEAD' })
+                .then(response => {
+                    if (response.ok) {
+                        const size = response.headers.get('Content-Length');
+                        const sizeMB = size ? (parseInt(size) / (1024 * 1024)).toFixed(1) : '28.7';
+                        if (statusBanner) statusBanner.className = 'status-banner ready';
+                        if (statusText) statusText.innerHTML = `<strong>APK Ready</strong> — Official Release v1.2.0 (${sizeMB} MB, 300 Questions)`;
+                        if (downloadBtn) {
+                            downloadBtn.href = 'RoadSafe-AI.apk';
+                            downloadBtn.classList.remove('disabled');
+                        }
+                        if (downloadBtnText) downloadBtnText.textContent = `Download APK (${sizeMB} MB)`;
+                    } else {
+                        useFallback();
+                    }
+                })
+                .catch(() => {
+                    useFallback();
+                });
+        }
+
+        function useFallback() {
+            if (statusBanner) statusBanner.className = 'status-banner ready';
+            if (statusText) statusText.innerHTML = '<strong>APK Ready</strong> — Official Release v1.2.0 (300 Questions, 28.7 MB)';
+            if (downloadBtn) {
+                downloadBtn.href = DIRECT_APK_URL;
+                downloadBtn.classList.remove('disabled');
+            }
+            if (downloadBtnText) downloadBtnText.textContent = 'Download APK (28.7 MB)';
+        }
 
         // ─── Download click handler with progress feedback ───
         if (downloadBtn) {
@@ -670,22 +696,22 @@
 
                 let progress = 0;
                 const progressInterval = setInterval(() => {
-                    progress += Math.random() * 15;
+                    progress += Math.random() * 18 + 5;
                     if (progress > 95) progress = 95;
                     progressFill.style.width = progress + '%';
                     progressText.textContent = `Downloading package... ${Math.round(progress)}%`;
-                }, 300);
+                }, 250);
 
                 setTimeout(() => {
                     clearInterval(progressInterval);
                     progressFill.style.width = '100%';
-                    progressText.textContent = '✅ Download complete! Open the APK from Downloads.';
+                    progressText.textContent = '✅ Download initiated! Check your notifications/downloads.';
 
                     setTimeout(() => {
                         progressDiv.classList.remove('active');
                         progressFill.style.width = '0%';
                     }, 5000);
-                }, 4000);
+                }, 3000);
             });
         }
 

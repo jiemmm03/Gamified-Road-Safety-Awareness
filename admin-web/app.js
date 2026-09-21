@@ -5062,7 +5062,7 @@ function updateQrCode(url) {
     if (!qrImg) return;
     const targetUrl = url && url.trim() ? url.trim() : PUBLIC_PAGE_URL;
     currentQrUrl = targetUrl;
-    qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(targetUrl)}`;
+    qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=260x260&margin=10&data=${encodeURIComponent(targetUrl)}`;
     if (qrUrlInput) qrUrlInput.value = targetUrl;
     if (btnOpenDownloadPage) btnOpenDownloadPage.href = targetUrl;
 }

@@ -10,9 +10,11 @@ cd /d "%~dp0"
 echo [1/4] Copying latest compiled APK into server folder...
 if exist "..\app\build\outputs\apk\debug\app-debug.apk" (
     copy /y "..\app\build\outputs\apk\debug\app-debug.apk" "app-debug.apk" >nul
-    echo   [OK] Latest APK synced: app-debug.apk
-) else if exist "app-debug.apk" (
-    echo   [OK] Using existing app-debug.apk in server folder.
+    copy /y "..\app\build\outputs\apk\debug\app-debug.apk" "RoadSafe-AI.apk" >nul
+    echo   [OK] Latest APK synced: app-debug.apk and RoadSafe-AI.apk
+) else if exist "RoadSafe-AI.apk" (
+    copy /y "RoadSafe-AI.apk" "app-debug.apk" >nul
+    echo   [OK] Using existing RoadSafe-AI.apk in server folder.
 ) else (
     echo   [WARNING] No APK found! Build your app first in Android Studio.
     echo   Expected at: ..\app\build\outputs\apk\debug\app-debug.apk
