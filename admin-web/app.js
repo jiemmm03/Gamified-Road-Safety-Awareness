@@ -1716,10 +1716,6 @@ function renderUsersList() {
                         <span class="material-icons-round">visibility</span>
                         <span>Profile</span>
                     </button>
-                    <button class="btn btn-secondary font-button" onclick="updateUserRole('${escapeHtml(targetUsername)}', '${isOfficer ? 'user' : 'admin'}')" title="Change Role to ${isOfficer ? 'Driver / Learner (USER)' : 'Traffic Officer (ADMIN)'}">
-                        <span class="material-icons-round">${isOfficer ? 'arrow_downward' : 'arrow_upward'}</span>
-                        <span>${isOfficer ? 'Make User' : 'Make Admin'}</span>
-                    </button>
                     ${!isOfficer ? `
                     <button class="btn btn-danger font-button" onclick="openDeleteModal('${escapeHtml(targetUsername)}')" title="Delete User">
                         <span class="material-icons-round">delete_forever</span>
