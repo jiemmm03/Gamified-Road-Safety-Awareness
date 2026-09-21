@@ -61,7 +61,9 @@ data class DecisionOption(
     val riskLevel: String, // "High Risk", "Moderate Risk", "Safe Choice"
     val explanation: String,
     val tier: SimulationTier = SimulationTier.SAFE_DECISION, // only meaningful when isCorrect is true
-    val aiRecommended: Boolean = false
+    val aiRecommended: Boolean = false,
+    val descriptionFil: String = "",
+    val explanationFil: String = ""
 )
 
 enum class SimulationDifficulty(val label: String) {
@@ -87,7 +89,13 @@ data class SimulationScenario(
     val hazardIdentified: String = "",
     val safetyPrinciple: String = "",
     val recommendedAction: String = "",
-    val topicTag: String = ""
+    val topicTag: String = "",
+    val titleFil: String = "",
+    val descriptionFil: String = "",
+    val promptFil: String = "",
+    val hazardsFil: List<String> = emptyList(),
+    val safetyPrincipleFil: String = "",
+    val recommendedActionFil: String = ""
 )
 
 data class BadgeItem(

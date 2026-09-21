@@ -15,7 +15,7 @@ import androidx.sqlite.db.SupportSQLiteDatabase
         QuizAttemptEntity::class,
         QuizAttemptAnswerEntity::class
     ],
-    version = 6,
+    version = 7,
     exportSchema = true
 )
 abstract class AppDatabase : RoomDatabase() {
@@ -134,6 +134,15 @@ abstract class AppDatabase : RoomDatabase() {
             }
         }
 
+        /**
+         * v6 -> v7: adds selected_language to quiz_attempts to store session language ('en' / 'fil').
+         */
+        private val MIGRATION_6_7 = object : Migration(6, 7) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL("ALTER TABLE quiz_attempts ADD COLUMN selected_language TEXT NOT NULL DEFAULT 'en'")
+            }
+        }
+
         fun getInstance(context: Context): AppDatabase =
             INSTANCE ?: synchronized(this) {
                 INSTANCE ?: Room.databaseBuilder(
@@ -141,7 +150,7 @@ abstract class AppDatabase : RoomDatabase() {
                     AppDatabase::class.java,
                     "gamification.db"
                 )
-                    .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5, MIGRATION_5_6)
+                    .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5, MIGRATION_5_6, MIGRATION_6_7)
                     .build()
                     .also { INSTANCE = it }
             }

@@ -118,6 +118,7 @@ class FirebaseSyncManager {
                 "percentage" to attempt.scorePercent,
                 "passed" to attempt.passed,
                 "timeSpentSeconds" to attempt.timeSpentSeconds,
+                "selectedLanguage" to attempt.selectedLanguage,
                 "timestamp" to attempt.completedAt,
                 "syncedAt" to System.currentTimeMillis()
             )

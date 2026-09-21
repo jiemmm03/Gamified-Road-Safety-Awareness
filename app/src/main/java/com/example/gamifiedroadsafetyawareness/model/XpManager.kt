@@ -240,14 +240,16 @@ class XpManager(context: Context) {
         startedAt: Long,
         bestComboStreak: Int,
         timeChallengeCompleted: Boolean,
-        awardResult: XpAwardResult
+        awardResult: XpAwardResult,
+        selectedLanguage: String = "en"
     ): QuizAttemptEntity {
         val userId = key(username)
         ensureMigrated(userId)
         return engine.recordQuizAttempt(
             userId, quizId, moduleId, quizTitle, difficulty, answers, timeSpentSeconds, startedAt,
             bestComboStreak, timeChallengeCompleted, awardResult,
-            GamificationConstants.QUIZ_PASS_THRESHOLD_PERCENT
+            GamificationConstants.QUIZ_PASS_THRESHOLD_PERCENT,
+            selectedLanguage
         )
     }
 

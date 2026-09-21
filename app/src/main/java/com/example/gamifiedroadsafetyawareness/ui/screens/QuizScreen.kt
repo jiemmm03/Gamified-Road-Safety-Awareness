@@ -48,6 +48,7 @@ import com.example.gamifiedroadsafetyawareness.ui.components.AppOutlinedButton
 import com.example.gamifiedroadsafetyawareness.ui.components.ConfirmActionDialog
 import com.example.gamifiedroadsafetyawareness.ui.components.FloatingRewardPopup
 import com.example.gamifiedroadsafetyawareness.ui.components.QuizGamificationHud
+import com.example.gamifiedroadsafetyawareness.ui.components.SessionLanguageSelector
 import com.example.gamifiedroadsafetyawareness.ui.theme.AmberYellow
 import com.example.gamifiedroadsafetyawareness.ui.theme.BadgeGold
 import com.example.gamifiedroadsafetyawareness.ui.theme.EmeraldGreen
@@ -81,6 +82,10 @@ fun QuizScreen(
         if (raw.size > 20) raw.shuffled().take(20) else raw
     }
 
+    // Language selection state (exclusive to Quiz/Assessment session)
+    var sessionLanguage by remember { mutableStateOf<String?>(null) }
+    var isSessionStarted by remember { mutableStateOf(false) }
+
     var currentQuestionIndex by remember { mutableStateOf(0) }
     var score by remember { mutableStateOf(0) }
     var isFinished by remember { mutableStateOf(false) }
@@ -104,9 +109,11 @@ fun QuizScreen(
     val coroutineScope = rememberCoroutineScope()
 
     val answerLog = remember { mutableStateListOf<QuestionAnswerRecord>() }
-    val startedAtMillis = remember { System.currentTimeMillis() }
+    var startedAtMillis by remember { mutableStateOf(System.currentTimeMillis()) }
 
-    val hasProgress = !isFinished && (currentQuestionIndex > 0 || isAnswered)
+    val isFilipino = sessionLanguage == "fil" || sessionLanguage == "tl"
+
+    val hasProgress = isSessionStarted && !isFinished && (currentQuestionIndex > 0 || isAnswered)
     var showExitConfirm by remember { mutableStateOf(false) }
     fun requestExit() {
         if (hasProgress) showExitConfirm = true else onNavigateBack()
@@ -144,15 +151,16 @@ fun QuizScreen(
                 startedAt = startedAtMillis,
                 bestComboStreak = bestComboStreak,
                 timeChallengeCompleted = !hadAnyTimeout,
-                awardResult = result
+                awardResult = result,
+                selectedLanguage = sessionLanguage ?: "en"
             )
             highestScorePercentEver = xpManager.getHighestScorePercent(username, quiz.id)
             onQuizFinished(score, activeQuestions.size, result)
         }
     }
 
-    LaunchedEffect(currentQuestionIndex, isFinished) {
-        if (isFinished) return@LaunchedEffect
+    LaunchedEffect(currentQuestionIndex, isFinished, isSessionStarted) {
+        if (isFinished || !isSessionStarted) return@LaunchedEffect
         timeLeftSeconds = 20
         selectedOptionIndex = -1
         isAnswered = false
@@ -169,20 +177,25 @@ fun QuizScreen(
             currentMultiplier = 1.0f
             val timedOutQuestion = activeQuestions[currentQuestionIndex]
             val timedOutTopic = RoadSafetyTopic.classify(timedOutQuestion.question, timedOutQuestion.options)
+            val currentQuestionText = if (isFilipino && timedOutQuestion.questionFil.isNotBlank()) timedOutQuestion.questionFil else timedOutQuestion.question
+            val currentOptions = if (isFilipino && timedOutQuestion.optionsFil.isNotEmpty()) timedOutQuestion.optionsFil else timedOutQuestion.options
+            val explanationText = if (isFilipino && timedOutTopic.explanationFil.isNotBlank()) timedOutTopic.explanationFil else timedOutTopic.explanation
+            val safetyTipText = if (isFilipino && timedOutTopic.safetyTipFil.isNotBlank()) timedOutTopic.safetyTipFil else timedOutTopic.safetyTip
+
             answerLog.add(
                 QuestionAnswerRecord(
                     questionId = timedOutQuestion.id,
                     questionNumber = currentQuestionIndex + 1,
-                    questionText = timedOutQuestion.question,
+                    questionText = currentQuestionText,
                     selectedOptionIndex = -1,
                     correctOptionIndex = timedOutQuestion.correctAnswerIndex,
-                    selectedAnswerText = "Unanswered",
-                    correctAnswerText = timedOutQuestion.options.getOrElse(timedOutQuestion.correctAnswerIndex) { "" },
+                    selectedAnswerText = if (isFilipino) "Walang Sagot" else "Unanswered",
+                    correctAnswerText = currentOptions.getOrElse(timedOutQuestion.correctAnswerIndex) { "" },
                     isCorrect = false,
                     pointsEarned = 0,
                     xpEarned = 0,
-                    explanation = timedOutTopic.explanation,
-                    safetyTip = timedOutTopic.safetyTip,
+                    explanation = explanationText,
+                    safetyTip = safetyTipText,
                     difficulty = quiz.moduleType.name,
                     topic = timedOutTopic.name,
                     answeredAt = System.currentTimeMillis()
@@ -213,7 +226,25 @@ fun QuizScreen(
         label = "timerColor"
     )
 
-    if (isFinished) {
+    if (!isSessionStarted) {
+        // ── LANGUAGE SELECTION SCREEN (Appears immediately before starting quiz) ──
+        SessionLanguageSelector(
+            sessionTitle = quiz.title,
+            sessionSubtitle = "20 timed road safety and traffic rule questions with AI evaluation.",
+            difficultyLabel = "${quiz.moduleType.label} • +${GamificationConstants.ModuleXp.getModuleXp(quizId)} XP",
+            questionCountText = "${activeQuestions.size} Questions",
+            sessionTypeLabel = "QUIZ ASSESSMENT",
+            selectedLanguage = sessionLanguage,
+            onLanguageSelected = { sessionLanguage = it },
+            onStartConfirmed = { lang ->
+                sessionLanguage = lang
+                startedAtMillis = System.currentTimeMillis()
+                isSessionStarted = true
+            },
+            onCancel = onNavigateBack,
+            modifier = modifier
+        )
+    } else if (isFinished) {
         val result = awardResult
         val attempt = awardedAttempt
         if (result == null || attempt == null) {
@@ -234,8 +265,11 @@ fun QuizScreen(
     } else {
         val question = activeQuestions[currentQuestionIndex]
         val choiceLabels = listOf("A", "B", "C", "D", "E", "F")
-        val shuffledOptions = remember(currentQuestionIndex) {
-            question.options.mapIndexed { index, text -> index to text }.shuffled()
+        val currentQuestionText = if (isFilipino && question.questionFil.isNotBlank()) question.questionFil else question.question
+        val currentOptionsList = if (isFilipino && question.optionsFil.isNotEmpty()) question.optionsFil else question.options
+
+        val shuffledOptions = remember(currentQuestionIndex, isFilipino) {
+            currentOptionsList.mapIndexed { index, text -> index to text }.shuffled()
         }
         val runningTotalXp = (startingProgress?.totalXp ?: 0) + comboXpEarned
         val displayLevel = startingProgress?.currentLevel ?: 1
@@ -260,7 +294,7 @@ fun QuizScreen(
                         maxLines = 1
                     )
                     Text(
-                        text = "Question ${currentQuestionIndex + 1} of ${activeQuestions.size}",
+                        text = if (isFilipino) "Tanong ${currentQuestionIndex + 1} ng ${activeQuestions.size}" else "Question ${currentQuestionIndex + 1} of ${activeQuestions.size}",
                         style = MaterialTheme.typography.labelMedium,
                         color = MaterialTheme.colorScheme.primary,
                         fontWeight = FontWeight.SemiBold
@@ -314,7 +348,7 @@ fun QuizScreen(
                             )
                             Spacer(modifier = Modifier.width(8.dp))
                             Text(
-                                text = "Time Remaining",
+                                text = if (isFilipino) "Natitirang Oras" else "Time Remaining",
                                 style = MaterialTheme.typography.bodySmall,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
@@ -346,21 +380,12 @@ fun QuizScreen(
                 ) {
                     Column(modifier = Modifier.padding(18.dp)) {
                         Text(
-                            text = question.question,
+                            text = currentQuestionText,
                             style = MaterialTheme.typography.titleLarge.copy(fontSize = 18.sp),
                             fontWeight = FontWeight.Bold,
                             color = MaterialTheme.colorScheme.onSurface,
                             lineHeight = 25.sp
                         )
-                        if (question.questionFil.isNotBlank()) {
-                            Spacer(modifier = Modifier.height(6.dp))
-                            Text(
-                                text = question.questionFil,
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                lineHeight = 20.sp
-                            )
-                        }
                     }
                 }
 
@@ -368,7 +393,7 @@ fun QuizScreen(
 
                 // ── Answer Choices ───────────────────────────────────────────
                 Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-                    shuffledOptions.forEachIndexed { displayIndex, (originalIndex, option) ->
+                    shuffledOptions.forEachIndexed { displayIndex, (originalIndex, optionText) ->
                         val isSelected = selectedOptionIndex == originalIndex
                         val isCorrect = originalIndex == question.correctAnswerIndex
                         val state = when {
@@ -380,14 +405,18 @@ fun QuizScreen(
 
                         QuizOptionRow(
                             label = choiceLabels[displayIndex],
-                            text = option,
-                            textFil = question.optionsFil.getOrNull(originalIndex).orEmpty(),
+                            text = optionText,
                             state = state,
                             enabled = !isAnswered,
                             onClick = {
                                 selectedOptionIndex = originalIndex
                                 isAnswered = true
                                 val topic = RoadSafetyTopic.classify(question.question, question.options)
+                                val explanationText = if (isFilipino && topic.explanationFil.isNotBlank()) topic.explanationFil else topic.explanation
+                                val safetyTipText = if (isFilipino && topic.safetyTipFil.isNotBlank()) topic.safetyTipFil else topic.safetyTip
+                                val selectedAnswerText = currentOptionsList.getOrElse(originalIndex) { "" }
+                                val correctAnswerText = currentOptionsList.getOrElse(question.correctAnswerIndex) { "" }
+
                                 var questionXp = 0
                                 if (isCorrect) {
                                     score++
@@ -398,16 +427,16 @@ fun QuizScreen(
                                     questionXp = ((GamificationConstants.QuizXp.CORRECT_ANSWER + milestoneBonus) * currentMultiplier).toInt()
                                     comboXpEarned += questionXp
                                     rewardText = when {
-                                        milestoneBonus > 0 -> "🔥 $comboStreak Answer Streak! +$questionXp XP"
-                                        currentMultiplier > 1f -> "✅ Correct! +$questionXp XP (${currentMultiplier}×)"
-                                        else -> "✅ Correct! +$questionXp XP"
+                                        milestoneBonus > 0 -> if (isFilipino) "🔥 $comboStreak Sunod-sunod na Tama! +$questionXp XP" else "🔥 $comboStreak Answer Streak! +$questionXp XP"
+                                        currentMultiplier > 1f -> if (isFilipino) "✅ Tama! +$questionXp XP (${currentMultiplier}×)" else "✅ Correct! +$questionXp XP (${currentMultiplier}×)"
+                                        else -> if (isFilipino) "✅ Tama! +$questionXp XP" else "✅ Correct! +$questionXp XP"
                                     }
                                     rewardKey++
                                     haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                                 } else {
                                     comboStreak = 0
                                     currentMultiplier = 1.0f
-                                    rewardText = "❌ Streak broken!"
+                                    rewardText = if (isFilipino) "❌ Naputol ang streak!" else "❌ Streak broken!"
                                     rewardKey++
                                     if (username.isNotBlank() && xpManager != null) {
                                         coroutineScope.launch {
@@ -419,16 +448,16 @@ fun QuizScreen(
                                     QuestionAnswerRecord(
                                         questionId = question.id,
                                         questionNumber = currentQuestionIndex + 1,
-                                        questionText = question.question,
+                                        questionText = currentQuestionText,
                                         selectedOptionIndex = originalIndex,
                                         correctOptionIndex = question.correctAnswerIndex,
-                                        selectedAnswerText = question.options.getOrElse(originalIndex) { "" },
-                                        correctAnswerText = question.options.getOrElse(question.correctAnswerIndex) { "" },
+                                        selectedAnswerText = selectedAnswerText,
+                                        correctAnswerText = correctAnswerText,
                                         isCorrect = isCorrect,
                                         pointsEarned = if (isCorrect) GamificationConstants.QuizXp.CORRECT_ANSWER else 0,
                                         xpEarned = questionXp,
-                                        explanation = topic.explanation,
-                                        safetyTip = topic.safetyTip,
+                                        explanation = explanationText,
+                                        safetyTip = safetyTipText,
                                         difficulty = quiz.moduleType.name,
                                         topic = topic.name,
                                         answeredAt = System.currentTimeMillis()
@@ -444,7 +473,9 @@ fun QuizScreen(
                     Spacer(modifier = Modifier.height(16.dp))
                     val isUserCorrect = selectedOptionIndex == question.correctAnswerIndex
                     val topic = RoadSafetyTopic.classify(question.question, question.options)
-                    val correctText = question.options.getOrElse(question.correctAnswerIndex) { "" }
+                    val explanationText = if (isFilipino && topic.explanationFil.isNotBlank()) topic.explanationFil else topic.explanation
+                    val safetyTipText = if (isFilipino && topic.safetyTipFil.isNotBlank()) topic.safetyTipFil else topic.safetyTip
+                    val correctText = currentOptionsList.getOrElse(question.correctAnswerIndex) { "" }
 
                     Surface(
                         shape = RoundedCornerShape(14.dp),
@@ -469,7 +500,13 @@ fun QuizScreen(
                                         modifier = Modifier.size(20.dp)
                                     )
                                     Text(
-                                        text = if (isUserCorrect) "Correct Answer!" else if (selectedOptionIndex == -1) "Time's Up!" else "Incorrect",
+                                        text = if (isUserCorrect) {
+                                            if (isFilipino) "Tamang Sagot!" else "Correct Answer!"
+                                        } else if (selectedOptionIndex == -1) {
+                                            if (isFilipino) "Ubos na ang Oras!" else "Time's Up!"
+                                        } else {
+                                            if (isFilipino) "Maling Sagot" else "Incorrect"
+                                        },
                                         style = MaterialTheme.typography.titleMedium,
                                         fontWeight = FontWeight.Bold,
                                         color = if (isUserCorrect) EmeraldGreen else TrafficRed
@@ -496,7 +533,7 @@ fun QuizScreen(
                             if (!isUserCorrect) {
                                 Spacer(modifier = Modifier.height(8.dp))
                                 Text(
-                                    text = "Correct Answer: $correctText",
+                                    text = if (isFilipino) "Tamang Sagot: $correctText" else "Correct Answer: $correctText",
                                     style = MaterialTheme.typography.bodyMedium,
                                     fontWeight = FontWeight.SemiBold,
                                     color = MaterialTheme.colorScheme.onSurface
@@ -505,26 +542,26 @@ fun QuizScreen(
 
                             Spacer(modifier = Modifier.height(8.dp))
                             Text(
-                                text = "Why: ${topic.explanation}",
+                                text = if (isFilipino) "Paliwanag: $explanationText" else "Why: $explanationText",
                                 style = MaterialTheme.typography.bodySmall,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                                 lineHeight = 18.sp
                             )
 
-                            if (topic.safetyTip.isNotBlank()) {
+                            if (safetyTipText.isNotBlank()) {
                                 Spacer(modifier = Modifier.height(6.dp))
                                 Row(
                                     verticalAlignment = Alignment.Top,
                                     horizontalArrangement = Arrangement.spacedBy(4.dp)
                                 ) {
                                     Text(
-                                        text = "💡 Safe Tip: ",
+                                        text = if (isFilipino) "💡 Ligtas na Payo: " else "💡 Safe Tip: ",
                                         style = MaterialTheme.typography.labelSmall,
                                         fontWeight = FontWeight.Bold,
                                         color = AmberYellow
                                     )
                                     Text(
-                                        text = topic.safetyTip,
+                                        text = safetyTipText,
                                         style = MaterialTheme.typography.labelSmall,
                                         color = MaterialTheme.colorScheme.onSurfaceVariant
                                     )
@@ -538,7 +575,11 @@ fun QuizScreen(
 
                 // ── Next / Finish / Quit Action Buttons ───────────────────────
                 if (isAnswered) {
-                    val nextButtonLabel = if (currentQuestionIndex < activeQuestions.size - 1) "Next Question" else "Finish Quiz"
+                    val nextButtonLabel = if (currentQuestionIndex < activeQuestions.size - 1) {
+                        if (isFilipino) "Susunod na Tanong" else "Next Question"
+                    } else {
+                        if (isFilipino) "Tapusin ang Pagsusulit" else "Finish Quiz"
+                    }
                     Button(
                         onClick = {
                             if (currentQuestionIndex < activeQuestions.size - 1) {
@@ -573,7 +614,7 @@ fun QuizScreen(
                 }
 
                 AppOutlinedButton(
-                    text = "Quit Quiz",
+                    text = if (isFilipino) "Umalis sa Pagsusulit" else "Quit Quiz",
                     onClick = { requestExit() },
                     borderColor = MaterialTheme.colorScheme.error.copy(alpha = 0.4f)
                 )
@@ -594,9 +635,9 @@ fun QuizScreen(
 
     if (showExitConfirm) {
         ConfirmActionDialog(
-            title = "Leave Quiz?",
-            message = "Are you sure you want to go back? Your current progress may not be saved.",
-            confirmLabel = "Leave",
+            title = if (isFilipino) "Umalis sa Pagsusulit?" else "Leave Quiz?",
+            message = if (isFilipino) "Sigurado ka bang nais mong bumalik? Maaaring mawala ang iyong kasalukuyang progreso." else "Are you sure you want to go back? Your current progress may not be saved.",
+            confirmLabel = if (isFilipino) "Umalis" else "Leave",
             destructive = true,
             onConfirm = {
                 showExitConfirm = false

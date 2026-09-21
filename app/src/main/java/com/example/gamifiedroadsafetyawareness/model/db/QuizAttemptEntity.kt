@@ -92,6 +92,9 @@ data class QuizAttemptEntity(
     @ColumnInfo(name = "started_at")
     val startedAt: Long,
 
+    @ColumnInfo(name = "selected_language", defaultValue = "'en'")
+    val selectedLanguage: String = "en",
+
     @ColumnInfo(name = "completed_at")
     val completedAt: Long = System.currentTimeMillis()
 )

@@ -169,7 +169,8 @@ class GamificationEngine(private val db: AppDatabase) {
         bestComboStreak: Int,
         timeChallengeCompleted: Boolean,
         awardResult: XpAwardResult,
-        passThresholdPercent: Int
+        passThresholdPercent: Int,
+        selectedLanguage: String = "en"
     ): QuizAttemptEntity = db.withTransaction {
         val attemptNumber = db.quizAttemptDao().countAttempts(userId, quizId) + 1
         val correctCount = answers.count { it.isCorrect }
@@ -196,7 +197,8 @@ class GamificationEngine(private val db: AppDatabase) {
             levelAfter = awardResult.newLevel,
             timeSpentSeconds = timeSpentSeconds,
             timeChallengeCompleted = timeChallengeCompleted,
-            startedAt = startedAt
+            startedAt = startedAt,
+            selectedLanguage = selectedLanguage
         )
         val attemptId = db.quizAttemptDao().insertAttempt(attempt)
         db.quizAttemptDao().insertAnswers(

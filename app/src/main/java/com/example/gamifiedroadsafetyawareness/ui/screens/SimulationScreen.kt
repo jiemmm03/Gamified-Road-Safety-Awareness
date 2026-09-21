@@ -39,6 +39,7 @@ import com.example.gamifiedroadsafetyawareness.ui.components.AppButton
 import com.example.gamifiedroadsafetyawareness.ui.components.AppCard
 import com.example.gamifiedroadsafetyawareness.ui.components.AppOutlinedButton
 import com.example.gamifiedroadsafetyawareness.ui.components.ConfirmActionDialog
+import com.example.gamifiedroadsafetyawareness.ui.components.SessionLanguageSelector
 import com.example.gamifiedroadsafetyawareness.ui.theme.*
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -53,6 +54,10 @@ fun SimulationScreen(
 ) {
     val scenarios = remember { ChatScenarios.all }
     val totalScenarios = scenarios.size
+
+    // Language selection state (exclusive to Assessment/Simulation session)
+    var sessionLanguage by remember { mutableStateOf<String?>(null) }
+    var isSessionStarted by remember { mutableStateOf(false) }
 
     var currentScenarioIndex by remember { mutableIntStateOf(0) }
     var selectedOption by remember { mutableStateOf<DecisionOption?>(null) }
@@ -69,10 +74,14 @@ fun SimulationScreen(
     val coroutineScope = rememberCoroutineScope()
     val haptic = LocalHapticFeedback.current
 
-    val currentScenario = scenarios.getOrElse(currentScenarioIndex) { scenarios.first() }
+    val isFilipino = sessionLanguage == "fil" || sessionLanguage == "tl"
+    val rawScenario = scenarios.getOrElse(currentScenarioIndex) { scenarios.first() }
+    val currentScenario = remember(currentScenarioIndex, isFilipino) {
+        SimulationLocalization.getLocalizedScenario(rawScenario, isFilipino)
+    }
 
     fun requestExit() {
-        if (!isSimulationFinished && (currentScenarioIndex > 0 || isDecisionSubmitted || selectedOption != null)) {
+        if (isSessionStarted && !isSimulationFinished && (currentScenarioIndex > 0 || isDecisionSubmitted || selectedOption != null)) {
             showExitConfirm = true
         } else {
             onBackClick()
@@ -86,13 +95,30 @@ fun SimulationScreen(
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
     ) {
-        if (isSimulationFinished) {
+        if (!isSessionStarted) {
+            // ── LANGUAGE SELECTION SCREEN (Appears immediately before starting simulation) ──
+            SessionLanguageSelector(
+                sessionTitle = "Driver Decision Assessment",
+                sessionSubtitle = "20 interactive Philippine road driving scenarios testing defensive driving, hazard perception, and right-of-way rules.",
+                difficultyLabel = "Adaptive • +2,400 XP Max",
+                questionCountText = "20 Scenarios",
+                sessionTypeLabel = "DRIVER ASSESSMENT",
+                selectedLanguage = sessionLanguage,
+                onLanguageSelected = { sessionLanguage = it },
+                onStartConfirmed = { lang ->
+                    sessionLanguage = lang
+                    isSessionStarted = true
+                },
+                onCancel = onBackClick
+            )
+        } else if (isSimulationFinished) {
             // SIMULATION COMPLETE SCREEN
             SimulationCompleteView(
                 score = correctCount,
                 total = totalScenarios,
                 totalXp = totalXpEarned,
                 incorrectScenarios = incorrectScenarios,
+                isFilipino = isFilipino,
                 onRetake = {
                     currentScenarioIndex = 0
                     selectedOption = null
@@ -199,7 +225,7 @@ fun SimulationScreen(
                             )
                             Spacer(modifier = Modifier.width(6.dp))
                             Text(
-                                text = "SITUATION",
+                                text = if (isFilipino) "SITWASYON" else "SITUATION",
                                 style = MaterialTheme.typography.labelSmall,
                                 fontWeight = FontWeight.Bold,
                                 color = MaterialTheme.colorScheme.primary,
@@ -220,7 +246,7 @@ fun SimulationScreen(
 
                 // 4. DECISION QUESTION
                 Text(
-                    text = currentScenario.prompt.ifBlank { "What would you do?" },
+                    text = currentScenario.prompt.ifBlank { if (isFilipino) "Ano ang iyong gagawin?" else "What would you do?" },
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onBackground
@@ -258,7 +284,7 @@ fun SimulationScreen(
                 // 6. ACTION BUTTON / AI FEEDBACK CARD
                 if (!isDecisionSubmitted) {
                     AppButton(
-                        text = "Submit Decision",
+                        text = if (isFilipino) "Ipasa ang Desisyon" else "Submit Decision",
                         onClick = {
                             val option = selectedOption ?: return@AppButton
                             isDecisionSubmitted = true
@@ -306,6 +332,7 @@ fun SimulationScreen(
                             isCorrect = chosen.isCorrect,
                             scenario = currentScenario,
                             chosenOption = chosen,
+                            isFilipino = isFilipino,
                             onNext = {
                                 if (currentScenarioIndex < totalScenarios - 1) {
                                     currentScenarioIndex++
@@ -338,7 +365,8 @@ fun SimulationScreen(
                                                 startedAt = simulationStartedAt,
                                                 bestComboStreak = correctCount,
                                                 timeChallengeCompleted = true,
-                                                awardResult = awardResult
+                                                awardResult = awardResult,
+                                                selectedLanguage = sessionLanguage ?: "en"
                                             )
                                         }
                                     }
@@ -553,6 +581,7 @@ private fun AiFeedbackSection(
     isCorrect: Boolean,
     scenario: SimulationScenario,
     chosenOption: DecisionOption,
+    isFilipino: Boolean = false,
     onNext: () -> Unit,
     isLastScenario: Boolean
 ) {
@@ -574,7 +603,11 @@ private fun AiFeedbackSection(
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
-                    text = if (isCorrect) "✓ Correct Decision" else "⚠ Review Your Decision",
+                    text = if (isCorrect) {
+                        if (isFilipino) "✓ Tamang Desisyon" else "✓ Correct Decision"
+                    } else {
+                        if (isFilipino) "⚠ Suriin ang Iyong Desisyon" else "⚠ Review Your Decision"
+                    },
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.ExtraBold,
                     color = if (isCorrect) EmeraldGreen else TrafficRed
@@ -585,7 +618,7 @@ private fun AiFeedbackSection(
 
             // Why?
             Text(
-                text = "Why?",
+                text = if (isFilipino) "Bakit?" else "Why?",
                 style = MaterialTheme.typography.labelMedium,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
@@ -602,7 +635,7 @@ private fun AiFeedbackSection(
             // Hazard Identified
             if (scenario.hazardIdentified.isNotBlank()) {
                 Text(
-                    text = "Hazard Identified:",
+                    text = if (isFilipino) "Natukoy na Panganib:" else "Hazard Identified:",
                     style = MaterialTheme.typography.labelMedium,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
@@ -618,7 +651,7 @@ private fun AiFeedbackSection(
             // Safety Principle
             if (scenario.safetyPrinciple.isNotBlank()) {
                 Text(
-                    text = "Safety Principle:",
+                    text = if (isFilipino) "Prinsipyo sa Kaligtasan:" else "Safety Principle:",
                     style = MaterialTheme.typography.labelMedium,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
@@ -634,7 +667,7 @@ private fun AiFeedbackSection(
             // Recommended Action
             if (scenario.recommendedAction.isNotBlank()) {
                 Text(
-                    text = "Recommended Action:",
+                    text = if (isFilipino) "Rekomendadong Aksyon:" else "Recommended Action:",
                     style = MaterialTheme.typography.labelMedium,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
@@ -649,7 +682,11 @@ private fun AiFeedbackSection(
 
             // Next button
             AppButton(
-                text = if (isLastScenario) "View Simulation Results 🎉" else "Next Scenario →",
+                text = if (isLastScenario) {
+                    if (isFilipino) "Tingnan ang Resulta ng Simulation 🎉" else "View Simulation Results 🎉"
+                } else {
+                    if (isFilipino) "Susunod na Senaryo →" else "Next Scenario →"
+                },
                 onClick = onNext,
                 modifier = Modifier.fillMaxWidth()
             )
@@ -663,16 +700,17 @@ private fun SimulationCompleteView(
     total: Int,
     totalXp: Int,
     incorrectScenarios: List<SimulationScenario>,
+    isFilipino: Boolean = false,
     onRetake: () -> Unit,
     onReturnHome: () -> Unit
 ) {
     val accuracyPercent = if (total > 0) ((score.toFloat() / total.toFloat()) * 100).toInt() else 0
 
     val (performanceLevel, performanceColor, performanceIcon) = when {
-        accuracyPercent >= 90 -> Triple("Excellent", EmeraldGreen, "🏆")
-        accuracyPercent >= 75 -> Triple("Good", BadgeGold, "🌟")
-        accuracyPercent >= 50 -> Triple("Needs Improvement", AmberYellow, "⚠️")
-        else -> Triple("Needs More Practice", TrafficRed, "🔄")
+        accuracyPercent >= 90 -> Triple(if (isFilipino) "Napakahusay" else "Excellent", EmeraldGreen, "🏆")
+        accuracyPercent >= 75 -> Triple(if (isFilipino) "Mahusay" else "Good", BadgeGold, "🌟")
+        accuracyPercent >= 50 -> Triple(if (isFilipino) "Kailangan Pang Pagbutihin" else "Needs Improvement", AmberYellow, "⚠️")
+        else -> Triple(if (isFilipino) "Kailangan ng Pagsasanay" else "Needs More Practice", TrafficRed, "🔄")
     }
 
     Column(
@@ -699,7 +737,7 @@ private fun SimulationCompleteView(
         Spacer(modifier = Modifier.height(14.dp))
 
         Text(
-            text = "SIMULATION COMPLETE",
+            text = if (isFilipino) "TAPOS NA ANG SIMULATION" else "SIMULATION COMPLETE",
             style = MaterialTheme.typography.titleLarge,
             fontWeight = FontWeight.Black,
             letterSpacing = 1.sp,
@@ -707,7 +745,7 @@ private fun SimulationCompleteView(
         )
 
         Text(
-            text = "AI Road Safety & Driver Decision Assessment",
+            text = if (isFilipino) "Pagsusuri sa Pagmamaneho at Kaligtasan sa Kalsada" else "AI Road Safety & Driver Decision Assessment",
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
@@ -730,7 +768,7 @@ private fun SimulationCompleteView(
                     color = performanceColor
                 )
                 Text(
-                    text = "$accuracyPercent% Accuracy · Level: $performanceLevel",
+                    text = if (isFilipino) "$accuracyPercent% Kawastuhan · Antas: $performanceLevel" else "$accuracyPercent% Accuracy · Level: $performanceLevel",
                     style = MaterialTheme.typography.titleSmall,
                     fontWeight = FontWeight.Bold,
                     color = performanceColor
@@ -744,9 +782,9 @@ private fun SimulationCompleteView(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceAround
                 ) {
-                    MetricItem(label = "Correct", value = "$score", color = EmeraldGreen)
-                    MetricItem(label = "Incorrect", value = "${total - score}", color = TrafficRed)
-                    MetricItem(label = "XP Earned", value = "+$totalXp", color = BadgeGold)
+                    MetricItem(label = if (isFilipino) "Tama" else "Correct", value = "$score", color = EmeraldGreen)
+                    MetricItem(label = if (isFilipino) "Mali" else "Incorrect", value = "${total - score}", color = TrafficRed)
+                    MetricItem(label = if (isFilipino) "XP na Nakuha" else "XP Earned", value = "+$totalXp", color = BadgeGold)
                 }
             }
         }
@@ -769,7 +807,7 @@ private fun SimulationCompleteView(
                     )
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
-                        text = "AI COACH RECOMMENDATIONS",
+                        text = if (isFilipino) "MGA REKOMENDASYON NG AI COACH" else "AI COACH RECOMMENDATIONS",
                         style = MaterialTheme.typography.labelMedium,
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.primary
@@ -780,14 +818,22 @@ private fun SimulationCompleteView(
 
                 if (incorrectScenarios.isEmpty()) {
                     Text(
-                        text = "Outstanding performance! You demonstrated mastery of Philippine road safety laws, hazard anticipation, and defensive decision-making in all 20 scenarios.",
+                        text = if (isFilipino) {
+                            "Napakahusay na pagganap! Naipamalas mo ang kahusayan sa mga batas trapiko ng Pilipinas, pag-iwas sa panganib, at ligtas na pagmamaneho sa lahat ng 20 senaryo."
+                        } else {
+                            "Outstanding performance! You demonstrated mastery of Philippine road safety laws, hazard anticipation, and defensive decision-making in all 20 scenarios."
+                        },
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurface
                     )
                 } else {
                     val topics = incorrectScenarios.map { it.topicTag }.filter { it.isNotBlank() }.distinct()
                     Text(
-                        text = "Based on your decision patterns, you may need additional review in the following areas:",
+                        text = if (isFilipino) {
+                            "Batay sa iyong mga desisyon, inirerekomenda ang karagdagang pag-aaral sa mga sumusunod na paksa:"
+                        } else {
+                            "Based on your decision patterns, you may need additional review in the following areas:"
+                        },
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurface
                     )
@@ -805,7 +851,7 @@ private fun SimulationCompleteView(
         Spacer(modifier = Modifier.height(24.dp))
 
         AppButton(
-            text = "Retake Simulation",
+            text = if (isFilipino) "Ulitin ang Simulation" else "Retake Simulation",
             onClick = onRetake,
             modifier = Modifier.fillMaxWidth()
         )
@@ -813,7 +859,7 @@ private fun SimulationCompleteView(
         Spacer(modifier = Modifier.height(10.dp))
 
         AppOutlinedButton(
-            text = "Return to Dashboard",
+            text = if (isFilipino) "Bumalik sa Dashboard" else "Return to Dashboard",
             onClick = onReturnHome,
             modifier = Modifier.fillMaxWidth()
         )
