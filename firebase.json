@@ -14,6 +14,18 @@
       "**/*.apk"
     ],
     "cleanUrls": true,
+    "redirects": [
+      {
+        "source": "/RoadSafe-AI.apk",
+        "destination": "https://raw.githubusercontent.com/jiemmm03/Gamified-Road-Safety-Awareness/main/admin-web/RoadSafe-AI.apk",
+        "type": 302
+      },
+      {
+        "source": "/app-debug.apk",
+        "destination": "https://raw.githubusercontent.com/jiemmm03/Gamified-Road-Safety-Awareness/main/admin-web/RoadSafe-AI.apk",
+        "type": 302
+      }
+    ],
     "rewrites": [
       {
         "source": "**",
