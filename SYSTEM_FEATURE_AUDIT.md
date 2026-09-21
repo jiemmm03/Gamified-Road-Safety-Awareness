@@ -53,12 +53,14 @@ graph TD
 
     subgraph "Web Command Center (Admin Portal - roadsafedrive.com)"
         WD[Admin Web Dashboard & SPA Router]
+        WDUAL[Dual-Portal Mode: Admin / User Simulation]
         WCH[Chart.js Telemetry & Analytics]
         WM[User / Fleet / Module Management]
         WCC[Mobile App Configuration & Control Center]
         WAI[AI Activity Feed & Telemetry]
         WQR[High-Res APK QR Code Distributor]
         WD --> FSTORE
+        WDUAL --> WD
         WCC -- Set AppConfig & Audit Logs --> FSTORE
         FHOST --> WD
     end
@@ -70,7 +72,8 @@ graph TD
 | **Mobile App Persistence** | Android Jetpack Room v7 (SQLite ORM with Migration 6→7), KSP | Offline-first local data storage & session language persistence |
 | **Mobile Policy Engine** | StateFlow, Real-Time Firestore Document Snapshot (`app_config`) | Live enforcement of administrative thresholds, limits & timers |
 | **Mobile AI Engine** | Deterministic Knowledge-Base, Intent Matching, Bilingual EN/FIL, On-Topic Guard | Instant, zero-latency offline AI coaching & topic remediation |
-| **Admin Web Frontend** | HTML5, CSS3 Glassmorphism, Vanilla JavaScript, Chart.js 4.4 | Real-time administrative operations & 11-section control center |
+| **Admin Web Frontend** | HTML5, CSS3 Glassmorphism, Vanilla JavaScript, Chart.js 4.4 | Real-time administrative operations, dual-portal simulation & 11-section control center |
+| **Web SPA Routing** | HTML5 History API (`pushState`, `popstate`), Clean URL Mappings | Single-Page Application navigation without page reloads |
 | **Cloud Backend** | Firebase Firestore, Firebase Authentication, Firebase Hosting | Cloud data aggregation, telemetry & live system configuration |
 | **CI/CD & Automation** | GitHub Actions, Gradle 8.11, Android SDK Build Tools | Automated 28.7 MB APK compilation and cloud deployment |
 
@@ -169,30 +172,51 @@ graph TD
 
 ---
 
-## 🖥️ Detailed Feature Audit: Admin Web Command Center
+## 🖥️ Detailed Feature Audit: Admin Web Command Center & Dual-Portal
 
-The Admin Web Command Center is located in `/admin-web` and is hosted at **`https://roadsafedrive.com`** (and `https://roadsafedrive.com/admin`).
+The Admin Web Command Center is located in `/admin-web` and is hosted live at **`https://roadsafedrive.com`** (and `https://roadsafedrive.com/admin`).
 
 ```
 admin-web/
-├── index.html        (12-Tab single-page Command Center & Configuration Console)
-├── download.html     (Mobile APK download landing page with high-res QR code)
-├── app.js            (5,900+ lines of real-time Firebase & UI management logic)
+├── index.html        (12-Tab single-page Command Center, Dual-Portal UI & Modals)
+├── download.html     (Mobile APK download landing page with dynamic QR code)
+├── app.js            (5,900+ lines of real-time Firebase, SPA router & control logic)
 ├── styles.css        (Custom CSS3 PNP Gold/Navy glassmorphism design system)
 ├── RoadSafe-AI.apk   (Latest Android 28.7 MB binary ready for wireless deployment)
 └── logo.png          (Dagami MPS official seal)
 ```
 
-### Web Command Center Tabs & Capabilities:
+### 1. Dual-Portal Architecture
+- **Admin Command Mode**: Full administrative command center for traffic officers and municipal admins with 12 tabs, data tables, real-time analytics, and configuration controls.
+- **Driver/Learner Simulation Portal**: A dedicated web simulation interface allowing administrators to experience the mobile learner journey directly in the browser (interactive curriculum, test quizzes, simulated driving scenarios, and real-time XP counters).
+- **Seamless Portal Switcher**: Top-bar toggle allows one-click switching between `Admin Command Portal` and `Learner Simulation Portal` without losing session state.
 
-| Tab | Feature Name | Description & Capabilities |
+### 2. Client-Side SPA Routing Engine
+- Built-in router mapping clean URLs to views via the HTML5 History API:
+  - `/dashboard` → Command Overview & Key Metrics
+  - `/users` → Driver Directory & Account Control
+  - `/modules` → Road Safety Curriculum
+  - `/quiz` or `/quizzes` → Assessment Question Bank & Attempts
+  - `/simulation` or `/scenarios` → Hazard Decision Trials
+  - `/leaderboard` or `/gamification` → Municipal Leaderboard & Badge Catalog
+  - `/ai-activity` → Real-Time AI Traffic Tutor Feed
+  - `/devices` → Connected Android Fleet Telemetry
+  - `/history` or `/logins` → System Event Stream & Access Logs
+  - `/analytics` → Safety Analytics & Chart.js Dashboards
+  - `/settings` → Mobile App Configuration & Control Center
+  - `/download` or `/apk` → Direct APK Download & QR Portal
+  - `/login` / `/register` → Authentication & Driver Registration
+
+### 3. Web Command Center Tabs Breakdown:
+
+| Tab | Feature Name | Description & Detailed Capabilities |
 | :---: | :--- | :--- |
-| **1** | **Dashboard** | Real-time telemetry cards (Active Users, Quizzes Taken, Average Safety Score, Active Devices) + Chart.js traffic analytics. |
-| **2** | **User Management** | Full user directory with live search, demographic info, role filters, user inspection modal, and account controls. |
-| **3** | **Traffic Curriculum** | Topic modules with real-time toggle to enable/disable mobile access via Firestore `system_settings/modules`. |
-| **4** | **Driver Assessment Bank** | Comprehensive question bank with filtering by Easy/Medium/Hard, answer inspection, and explanation details. |
-| **5** | **Hazard Decision Trials** | 20 situational driving scenarios with weather details, road friction parameters, and AI recommendations. |
-| **6** | **Ranks & Leaderboard** | Municipality leaderboard ranking, badge unlocking rates, and XP distribution metrics. |
+| **1** | **Dashboard** | Real-time telemetry cards (Active Users, Quizzes Taken, Average Safety Score, Active Devices) + Chart.js traffic performance analytics, recent activity ticker, and quick navigation cards. |
+| **2** | **User Management** | Full user directory with live instant search, demographic metadata (gender, contact, registration date), online status indicators, role assignment (`USER`/`ADMIN`), multi-tab profile inspector, and driver account registration modal. |
+| **3** | **Traffic Curriculum** | Topic modules management with real-time toggle to enable/disable mobile access via Firestore `system_settings/modules`, module creation/editing modal, and completion metrics. |
+| **4** | **Driver Assessment Bank** | Comprehensive question repository with filtering by Easy/Medium/Hard, full answer review inspection, real-time attempt submission list, and custom question creator. |
+| **5** | **Hazard Decision Trials** | 20 situational driving scenarios with weather details, road friction parameters, and live scenario trial launcher. |
+| **6** | **Ranks & Leaderboard** | Municipality leaderboard ranking, badge unlocking rates, rank movement history, and XP distribution metrics. |
 | **7** | **AI Traffic Tutor Feed** | Real-time live feed of driver AI queries with EN/FIL language badge, topic classification, user ID, and timestamp. |
 | **8** | **Device Fleet** | Real-time tracking of active Android devices, OS versions (Android 11–15), screen resolutions, and battery/connection statuses. |
 | **9** | **Activity History** | Immutable authentication logs recording login timestamps, success/failure statuses, and device fingerprints. |
@@ -229,6 +253,16 @@ Every control in Tab 12 is **100% functional and synced live** to connected mobi
 8. **Sticky Action Controls**:
    - **Save System Preferences**: Validates input bounds, writes to Firestore, updates live metrics, and emits audit event.
    - **Reset to Defaults**: Modal confirmation dialog resetting all thresholds to baseline defaults.
+
+---
+
+## 📲 Dynamic APK Download & QR Distribution Engine (`download.html`)
+
+The standalone download and onboarding portal at **`https://roadsafedrive.com/download`** features:
+- **Dynamic High-Resolution QR Code**: Generated on-the-fly using HTML5 Canvas pointing directly to `https://roadsafedrive.com/RoadSafe-AI.apk`.
+- **Live Package Metrics**: Exact file size badge (**28.7 MB**), version **v1.2.0**, and minimum compatibility (**Android 8.0+ Oreo to Android 15**).
+- **One-Tap Direct Download**: Fast direct APK downloading with auto-fallback mirrors.
+- **Interactive Installation Guide**: 3-step walkthrough for enabling unknown app installations on modern Android devices with security tips and permissions breakdown.
 
 ---
 
@@ -341,6 +375,8 @@ erDiagram
 | **AI On-Topic Guard & Structured Format** | ✅ 100% Fully Implemented | In-Memory (Rule-Based) | N/A |
 | **Mobile App Configuration Center (11 Areas)** | ✅ 100% Fully Implemented | Firestore `system_settings/app_config` | Yes (Bidirectional) |
 | **System Maintenance Mode Lock** | ✅ 100% Fully Implemented | AppConfig Stream | Real-time |
+| **Dual-Portal Mode (Admin & Learner Sim)** | ✅ 100% Fully Implemented | Client-Side State & DOM | Real-time |
+| **SPA Client-Side Routing (Clean URLs)** | ✅ 100% Fully Implemented | HTML5 History API | Real-time |
 | **Security Audit Trail & Telemetry** | ✅ 100% Fully Implemented | Room DB + Firestore `audit_logs` | Yes |
 | **Admin Web Command Center (12 Tabs)** | ✅ 100% Fully Implemented | Cloud Firestore + Web Client | Yes |
 | **Admin Web AI Activity Feed** | ✅ 100% Fully Implemented | Firestore `ai_interactions` | Yes |
@@ -351,4 +387,4 @@ erDiagram
 
 ## 🎯 Conclusion
 
-The **RoadSafe AI** system (v3.5.0) is a resilient, fully integrated dual-platform solution for the **Municipality of Dagami, Leyte**. The mobile app operates with low-connectivity offline resilience via **Room SQLite v7**, while maintaining real-time synchronization with **Google Cloud Firestore**. The newly upgraded **Mobile App Configuration & System Control Center** provides municipal administrators with complete real-time governance over examination standards, question randomization, gamification XP economies, language availability, maintenance locks, and fleet security policies.
+The **RoadSafe AI** system (v3.5.0) is a resilient, fully integrated dual-platform solution for the **Municipality of Dagami, Leyte**. The mobile app operates with low-connectivity offline resilience via **Room SQLite v7**, while maintaining real-time synchronization with **Google Cloud Firestore**. The newly upgraded **Mobile App Configuration & System Control Center**, **Dual-Portal Engine**, **SPA Router**, and **Dynamic High-Res QR Distributor** provide municipal administrators with complete real-time governance over examination standards, question randomization, gamification XP economies, language availability, maintenance locks, and fleet security policies.
