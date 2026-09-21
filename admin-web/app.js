@@ -5053,8 +5053,12 @@ const btnQrModePublic = $('btn-qr-mode-public');
 const btnQrModeLocal = $('btn-qr-mode-local');
 const qrDescText = $('qr-desc-text');
 
-const PUBLIC_PAGE_URL = 'https://roadsafedrive.com/download.html';
-const PUBLIC_APK_URL = 'https://roadsafedrive.com/RoadSafe-AI.apk';
+const liveOrigin = (window.location.hostname && window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1')
+    ? window.location.origin
+    : 'https://gamifiedroadsafetyawareness.web.app';
+
+const PUBLIC_PAGE_URL = `${liveOrigin}/download`;
+const PUBLIC_APK_URL = 'https://raw.githubusercontent.com/jiemmm03/Gamified-Road-Safety-Awareness/main/admin-web/RoadSafe-AI.apk';
 const localDownloadPageUrl = window.location.origin + window.location.pathname.replace(/\/[^\/]*$/, '') + '/download.html';
 
 let currentQrUrl = PUBLIC_PAGE_URL;

@@ -627,9 +627,9 @@
         const DIRECT_APK_URL = 'https://raw.githubusercontent.com/jiemmm03/Gamified-Road-Safety-Awareness/main/admin-web/RoadSafe-AI.apk';
 
         // ─── Determine download URL ───
-        const downloadPageUrl = (window.location.protocol.startsWith('http') && window.location.href.length > 5)
+        const downloadPageUrl = (window.location.protocol.startsWith('http') && window.location.href.length > 5 && !window.location.hostname.includes('localhost') && !window.location.hostname.includes('127.0.0.1'))
             ? window.location.href
-            : 'https://roadsafedrive.com/download.html';
+            : 'https://gamifiedroadsafetyawareness.web.app/download';
 
         const downloadBtn = document.getElementById('btn-download-apk');
         const downloadBtnText = document.getElementById('btn-download-text');
