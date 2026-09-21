@@ -616,6 +616,54 @@ class FirebaseSyncManager {
     }
 
     /**
+     * Data model for cloud-registered user profiles.
+     */
+    data class CloudUserData(
+        val username: String,
+        val password: String,
+        val role: UserRole,
+        val displayName: String,
+        val contact: String,
+        val gender: String,
+        val isActive: Boolean
+    )
+
+    /**
+     * Retrieve user profile and credentials from Firestore for cross-platform login sync.
+     */
+    fun fetchCloudUserDataBlocking(username: String, timeoutSeconds: Long = 4): CloudUserData? {
+        val trimmed = username.trim().lowercase()
+        if (trimmed.isBlank()) return null
+        return try {
+            val task = firestore.collection(COLLECTION_USERS).document(trimmed).get()
+            val doc = com.google.android.gms.tasks.Tasks.await(task, timeoutSeconds, java.util.concurrent.TimeUnit.SECONDS)
+            if (doc != null && doc.exists()) {
+                val cloudPass = doc.getString("password") ?: ""
+                val cloudRoleStr = doc.getString("role") ?: doc.getString("accountRole") ?: "user"
+                val cloudName = doc.getString("fullName") ?: doc.getString("name") ?: trimmed
+                val cloudContact = doc.getString("contact") ?: doc.getString("phone") ?: ""
+                val cloudGender = doc.getString("gender") ?: ""
+                val cloudActive = doc.getBoolean("isActive") ?: true
+                val parsedRole = UserRole.fromRoleString(cloudRoleStr)
+                CloudUserData(
+                    username = trimmed,
+                    password = cloudPass,
+                    role = parsedRole,
+                    displayName = cloudName,
+                    contact = cloudContact,
+                    gender = cloudGender,
+                    isActive = cloudActive
+                )
+            } else {
+                null
+            }
+        } catch (e: Exception) {
+            Log.w(tag, "fetchCloudUserDataBlocking failed for $trimmed: ${e.message}")
+            null
+        }
+    }
+
+    /**
      * Fetch user's authoritative role directly from Firestore with safe default.
      */
     suspend fun fetchUserRole(username: String): UserRole {

@@ -176,10 +176,61 @@ class AuthManager(context: Context) {
     fun getLockoutRemainingSeconds(username: String): Int =
         (getLockoutRemainingMs(username.trim().lowercase()) / 1000).toInt()
 
+    private fun registerFromCloud(
+        username: String,
+        password: String,
+        role: UserRole,
+        displayName: String,
+        contact: String = "",
+        gender: String = "",
+        isActive: Boolean = true
+    ) {
+        val trimmedUser = username.trim().lowercase()
+        val salt = generateSalt()
+        val hash = hashWithPbkdf2(password, salt)
+        val defaultPerms = RolePermissions.getPermissions(role)
+        val canonicalRole = role.backendValue
+
+        userPrefs.edit()
+            .putString("${trimmedUser}_hash", hash)
+            .putString("${trimmedUser}_role", canonicalRole)
+            .putString("${trimmedUser}_display", displayName)
+            .putString("${trimmedUser}_contact", contact)
+            .putString("${trimmedUser}_gender", gender)
+            .putBoolean("${trimmedUser}_active", isActive)
+            .putLong("${trimmedUser}_created", System.currentTimeMillis())
+            .putStringSet("${trimmedUser}_permissions", defaultPerms.map { it.name }.toSet())
+            .apply()
+
+        val allUsers = (userPrefs.getStringSet("all_users", emptySet()) ?: emptySet()).toMutableSet()
+        allUsers.add(trimmedUser)
+        userPrefs.edit().putStringSet("all_users", allUsers).apply()
+    }
+
     fun login(username: String, password: String): LoginResult {
         val trimmedUser = username.trim().lowercase()
-        val storedHash = userPrefs.getString("${trimmedUser}_hash", null)
-            ?: return LoginResult.InvalidCredentials
+        var storedHash = userPrefs.getString("${trimmedUser}_hash", null)
+
+        // Fallback: If not cached locally, check Cloud Firestore for accounts registered via Admin Web Portal
+        if (storedHash == null) {
+            val cloudUser = syncManager.fetchCloudUserDataBlocking(trimmedUser)
+            if (cloudUser != null && cloudUser.password.isNotBlank()) {
+                registerFromCloud(
+                    username = cloudUser.username,
+                    password = cloudUser.password,
+                    role = cloudUser.role,
+                    displayName = cloudUser.displayName,
+                    contact = cloudUser.contact,
+                    gender = cloudUser.gender,
+                    isActive = cloudUser.isActive
+                )
+                storedHash = userPrefs.getString("${trimmedUser}_hash", null)
+            }
+        }
+
+        if (storedHash == null) {
+            return LoginResult.InvalidCredentials
+        }
 
         // S-06: Check rate limiting before attempting password verification
         val lockoutRemaining = getLockoutRemainingMs(trimmedUser)
