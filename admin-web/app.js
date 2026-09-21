@@ -1526,6 +1526,7 @@ function switchTab(tab, updateHistory = true) {
     if (tab === 'gamification') { renderProgressList(); renderBadgesCatalogList(); renderRankHistoryList(); }
     if (tab === 'ai-activity') renderAiActivityList();
     if (tab === 'analytics') renderAnalyticsView();
+    if (tab === 'settings') loadSystemSettings();
 }
 
 // Subtab Switchers
@@ -5840,6 +5841,426 @@ window.switchUserTab = function(tabName) {
 };
 
 // ═══════════════════════════════════════════════════════════════
+// 21. MOBILE APP CONFIGURATION & SYSTEM SETTINGS CENTER
+// ═══════════════════════════════════════════════════════════════
+
+const DEFAULT_APP_CONFIG = {
+    // 1. Examination & Assessment Standards
+    quizPassingScore: 70,
+    assessmentPassingScore: 75,
+    simulationPassingScore: 75,
+    baseQuizXp: 100,
+    quizAttemptLimit: 0,
+    quizTimerSeconds: 20,
+    minScoreForXp: 50,
+    randomizeQuestions: false,
+    randomizeChoices: false,
+    showCorrectAnswers: true,
+    allowQuizRetake: true,
+
+    // 2. Gamification & XP Economy
+    moduleCompletionXp: 50,
+    correctAnswerXp: 10,
+    assessmentCompletionXp: 150,
+    maxQuizXpCap: 300,
+    dailyStreakMultiplier: 1.25,
+    xpPerLevel: 500,
+    leaderboardRankingCriteria: 'totalXp',
+    maxDriverLevel: 50,
+    enableDailyStreak: true,
+    enableUserLevels: true,
+    enableLeaderboard: true,
+
+    // 3. Quiz & Assessment Language
+    enableEnglishQuiz: true,
+    enableFilipinoQuiz: true,
+    defaultQuizLanguage: 'en',
+
+    // 4. Mobile App Behavior
+    maintenanceMode: false,
+    maintenanceMessage: 'RoadSafe AI is undergoing scheduled system maintenance. Please try again shortly.',
+    minAppVersion: '1.0.0',
+    forceUpdateRequired: false,
+    enableAnimations: true,
+    enableAnnouncement: false,
+    announcementTitle: '',
+    announcementMessage: '',
+
+    // 5. Modules & Content Progression
+    contentVersion: 'v1.2.0-300Q',
+    requireModuleReading: false,
+    linearProgressionEnforced: false,
+    module1Enabled: true,
+    module2Enabled: true,
+    module3Enabled: true,
+
+    // 6. User Sessions & Notifications
+    sessionTimeoutDays: 0,
+    allowMultiDeviceLogin: true,
+    masterNotificationsEnabled: true,
+    dailyQuizReminderEnabled: true,
+    streakProtectionAlertEnabled: true,
+    achievementNotificationEnabled: true,
+
+    // 7. Security, Sync & Data Governance
+    syncInterval: 'realtime',
+    adminTimeoutMinutes: 60,
+    autoSyncEnabled: true,
+    reauthForSensitiveActions: true,
+    auditLoggingEnabled: true,
+    softDeleteProtocolEnabled: false
+};
+
+let currentSystemConfig = { ...DEFAULT_APP_CONFIG };
+let pendingSaveSettings = null;
+
+async function loadSystemSettings() {
+    try {
+        if (db) {
+            const doc = await db.collection('system_settings').doc('app_config').get();
+            if (doc.exists) {
+                currentSystemConfig = { ...DEFAULT_APP_CONFIG, ...doc.data() };
+            }
+        }
+    } catch (e) {
+        console.warn('Could not load system_settings/app_config from Firestore:', e);
+    }
+    populateSettingsForm(currentSystemConfig);
+    updateSettingsStatusCard(currentSystemConfig);
+}
+
+function populateSettingsForm(cfg) {
+    const setVal = (id, val) => {
+        const el = document.getElementById(id);
+        if (el) el.value = val;
+    };
+    const setCheck = (id, val) => {
+        const el = document.getElementById(id);
+        if (el) el.checked = Boolean(val);
+    };
+
+    // 1. Examination
+    setVal('setting-quiz-pass-score', cfg.quizPassingScore ?? 70);
+    setVal('setting-assessment-pass-score', cfg.assessmentPassingScore ?? 75);
+    setVal('setting-sim-pass-score', cfg.simulationPassingScore ?? 75);
+    setVal('setting-base-quiz-xp', cfg.baseQuizXp ?? 100);
+    setVal('setting-quiz-attempt-limit', cfg.quizAttemptLimit ?? 0);
+    setVal('setting-quiz-timer', cfg.quizTimerSeconds ?? 20);
+    setVal('setting-min-score-xp', cfg.minScoreForXp ?? 50);
+    setCheck('setting-toggle-randomize-questions', cfg.randomizeQuestions ?? false);
+    setCheck('setting-toggle-randomize-choices', cfg.randomizeChoices ?? false);
+    setCheck('setting-toggle-show-answers', cfg.showCorrectAnswers ?? true);
+    setCheck('setting-toggle-allow-retake', cfg.allowQuizRetake ?? true);
+
+    // 2. Gamification
+    setVal('setting-xp-module', cfg.moduleCompletionXp ?? 50);
+    setVal('setting-xp-correct-answer', cfg.correctAnswerXp ?? 10);
+    setVal('setting-xp-assessment', cfg.assessmentCompletionXp ?? 150);
+    setVal('setting-max-xp-session', cfg.maxQuizXpCap ?? 300);
+    setVal('setting-streak-mult', cfg.dailyStreakMultiplier ?? 1.25);
+    setVal('setting-xp-per-level', cfg.xpPerLevel ?? 500);
+    setVal('setting-leaderboard-ranking', cfg.leaderboardRankingCriteria ?? 'totalXp');
+    setVal('setting-max-level', cfg.maxDriverLevel ?? 50);
+    setCheck('setting-toggle-daily-streak', cfg.enableDailyStreak ?? true);
+    setCheck('setting-toggle-user-levels', cfg.enableUserLevels ?? true);
+    setCheck('setting-toggle-leaderboard', cfg.enableLeaderboard ?? true);
+
+    // 3. Languages
+    setCheck('setting-toggle-lang-en', cfg.enableEnglishQuiz ?? true);
+    setCheck('setting-toggle-lang-fil', cfg.enableFilipinoQuiz ?? true);
+    setVal('setting-default-quiz-lang', cfg.defaultQuizLanguage ?? 'en');
+
+    // 4. Mobile App Behavior
+    setCheck('setting-toggle-maintenance', cfg.maintenanceMode ?? false);
+    setVal('setting-maintenance-message', cfg.maintenanceMessage ?? DEFAULT_APP_CONFIG.maintenanceMessage);
+    setVal('setting-min-app-version', cfg.minAppVersion ?? '1.0.0');
+    setCheck('setting-toggle-force-update', cfg.forceUpdateRequired ?? false);
+    setCheck('setting-toggle-animations', cfg.enableAnimations ?? true);
+    setCheck('setting-toggle-announcement', cfg.enableAnnouncement ?? false);
+    setVal('setting-announcement-title', cfg.announcementTitle ?? '');
+    setVal('setting-announcement-msg', cfg.announcementMessage ?? '');
+
+    // 5. Modules & Progression
+    setVal('setting-content-version', cfg.contentVersion ?? 'v1.2.0-300Q');
+    setCheck('setting-toggle-require-module', cfg.requireModuleReading ?? false);
+    setCheck('setting-toggle-linear-progression', cfg.linearProgressionEnforced ?? false);
+    setCheck('mod-toggle-easy', cfg.module1Enabled ?? true);
+    setCheck('mod-toggle-medium', cfg.module2Enabled ?? true);
+    setCheck('mod-toggle-hard', cfg.module3Enabled ?? true);
+
+    // 6. User Sessions & Notifications
+    setVal('setting-session-timeout', cfg.sessionTimeoutDays ?? 0);
+    setCheck('setting-toggle-multi-device', cfg.allowMultiDeviceLogin ?? true);
+    setCheck('setting-toggle-notifications-master', cfg.masterNotificationsEnabled ?? true);
+    setCheck('setting-toggle-notify-quiz', cfg.dailyQuizReminderEnabled ?? true);
+    setCheck('setting-toggle-notify-streak', cfg.streakProtectionAlertEnabled ?? true);
+    setCheck('setting-toggle-notify-achievement', cfg.achievementNotificationEnabled ?? true);
+
+    // 7. Security & Sync
+    setVal('setting-sync-interval', cfg.syncInterval ?? 'realtime');
+    setVal('setting-admin-timeout', cfg.adminTimeoutMinutes ?? 60);
+    setCheck('setting-toggle-auto-sync', cfg.autoSyncEnabled ?? true);
+    setCheck('setting-toggle-reauth-sensitive', cfg.reauthForSensitiveActions ?? true);
+    setCheck('setting-toggle-audit-logging', cfg.auditLoggingEnabled ?? true);
+    setCheck('setting-toggle-soft-delete', cfg.softDeleteProtocolEnabled ?? false);
+}
+
+function updateSettingsStatusCard(cfg) {
+    const userCount = State.users ? State.users.length : 0;
+    const activeUserEl = $('status-active-users');
+    if (activeUserEl) activeUserEl.textContent = `${userCount} Enrolled Drivers`;
+
+    const isMaint = Boolean(cfg.maintenanceMode);
+    const maintIcon = $('status-maintenance-icon');
+    const maintText = $('status-maintenance-text');
+    const liveBadge = $('status-live-badge');
+
+    if (maintIcon && maintText) {
+        if (isMaint) {
+            maintIcon.textContent = 'warning';
+            maintIcon.style.color = 'var(--traffic-red, #EF4444)';
+            maintText.textContent = 'Active (Access Restricted)';
+            maintText.style.color = '#FCA5A5';
+        } else {
+            maintIcon.textContent = 'check_circle';
+            maintIcon.style.color = 'var(--emerald-green, #10B981)';
+            maintText.textContent = 'Inactive (Normal Operation)';
+            maintText.style.color = '#FFFFFF';
+        }
+    }
+
+    if (liveBadge) {
+        if (isMaint) {
+            liveBadge.innerHTML = '● MAINTENANCE MODE ACTIVE';
+            liveBadge.style.background = 'rgba(239, 68, 68, 0.18)';
+            liveBadge.style.color = '#F87171';
+            liveBadge.style.borderColor = 'rgba(239, 68, 68, 0.5)';
+        } else {
+            liveBadge.innerHTML = '● SYSTEM OPERATIONAL';
+            liveBadge.style.background = 'rgba(16,185,129,0.15)';
+            liveBadge.style.color = 'var(--emerald-green)';
+            liveBadge.style.borderColor = 'rgba(16,185,129,0.4)';
+        }
+    }
+
+    const lastSyncEl = $('status-last-sync-time');
+    if (lastSyncEl) {
+        const now = new Date();
+        lastSyncEl.textContent = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    }
+}
+
+function getSettingsPayloadFromForm() {
+    const getNum = (id, fallback) => {
+        const el = document.getElementById(id);
+        const val = el ? parseFloat(el.value) : fallback;
+        return isNaN(val) ? fallback : val;
+    };
+    const getVal = (id, fallback) => {
+        const el = document.getElementById(id);
+        return el ? el.value.trim() : fallback;
+    };
+    const getCheck = (id, fallback) => {
+        const el = document.getElementById(id);
+        return el ? el.checked : fallback;
+    };
+
+    return {
+        // 1. Examination & Assessment
+        quizPassingScore: Math.min(100, Math.max(0, getNum('setting-quiz-pass-score', 70))),
+        assessmentPassingScore: Math.min(100, Math.max(0, getNum('setting-assessment-pass-score', 75))),
+        simulationPassingScore: Math.min(100, Math.max(0, getNum('setting-sim-pass-score', 75))),
+        baseQuizXp: Math.max(0, getNum('setting-base-quiz-xp', 100)),
+        quizAttemptLimit: parseInt(getVal('setting-quiz-attempt-limit', '0'), 10),
+        quizTimerSeconds: parseInt(getVal('setting-quiz-timer', '20'), 10),
+        minScoreForXp: Math.min(100, Math.max(0, getNum('setting-min-score-xp', 50))),
+        randomizeQuestions: getCheck('setting-toggle-randomize-questions', false),
+        randomizeChoices: getCheck('setting-toggle-randomize-choices', false),
+        showCorrectAnswers: getCheck('setting-toggle-show-answers', true),
+        allowQuizRetake: getCheck('setting-toggle-allow-retake', true),
+
+        // 2. Gamification
+        moduleCompletionXp: Math.max(0, getNum('setting-xp-module', 50)),
+        correctAnswerXp: Math.max(0, getNum('setting-xp-correct-answer', 10)),
+        assessmentCompletionXp: Math.max(0, getNum('setting-xp-assessment', 150)),
+        maxQuizXpCap: Math.max(50, getNum('setting-max-xp-session', 300)),
+        dailyStreakMultiplier: parseFloat(getVal('setting-streak-mult', '1.25')),
+        xpPerLevel: Math.max(100, getNum('setting-xp-per-level', 500)),
+        leaderboardRankingCriteria: getVal('setting-leaderboard-ranking', 'totalXp'),
+        maxDriverLevel: Math.max(5, getNum('setting-max-level', 50)),
+        enableDailyStreak: getCheck('setting-toggle-daily-streak', true),
+        enableUserLevels: getCheck('setting-toggle-user-levels', true),
+        enableLeaderboard: getCheck('setting-toggle-leaderboard', true),
+
+        // 3. Languages
+        enableEnglishQuiz: getCheck('setting-toggle-lang-en', true),
+        enableFilipinoQuiz: getCheck('setting-toggle-lang-fil', true),
+        defaultQuizLanguage: getVal('setting-default-quiz-lang', 'en'),
+
+        // 4. Mobile App Behavior
+        maintenanceMode: getCheck('setting-toggle-maintenance', false),
+        maintenanceMessage: getVal('setting-maintenance-message', DEFAULT_APP_CONFIG.maintenanceMessage),
+        minAppVersion: getVal('setting-min-app-version', '1.0.0'),
+        forceUpdateRequired: getCheck('setting-toggle-force-update', false),
+        enableAnimations: getCheck('setting-toggle-animations', true),
+        enableAnnouncement: getCheck('setting-toggle-announcement', false),
+        announcementTitle: getVal('setting-announcement-title', ''),
+        announcementMessage: getVal('setting-announcement-msg', ''),
+
+        // 5. Modules & Progression
+        contentVersion: getVal('setting-content-version', 'v1.2.0-300Q'),
+        requireModuleReading: getCheck('setting-toggle-require-module', false),
+        linearProgressionEnforced: getCheck('setting-toggle-linear-progression', false),
+        module1Enabled: getCheck('mod-toggle-easy', true),
+        module2Enabled: getCheck('mod-toggle-medium', true),
+        module3Enabled: getCheck('mod-toggle-hard', true),
+
+        // 6. User Sessions & Notifications
+        sessionTimeoutDays: parseInt(getVal('setting-session-timeout', '0'), 10),
+        allowMultiDeviceLogin: getCheck('setting-toggle-multi-device', true),
+        masterNotificationsEnabled: getCheck('setting-toggle-notifications-master', true),
+        dailyQuizReminderEnabled: getCheck('setting-toggle-notify-quiz', true),
+        streakProtectionAlertEnabled: getCheck('setting-toggle-notify-streak', true),
+        achievementNotificationEnabled: getCheck('setting-toggle-notify-achievement', true),
+
+        // 7. Security & Sync
+        syncInterval: getVal('setting-sync-interval', 'realtime'),
+        adminTimeoutMinutes: parseInt(getVal('setting-admin-timeout', '60'), 10),
+        autoSyncEnabled: getCheck('setting-toggle-auto-sync', true),
+        reauthForSensitiveActions: getCheck('setting-toggle-reauth-sensitive', true),
+        auditLoggingEnabled: getCheck('setting-toggle-audit-logging', true),
+        softDeleteProtocolEnabled: getCheck('setting-toggle-soft-delete', false),
+
+        // Metadata
+        lastUpdatedBy: State.currentAdmin || 'ADMIN_OFFICER',
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+    };
+}
+
+window.saveAllSystemSettings = function() {
+    const payload = getSettingsPayloadFromForm();
+
+    // Validation: At least one language must be enabled
+    if (!payload.enableEnglishQuiz && !payload.enableFilipinoQuiz) {
+        showToast('At least one quiz language (English or Filipino) must remain enabled.', 'error');
+        return;
+    }
+
+    pendingSaveSettings = payload;
+
+    const modalTitle = $('settings-modal-title');
+    const modalBody = $('settings-modal-body');
+    const modalConfirmBtn = $('btn-settings-modal-confirm');
+
+    if (modalTitle) modalTitle.textContent = 'Save System Preferences';
+    if (modalBody) {
+        modalBody.innerHTML = `
+            You are about to save changes to the <strong>RoadSafe AI Central Configuration</strong>.<br><br>
+            • Quiz Pass Score: <strong>${payload.quizPassingScore}%</strong><br>
+            • Maintenance Mode: <strong>${payload.maintenanceMode ? '<span style="color:#EF4444;">ENABLED (Locked)</span>' : '<span style="color:#10B981;">Disabled (Active)</span>'}</strong><br>
+            • Languages: <strong>English (${payload.enableEnglishQuiz ? 'ON' : 'OFF'}), Filipino (${payload.enableFilipinoQuiz ? 'ON' : 'OFF'})</strong><br><br>
+            These settings will be synchronized live to connected mobile Android clients.
+        `;
+    }
+    if (modalConfirmBtn) {
+        modalConfirmBtn.textContent = 'Confirm & Save';
+        modalConfirmBtn.onclick = () => executeSettingsSave();
+    }
+
+    const overlay = $('settings-confirm-modal-overlay');
+    if (overlay) overlay.style.display = 'flex';
+};
+
+window.executeSettingsSave = async function() {
+    if (!pendingSaveSettings) return;
+    closeSettingsModal();
+
+    try {
+        if (db) {
+            await db.collection('system_settings').doc('app_config').set(pendingSaveSettings, { merge: true });
+
+            if (pendingSaveSettings.auditLoggingEnabled !== false) {
+                await db.collection('audit_logs').add({
+                    action: 'SYSTEM_SETTINGS_UPDATE',
+                    performedBy: State.currentAdmin || 'ADMIN_OFFICER',
+                    adminId: State.currentAdmin || 'ADMIN_OFFICER',
+                    target: 'app_config',
+                    description: 'Updated Mobile App & Examination Configuration Parameters',
+                    riskLevel: pendingSaveSettings.maintenanceMode ? 'HIGH' : 'MEDIUM',
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                }).catch(e => console.warn('Audit log error:', e));
+            }
+        }
+
+        currentSystemConfig = { ...pendingSaveSettings };
+        updateSettingsStatusCard(currentSystemConfig);
+        showToast('System preferences saved and synced to mobile clients!', 'success', 3500);
+    } catch (err) {
+        console.error('Failed to save system settings:', err);
+        showToast('Failed to save settings: ' + (err.message || 'Firestore error'), 'error');
+    }
+};
+
+window.confirmResetSettings = function() {
+    const modalTitle = $('settings-modal-title');
+    const modalBody = $('settings-modal-body');
+    const modalConfirmBtn = $('btn-settings-modal-confirm');
+
+    if (modalTitle) modalTitle.textContent = 'Reset to System Defaults';
+    if (modalBody) {
+        modalBody.innerHTML = `
+            <span style="color:#EF4444;font-weight:600;">⚠️ Warning:</span> Are you sure you want to reset all operational thresholds, gamification multipliers, language toggles, and mobile policies back to default factory settings?<br><br>
+            This action will be immediately broadcast to all active mobile sessions.
+        `;
+    }
+    if (modalConfirmBtn) {
+        modalConfirmBtn.textContent = 'Reset to Defaults';
+        modalConfirmBtn.onclick = () => executeResetSettings();
+    }
+
+    const overlay = $('settings-confirm-modal-overlay');
+    if (overlay) overlay.style.display = 'flex';
+};
+
+window.executeResetSettings = async function() {
+    closeSettingsModal();
+    try {
+        const payload = {
+            ...DEFAULT_APP_CONFIG,
+            lastUpdatedBy: State.currentAdmin || 'ADMIN_OFFICER',
+            updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+        };
+
+        if (db) {
+            await db.collection('system_settings').doc('app_config').set(payload);
+
+            await db.collection('audit_logs').add({
+                action: 'SYSTEM_SETTINGS_RESET',
+                performedBy: State.currentAdmin || 'ADMIN_OFFICER',
+                adminId: State.currentAdmin || 'ADMIN_OFFICER',
+                target: 'app_config',
+                description: 'Restored Mobile App & Examination Configuration to Default Settings',
+                riskLevel: 'HIGH',
+                timestamp: firebase.firestore.FieldValue.serverTimestamp()
+            }).catch(e => console.warn('Audit log error:', e));
+        }
+
+        currentSystemConfig = { ...payload };
+        populateSettingsForm(currentSystemConfig);
+        updateSettingsStatusCard(currentSystemConfig);
+        showToast('System settings restored to default baseline.', 'info', 3500);
+    } catch (err) {
+        console.error('Failed to reset settings:', err);
+        showToast('Failed to reset settings: ' + (err.message || 'Firestore error'), 'error');
+    }
+};
+
+window.closeSettingsModal = function() {
+    const overlay = $('settings-confirm-modal-overlay');
+    if (overlay) overlay.style.display = 'none';
+};
+
+// ═══════════════════════════════════════════════════════════════
 // 22. BOOTSTRAP INITIALIZATION & SPLASH SCREEN
 // ═══════════════════════════════════════════════════════════════
 
@@ -5867,6 +6288,7 @@ document.addEventListener('DOMContentLoaded', () => {
         renderQuestionsList();
         renderScenariosList();
         renderBadgesCatalogList();
+        loadSystemSettings();
 
         // Initialize portal mode
         switchPortalMode(currentPortalMode);
@@ -5890,3 +6312,4 @@ document.addEventListener('DOMContentLoaded', () => {
         setTimeout(dismissSplashScreen, 500);
     }
 });
+

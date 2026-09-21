@@ -278,6 +278,8 @@ fun RoadSafetyApp() {
     var lastSimLeveledUp by remember { mutableStateOf(false) }
     var lastSimNewLevel by remember { mutableIntStateOf(1) }
 
+    val appConfig by com.example.gamifiedroadsafetyawareness.firebase.FirebaseSyncManager.getInstance().appConfigFlow.collectAsState()
+
     fun logUserAction(
         actionType: ActionType,
         module: Module,
@@ -299,6 +301,11 @@ fun RoadSafetyApp() {
     fun navigateTo(screen: Screen) {
         if (screen == Screen.Login || screen == Screen.SignUp) {
             if (screenStack.lastOrNull() != screen) screenStack.add(screen)
+            return
+        }
+
+        if (appConfig.maintenanceMode && currentUserRole == UserRole.USER && (screen == Screen.Assessment || screen == Screen.QuizTaking || screen == Screen.Simulation)) {
+            Toast.makeText(context, appConfig.maintenanceMessage, Toast.LENGTH_LONG).show()
             return
         }
 

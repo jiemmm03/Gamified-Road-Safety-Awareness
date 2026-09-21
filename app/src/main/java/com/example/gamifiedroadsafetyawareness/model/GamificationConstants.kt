@@ -25,6 +25,20 @@ object GamificationConstants {
         prefs?.edit()?.putInt(key, value)?.apply()
     }
 
+    fun applyAppConfig(config: AppConfig) {
+        setQuizPassThreshold(config.quizPassingScore)
+        QuizXp.setCompletion(config.baseQuizXp)
+        QuizXp.setCorrectAnswer(config.xpPerCorrectAnswer)
+        ModuleXp.setModuleXp("mod_easy_quiz", config.xpPerPassedQuiz)
+        ModuleXp.setModuleXp("mod_medium_quiz", config.xpPerPassedAssessment)
+        ModuleXp.setModuleXp("mod_hard_quiz", config.xpPerPassedAssessment * 2)
+        // Apply module enable/disable
+        listOf("mod_easy_quiz", "mod_medium_quiz", "mod_hard_quiz").forEach { modId ->
+            val isEnabled = !config.disabledModuleIds.contains(modId)
+            ContentSettings.setModuleEnabled(modId, isEnabled)
+        }
+    }
+
     // ── Per-Module XP Rewards (admin-configurable) ─────────────────────────────
     object ModuleXp {
         private val DEFAULTS = mapOf(

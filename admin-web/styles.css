@@ -5280,4 +5280,161 @@ input:checked + .slider:before {
     border: 2px solid #0F1F38;
 }
 
+/* ═══════════════════════════════════════════════════════════════
+   23. MOBILE APP CONFIGURATION & SYSTEM SETTINGS CENTER
+   ═══════════════════════════════════════════════════════════════ */
+.settings-page-header {
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 14px;
+}
+
+.status-overview-card {
+    margin-bottom: 24px;
+    background: linear-gradient(135deg, rgba(10, 22, 43, 0.95), rgba(15, 31, 56, 0.95)) !important;
+    border: 1px solid var(--badge-gold-border) !important;
+    border-radius: var(--radius-lg);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+}
+
+.status-metric-box {
+    background: rgba(6, 13, 26, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 10px;
+    padding: 12px 14px;
+    transition: all 0.2s ease;
+}
+
+.status-metric-box:hover {
+    border-color: rgba(212, 175, 55, 0.4);
+    background: rgba(0, 56, 168, 0.15);
+}
+
+.settings-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(440px, 1fr));
+    gap: 20px;
+}
+
+.settings-card {
+    background: linear-gradient(180deg, #0F1F38 0%, #0A1424 100%);
+    border: 1px solid var(--border-card);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-card);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.settings-card:hover {
+    border-color: rgba(212, 175, 55, 0.4);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+
+.custom-toggle-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 10px 14px;
+    background: rgba(6, 13, 26, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 10px;
+    cursor: pointer;
+    position: relative;
+    user-select: none;
+    transition: all 0.2s ease;
+}
+
+.custom-toggle-row:hover {
+    background: rgba(0, 56, 168, 0.12);
+    border-color: rgba(212, 175, 55, 0.3);
+}
+
+.custom-toggle-row .toggle-text {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    flex: 1;
+}
+
+.custom-toggle-row .toggle-text strong {
+    font-size: 13px;
+    color: #F1F5F9;
+    font-weight: 600;
+}
+
+.custom-toggle-row .toggle-text span {
+    font-size: 11px;
+    color: var(--text-secondary);
+    line-height: 1.35;
+}
+
+.custom-toggle-row input[type="checkbox"] {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.custom-toggle-row .toggle-slider {
+    position: relative;
+    width: 44px;
+    height: 24px;
+    background: #1E293B;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 24px;
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+}
+
+.custom-toggle-row .toggle-slider::before {
+    content: '';
+    position: absolute;
+    height: 18px;
+    width: 18px;
+    left: 2px;
+    bottom: 2px;
+    background: #94A3B8;
+    border-radius: 50%;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.custom-toggle-row input[type="checkbox"]:checked + .toggle-slider {
+    background: linear-gradient(135deg, #10B981, #059669);
+    border-color: #34D399;
+    box-shadow: 0 0 10px rgba(16, 185, 129, 0.35);
+}
+
+.custom-toggle-row input[type="checkbox"]:checked + .toggle-slider::before {
+    transform: translateX(20px);
+    background: #FFFFFF;
+}
+
+.settings-action-bar {
+    margin-top: 28px;
+    padding: 16px 24px;
+    background: rgba(10, 22, 43, 0.95);
+    border: 1px solid var(--badge-gold-border);
+    border-radius: 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 14px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+}
+
+@media (max-width: 768px) {
+    .settings-grid {
+        grid-template-columns: 1fr;
+    }
+    .form-row-grid {
+        grid-template-columns: 1fr !important;
+    }
+}
+
+
 

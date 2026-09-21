@@ -77,13 +77,16 @@ fun QuizScreen(
         }
     }
 
-    val activeQuestions = remember(quizId) {
+    val appConfig by com.example.gamifiedroadsafetyawareness.firebase.FirebaseSyncManager.getInstance().appConfigFlow.collectAsState()
+
+    val activeQuestions = remember(quizId, appConfig.randomizeQuestions) {
         val raw = quiz.questions
-        if (raw.size > 20) raw.shuffled().take(20) else raw
+        val pool = if (appConfig.randomizeQuestions) raw.shuffled() else raw
+        if (pool.size > 20) pool.take(20) else pool
     }
 
     // Language selection state (exclusive to Quiz/Assessment session)
-    var sessionLanguage by remember { mutableStateOf<String?>(null) }
+    var sessionLanguage by remember { mutableStateOf<String?>(appConfig.defaultQuizLanguage) }
     var isSessionStarted by remember { mutableStateOf(false) }
 
     var currentQuestionIndex by remember { mutableStateOf(0) }
@@ -91,7 +94,7 @@ fun QuizScreen(
     var isFinished by remember { mutableStateOf(false) }
     var selectedOptionIndex by remember { mutableStateOf(-1) }
     var isAnswered by remember { mutableStateOf(false) }
-    var timeLeftSeconds by remember { mutableStateOf(20) }
+    var timeLeftSeconds by remember { mutableStateOf(if (appConfig.quizTimerSeconds > 0) appConfig.quizTimerSeconds else 20) }
 
     var comboStreak by remember { mutableIntStateOf(0) }
     var bestComboStreak by remember { mutableIntStateOf(0) }
@@ -106,6 +109,7 @@ fun QuizScreen(
     var awardResult by remember { mutableStateOf<XpAwardResult?>(null) }
     var awardedAttempt by remember { mutableStateOf<QuizAttemptEntity?>(null) }
     var highestScorePercentEver by remember { mutableStateOf(0) }
+    var userAttemptCount by remember { mutableIntStateOf(0) }
     val coroutineScope = rememberCoroutineScope()
 
     val answerLog = remember { mutableStateListOf<QuestionAnswerRecord>() }
@@ -122,23 +126,38 @@ fun QuizScreen(
     BackHandler { requestExit() }
 
     LaunchedEffect(username, xpManager) {
-        if (username.isNotBlank()) {
-            startingProgress = xpManager?.getProgress(username)
+        if (username.isNotBlank() && xpManager != null) {
+            startingProgress = xpManager.getProgress(username)
+            userAttemptCount = xpManager.getAttemptsForUserByModule(username, quiz.id).size
         }
     }
 
     LaunchedEffect(isFinished) {
         if (isFinished && xpManager != null && username.isNotBlank()) {
-            val result = xpManager.awardQuizCompletion(
-                username = username,
-                correctAnswers = score,
-                totalQuestions = activeQuestions.size,
-                comboXpEarned = comboXpEarned,
-                bestComboStreak = bestComboStreak,
-                timeChallengeCompleted = !hadAnyTimeout,
-                quizId = quizId,
-                quizTitle = quiz.title
-            )
+            val scorePercent = if (activeQuestions.isNotEmpty()) (score * 100) / activeQuestions.size else 0
+            val meetsMinScoreForXp = scorePercent >= appConfig.minScoreForXp
+
+            val result = if (meetsMinScoreForXp) {
+                xpManager.awardQuizCompletion(
+                    username = username,
+                    correctAnswers = score,
+                    totalQuestions = activeQuestions.size,
+                    comboXpEarned = comboXpEarned,
+                    bestComboStreak = bestComboStreak,
+                    timeChallengeCompleted = !hadAnyTimeout,
+                    quizId = quizId,
+                    quizTitle = quiz.title
+                )
+            } else {
+                XpAwardResult(
+                    baseXp = 0,
+                    totalAwarded = 0,
+                    totalXp = startingProgress?.totalXp ?: 0,
+                    previousLevel = startingProgress?.currentLevel ?: 1,
+                    newLevel = startingProgress?.currentLevel ?: 1,
+                    currentDailyStreak = startingProgress?.currentStreak ?: 0
+                )
+            }
             awardResult = result
             awardedAttempt = xpManager.recordQuizAttempt(
                 username = username,
@@ -159,18 +178,22 @@ fun QuizScreen(
         }
     }
 
-    LaunchedEffect(currentQuestionIndex, isFinished, isSessionStarted) {
+    LaunchedEffect(currentQuestionIndex, isFinished, isSessionStarted, appConfig.quizTimerSeconds) {
         if (isFinished || !isSessionStarted) return@LaunchedEffect
-        timeLeftSeconds = 20
+        val questionTimer = appConfig.quizTimerSeconds
+        timeLeftSeconds = if (questionTimer > 0) questionTimer else 999
         selectedOptionIndex = -1
         isAnswered = false
-        while (timeLeftSeconds > 0 && !isAnswered) {
-            delay(1000L)
-            if (!isAnswered) {
-                timeLeftSeconds--
+
+        if (questionTimer > 0) {
+            while (timeLeftSeconds > 0 && !isAnswered) {
+                delay(1000L)
+                if (!isAnswered) {
+                    timeLeftSeconds--
+                }
             }
         }
-        if (!isAnswered && !isFinished) {
+        if (!isAnswered && !isFinished && questionTimer > 0) {
             isAnswered = true
             hadAnyTimeout = true
             comboStreak = 0
@@ -227,23 +250,77 @@ fun QuizScreen(
     )
 
     if (!isSessionStarted) {
-        // ── LANGUAGE SELECTION SCREEN (Appears immediately before starting quiz) ──
-        SessionLanguageSelector(
-            sessionTitle = quiz.title,
-            sessionSubtitle = "20 timed road safety and traffic rule questions with AI evaluation.",
-            difficultyLabel = "${quiz.moduleType.label} • +${GamificationConstants.ModuleXp.getModuleXp(quizId)} XP",
-            questionCountText = "${activeQuestions.size} Questions",
-            sessionTypeLabel = "QUIZ ASSESSMENT",
-            selectedLanguage = sessionLanguage,
-            onLanguageSelected = { sessionLanguage = it },
-            onStartConfirmed = { lang ->
-                sessionLanguage = lang
-                startedAtMillis = System.currentTimeMillis()
-                isSessionStarted = true
-            },
-            onCancel = onNavigateBack,
-            modifier = modifier
-        )
+        val isRetakeBlocked = (!appConfig.allowQuizRetake && userAttemptCount >= 1) || (appConfig.quizAttemptLimit in 1..userAttemptCount)
+        if (isRetakeBlocked) {
+            Box(
+                modifier = modifier
+                    .fillMaxSize()
+                    .background(MaterialTheme.colorScheme.background)
+                    .padding(24.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                AppCard(modifier = Modifier.fillMaxWidth()) {
+                    Column(
+                        modifier = Modifier.padding(24.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Icon(
+                            imageVector = Icons.Rounded.Info,
+                            contentDescription = "Attempt Limit",
+                            tint = AmberYellow,
+                            modifier = Modifier.size(48.dp)
+                        )
+                        Spacer(modifier = Modifier.height(16.dp))
+                        Text(
+                            text = if (isFilipino) "Naabot na ang Limitasyon sa Pagsusulit" else "Quiz Attempt Limit Reached",
+                            style = MaterialTheme.typography.titleLarge,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text(
+                            text = if (!appConfig.allowQuizRetake) {
+                                if (isFilipino) "Hindi pinapayagan ng administrator ang pag-ulit sa pagsusulit na ito."
+                                else "Quiz retakes are currently disabled by the system administrator."
+                            } else {
+                                if (isFilipino) "Naabot mo na ang pinakamataas na limitasyon (${appConfig.quizAttemptLimit}) para sa pagsusulit na ito."
+                                else "You have reached the maximum allowed attempts (${appConfig.quizAttemptLimit}) for this assessment."
+                            },
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                        Spacer(modifier = Modifier.height(20.dp))
+                        Button(
+                            onClick = onNavigateBack,
+                            modifier = Modifier.fillMaxWidth(),
+                            shape = RoundedCornerShape(12.dp)
+                        ) {
+                            Text(if (isFilipino) "Bumalik sa mga Modyul" else "Back to Modules")
+                        }
+                    }
+                }
+            }
+        } else {
+            // ── LANGUAGE SELECTION SCREEN (Appears immediately before starting quiz) ──
+            SessionLanguageSelector(
+                sessionTitle = quiz.title,
+                sessionSubtitle = "20 timed road safety and traffic rule questions with AI evaluation.",
+                difficultyLabel = "${quiz.moduleType.label} • +${GamificationConstants.ModuleXp.getModuleXp(quizId)} XP",
+                questionCountText = "${activeQuestions.size} Questions",
+                sessionTypeLabel = "QUIZ ASSESSMENT",
+                selectedLanguage = sessionLanguage,
+                englishEnabled = appConfig.langEnglishEnabled,
+                filipinoEnabled = appConfig.langFilipinoEnabled,
+                onLanguageSelected = { sessionLanguage = it },
+                onStartConfirmed = { lang ->
+                    sessionLanguage = lang
+                    startedAtMillis = System.currentTimeMillis()
+                    isSessionStarted = true
+                },
+                onCancel = onNavigateBack,
+                modifier = modifier
+            )
+        }
     } else if (isFinished) {
         val result = awardResult
         val attempt = awardedAttempt
@@ -268,8 +345,9 @@ fun QuizScreen(
         val currentQuestionText = if (isFilipino && question.questionFil.isNotBlank()) question.questionFil else question.question
         val currentOptionsList = if (isFilipino && question.optionsFil.isNotEmpty()) question.optionsFil else question.options
 
-        val shuffledOptions = remember(currentQuestionIndex, isFilipino) {
-            currentOptionsList.mapIndexed { index, text -> index to text }.shuffled()
+        val shuffledOptions = remember(currentQuestionIndex, isFilipino, appConfig.randomizeChoices) {
+            val indexed = currentOptionsList.mapIndexed { index, text -> index to text }
+            if (appConfig.randomizeChoices) indexed.shuffled() else indexed
         }
         val runningTotalXp = (startingProgress?.totalXp ?: 0) + comboXpEarned
         val displayLevel = startingProgress?.currentLevel ?: 1
@@ -354,7 +432,7 @@ fun QuizScreen(
                             )
                         }
                         Text(
-                            text = "${timeLeftSeconds}s",
+                            text = if (appConfig.quizTimerSeconds > 0) "${timeLeftSeconds}s" else if (isFilipino) "Walang Oras" else "Untimed",
                             style = MaterialTheme.typography.titleMedium,
                             color = timerColor,
                             fontWeight = FontWeight.Bold
@@ -397,7 +475,7 @@ fun QuizScreen(
                         val isSelected = selectedOptionIndex == originalIndex
                         val isCorrect = originalIndex == question.correctAnswerIndex
                         val state = when {
-                            isAnswered && isCorrect -> QuizOptionState.CORRECT
+                            isAnswered && isCorrect && (appConfig.showCorrectAnswers || isSelected) -> QuizOptionState.CORRECT
                             isAnswered && isSelected && !isCorrect -> QuizOptionState.INCORRECT
                             !isAnswered && isSelected -> QuizOptionState.SELECTED
                             else -> QuizOptionState.NEUTRAL

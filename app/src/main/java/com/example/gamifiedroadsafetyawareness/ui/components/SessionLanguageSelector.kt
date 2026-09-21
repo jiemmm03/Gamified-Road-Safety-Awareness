@@ -45,13 +45,23 @@ fun SessionLanguageSelector(
     questionCountText: String = "20 Questions",
     sessionTypeLabel: String = "QUIZ SESSION",
     selectedLanguage: String?,
+    englishEnabled: Boolean = true,
+    filipinoEnabled: Boolean = true,
     onLanguageSelected: (String) -> Unit,
     onStartConfirmed: (String) -> Unit,
     onCancel: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val haptic = LocalHapticFeedback.current
-    var currentSelection by remember { mutableStateOf(selectedLanguage) }
+    var currentSelection by remember {
+        mutableStateOf(
+            selectedLanguage ?: when {
+                englishEnabled && !filipinoEnabled -> "en"
+                !englishEnabled && filipinoEnabled -> "fil"
+                else -> selectedLanguage
+            }
+        )
+    }
 
     Column(
         modifier = modifier
@@ -233,38 +243,40 @@ fun SessionLanguageSelector(
         Spacer(modifier = Modifier.height(16.dp))
 
         // ── Option 1: English ────────────────────────────────────────────────
-        LanguageOptionCard(
-            flagEmoji = "🇬🇧",
-            languageName = "English",
-            nativeName = "English (Standard)",
-            description = "Load questions, choices, feedback, and defensive driving principles in standard English.",
-            badge = "Standard / Law",
-            isSelected = currentSelection == "en",
-            onClick = {
-                currentSelection = "en"
-                onLanguageSelected("en")
-                haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-            }
-        )
-
-        Spacer(modifier = Modifier.height(12.dp))
+        if (englishEnabled) {
+            LanguageOptionCard(
+                flagEmoji = "🇬🇧",
+                languageName = "English",
+                nativeName = "English (Standard)",
+                description = "Load questions, choices, feedback, and defensive driving principles in standard English.",
+                badge = "Standard / Law",
+                isSelected = currentSelection == "en",
+                onClick = {
+                    currentSelection = "en"
+                    onLanguageSelected("en")
+                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                }
+            )
+            Spacer(modifier = Modifier.height(12.dp))
+        }
 
         // ── Option 2: Filipino / Tagalog ─────────────────────────────────────
-        LanguageOptionCard(
-            flagEmoji = "🇵🇭",
-            languageName = "Filipino / Tagalog",
-            nativeName = "Wikang Filipino",
-            description = "Ipakita ang mga tanong, pagpipilian, at paliwanag sa wikang Filipino ayon sa batas trapiko.",
-            badge = "Pambansang Wika",
-            isSelected = currentSelection == "fil" || currentSelection == "tl",
-            onClick = {
-                currentSelection = "fil"
-                onLanguageSelected("fil")
-                haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-            }
-        )
-
-        Spacer(modifier = Modifier.height(28.dp))
+        if (filipinoEnabled) {
+            LanguageOptionCard(
+                flagEmoji = "🇵🇭",
+                languageName = "Filipino / Tagalog",
+                nativeName = "Wikang Filipino",
+                description = "Ipakita ang mga tanong, pagpipilian, at paliwanag sa wikang Filipino ayon sa batas trapiko.",
+                badge = "Pambansang Wika",
+                isSelected = currentSelection == "fil" || currentSelection == "tl",
+                onClick = {
+                    currentSelection = "fil"
+                    onLanguageSelected("fil")
+                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                }
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+        }
 
         // ── Start Action Button ──────────────────────────────────────────────
         val isReady = !currentSelection.isNullOrBlank()

@@ -14,7 +14,12 @@ import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.tasks.await
+import com.example.gamifiedroadsafetyawareness.model.AppConfig
+import com.example.gamifiedroadsafetyawareness.model.GamificationConstants
 
 /**
  * Cloud Synchronization Manager connecting the local Jetpack Room SQLite database
@@ -28,6 +33,9 @@ class FirebaseSyncManager {
 
     private val tag = "FirebaseSyncManager"
 
+    private val _appConfigFlow = MutableStateFlow(AppConfig())
+    val appConfigFlow: StateFlow<AppConfig> = _appConfigFlow.asStateFlow()
+
     private val firestore: FirebaseFirestore by lazy {
         Firebase.firestore
     }
@@ -38,6 +46,7 @@ class FirebaseSyncManager {
 
     init {
         ensureAuth()
+        listenToAppConfig()
     }
 
     private fun ensureAuth() {
@@ -748,6 +757,114 @@ class FirebaseSyncManager {
         } catch (e: Exception) {
             Log.w(tag, "Error syncing module setting: ${e.message}")
         }
+    }
+
+    /**
+     * Real-time sync listener for central App Configuration from system_settings/app_config.
+     */
+    fun listenToAppConfig() {
+        try {
+            firestore.collection("system_settings").document("app_config")
+                .addSnapshotListener { snapshot, error ->
+                    if (error != null) {
+                        Log.w(tag, "App config listen error: ${error.message}")
+                        return@addSnapshotListener
+                    }
+                    if (snapshot != null && snapshot.exists()) {
+                        val config = parseAppConfig(snapshot)
+                        _appConfigFlow.value = config
+                        GamificationConstants.applyAppConfig(config)
+                        Log.d(tag, "Successfully loaded system app config from Firestore: $config")
+                    }
+                }
+        } catch (e: Exception) {
+            Log.w(tag, "Failed to attach app config listener: ${e.message}")
+        }
+    }
+
+    private fun parseAppConfig(doc: com.google.firebase.firestore.DocumentSnapshot): AppConfig {
+        val disabledList = try {
+            @Suppress("UNCHECKED_CAST")
+            (doc.get("disabledModuleIds") as? List<*>)?.mapNotNull { it?.toString() } ?: emptyList()
+        } catch (e: Exception) {
+            emptyList()
+        }
+
+        return AppConfig(
+            quizPassingScore = doc.safeInt("quizPassingScore", 70),
+            assessmentPassingScore = doc.safeInt("assessmentPassingScore", 75),
+            simulationPassingScore = doc.safeInt("simulationPassingScore", 75),
+            baseQuizXp = doc.safeInt("baseQuizXp", 100),
+            dailyStreakMultiplier = (doc.get("dailyStreakMultiplier") as? Number)?.toFloat() ?: 1.25f,
+            quizAttemptLimit = doc.safeInt("quizAttemptLimit", 0),
+            quizTimerSeconds = doc.safeInt("quizTimerSeconds", 20),
+            randomizeQuestions = doc.safeBoolean("randomizeQuestions", false),
+            randomizeChoices = doc.safeBoolean("randomizeChoices", false),
+            showCorrectAnswers = doc.safeBoolean("showCorrectAnswers", true),
+            allowQuizRetake = doc.safeBoolean("allowQuizRetake", true),
+            minScoreForXp = doc.safeInt("minScoreForXp", 50),
+
+            xpPerCompletedModule = doc.safeInt("xpPerCompletedModule", 50),
+            xpPerPassedQuiz = doc.safeInt("xpPerPassedQuiz", 100),
+            xpPerPassedAssessment = doc.safeInt("xpPerPassedAssessment", 150),
+            xpPerCorrectAnswer = doc.safeInt("xpPerCorrectAnswer", 10),
+            xpStreakBonusBase = doc.safeInt("xpStreakBonusBase", 20),
+            maxXpPerQuiz = doc.safeInt("maxXpPerQuiz", 300),
+            enableDailyStreak = doc.safeBoolean("enableDailyStreak", true),
+            streakResetHours = doc.safeInt("streakResetHours", 24),
+            streakMultiplierMax = (doc.get("streakMultiplierMax") as? Number)?.toFloat() ?: 2.0f,
+            enableUserLevels = doc.safeBoolean("enableUserLevels", true),
+            xpPerLevel = doc.safeInt("xpPerLevel", 500),
+            maxLevel = doc.safeInt("maxLevel", 50),
+            autoLevelCalc = doc.safeBoolean("autoLevelCalc", true),
+            enableLeaderboard = doc.safeBoolean("enableLeaderboard", true),
+            leaderboardUpdateFreq = doc.safeString("leaderboardUpdateFreq", "Real-time"),
+            leaderboardRankingType = doc.safeString("leaderboardRankingType", "totalXp"),
+
+            langEnglishEnabled = doc.safeBoolean("langEnglishEnabled", true),
+            langFilipinoEnabled = doc.safeBoolean("langFilipinoEnabled", true),
+            defaultQuizLanguage = doc.safeString("defaultQuizLanguage", "en"),
+
+            maintenanceMode = doc.safeBoolean("maintenanceMode", false),
+            maintenanceMessage = doc.safeString("maintenanceMessage", "RoadSafe AI is undergoing scheduled system maintenance. Please try again shortly."),
+            minAppVersion = doc.safeString("minAppVersion", "1.0.0"),
+            forceUpdate = doc.safeBoolean("forceUpdate", false),
+            announcementEnabled = doc.safeBoolean("announcementEnabled", false),
+            announcementTitle = doc.safeString("announcementTitle", "Municipal Road Safety Notice"),
+            announcementMessage = doc.safeString("announcementMessage", ""),
+            announcementStartDate = doc.safeString("announcementStartDate", ""),
+            announcementEndDate = doc.safeString("announcementEndDate", ""),
+            enableAnimations = doc.safeBoolean("enableAnimations", true),
+
+            requireModuleBeforeQuiz = doc.safeBoolean("requireModuleBeforeQuiz", false),
+            strictLinearProgression = doc.safeBoolean("strictLinearProgression", false),
+            contentVersion = doc.safeString("contentVersion", "v1.2.0-300Q"),
+            disabledModuleIds = disabledList,
+
+            rememberLoginSession = doc.safeBoolean("rememberLoginSession", true),
+            sessionTimeoutDays = doc.safeInt("sessionTimeoutDays", 0),
+            allowMultipleDevices = doc.safeBoolean("allowMultipleDevices", true),
+
+            enableNotifications = doc.safeBoolean("enableNotifications", true),
+            notifyQuizReminder = doc.safeBoolean("notifyQuizReminder", true),
+            notifyStreakReminder = doc.safeBoolean("notifyStreakReminder", true),
+            notifyNewModule = doc.safeBoolean("notifyNewModule", true),
+            notifyAchievement = doc.safeBoolean("notifyAchievement", true),
+            notifyLeaderboard = doc.safeBoolean("notifyLeaderboard", true),
+
+            autoSyncProgress = doc.safeBoolean("autoSyncProgress", true),
+            syncFrequency = doc.safeString("syncFrequency", "realtime"),
+
+            adminSessionTimeoutMinutes = doc.safeInt("adminSessionTimeoutMinutes", 60),
+            requireReauthSensitive = doc.safeBoolean("requireReauthSensitive", true),
+            adminActivityLogging = doc.safeBoolean("adminActivityLogging", true),
+
+            enableSoftDelete = doc.safeBoolean("enableSoftDelete", false),
+            dataRetentionDays = doc.safeInt("dataRetentionDays", 0),
+
+            lastUpdatedTimestamp = doc.safeLong("lastUpdatedTimestamp", System.currentTimeMillis()),
+            lastUpdatedBy = doc.safeString("lastUpdatedBy", "system")
+        )
     }
 
     companion object {
