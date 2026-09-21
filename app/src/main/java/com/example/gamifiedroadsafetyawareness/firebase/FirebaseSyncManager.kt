@@ -575,22 +575,53 @@ class FirebaseSyncManager {
     }
 
     /**
-     * Fetch user's authoritative role directly from Firestore.
+     * Role fetch result hierarchy for strict and safe role evaluation.
      */
-    suspend fun fetchUserRole(username: String): UserRole {
+    sealed class RoleFetchResult {
+        data class Success(val role: UserRole) : RoleFetchResult()
+        object MissingProfile : RoleFetchResult()
+        object MissingRole : RoleFetchResult()
+        data class InvalidRole(val raw: String) : RoleFetchResult()
+        data class NetworkFailure(val message: String) : RoleFetchResult()
+    }
+
+    /**
+     * Detailed role retrieval from Firestore users/{username} with granular error classifications.
+     */
+    suspend fun fetchUserRoleDetailed(username: String): RoleFetchResult {
         val trimmed = username.trim().lowercase()
-        if (trimmed.isBlank()) return UserRole.USER
+        if (trimmed.isBlank()) return RoleFetchResult.MissingProfile
         return try {
             val doc = firestore.collection(COLLECTION_USERS).document(trimmed).get().await()
-            if (doc.exists()) {
-                val rawRole = doc.safeString("role", doc.safeString("accountRole", "user"))
-                UserRole.fromRoleString(rawRole)
+            if (!doc.exists()) {
+                RoleFetchResult.MissingProfile
             } else {
-                UserRole.USER
+                val rawRole = doc.getString("role") ?: doc.getString("accountRole")
+                if (rawRole.isNullOrBlank()) {
+                    RoleFetchResult.MissingRole
+                } else {
+                    val parsed = UserRole.parseRoleOrNull(rawRole)
+                    if (parsed != null) {
+                        RoleFetchResult.Success(parsed)
+                    } else {
+                        Log.w(tag, "Invalid account role '$rawRole' detected for user '$trimmed'")
+                        RoleFetchResult.InvalidRole(rawRole)
+                    }
+                }
             }
         } catch (e: Exception) {
-            Log.w(tag, "fetchUserRole failed for $trimmed: ${e.message}")
-            UserRole.USER
+            Log.w(tag, "fetchUserRoleDetailed failed for $trimmed: ${e.message}")
+            RoleFetchResult.NetworkFailure(e.message ?: "Network error connecting to Firebase")
+        }
+    }
+
+    /**
+     * Fetch user's authoritative role directly from Firestore with safe default.
+     */
+    suspend fun fetchUserRole(username: String): UserRole {
+        return when (val res = fetchUserRoleDetailed(username)) {
+            is RoleFetchResult.Success -> res.role
+            else -> UserRole.USER
         }
     }
 

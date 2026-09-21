@@ -1985,10 +1985,14 @@
                         </div>
                         <div>
                             <label class="font-label" style="display:block;margin-bottom:4px;font-size:12px;color:var(--text-secondary);">Account Role *</label>
-                            <select id="reg-role" class="form-input font-body-sm" style="width:100%;" required>
+                            <select id="reg-role" class="form-input font-body-sm" style="width:100%;" required onchange="if(window.updateRegRolePreview) window.updateRegRolePreview(this.value)">
                                 <option value="user" selected>Driver / Learner (USER)</option>
                                 <option value="admin">Traffic Officer (ADMIN)</option>
                             </select>
+                            <div id="reg-role-hint" class="font-caption" style="margin-top:6px;padding:4px 8px;border-radius:4px;background:rgba(0,56,168,0.25);color:#93C5FD;display:flex;align-items:center;gap:6px;border:1px solid rgba(96,165,250,0.3);">
+                                <span class="material-icons-round" style="font-size:14px;color:#60A5FA;">sports_motorsports</span>
+                                <span id="reg-role-hint-text">Standard Driver / Learner: Mobile curriculum, quizzes, and simulations.</span>
+                            </div>
                         </div>
                     </div>
 

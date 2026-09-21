@@ -1957,11 +1957,39 @@ $('btn-profile-delete-user').addEventListener('click', () => {
 });
 
 // ─── DRIVER / USER REGISTRATION HANDLERS ───
+window.updateRegRolePreview = function(roleVal) {
+    const hintBox = $('reg-role-hint');
+    const hintText = $('reg-role-hint-text');
+    if (!hintBox || !hintText) return;
+    const isOfficer = (roleVal || '').toLowerCase() === 'admin';
+    if (isOfficer) {
+        hintBox.style.background = 'rgba(212,175,55,0.15)';
+        hintBox.style.borderColor = 'rgba(212,175,55,0.4)';
+        hintBox.style.color = '#FDE047';
+        hintBox.innerHTML = `
+            <span class="material-icons-round" style="font-size:14px;color:var(--badge-gold-bright);">shield</span>
+            <span><strong>Traffic Officer (ADMIN)</strong>: Full access to administrative console and officer telemetry.</span>
+        `;
+    } else {
+        hintBox.style.background = 'rgba(0,56,168,0.25)';
+        hintBox.style.borderColor = 'rgba(96,165,250,0.3)';
+        hintBox.style.color = '#93C5FD';
+        hintBox.innerHTML = `
+            <span class="material-icons-round" style="font-size:14px;color:#60A5FA;">sports_motorsports</span>
+            <span><strong>Driver / Learner (USER)</strong>: Standard mobile app curriculum, quizzes, and simulations.</span>
+        `;
+    }
+};
+
 window.openRegisterModal = function() {
     const overlay = $('register-user-modal-overlay');
     if (overlay) overlay.style.display = 'flex';
     const errBox = $('register-error-box');
     if (errBox) errBox.style.display = 'none';
+    const roleSelect = $('reg-role');
+    if (roleSelect && window.updateRegRolePreview) {
+        window.updateRegRolePreview(roleSelect.value);
+    }
 };
 
 window.closeRegisterModal = function() {
@@ -1969,6 +1997,10 @@ window.closeRegisterModal = function() {
     if (overlay) overlay.style.display = 'none';
     const form = $('form-register-user');
     if (form) form.reset();
+    const roleSelect = $('reg-role');
+    if (roleSelect && window.updateRegRolePreview) {
+        window.updateRegRolePreview('user');
+    }
 };
 
 window.handleRegisterUser = async function(e) {
@@ -1979,15 +2011,23 @@ window.handleRegisterUser = async function(e) {
     const email = ($('reg-email') ? $('reg-email').value : '').trim();
     const gender = $('reg-gender') ? $('reg-gender').value : 'Male';
     const rawRole = $('reg-role') ? $('reg-role').value : 'user';
-    const role = rawRole.toLowerCase() === 'admin' ? 'admin' : 'user';
+    const role = (rawRole || '').toLowerCase() === 'admin' ? 'admin' : 'user';
     const password = ($('reg-password') ? $('reg-password').value : '').trim();
     const errBox = $('register-error-box');
     const errText = $('register-error-text');
 
-    if (!name || !username || !contact || !password) {
+    if (!name || !username || !contact || !password || !role) {
         if (errBox) {
             errBox.style.display = 'flex';
             if (errText) errText.textContent = 'Please fill out all required fields (*).';
+        }
+        return;
+    }
+
+    if (username.length < 3) {
+        if (errBox) {
+            errBox.style.display = 'flex';
+            if (errText) errText.textContent = 'Username must be at least 3 alphanumeric characters.';
         }
         return;
     }

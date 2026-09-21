@@ -362,10 +362,38 @@ erDiagram
 
 ---
 
+---
+
+## 🛡️ End-to-End Account Role System & Cloud Synchronization
+
+The platform enforces a standardized, single-source-of-truth role architecture between the **Android Mobile App** and the **Admin Web Console**:
+
+```mermaid
+graph TD
+    A[Admin Web / Registration Modal] -->|Selected Role: user or admin| B[Firestore users/{uid}]
+    B -->|Canonical role field| C[FirebaseSyncManager observeUserRole]
+    C -->|Real-Time Flow| D[RoadSafetyApp State & RBAC Engine]
+    D -->|role == 'admin'| E[Traffic Officer Interface / Admin Dashboard]
+    D -->|role == 'user'| F[Driver / Learner Dashboard & Quizzes]
+    B -->|Role Change Event| G[audit_logs & activity_logs Collection]
+```
+
+### 1. Standardized Canonical Roles:
+- `user` → Display label: **Driver / Learner (USER)**
+- `admin` → Display label: **Traffic Officer (ADMIN)**
+
+### 2. Synchronization & Resilient Error Handling:
+- **Real-Time Role Reflection**: Mobile app observes `users/{username}` via Firestore snapshot listener. When an administrator modifies a user's role, the app dynamically refreshes user permissions and navigates to the authorized interface without tearing down the authenticated session.
+- **Persistent Session**: Session restore validates the cached role against Firestore upon initialization, preventing stale permissions.
+- **Fail-Safe Validation**: Gracefully logs missing profiles, unassigned roles, or invalid strings, falling back safely to standard user restrictions while alerting the administrator.
+
+---
+
 ## 📊 Feature Completeness & Audit Verification
 
 | Module / Feature | Implementation Status | Storage Type | Real-Time Sync |
 | :--- | :---: | :---: | :---: |
+| **End-to-End Account Role System** | ✅ 100% Fully Implemented | Cloud Firestore + Room | Yes (Real-Time Stream) |
 | **Authentication & RBAC** | ✅ 100% Fully Implemented | Local Room + Firestore | Yes |
 | **Session-Exclusive Language Selector (EN/FIL)** | ✅ 100% Fully Implemented | Room v7 + Firestore | Yes |
 | **Dynamic Exam & Assessment Engine** | ✅ 100% Fully Implemented | Room SQLite + Firestore | Yes |
@@ -381,10 +409,10 @@ erDiagram
 | **Admin Web Command Center (12 Tabs)** | ✅ 100% Fully Implemented | Cloud Firestore + Web Client | Yes |
 | **Admin Web AI Activity Feed** | ✅ 100% Fully Implemented | Firestore `ai_interactions` | Yes |
 | **Dynamic High-Res QR Code Distributor** | ✅ 100% Fully Implemented | Dynamic HTML5 Canvas | Real-time |
-| **Automated CI/CD Workflow & Release APK** | ✅ 100% Fully Implemented | GitHub Actions (28.7 MB APK) | Automated |
+| **Automated CI/CD Workflow & Release APK** | ✅ 100% Fully Implemented | GitHub Actions (28.9 MB APK) | Automated |
 
 ---
 
 ## 🎯 Conclusion
 
-The **RoadSafe AI** system (v3.5.0) is a resilient, fully integrated dual-platform solution for the **Municipality of Dagami, Leyte**. The mobile app operates with low-connectivity offline resilience via **Room SQLite v7**, while maintaining real-time synchronization with **Google Cloud Firestore**. The newly upgraded **Mobile App Configuration & System Control Center**, **Dual-Portal Engine**, **SPA Router**, and **Dynamic High-Res QR Distributor** provide municipal administrators with complete real-time governance over examination standards, question randomization, gamification XP economies, language availability, maintenance locks, and fleet security policies.
+The **RoadSafe AI** system (v3.5.0) is a resilient, fully integrated dual-platform solution for the **Municipality of Dagami, Leyte**. The mobile app operates with low-connectivity offline resilience via **Room SQLite v7**, while maintaining real-time synchronization with **Google Cloud Firestore**. The standardized **Account Role System**, **Mobile App Configuration & System Control Center**, **Dual-Portal Engine**, **SPA Router**, and **Dynamic High-Res QR Distributor** provide municipal administrators with complete real-time governance over examination standards, question randomization, gamification XP economies, language availability, maintenance locks, and fleet security policies.
