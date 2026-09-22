@@ -459,6 +459,10 @@ class AuthManager(context: Context) {
             riskLevel = RiskLevel.MEDIUM
         )
 
+        // Sync account status change to Cloud Firestore
+        val actorName = userPrefs.getString("${actor}_display", actor) ?: actor
+        syncManager.syncAccountStatusChange(trimmedUser, active, actorName)
+
         return true
     }
 
@@ -529,6 +533,9 @@ class AuthManager(context: Context) {
             riskLevel = RiskLevel.LOW
         )
 
+        // Sync display name change to Cloud Firestore
+        syncManager.syncDisplayNameChange(trimmedUser, trimmedName)
+
         return true
     }
 
@@ -544,10 +551,10 @@ class AuthManager(context: Context) {
         val trimmedUser = username.trim().lowercase()
         if (trimmedUser.isEmpty() || password.isEmpty()) return false
 
-        // Check if already exists
+        // Check if already exists — reject duplicate registration to prevent silent overwrite
         val existingUsers = getAllAccounts().map { it.username }
         if (existingUsers.contains(trimmedUser) && userPrefs.getString("${trimmedUser}_hash", null) != null) {
-            // Update existing
+            return false
         }
 
         // Use PBKDF2 with random salt for new registrations

@@ -142,15 +142,33 @@ class FirebaseSyncManager {
                 }
 
             // Also mirror structured event to activity_logs
-            recordActivityLog(
-                userId = attempt.userId,
-                username = attempt.userId,
-                role = "Driver",
-                action = "Completed Quiz: ${attempt.quizTitle} (Score: ${attempt.correctCount}/${attempt.totalQuestions}, ${attempt.scorePercent.toInt()}%)",
-                activityType = "Quiz",
-                details = "Difficulty: ${attempt.difficulty}, Passed: ${attempt.passed}",
-                status = if (attempt.passed) "Passed" else "Failed"
-            )
+            // Resolve display name and role from the users collection for accurate logging
+            firestore.collection(COLLECTION_USERS).document(attempt.userId).get()
+                .addOnSuccessListener { userDoc ->
+                    val resolvedName = userDoc?.getString("displayName") ?: attempt.userId
+                    val resolvedRole = userDoc?.getString("role") ?: "user"
+                    recordActivityLog(
+                        userId = attempt.userId,
+                        username = resolvedName,
+                        role = resolvedRole,
+                        action = "Completed Quiz: ${attempt.quizTitle} (Score: ${attempt.correctCount}/${attempt.totalQuestions}, ${attempt.scorePercent.toInt()}%)",
+                        activityType = "Quiz",
+                        details = "Difficulty: ${attempt.difficulty}, Passed: ${attempt.passed}",
+                        status = if (attempt.passed) "Passed" else "Failed"
+                    )
+                }
+                .addOnFailureListener {
+                    // Fallback: use userId as username if user doc lookup fails
+                    recordActivityLog(
+                        userId = attempt.userId,
+                        username = attempt.userId,
+                        role = "user",
+                        action = "Completed Quiz: ${attempt.quizTitle} (Score: ${attempt.correctCount}/${attempt.totalQuestions}, ${attempt.scorePercent.toInt()}%)",
+                        activityType = "Quiz",
+                        details = "Difficulty: ${attempt.difficulty}, Passed: ${attempt.passed}",
+                        status = if (attempt.passed) "Passed" else "Failed"
+                    )
+                }
         } catch (e: Exception) {
             Log.e(tag, "Firebase attempt sync exception: ${e.message}")
         }
@@ -418,7 +436,8 @@ class FirebaseSyncManager {
                 "gender" to gender,
                 "age" to (age ?: 0),
                 "contactNumber" to contactNumber,
-                "createdAt" to System.currentTimeMillis(),
+                "createdAt" to com.google.firebase.firestore.FieldValue.serverTimestamp(),
+                "createdAtMillis" to System.currentTimeMillis(),
                 "isOnline" to false,
                 "isActive" to true
             )
@@ -436,6 +455,79 @@ class FirebaseSyncManager {
             )
         } catch (e: Exception) {
             Log.e(tag, "syncRegisteredUser exception: ${e.message}")
+        }
+    }
+
+    /**
+     * Sync a display name change to Cloud Firestore users collection.
+     * Called when a user updates their display name from the Profile screen.
+     */
+    fun syncDisplayNameChange(username: String, newDisplayName: String) {
+        try {
+            val userRef = firestore.collection(COLLECTION_USERS).document(username)
+            val data = hashMapOf(
+                "displayName" to newDisplayName,
+                "lastUpdatedAt" to com.google.firebase.firestore.FieldValue.serverTimestamp()
+            )
+            userRef.set(data, SetOptions.merge())
+                .addOnSuccessListener {
+                    Log.d(tag, "Display name updated in cloud for $username: $newDisplayName")
+                }
+                .addOnFailureListener { e ->
+                    Log.w(tag, "Failed to sync display name change: ${e.message}")
+                }
+
+            // Also update in user_progress for leaderboard accuracy
+            val progressRef = firestore.collection(COLLECTION_USER_PROGRESS).document(username)
+            progressRef.set(hashMapOf("displayName" to newDisplayName), SetOptions.merge())
+
+            // Record activity
+            recordActivityLog(
+                userId = username,
+                username = newDisplayName,
+                role = "",
+                action = "Updated display name to: $newDisplayName",
+                activityType = "Profile",
+                details = "Display name changed",
+                status = "Updated"
+            )
+        } catch (e: Exception) {
+            Log.e(tag, "syncDisplayNameChange exception: ${e.message}")
+        }
+    }
+
+    /**
+     * Sync an account activation/deactivation status change to Cloud Firestore.
+     * Called when an admin activates or deactivates a user account.
+     */
+    fun syncAccountStatusChange(username: String, isActive: Boolean, adminUsername: String) {
+        try {
+            val userRef = firestore.collection(COLLECTION_USERS).document(username)
+            val data = hashMapOf(
+                "isActive" to isActive,
+                "lastStatusChangeAt" to com.google.firebase.firestore.FieldValue.serverTimestamp(),
+                "statusChangedBy" to adminUsername
+            )
+            userRef.set(data, SetOptions.merge())
+                .addOnSuccessListener {
+                    Log.d(tag, "Account status updated for $username: isActive=$isActive")
+                }
+                .addOnFailureListener { e ->
+                    Log.w(tag, "Failed to sync account status change: ${e.message}")
+                }
+
+            // Record activity
+            recordActivityLog(
+                userId = adminUsername,
+                username = adminUsername,
+                role = "admin",
+                action = "${if (isActive) "Activated" else "Deactivated"} account: $username",
+                activityType = "Admin",
+                details = "Account status changed by admin",
+                status = if (isActive) "Activated" else "Deactivated"
+            )
+        } catch (e: Exception) {
+            Log.e(tag, "syncAccountStatusChange exception: ${e.message}")
         }
     }
 
@@ -497,10 +589,11 @@ class FirebaseSyncManager {
                 .take(limit.toInt())
                 .mapIndexedNotNull { index, doc ->
                     try {
+                        val userId = doc.safeString("userId", "Anonymous")
                         CloudLeaderboardEntry(
                             rank = index + 1,
-                            userId = doc.safeString("userId", "Anonymous"),
-                            displayName = doc.safeString("displayName", doc.safeString("userId", "User")),
+                            userId = userId,
+                            displayName = doc.safeString("displayName", userId),
                             totalXp = doc.safeInt("totalXp", 0),
                             currentLevel = doc.safeInt("currentLevel", 1),
                             streak = doc.safeInt("currentStreak", 0)
@@ -640,8 +733,15 @@ class FirebaseSyncManager {
             if (doc != null && doc.exists()) {
                 val cloudPass = doc.getString("password") ?: ""
                 val cloudRoleStr = doc.getString("role") ?: doc.getString("accountRole") ?: "user"
-                val cloudName = doc.getString("fullName") ?: doc.getString("name") ?: trimmed
-                val cloudContact = doc.getString("contact") ?: doc.getString("phone") ?: ""
+                // Read displayName consistently — fall back to fullName/name for legacy data
+                val cloudName = doc.getString("displayName")
+                    ?: doc.getString("fullName")
+                    ?: doc.getString("name")
+                    ?: trimmed
+                val cloudContact = doc.getString("contactNumber")
+                    ?: doc.getString("contact")
+                    ?: doc.getString("phone")
+                    ?: ""
                 val cloudGender = doc.getString("gender") ?: ""
                 val cloudActive = doc.getBoolean("isActive") ?: true
                 val parsedRole = UserRole.fromRoleString(cloudRoleStr)

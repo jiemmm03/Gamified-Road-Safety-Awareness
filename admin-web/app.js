@@ -3463,7 +3463,7 @@ function getAggregatedLeaderboard() {
             id: uid,
             userId: uid,
             username: u.username || uid,
-            name: u.name || u.displayName || u.fullName || u.username || uid,
+            name: u.displayName || u.name || u.fullName || u.username || uid,
             email: u.email || 'No email registered',
             gender: u.gender || 'Not specified',
             role: u.role || 'user',
@@ -5445,7 +5445,7 @@ function resolveUserProfile(identifier) {
         const uId = String(u.id || '').trim().toLowerCase();
         const uUsername = String(u.username || '').trim().toLowerCase();
         const uEmail = String(u.email || '').trim().toLowerCase();
-        const uName = String(u.name || u.displayName || u.fullName || '').trim().toLowerCase();
+        const uName = String(u.displayName || u.name || u.fullName || '').trim().toLowerCase();
         const target = cleanId.toLowerCase();
         return (uUsername && uUsername === target) ||
                (uId && uId === target) ||
@@ -5459,8 +5459,8 @@ function resolveUserProfile(identifier) {
     let isOnline = false;
 
     if (matched) {
-        actualUsername = matched.username || matched.id || matched.name || matched.displayName || cleanId;
-        displayName = matched.name || matched.displayName || matched.fullName || actualUsername;
+        actualUsername = matched.username || matched.id || matched.displayName || matched.name || cleanId;
+        displayName = matched.displayName || matched.name || matched.fullName || actualUsername;
         rawRole = matched.role || 'Learner';
         isOnline = isUserOnline(matched);
     } else {

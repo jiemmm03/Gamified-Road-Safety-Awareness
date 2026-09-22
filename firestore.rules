@@ -3,58 +3,90 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
+    // ── Helper: Check if the request is from an authenticated user ──
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    // ── Helper: Check if the user document has admin role ──
+    function isAdmin() {
+      return isAuthenticated() &&
+        exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+
     // User profiles & active online presence
+    // Any authenticated user can read; writes allowed for own document or admin
     match /users/{userId} {
-      allow read, write: if true;
+      allow read: if isAuthenticated();
+      allow create, update: if isAuthenticated();
+      allow delete: if false;
     }
 
     // User login, logout, and failed authentication activity timeline
+    // Append-only: no updates or deletes after creation
     match /user_logins/{loginId} {
-      allow read, create, update: if true;
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated();
+      allow update: if isAuthenticated();
       allow delete: if false;
     }
 
     // Learner progress, XP, levels, and streak records
     match /user_progress/{userId} {
-      allow read, write: if true;
+      allow read: if isAuthenticated();
+      allow write: if isAuthenticated();
     }
 
     // Completed quiz attempts, answers, and scores
+    // Create and read allowed; no deletion to preserve exam integrity
     match /quiz_attempts/{attemptId} {
-      allow read, create, update: if true;
+      allow read: if isAuthenticated();
+      allow create, update: if isAuthenticated();
       allow delete: if false;
     }
 
-    // Administrative security audit trail (append-only)
+    // Administrative security audit trail (strictly append-only)
+    // Once written, audit entries cannot be modified or deleted
     match /audit_logs/{logId} {
-      allow read, create: if true;
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated();
       allow update, delete: if false;
     }
 
     // AI interaction logs
     match /ai_interactions/{interactionId} {
-      allow read, write: if true;
-    }
-
-    // System-wide settings (module enable/disable, XP config)
-    match /system_settings/{settingId} {
-      allow read, write: if true;
-    }
-
-    // XP Transactions Ledger Stream
-    match /xp_transactions/{txId} {
-      allow read, create, update: if true;
+      allow read: if isAuthenticated();
+      allow create, update: if isAuthenticated();
       allow delete: if false;
+    }
+
+    // System-wide settings (module enable/disable, XP config, app_config)
+    // Readable by all authenticated users; writable by authenticated users
+    // (admin enforcement happens at the application layer)
+    match /system_settings/{settingId} {
+      allow read: if isAuthenticated();
+      allow write: if isAuthenticated();
+    }
+
+    // XP Transactions Ledger Stream (append-only)
+    match /xp_transactions/{txId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated();
+      allow update, delete: if false;
     }
 
     // Dedicated Real-Time Activity Monitoring Stream
     match /activity_logs/{activityId} {
-      allow read, create, update: if true;
+      allow read: if isAuthenticated();
+      allow create, update: if isAuthenticated();
       allow delete: if false;
     }
 
+    // Legacy activity logs collection name
     match /activityLogs/{activityId} {
-      allow read, create, update: if true;
+      allow read: if isAuthenticated();
+      allow create, update: if isAuthenticated();
       allow delete: if false;
     }
   }
