@@ -35,6 +35,7 @@ const State = {
     devices: [],
     quizzes: [],
     logins: [],
+    activities: [],
     activityLogs: [],
     progress: [],
     xpTransactions: [],
@@ -58,12 +59,18 @@ const State = {
     scenarioFilter: 'all',
     aiFilter: 'all',
     loginFilter: 'all',
+    activityFeedFilter: 'all',
+    activityRoleFilter: 'all',
+    activityTypeFilter: 'all',
+    activityDateFilter: 'all',
+    activitySearchQuery: '',
     auditFilter: 'all',
     gamifFilter: 'all',
     gamifSort: 'xp-desc',
     searchQuery: '',
     selectedUser: null,
     selectedGamifUser: null,
+    selectedActivity: null,
     userToDelete: null,
     currentAdmin: 'admin'
 };
@@ -1081,19 +1088,32 @@ function startListeners() {
         updateQuizChart();
     }, err => console.warn('Quizzes listener:', err));
 
-    // 4. Logins / Activity Stream
-    db.collection('user_logins').orderBy('timestamp', 'desc').limit(100).onSnapshot(snap => {
-        State.logins = [];
+    // 4. Dedicated Real-Time Activity Monitoring Stream (activities collection)
+    db.collection('activities').orderBy('timestamp', 'desc').limit(100).onSnapshot(snap => {
+        State.activities = [];
         snap.forEach(doc => {
             const data = doc.data();
             data.id = doc.id;
-            State.logins.push(data);
+            State.activities.push(data);
         });
-        renderLoginsList();
         renderActivityFeed();
-    }, err => console.warn('Logins listener:', err));
+        renderLoginsList();
+    }, err => {
+        console.warn('Activities listener notice (trying fallback):', err);
+        // Fallback to activity_logs collection if activities collection query fails
+        db.collection('activity_logs').orderBy('timestamp', 'desc').limit(100).onSnapshot(snap => {
+            State.activities = [];
+            snap.forEach(doc => {
+                const data = doc.data();
+                data.id = doc.id;
+                State.activities.push(data);
+            });
+            renderActivityFeed();
+            renderLoginsList();
+        }, err2 => console.warn('Activity logs fallback notice:', err2));
+    });
 
-    // 5. Dedicated User Activity Monitoring Stream
+    // 5. Mirrored Activity Logs Stream (to ensure dual-write capture)
     db.collection('activity_logs').orderBy('timestamp', 'desc').limit(100).onSnapshot(snap => {
         State.activityLogs = [];
         snap.forEach(doc => {
@@ -1101,10 +1121,23 @@ function startListeners() {
             data.id = doc.id;
             State.activityLogs.push(data);
         });
-        renderActivityFeed();
+        if (!State.activities || State.activities.length === 0) {
+            renderActivityFeed();
+            renderLoginsList();
+        }
     }, err => console.warn('Activity logs listener:', err));
 
-    // 6. Security Audit Stream
+    // 6. User Logins timeline stream
+    db.collection('user_logins').orderBy('timestamp', 'desc').limit(100).onSnapshot(snap => {
+        State.logins = [];
+        snap.forEach(doc => {
+            const data = doc.data();
+            data.id = doc.id;
+            State.logins.push(data);
+        });
+    }, err => console.warn('Logins listener:', err));
+
+    // 7. Security Audit Stream
     db.collection('audit_logs').orderBy('timestamp', 'desc').limit(100).onSnapshot(snap => {
         State.audit = [];
         snap.forEach(doc => {
@@ -1113,7 +1146,6 @@ function startListeners() {
             State.audit.push(data);
         });
         renderAuditList();
-        renderActivityFeed();
     }, err => console.warn('Audit listener:', err));
 
     // 6. AI Interactions Stream
@@ -4357,45 +4389,505 @@ function renderDevicesList() {
     }).join('');
 }
 
-function renderLoginsList() {
-    if (!DOM.loginsList) return;
-    let list = [...State.logins];
+function getActivityCategoryInfo(activityType, action) {
+    const t = String(activityType || '').toLowerCase();
+    const a = String(action || '').toLowerCase();
 
-    const searchInput = $('search-logins');
-    const q = (searchInput ? searchInput.value : '').toLowerCase().trim();
-    if (q) {
-        list = list.filter(l =>
-            (l.userId || l.username || '').toLowerCase().includes(q) ||
-            (l.action || '').toLowerCase().includes(q) ||
-            (l.deviceModel || '').toLowerCase().includes(q) ||
-            (l.ip || '').toLowerCase().includes(q)
-        );
+    if (t.includes('login') || a.includes('logged in') || a.includes('login')) {
+        return { icon: 'login', colorClass: 'login', label: 'Login Event' };
+    }
+    if (t.includes('logout') || a.includes('logged out') || a.includes('logout')) {
+        return { icon: 'logout', colorClass: 'logout', label: 'Logout Event' };
+    }
+    if (t.includes('register') || a.includes('registered')) {
+        return { icon: 'person_add', colorClass: 'login', label: 'Registration' };
+    }
+    if (t.includes('quiz') || t.includes('assessment') || a.includes('quiz') || a.includes('assessment')) {
+        return { icon: 'quiz', colorClass: 'quiz', label: 'Quiz / Assessment' };
+    }
+    if (t.includes('module') || a.includes('module')) {
+        return { icon: 'school', colorClass: 'module', label: 'Educational Module' };
+    }
+    if (t.includes('level') || a.includes('leveled up') || a.includes('level up')) {
+        return { icon: 'military_tech', colorClass: 'gamif', label: 'Level Up' };
+    }
+    if (t.includes('achievement') || a.includes('achievement') || a.includes('badge')) {
+        return { icon: 'workspace_premium', colorClass: 'gamif', label: 'Achievement' };
+    }
+    if (t.includes('xp') || a.includes('xp') || a.includes('earned')) {
+        return { icon: 'stars', colorClass: 'gamif', label: 'XP Award' };
+    }
+    if (t.includes('profile') || a.includes('profile') || a.includes('display name')) {
+        return { icon: 'manage_accounts', colorClass: 'profile', label: 'Profile Update' };
+    }
+    if (t.includes('setting') || a.includes('language') || a.includes('setting')) {
+        return { icon: 'settings', colorClass: 'profile', label: 'Settings Change' };
+    }
+    if (t.includes('admin') || a.includes('activated') || a.includes('deactivated') || a.includes('role') || a.includes('deleted')) {
+        return { icon: 'shield', colorClass: 'admin', label: 'Admin Action' };
+    }
+    return { icon: 'bolt', colorClass: 'login', label: 'User Activity' };
+}
+
+function getUnifiedActivityList() {
+    const raw = [];
+    const source = (Array.isArray(State.activities) && State.activities.length > 0)
+        ? State.activities
+        : (Array.isArray(State.activityLogs) ? State.activityLogs : []);
+
+    source.forEach(act => {
+        const userId = act.userId || act.username || 'unknown';
+        const userProfile = resolveUserProfile(userId);
+        if (act.displayName && act.displayName.trim()) {
+            userProfile.displayName = act.displayName.trim();
+        }
+        if (act.role && act.role.trim()) {
+            userProfile.role = act.role.trim();
+        }
+
+        const actualUser = (act.username && act.username.toLowerCase() !== 'user') ? act.username : (userProfile.username || userId);
+        const dispName = (act.displayName && act.displayName.toLowerCase() !== 'user') ? act.displayName : (userProfile.displayName || actualUser);
+        
+        let identityDisplay = '';
+        if (dispName && actualUser && dispName.toLowerCase() !== actualUser.toLowerCase()) {
+            identityDisplay = `${dispName} (@${actualUser})`;
+        } else if (actualUser && actualUser.toLowerCase() !== 'unknown') {
+            identityDisplay = `@${actualUser}`;
+        } else if (dispName) {
+            identityDisplay = dispName;
+        } else {
+            identityDisplay = 'Registered User';
+        }
+
+        const timeMs = parseTimestampToMs(act.timestamp || act.timestampMillis || act.createdAtMillis);
+        const cat = getActivityCategoryInfo(act.activityType, act.action);
+
+        raw.push({
+            id: act.id || act.activityId || `act_${actualUser}_${timeMs}`,
+            activityId: act.activityId || act.id,
+            userId: userId,
+            username: actualUser,
+            displayName: dispName,
+            formattedIdentity: identityDisplay,
+            role: act.role || userProfile.role || 'Learner',
+            action: act.action || 'Recorded system activity',
+            activityType: act.activityType || cat.label,
+            description: act.description || act.details || '',
+            details: act.details || act.description || '',
+            moduleId: act.moduleId || '',
+            assessmentId: act.assessmentId || '',
+            xpEarned: (typeof act.xpEarned === 'number') ? act.xpEarned : null,
+            timestamp: act.timestamp || act.timestampMillis || act.createdAtMillis,
+            timeMs: timeMs,
+            icon: cat.icon,
+            colorClass: cat.colorClass,
+            categoryLabel: cat.label,
+            device: act.deviceId || act.device || act.deviceInfo || 'Mobile Device',
+            sessionId: act.sessionId || 'N/A',
+            status: act.status || 'Completed',
+            metadata: act.metadata || null,
+            isOnline: isUserOnline(userProfile)
+        });
+    });
+
+    // Idempotent deduplication (prevents duplicate logs from re-renders or multiple listeners)
+    const seen = new Set();
+    const deduped = [];
+
+    for (const ev of raw) {
+        if (!ev.timeMs || isNaN(ev.timeMs)) continue;
+        const timeBucket = Math.floor(ev.timeMs / 8000); // 8-second time bucket
+        const dedupKey = ev.activityId || `${ev.username}_${ev.activityType}_${(ev.action || '').slice(0, 25)}_${timeBucket}`;
+        if (!seen.has(dedupKey)) {
+            seen.add(dedupKey);
+            deduped.push(ev);
+        }
     }
 
-    if (State.loginFilter === 'login') list = list.filter(l => (l.action || '').toLowerCase().includes('login'));
-    else if (State.loginFilter === 'logout') list = list.filter(l => (l.action || '').toLowerCase().includes('logout'));
-    else if (State.loginFilter === 'failed') list = list.filter(l => (l.action || '').toLowerCase().includes('fail'));
+    deduped.sort((a, b) => b.timeMs - a.timeMs);
+    return deduped;
+}
 
-    if (list.length === 0) {
-        DOM.loginsList.innerHTML = `<div class="empty-state"><p class="font-body">No activity stream logs found.</p></div>`;
+function renderActivityFeed() {
+    if (!DOM.activityFeed) return;
+
+    let events = getUnifiedActivityList();
+
+    // Filter by quick filter bar on dashboard widget
+    const filter = State.activityFeedFilter || 'all';
+    if (filter === 'login') {
+        events = events.filter(e => e.activityType.toLowerCase().includes('login') || e.activityType.toLowerCase().includes('logout') || e.action.toLowerCase().includes('login') || e.action.toLowerCase().includes('logout'));
+    } else if (filter === 'quiz') {
+        events = events.filter(e => e.activityType.toLowerCase().includes('quiz') || e.activityType.toLowerCase().includes('assessment') || e.action.toLowerCase().includes('quiz'));
+    } else if (filter === 'module') {
+        events = events.filter(e => e.activityType.toLowerCase().includes('module') || e.action.toLowerCase().includes('module'));
+    } else if (filter === 'gamification') {
+        events = events.filter(e => e.activityType.toLowerCase().includes('xp') || e.activityType.toLowerCase().includes('level') || e.activityType.toLowerCase().includes('achievement') || e.xpEarned);
+    } else if (filter === 'admin') {
+        events = events.filter(e => e.activityType.toLowerCase().includes('admin') || e.role.toLowerCase().includes('admin'));
+    }
+
+    const topEvents = events.slice(0, 30);
+
+    if (topEvents.length === 0) {
+        DOM.activityFeed.innerHTML = `
+            <div class="empty-state mini" style="padding:28px 16px;text-align:center;">
+                <span class="material-icons-round" style="font-size:32px;color:var(--text-muted);margin-bottom:8px;">history</span>
+                <p class="font-body" style="color:var(--text-secondary);font-size:14px;font-weight:600;margin:0 0 4px;">No recent activity</p>
+                <small class="font-caption" style="color:var(--text-muted);">User activity will appear here when users interact with the system.</small>
+            </div>
+        `;
         return;
     }
 
-    DOM.loginsList.innerHTML = list.map(l => `
-        <div class="data-row">
-            <div class="data-avatar"><span class="material-icons-round">login</span></div>
-            <div class="data-main-info">
-                <div class="data-title font-body">@${escapeHtml(l.userId || l.username || 'user')} — ${escapeHtml((l.action || 'AUTH').toUpperCase())}</div>
-                <div class="data-subtitle font-body-sm">
-                    <span>${escapeHtml(l.deviceModel || 'Mobile')}</span>
-                    ${l.ip ? `<span>· IP: ${escapeHtml(l.ip)}</span>` : ''}
+    DOM.activityFeed.innerHTML = topEvents.map(ev => {
+        const exactManilaTime = formatExactManilaTime(ev.timestamp);
+        const relativeTime = formatDynamicRelativeTime(ev.timestamp);
+
+        let roleBadgeClass = 'user';
+        const roleLower = String(ev.role || '').toLowerCase();
+        if (roleLower.includes('admin')) roleBadgeClass = 'admin';
+        else if (roleLower.includes('safety') || roleLower.includes('officer')) roleBadgeClass = 'officer';
+        else if (roleLower.includes('driver')) roleBadgeClass = 'driver';
+        else roleBadgeClass = 'learner';
+
+        const xpBadge = ev.xpEarned ? `<span style="font-size:11px;color:var(--badge-gold-bright, #F5C542);font-weight:600;background:rgba(245,197,66,0.12);padding:1px 6px;border-radius:4px;border:1px solid rgba(245,197,66,0.25);">+${ev.xpEarned} XP</span>` : '';
+
+        return `
+            <div class="activity-feed-row" 
+                 title="Click to view full event details • Exact Manila Time: ${escapeHtml(exactManilaTime)}" 
+                 onclick="openActivityDetailModal('${escapeHtml(ev.id)}')"
+                 style="cursor:pointer;">
+                <div class="activity-feed-icon-box ${ev.colorClass}">
+                    <span class="material-icons-round" style="font-size:20px;">${ev.icon}</span>
+                    ${ev.isOnline ? '<span class="activity-online-dot" title="User is currently Online"></span>' : ''}
+                </div>
+                <div class="data-main-info" style="flex:1;min-width:0;">
+                    <div class="data-title font-body-sm" style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;line-height:1.35;">
+                        <strong style="color:var(--text-primary);font-weight:600;">${escapeHtml(ev.formattedIdentity)}</strong>
+                        <span style="color:var(--text-secondary);">—</span>
+                        <span style="color:var(--text-secondary);">${escapeHtml(ev.action)}</span>
+                        ${xpBadge}
+                    </div>
+                    <div class="data-subtitle font-caption" style="margin-top:3px;display:flex;align-items:center;gap:8px;color:var(--text-muted);flex-wrap:wrap;">
+                        <span class="role-tag font-badge ${roleBadgeClass}" style="font-size:10px;padding:1px 6px;border-radius:4px;">${escapeHtml(ev.role.toUpperCase())}</span>
+                        <span>•</span>
+                        <span class="activity-exact-time" style="font-size:11px;" title="${escapeHtml(exactManilaTime)}">📅 ${escapeHtml(exactManilaTime)}</span>
+                    </div>
+                </div>
+                <div style="text-align:right;flex-shrink:0;margin-left:8px;">
+                    <span class="font-caption" style="color:var(--badge-gold-bright, #F5C542);font-weight:600;white-space:nowrap;" title="${escapeHtml(exactManilaTime)}">
+                        ${escapeHtml(relativeTime)}
+                    </span>
                 </div>
             </div>
-            <div class="data-meta-cell">
-                <span class="font-caption">${formatRelativeTime(l.timestamp)}</span>
+        `;
+    }).join('');
+}
+
+function renderLoginsList() {
+    if (!DOM.loginsList) return;
+
+    let list = getUnifiedActivityList();
+
+    // 1. Search Query filter
+    const searchInput = $('search-logins');
+    const q = (searchInput ? searchInput.value : (State.activitySearchQuery || '')).toLowerCase().trim();
+    if (q) {
+        list = list.filter(e =>
+            (e.username || '').toLowerCase().includes(q) ||
+            (e.displayName || '').toLowerCase().includes(q) ||
+            (e.userId || '').toLowerCase().includes(q) ||
+            (e.action || '').toLowerCase().includes(q) ||
+            (e.description || '').toLowerCase().includes(q) ||
+            (e.moduleId || '').toLowerCase().includes(q) ||
+            (e.device || '').toLowerCase().includes(q)
+        );
+    }
+
+    // 2. Role filter
+    const roleFilter = State.activityRoleFilter || 'all';
+    if (roleFilter !== 'all') {
+        list = list.filter(e => e.role.toLowerCase().replace(/[\s_]/g, '') === roleFilter.toLowerCase().replace(/[\s_]/g, ''));
+    }
+
+    // 3. Date filter
+    const dateFilter = State.activityDateFilter || 'all';
+    if (dateFilter !== 'all') {
+        const now = Date.now();
+        const oneDayMs = 24 * 60 * 60 * 1000;
+        if (dateFilter === 'today') {
+            const startOfToday = new Date().setHours(0, 0, 0, 0);
+            list = list.filter(e => e.timeMs >= startOfToday);
+        } else if (dateFilter === 'yesterday') {
+            const startOfYesterday = new Date(now - oneDayMs).setHours(0, 0, 0, 0);
+            const endOfYesterday = new Date().setHours(0, 0, 0, 0);
+            list = list.filter(e => e.timeMs >= startOfYesterday && e.timeMs < endOfYesterday);
+        } else if (dateFilter === '7days') {
+            list = list.filter(e => e.timeMs >= (now - (7 * oneDayMs)));
+        } else if (dateFilter === '30days') {
+            list = list.filter(e => e.timeMs >= (now - (30 * oneDayMs)));
+        }
+    }
+
+    // 4. Type filter
+    const typeFilter = State.activityTypeFilter || 'all';
+    if (typeFilter === 'login') {
+        list = list.filter(e => e.activityType.toLowerCase().includes('login') || e.activityType.toLowerCase().includes('logout') || e.action.toLowerCase().includes('login') || e.action.toLowerCase().includes('logout'));
+    } else if (typeFilter === 'quiz') {
+        list = list.filter(e => e.activityType.toLowerCase().includes('quiz') || e.activityType.toLowerCase().includes('assessment') || e.action.toLowerCase().includes('quiz'));
+    } else if (typeFilter === 'module') {
+        list = list.filter(e => e.activityType.toLowerCase().includes('module') || e.action.toLowerCase().includes('module'));
+    } else if (typeFilter === 'gamification') {
+        list = list.filter(e => e.activityType.toLowerCase().includes('xp') || e.activityType.toLowerCase().includes('level') || e.activityType.toLowerCase().includes('achievement') || e.xpEarned);
+    } else if (typeFilter === 'profile') {
+        list = list.filter(e => e.activityType.toLowerCase().includes('profile') || e.activityType.toLowerCase().includes('setting'));
+    } else if (typeFilter === 'admin') {
+        list = list.filter(e => e.activityType.toLowerCase().includes('admin') || e.role.toLowerCase().includes('admin'));
+    }
+
+    if (list.length === 0) {
+        DOM.loginsList.innerHTML = `
+            <div class="empty-state" style="padding:40px 20px;text-align:center;">
+                <span class="material-icons-round" style="font-size:40px;color:var(--text-muted);margin-bottom:12px;">manage_search</span>
+                <p class="font-body" style="color:var(--text-primary);font-size:15px;font-weight:600;margin:0 0 6px;">No activities matching your filters</p>
+                <small class="font-caption" style="color:var(--text-secondary);">Try clearing your search query or selecting 'All Events'.</small>
             </div>
-        </div>
-    `).join('');
+        `;
+        return;
+    }
+
+    DOM.loginsList.innerHTML = list.map(ev => {
+        const exactManilaTime = formatExactManilaTime(ev.timestamp);
+        const relativeTime = formatDynamicRelativeTime(ev.timestamp);
+
+        let roleBadgeClass = 'user';
+        const roleLower = String(ev.role || '').toLowerCase();
+        if (roleLower.includes('admin')) roleBadgeClass = 'admin';
+        else if (roleLower.includes('safety') || roleLower.includes('officer')) roleBadgeClass = 'officer';
+        else if (roleLower.includes('driver')) roleBadgeClass = 'driver';
+        else roleBadgeClass = 'learner';
+
+        const xpBadge = ev.xpEarned ? `<span style="font-size:11px;color:var(--badge-gold-bright, #F5C542);font-weight:600;background:rgba(245,197,66,0.12);padding:2px 8px;border-radius:4px;border:1px solid rgba(245,197,66,0.25);">+${ev.xpEarned} XP</span>` : '';
+
+        return `
+            <div class="data-row" onclick="openActivityDetailModal('${escapeHtml(ev.id)}')" style="cursor:pointer;" title="Click to view full event metadata">
+                <div class="data-avatar activity-feed-icon-box ${ev.colorClass}" style="width:42px;height:42px;">
+                    <span class="material-icons-round">${ev.icon}</span>
+                </div>
+                <div class="data-main-info">
+                    <div class="data-title font-body" style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+                        <strong style="color:var(--text-primary);font-weight:600;">${escapeHtml(ev.formattedIdentity)}</strong>
+                        <span style="color:var(--text-secondary);">—</span>
+                        <span style="color:var(--text-secondary);">${escapeHtml(ev.action)}</span>
+                        ${xpBadge}
+                    </div>
+                    <div class="data-subtitle font-body-sm" style="display:flex;align-items:center;gap:10px;margin-top:3px;flex-wrap:wrap;">
+                        <span class="role-tag font-badge ${roleBadgeClass}" style="font-size:10px;">${escapeHtml(ev.role.toUpperCase())}</span>
+                        <span>•</span>
+                        <span>📱 ${escapeHtml(ev.device)}</span>
+                        ${ev.description ? `<span>• <em>${escapeHtml(ev.description)}</em></span>` : ''}
+                    </div>
+                </div>
+                <div class="data-meta-cell" style="text-align:right;">
+                    <div class="font-caption" style="color:var(--badge-gold-bright, #F5C542);font-weight:600;">${escapeHtml(relativeTime)}</div>
+                    <div class="font-caption" style="color:var(--text-muted);font-size:11px;margin-top:2px;">${escapeHtml(exactManilaTime)}</div>
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+
+function openActivityDetailModal(activityId) {
+    const list = getUnifiedActivityList();
+    const act = list.find(e => e.id === activityId || e.activityId === activityId);
+    if (!act) {
+        showToast('Activity record details loaded from stream.', 'info', 1500);
+        return;
+    }
+
+    const modalOverlay = $('activity-detail-modal-overlay');
+    const modalTitle = $('modal-act-title');
+    const modalType = $('modal-act-type');
+    const modalIconBox = $('modal-act-icon-box');
+    const modalIcon = $('modal-act-icon');
+    const modalBody = $('modal-act-body');
+
+    if (modalTitle) modalTitle.textContent = act.action;
+    if (modalType) modalType.textContent = `${act.categoryLabel} • Verified Cloud Event`;
+    if (modalIcon) modalIcon.textContent = act.icon;
+    if (modalIconBox) {
+        modalIconBox.className = `activity-feed-icon-box ${act.colorClass}`;
+    }
+
+    let roleBadgeClass = 'user';
+    const roleLower = String(act.role || '').toLowerCase();
+    if (roleLower.includes('admin')) roleBadgeClass = 'admin';
+    else if (roleLower.includes('safety') || roleLower.includes('officer')) roleBadgeClass = 'officer';
+    else if (roleLower.includes('driver')) roleBadgeClass = 'driver';
+    else roleBadgeClass = 'learner';
+
+    const exactTime = formatExactManilaTime(act.timestamp);
+    const relTime = formatDynamicRelativeTime(act.timestamp);
+
+    if (modalBody) {
+        modalBody.innerHTML = `
+            <div class="modal-detail-grid">
+                <div class="modal-detail-item">
+                    <span class="modal-detail-label">User Identity</span>
+                    <span class="modal-detail-value" style="font-weight:600;color:#FFFFFF;">
+                        ${escapeHtml(act.displayName)} <span style="color:var(--brand-blue, #60A5FA);">(@${escapeHtml(act.username)})</span>
+                    </span>
+                </div>
+                <div class="modal-detail-item">
+                    <span class="modal-detail-label">Assigned Role</span>
+                    <span class="modal-detail-value">
+                        <span class="role-tag font-badge ${roleBadgeClass}" style="font-size:11px;padding:2px 8px;">${escapeHtml(act.role.toUpperCase())}</span>
+                    </span>
+                </div>
+                <div class="modal-detail-item">
+                    <span class="modal-detail-label">Firebase User UID</span>
+                    <span class="modal-detail-value" style="font-family:monospace;font-size:12px;color:var(--text-secondary);">${escapeHtml(act.userId)}</span>
+                </div>
+                <div class="modal-detail-item">
+                    <span class="modal-detail-label">Activity Category</span>
+                    <span class="modal-detail-value">${escapeHtml(act.categoryLabel)}</span>
+                </div>
+                <div class="modal-detail-item full-width">
+                    <span class="modal-detail-label">Action Description</span>
+                    <span class="modal-detail-value" style="font-size:14px;color:#FFFFFF;">${escapeHtml(act.action)}</span>
+                </div>
+                ${act.description ? `
+                <div class="modal-detail-item full-width">
+                    <span class="modal-detail-label">Event Details / Outcome</span>
+                    <span class="modal-detail-value" style="line-height:1.5;">${escapeHtml(act.description)}</span>
+                </div>
+                ` : ''}
+                ${act.xpEarned ? `
+                <div class="modal-detail-item">
+                    <span class="modal-detail-label">XP Awarded</span>
+                    <span class="modal-detail-value" style="color:var(--badge-gold-bright, #F5C542);font-weight:700;font-size:15px;">+${act.xpEarned} XP</span>
+                </div>
+                ` : ''}
+                ${(act.moduleId || act.assessmentId) ? `
+                <div class="modal-detail-item">
+                    <span class="modal-detail-label">Associated Module / Quiz ID</span>
+                    <span class="modal-detail-value" style="font-family:monospace;font-size:12px;">${escapeHtml(act.moduleId || act.assessmentId)}</span>
+                </div>
+                ` : ''}
+                <div class="modal-detail-item">
+                    <span class="modal-detail-label">Philippine Local Time</span>
+                    <span class="modal-detail-value">📅 ${escapeHtml(exactTime)}</span>
+                </div>
+                <div class="modal-detail-item">
+                    <span class="modal-detail-label">Relative Timing</span>
+                    <span class="modal-detail-value" style="color:var(--badge-gold-bright, #F5C542);font-weight:600;">⏱️ ${escapeHtml(relTime)}</span>
+                </div>
+                <div class="modal-detail-item">
+                    <span class="modal-detail-label">Connecting Device</span>
+                    <span class="modal-detail-value">📱 ${escapeHtml(act.device)}</span>
+                </div>
+                <div class="modal-detail-item">
+                    <span class="modal-detail-label">Event Status</span>
+                    <span class="modal-detail-value">
+                        <span style="padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;background:rgba(16,185,129,0.15);color:#10B981;border:1px solid rgba(16,185,129,0.3);">${escapeHtml(act.status)}</span>
+                    </span>
+                </div>
+                <div class="modal-detail-item full-width">
+                    <span class="modal-detail-label">Activity Document ID</span>
+                    <span class="modal-detail-value" style="font-family:monospace;font-size:11px;color:var(--text-muted);">${escapeHtml(act.id)}</span>
+                </div>
+            </div>
+        `;
+    }
+
+    if (modalOverlay) {
+        modalOverlay.style.display = 'flex';
+    }
+}
+
+function closeActivityDetailModal() {
+    const modalOverlay = $('activity-detail-modal-overlay');
+    if (modalOverlay) modalOverlay.style.display = 'none';
+}
+
+function setActivityFeedFilter(filter) {
+    State.activityFeedFilter = filter;
+    const buttons = document.querySelectorAll('#activity-feed-filters .chip-mini');
+    buttons.forEach(btn => {
+        if (btn.getAttribute('data-act-filter') === filter) {
+            btn.classList.add('active');
+        } else {
+            btn.classList.remove('active');
+        }
+    });
+    renderActivityFeed();
+}
+
+function setActivityRoleFilter(role) {
+    State.activityRoleFilter = role;
+    renderLoginsList();
+}
+
+function setActivityDateFilter(dateRange) {
+    State.activityDateFilter = dateRange;
+    renderLoginsList();
+}
+
+function setActivityTypeFilter(type) {
+    State.activityTypeFilter = type;
+    const buttons = document.querySelectorAll('#activity-tab-chips .chip');
+    buttons.forEach(btn => {
+        if (btn.getAttribute('data-filter') === type) {
+            btn.classList.add('active');
+        } else {
+            btn.classList.remove('active');
+        }
+    });
+    renderLoginsList();
+}
+
+function handleActivitySearch(query) {
+    State.activitySearchQuery = query;
+    renderLoginsList();
+}
+
+function exportActivityCsv() {
+    const list = getUnifiedActivityList();
+    if (list.length === 0) {
+        showToast('No activities available to export', 'warning');
+        return;
+    }
+
+    let csvContent = 'Activity ID,User ID,Username,Display Name,Role,Activity Type,Action,Description,XP Earned,Exact Manila Time,Device,Status\n';
+
+    list.forEach(e => {
+        const row = [
+            `"${e.id}"`,
+            `"${e.userId}"`,
+            `"${e.username}"`,
+            `"${e.displayName.replace(/"/g, '""')}"`,
+            `"${e.role}"`,
+            `"${e.activityType}"`,
+            `"${e.action.replace(/"/g, '""')}"`,
+            `"${(e.description || '').replace(/"/g, '""')}"`,
+            `"${e.xpEarned || 0}"`,
+            `"${formatExactManilaTime(e.timestamp)}"`,
+            `"${e.device.replace(/"/g, '""')}"`,
+            `"${e.status}"`
+        ];
+        csvContent += row.join(',') + '\n';
+    });
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.setAttribute('href', url);
+    link.setAttribute('download', `road_safety_activities_${new Date().toISOString().slice(0,10)}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    showToast('Activity history exported to CSV successfully.', 'success');
 }
 
 function renderAuditList() {
@@ -4438,200 +4930,6 @@ function renderAuditList() {
             </div>
         </div>
     `).join('');
-}
-
-function renderActivityFeed() {
-    if (!DOM.activityFeed) return;
-
-    const rawEvents = [];
-
-    // 1. Dedicated activity_logs collection
-    if (Array.isArray(State.activityLogs)) {
-        State.activityLogs.forEach(act => {
-            const userProfile = resolveUserProfile(act.userId || act.username);
-            if (act.role) userProfile.role = act.role;
-            const timeMs = parseTimestampToMs(act.timestamp || act.timestampMillis);
-
-            let icon = 'bolt';
-            let actionText = act.action || 'Activity recorded';
-            const actionLower = String(actionText).toLowerCase();
-            const typeLower = String(act.activityType || '').toLowerCase();
-
-            if (actionLower.includes('login') || typeLower === 'login') {
-                icon = 'login';
-                actionText = 'Logged in';
-            } else if (actionLower.includes('logout') || typeLower === 'logout') {
-                icon = 'logout';
-                actionText = 'Logged out';
-            } else if (actionLower.includes('quiz') || typeLower === 'quiz') {
-                icon = 'quiz';
-            } else if (actionLower.includes('module') || typeLower === 'module') {
-                icon = 'school';
-            } else if (actionLower.includes('profile') || typeLower === 'profile') {
-                icon = 'manage_accounts';
-            } else if (actionLower.includes('audit') || typeLower === 'security') {
-                icon = 'shield';
-            }
-
-            rawEvents.push({
-                id: act.id || `act_${userProfile.username}_${timeMs}`,
-                userId: userProfile.username,
-                userProfile: userProfile,
-                actionDescription: actionText,
-                timestamp: act.timestamp || act.timestampMillis,
-                timeMs: timeMs,
-                icon: icon,
-                device: act.device || act.deviceInfo || '',
-                status: act.status || 'Active'
-            });
-        });
-    }
-
-    // 2. user_logins collection
-    if (Array.isArray(State.logins)) {
-        State.logins.forEach(l => {
-            const userProfile = resolveUserProfile(l.username || l.userId || l.id);
-            if (l.role) userProfile.role = l.role;
-            const timeMs = parseTimestampToMs(l.timestamp || l.timestampUtc);
-            const isLogout = l.eventType === 'LOGOUT' || String(l.action || '').toLowerCase().includes('logout');
-            const isFailed = l.status === 'FAILED' || l.eventType === 'FAILED_LOGIN';
-
-            let actionText = 'Logged in';
-            let icon = 'login';
-            if (isLogout) {
-                actionText = 'Logged out';
-                icon = 'logout';
-            } else if (isFailed) {
-                actionText = 'Failed login attempt';
-                icon = 'warning';
-            }
-
-            rawEvents.push({
-                id: l.id || `login_${userProfile.username}_${timeMs}`,
-                userId: userProfile.username,
-                userProfile: userProfile,
-                actionDescription: actionText,
-                timestamp: l.timestamp || l.timestampUtc,
-                timeMs: timeMs,
-                icon: icon,
-                device: l.deviceInfo || '',
-                status: l.status || 'Active'
-            });
-        });
-    }
-
-    // 3. quiz_attempts collection
-    if (Array.isArray(State.quizzes)) {
-        State.quizzes.forEach(q => {
-            const userProfile = resolveUserProfile(q.userId || q.username);
-            const timeMs = parseTimestampToMs(q.timestamp || q.completedAt);
-            const score = q.score !== undefined ? q.score : 0;
-            const total = q.totalQuestions || 5;
-            const pct = q.percentage !== undefined ? Math.round(q.percentage) : Math.round((score / total) * 100);
-            const topic = q.topic || q.quizTitle || 'Road Safety Quiz';
-
-            rawEvents.push({
-                id: q.id || `quiz_${userProfile.username}_${timeMs}`,
-                userId: userProfile.username,
-                userProfile: userProfile,
-                actionDescription: `Completed Quiz: ${topic} (Score: ${score}/${total}, ${pct}%)`,
-                timestamp: q.timestamp || q.completedAt,
-                timeMs: timeMs,
-                icon: 'quiz',
-                device: '',
-                status: q.passed ? 'Passed' : 'Completed'
-            });
-        });
-    }
-
-    // 4. audit_logs collection
-    if (Array.isArray(State.audit)) {
-        State.audit.forEach(a => {
-            const userProfile = resolveUserProfile(a.adminId || a.username || 'admin');
-            userProfile.role = 'Admin';
-            const timeMs = parseTimestampToMs(a.timestamp || a.timestampUtc);
-            const action = a.action || a.actionType || 'Security Audit';
-
-            rawEvents.push({
-                id: a.id || `audit_${userProfile.username}_${timeMs}`,
-                userId: userProfile.username,
-                userProfile: userProfile,
-                actionDescription: `Admin Audit: ${action}${a.targetUser ? ' on @' + a.targetUser : ''}`,
-                timestamp: a.timestamp || a.timestampUtc,
-                timeMs: timeMs,
-                icon: 'shield',
-                device: a.deviceInfo || '',
-                status: 'Audited'
-            });
-        });
-    }
-
-    // Deduplication & Sorting
-    const seen = new Set();
-    const uniqueEvents = [];
-
-    for (const ev of rawEvents) {
-        if (!ev.timeMs || isNaN(ev.timeMs)) continue;
-        const timeBucket = Math.floor(ev.timeMs / 5000);
-        const compKey = ev.id ? ev.id : `${ev.userProfile.formattedHandle}_${ev.actionDescription.slice(0, 15)}_${timeBucket}`;
-        if (!seen.has(compKey)) {
-            seen.add(compKey);
-            uniqueEvents.push(ev);
-        }
-    }
-
-    uniqueEvents.sort((a, b) => b.timeMs - a.timeMs);
-    const topEvents = uniqueEvents.slice(0, 15);
-
-    if (topEvents.length === 0) {
-        DOM.activityFeed.innerHTML = `
-            <div class="empty-state mini" style="padding:24px 16px;text-align:center;">
-                <span class="material-icons-round" style="font-size:28px;color:var(--text-muted);margin-bottom:6px;">hourglass_empty</span>
-                <p class="font-body" style="color:var(--text-secondary);font-size:13px;">Waiting for real-time driver events…</p>
-            </div>
-        `;
-        return;
-    }
-
-    DOM.activityFeed.innerHTML = topEvents.map(ev => {
-        const u = ev.userProfile;
-        const exactManilaTime = formatExactManilaTime(ev.timestamp);
-        const relativeTime = formatDynamicRelativeTime(ev.timestamp);
-
-        let roleBadgeClass = 'user';
-        if (u.role === 'Admin') roleBadgeClass = 'admin';
-        else if (u.role === 'Safety Officer') roleBadgeClass = 'blue';
-        else if (u.role === 'Learner') roleBadgeClass = 'gold';
-
-        return `
-            <div class="activity-feed-row" 
-                 title="Exact Manila Time: ${escapeHtml(exactManilaTime)}" 
-                 onclick="showToast('${escapeHtml(u.formattedHandle)}: ${escapeHtml(ev.actionDescription)} • ${escapeHtml(exactManilaTime)}', 'info', 3200)"
-                 style="cursor:pointer;">
-                <div class="activity-feed-icon-box">
-                    <span class="material-icons-round" style="color:var(--badge-gold-bright, #F5C542);font-size:20px;">${ev.icon}</span>
-                    ${u.isOnline ? '<span class="activity-online-dot" title="User is currently Online"></span>' : ''}
-                </div>
-                <div class="data-main-info" style="flex:1;min-width:0;">
-                    <div class="data-title font-body-sm" style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;line-height:1.35;">
-                        <strong style="color:var(--text-primary);font-weight:600;">${escapeHtml(u.formattedHandle)}</strong>
-                        <span style="color:var(--text-secondary);">—</span>
-                        <span style="color:var(--text-secondary);">${escapeHtml(ev.actionDescription)}</span>
-                    </div>
-                    <div class="data-subtitle font-caption" style="margin-top:2px;display:flex;align-items:center;gap:8px;color:var(--text-muted);flex-wrap:wrap;">
-                        <span class="role-tag font-badge ${roleBadgeClass}" style="font-size:10px;padding:1px 6px;border-radius:4px;">${escapeHtml(u.role)}</span>
-                        <span>•</span>
-                        <span class="activity-exact-time" style="font-size:11px;" title="${escapeHtml(exactManilaTime)}">📅 ${escapeHtml(exactManilaTime)}</span>
-                    </div>
-                </div>
-                <div style="text-align:right;flex-shrink:0;">
-                    <span class="font-caption" style="color:var(--badge-gold-bright, #F5C542);font-weight:600;white-space:nowrap;" title="${escapeHtml(exactManilaTime)}">
-                        ${escapeHtml(relativeTime)}
-                    </span>
-                </div>
-            </div>
-        `;
-    }).join('');
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -5336,9 +5634,9 @@ function parseTimestampToMs(ts) {
  */
 function formatExactManilaTime(ts, short = false) {
     const ms = parseTimestampToMs(ts);
-    if (!ms) return 'September 17, 2026 • 8:45 AM';
+    if (!ms) return '';
     const date = new Date(ms);
-    if (isNaN(date.getTime())) return 'September 17, 2026 • 8:45 AM';
+    if (isNaN(date.getTime())) return '';
 
     try {
         if (short) {
@@ -5430,6 +5728,7 @@ function resolveUserProfile(identifier) {
             username: 'Unknown User',
             formattedHandle: 'Unknown User',
             displayName: 'Unknown User',
+            formattedIdentity: 'Unknown User',
             role: 'Learner',
             isOnline: false,
             isAdmin: false
@@ -5496,10 +5795,22 @@ function resolveUserProfile(identifier) {
         formattedHandle = `@${displayName}`;
     }
 
+    let formattedIdentity = '';
+    if (displayName && actualUsername && displayName.toLowerCase() !== actualUsername.toLowerCase()) {
+        formattedIdentity = `${displayName} (@${actualUsername})`;
+    } else if (actualUsername) {
+        formattedIdentity = `@${actualUsername}`;
+    } else if (displayName) {
+        formattedIdentity = displayName;
+    } else {
+        formattedIdentity = 'Registered User';
+    }
+
     return {
         username: actualUsername || displayName || 'Unknown User',
         formattedHandle: formattedHandle,
         displayName: displayName || actualUsername || 'Unknown User',
+        formattedIdentity: formattedIdentity,
         role: role,
         isOnline: isOnline,
         isAdmin: role === 'Admin'

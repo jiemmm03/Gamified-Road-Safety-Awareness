@@ -76,7 +76,15 @@ service cloud.firestore {
       allow update, delete: if false;
     }
 
-    // Dedicated Real-Time Activity Monitoring Stream
+    // Dedicated Real-Time Activity Monitoring Stream (activities collection)
+    // Append-only audit trail: no update or delete allowed to preserve forensic integrity
+    match /activities/{activityId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated();
+      allow update, delete: if false;
+    }
+
+    // Dedicated Real-Time Activity Monitoring Stream (activity_logs collection)
     match /activity_logs/{activityId} {
       allow read: if isAuthenticated();
       allow create, update: if isAuthenticated();

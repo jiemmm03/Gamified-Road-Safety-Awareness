@@ -721,10 +721,32 @@
                         <canvas id="quizChart"></canvas>
                     </div>
                 </div>
-                <div class="card recent-card">
-                    <div class="card-header" style="display:flex;justify-content:space-between;align-items:center;">
-                        <h3 class="font-h3"><span class="material-icons-round">bolt</span> Recent User Activity</h3>
-                        <span class="live-dot pulse"></span>
+                <div class="card recent-card" id="dashboard-recent-activity-card">
+                    <div class="card-header" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
+                        <div style="display:flex;align-items:center;gap:8px;">
+                            <h3 class="font-h3" style="display:flex;align-items:center;gap:6px;margin:0;">
+                                <span class="material-icons-round" style="color:var(--badge-gold-bright, #F5C542);">bolt</span>
+                                Recent User Activity
+                            </h3>
+                            <span class="live-dot pulse" title="Real-time live Firestore activity stream"></span>
+                        </div>
+                        <div style="display:flex;align-items:center;gap:8px;">
+                            <button class="btn-text font-caption" onclick="switchTab('logins')" style="display:inline-flex;align-items:center;gap:4px;color:var(--brand-blue, #60A5FA);cursor:pointer;background:none;border:none;padding:4px 8px;font-weight:600;">
+                                <span>View Full Stream</span>
+                                <span class="material-icons-round" style="font-size:16px;">arrow_forward</span>
+                            </button>
+                        </div>
+                    </div>
+                    <!-- Quick Filter Bar -->
+                    <div class="activity-quick-filters" style="display:flex;align-items:center;gap:8px;padding:8px 16px;background:rgba(255,255,255,0.02);border-bottom:1px solid var(--border-subtle);flex-wrap:wrap;">
+                        <div class="filter-chips-mini" id="activity-feed-filters" style="display:flex;gap:6px;flex-wrap:wrap;flex:1;">
+                            <button class="chip-mini active font-caption" data-act-filter="all" onclick="setActivityFeedFilter('all')">All</button>
+                            <button class="chip-mini font-caption" data-act-filter="login" onclick="setActivityFeedFilter('login')">Logins</button>
+                            <button class="chip-mini font-caption" data-act-filter="quiz" onclick="setActivityFeedFilter('quiz')">Quizzes</button>
+                            <button class="chip-mini font-caption" data-act-filter="module" onclick="setActivityFeedFilter('module')">Modules</button>
+                            <button class="chip-mini font-caption" data-act-filter="gamification" onclick="setActivityFeedFilter('gamification')">XP &amp; Badges</button>
+                            <button class="chip-mini font-caption" data-act-filter="admin" onclick="setActivityFeedFilter('admin')">Admin</button>
+                        </div>
                     </div>
                     <div class="activity-feed" id="activity-feed">
                         <div class="empty-state mini">
@@ -1083,19 +1105,44 @@
             <div class="data-list" id="devices-list"></div>
         </section>
 
-        <!-- ═══════════ TAB 9: ACTIVITY HISTORY ═══════════ -->
+        <!-- ═══════════ TAB 9: ACTIVITY HISTORY & MONITORING ═══════════ -->
         <section class="tab-content" id="tab-logins">
-            <div class="tab-toolbar">
-                <div class="search-box">
-                    <span class="material-icons-round">search</span>
-                    <input type="text" id="search-logins" class="font-body"
-                        placeholder="Search activity stream by user, event, or device…">
+            <div class="tab-toolbar" style="display:flex;flex-direction:column;gap:12px;">
+                <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;width:100%;">
+                    <div class="search-box" style="flex:1;min-width:240px;">
+                        <span class="material-icons-round">search</span>
+                        <input type="text" id="search-logins" class="font-body"
+                            placeholder="Search activity stream by user (@username), action, module, or keyword…" oninput="handleActivitySearch(this.value)">
+                    </div>
+                    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+                        <select id="activity-role-filter" class="font-body input-select" onchange="setActivityRoleFilter(this.value)" style="padding:8px 12px;border-radius:8px;background:var(--navy-input, #0f172a);color:var(--text-primary);border:1px solid var(--border-subtle);font-size:13px;cursor:pointer;">
+                            <option value="all">All Roles</option>
+                            <option value="admin">Admins</option>
+                            <option value="safety officer">Safety Officers</option>
+                            <option value="driver">Drivers</option>
+                            <option value="learner">Learners</option>
+                        </select>
+                        <select id="activity-date-filter" class="font-body input-select" onchange="setActivityDateFilter(this.value)" style="padding:8px 12px;border-radius:8px;background:var(--navy-input, #0f172a);color:var(--text-primary);border:1px solid var(--border-subtle);font-size:13px;cursor:pointer;">
+                            <option value="all">All Time</option>
+                            <option value="today">Today</option>
+                            <option value="yesterday">Yesterday</option>
+                            <option value="7days">Last 7 Days</option>
+                            <option value="30days">Last 30 Days</option>
+                        </select>
+                        <button class="btn btn-secondary font-button" onclick="exportActivityCsv()" style="display:inline-flex;align-items:center;gap:6px;padding:8px 14px;cursor:pointer;">
+                            <span class="material-icons-round" style="font-size:16px;">download</span>
+                            <span>Export CSV</span>
+                        </button>
+                    </div>
                 </div>
-                <div class="filter-chips">
-                    <button class="chip active font-button" data-filter="all">All Events</button>
-                    <button class="chip font-button" data-filter="login">🔑 Login</button>
-                    <button class="chip font-button" data-filter="logout">🚪 Logout</button>
-                    <button class="chip font-button" data-filter="failed">🚨 Failed</button>
+                <div class="filter-chips" id="activity-tab-chips">
+                    <button class="chip active font-button" data-filter="all" onclick="setActivityTypeFilter('all')">All Events</button>
+                    <button class="chip font-button" data-filter="login" onclick="setActivityTypeFilter('login')">🔑 Logins &amp; Sessions</button>
+                    <button class="chip font-button" data-filter="quiz" onclick="setActivityTypeFilter('quiz')">📝 Quizzes &amp; Assessments</button>
+                    <button class="chip font-button" data-filter="module" onclick="setActivityTypeFilter('module')">📚 Modules</button>
+                    <button class="chip font-button" data-filter="gamification" onclick="setActivityTypeFilter('gamification')">⭐ XP &amp; Badges</button>
+                    <button class="chip font-button" data-filter="profile" onclick="setActivityTypeFilter('profile')">👤 Profile &amp; Settings</button>
+                    <button class="chip font-button" data-filter="admin" onclick="setActivityTypeFilter('admin')">🛡️ Admin Actions</button>
                 </div>
             </div>
             <div class="data-list" id="logins-list"></div>
@@ -1778,6 +1825,33 @@
         </section>
         </div><!-- End of admin-portal-container -->
     </main>
+
+    <!-- ═══════════ MODAL: ACTIVITY DETAILS ═══════════ -->
+    <div class="modal-overlay" id="activity-detail-modal-overlay" style="display:none;z-index:99995;">
+        <div class="modal" id="activity-detail-modal" style="max-width:580px;">
+            <div class="modal-header" style="display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border-subtle);padding:16px 20px;">
+                <div style="display:flex;align-items:center;gap:10px;">
+                    <div id="modal-act-icon-box" style="width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;background:rgba(96,165,250,0.15);color:var(--brand-blue);">
+                        <span class="material-icons-round" id="modal-act-icon" style="font-size:22px;">bolt</span>
+                    </div>
+                    <div>
+                        <h3 class="font-h3" style="margin:0;font-size:16px;color:#FFFFFF;" id="modal-act-title">Activity Details</h3>
+                        <span class="font-caption" style="color:var(--text-muted);" id="modal-act-type">Real-Time Event Record</span>
+                    </div>
+                </div>
+                <button class="modal-close" onclick="closeActivityDetailModal()" aria-label="Close modal">
+                    <span class="material-icons-round">close</span>
+                </button>
+            </div>
+            <div class="modal-body" id="modal-act-body" style="padding:20px;display:flex;flex-direction:column;gap:16px;max-height:70vh;overflow-y:auto;">
+                <!-- Populated dynamically by JS -->
+            </div>
+            <div class="modal-actions" style="padding:14px 20px;border-top:1px solid var(--border-subtle);display:flex;justify-content:space-between;align-items:center;">
+                <span class="font-caption" style="color:var(--text-muted);font-size:11px;">🔒 Verified Firebase Activity Record</span>
+                <button class="btn btn-secondary font-button" onclick="closeActivityDetailModal()">Close</button>
+            </div>
+        </div>
+    </div>
 
     <!-- ═══════════ SETTINGS CONFIRMATION MODAL ═══════════ -->
     <div class="modal-overlay" id="settings-confirm-modal-overlay" style="display:none;">

@@ -78,13 +78,6 @@ fun LoginScreen(
     LaunchedEffect(Unit) {
         val session = authManager.getSavedSession()
         if (session is LoginResult.Success) {
-            val username = authManager.getLoggedInUsername() ?: ""
-            com.example.gamifiedroadsafetyawareness.firebase.FirebaseSyncManager.getInstance().recordUserLogin(
-                username = username,
-                displayName = session.displayName,
-                role = session.role.name,
-                isSuccess = true
-            )
             onLoginSuccess(session.role, session.displayName, session.permissions)
             return@LaunchedEffect
         }

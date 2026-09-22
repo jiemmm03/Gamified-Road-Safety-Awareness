@@ -141,31 +141,37 @@ class FirebaseSyncManager {
                     Log.w(tag, "Failed to upload quiz attempt to Firestore: ${error.message}")
                 }
 
-            // Also mirror structured event to activity_logs
+            // Also mirror structured event to activities and activity_logs
             // Resolve display name and role from the users collection for accurate logging
             firestore.collection(COLLECTION_USERS).document(attempt.userId).get()
                 .addOnSuccessListener { userDoc ->
                     val resolvedName = userDoc?.getString("displayName") ?: attempt.userId
                     val resolvedRole = userDoc?.getString("role") ?: "user"
-                    recordActivityLog(
+                    recordActivity(
                         userId = attempt.userId,
-                        username = resolvedName,
+                        username = attempt.userId,
+                        displayName = resolvedName,
                         role = resolvedRole,
-                        action = "Completed Quiz: ${attempt.quizTitle} (Score: ${attempt.correctCount}/${attempt.totalQuestions}, ${attempt.scorePercent.toInt()}%)",
                         activityType = "Quiz",
-                        details = "Difficulty: ${attempt.difficulty}, Passed: ${attempt.passed}",
+                        action = "Completed Quiz: ${attempt.quizTitle} (${attempt.correctCount}/${attempt.totalQuestions}, ${attempt.scorePercent.toInt()}%)",
+                        description = "Difficulty: ${attempt.difficulty}, Passed: ${attempt.passed}",
+                        assessmentId = attempt.quizId,
+                        xpEarned = attempt.xpEarned,
                         status = if (attempt.passed) "Passed" else "Failed"
                     )
                 }
                 .addOnFailureListener {
-                    // Fallback: use userId as username if user doc lookup fails
-                    recordActivityLog(
+                    // Fallback: use userId if user doc lookup fails
+                    recordActivity(
                         userId = attempt.userId,
                         username = attempt.userId,
+                        displayName = attempt.userId,
                         role = "user",
-                        action = "Completed Quiz: ${attempt.quizTitle} (Score: ${attempt.correctCount}/${attempt.totalQuestions}, ${attempt.scorePercent.toInt()}%)",
                         activityType = "Quiz",
-                        details = "Difficulty: ${attempt.difficulty}, Passed: ${attempt.passed}",
+                        action = "Completed Quiz: ${attempt.quizTitle} (${attempt.correctCount}/${attempt.totalQuestions}, ${attempt.scorePercent.toInt()}%)",
+                        description = "Difficulty: ${attempt.difficulty}, Passed: ${attempt.passed}",
+                        assessmentId = attempt.quizId,
+                        xpEarned = attempt.xpEarned,
                         status = if (attempt.passed) "Passed" else "Failed"
                     )
                 }
@@ -252,7 +258,75 @@ class FirebaseSyncManager {
     }
 
     /**
-     * Record a structured activity log to Cloud Firestore (activity_logs collection)
+     * Record a comprehensive, structured activity log to Cloud Firestore.
+     * Primary collection: `activities`
+     * Mirrored collection: `activity_logs` (backward compatibility)
+     */
+    fun recordActivity(
+        userId: String,
+        username: String,
+        displayName: String = "",
+        role: String = "Learner",
+        activityType: String = "Session",
+        action: String,
+        description: String = "",
+        moduleId: String? = null,
+        assessmentId: String? = null,
+        xpEarned: Int? = null,
+        details: String = "",
+        status: String = "Completed",
+        sessionId: String = "session_${System.currentTimeMillis()}",
+        deviceId: String = "${android.os.Build.MANUFACTURER} ${android.os.Build.MODEL}",
+        metadata: Map<String, Any> = emptyMap()
+    ) {
+        try {
+            val now = System.currentTimeMillis()
+            val resolvedDisplay = if (displayName.isNotBlank()) displayName else username
+            val activityId = "act_${username}_${now}_${(100..999).random()}"
+            val finalDesc = if (description.isNotBlank()) description else details
+
+            val data = hashMapOf<String, Any>(
+                "activityId" to activityId,
+                "userId" to userId,
+                "username" to username,
+                "displayName" to resolvedDisplay,
+                "role" to role,
+                "activityType" to activityType,
+                "action" to action,
+                "description" to finalDesc,
+                "details" to finalDesc,
+                "timestamp" to com.google.firebase.firestore.FieldValue.serverTimestamp(),
+                "timestampMillis" to now,
+                "createdAtMillis" to now,
+                "sessionId" to sessionId,
+                "deviceId" to deviceId,
+                "status" to status
+            )
+            if (moduleId != null) data["moduleId"] = moduleId
+            if (assessmentId != null) data["assessmentId"] = assessmentId
+            if (xpEarned != null) data["xpEarned"] = xpEarned
+            if (metadata.isNotEmpty()) data["metadata"] = metadata
+
+            // 1. Primary dedicated collection: activities
+            firestore.collection(COLLECTION_ACTIVITIES).document(activityId)
+                .set(data, SetOptions.merge())
+                .addOnSuccessListener {
+                    Log.d(tag, "Activity record saved to $COLLECTION_ACTIVITIES: $activityId ($action)")
+                }
+                .addOnFailureListener { e ->
+                    Log.w(tag, "Failed writing to $COLLECTION_ACTIVITIES: ${e.message}")
+                }
+
+            // 2. Mirrored collection: activity_logs
+            firestore.collection(COLLECTION_ACTIVITY_LOGS).document(activityId)
+                .set(data, SetOptions.merge())
+        } catch (e: Exception) {
+            Log.e(tag, "recordActivity exception: ${e.message}")
+        }
+    }
+
+    /**
+     * Backward-compatible delegation to [recordActivity]
      */
     fun recordActivityLog(
         userId: String,
@@ -265,37 +339,23 @@ class FirebaseSyncManager {
         sessionId: String = "session_${System.currentTimeMillis()}",
         device: String = "${android.os.Build.MANUFACTURER} ${android.os.Build.MODEL}"
     ) {
-        try {
-            val now = System.currentTimeMillis()
-            val activityId = "act_${username}_${now}"
-            val data = hashMapOf(
-                "userId" to userId,
-                "username" to username,
-                "role" to role,
-                "action" to action,
-                "activityType" to activityType,
-                "details" to details,
-                "timestamp" to com.google.firebase.firestore.FieldValue.serverTimestamp(),
-                "timestampMillis" to now,
-                "sessionId" to sessionId,
-                "device" to device,
-                "status" to status
-            )
-            firestore.collection(COLLECTION_ACTIVITY_LOGS).document(activityId)
-                .set(data, SetOptions.merge())
-                .addOnSuccessListener {
-                    Log.d(tag, "Activity log written to $COLLECTION_ACTIVITY_LOGS: $activityId ($action)")
-                }
-                .addOnFailureListener { e ->
-                    Log.w(tag, "Failed to write activity log: ${e.message}")
-                }
-        } catch (e: Exception) {
-            Log.e(tag, "recordActivityLog exception: ${e.message}")
-        }
+        recordActivity(
+            userId = userId,
+            username = username,
+            displayName = username,
+            role = role,
+            activityType = activityType,
+            action = action,
+            description = details,
+            status = status,
+            sessionId = sessionId,
+            deviceId = device
+        )
     }
 
     /**
      * Record a user login event and update the user's active presence in Cloud Firestore for monitoring.
+     * Guaranteed to be called ONLY on successful explicit authentication.
      */
     fun recordUserLogin(
         username: String,
@@ -320,28 +380,24 @@ class FirebaseSyncManager {
                 "failureReason" to (failureReason ?: ""),
                 "deviceInfo" to deviceInfo,
                 "androidVersion" to android.os.Build.VERSION.RELEASE,
-                "timestamp" to now,
+                "timestamp" to com.google.firebase.firestore.FieldValue.serverTimestamp(),
+                "timestampMillis" to now,
                 "timestampUtc" to now
             )
             firestore.collection(COLLECTION_USER_LOGINS).document(eventId)
                 .set(loginEvent, SetOptions.merge())
-                .addOnSuccessListener {
-                    Log.d(tag, "Logged login event to Firestore: $eventId")
-                }
-                .addOnFailureListener { e ->
-                    Log.w(tag, "Failed to log login event to Firestore: ${e.message}")
-                }
 
-            // 2. Mirror to activity_logs collection
-            recordActivityLog(
+            // 2. Record to activities collection
+            recordActivity(
                 userId = username,
                 username = username,
+                displayName = displayName,
                 role = role,
+                activityType = "Login",
                 action = if (isSuccess) "Logged in" else "Failed login attempt",
-                activityType = "Session",
-                details = if (isSuccess) "Device: $deviceInfo" else "Reason: ${failureReason ?: "Invalid credentials"}",
+                description = if (isSuccess) "Signed in successfully on $deviceInfo" else "Reason: ${failureReason ?: "Invalid credentials"}",
                 status = if (isSuccess) "Active" else "Failed",
-                device = deviceInfo
+                deviceId = deviceInfo
             )
 
             // 3. Update real-time presence and account status in users collection
@@ -354,6 +410,7 @@ class FirebaseSyncManager {
                     "isOnline" to true,
                     "lastLoginAt" to now,
                     "lastSeenAt" to now,
+                    "lastActiveTimestamp" to com.google.firebase.firestore.FieldValue.serverTimestamp(),
                     "deviceInfo" to deviceInfo,
                     "loginCount" to com.google.firebase.firestore.FieldValue.increment(1)
                 )
@@ -385,22 +442,24 @@ class FirebaseSyncManager {
                 "status" to "SUCCESS",
                 "deviceInfo" to deviceInfo,
                 "androidVersion" to android.os.Build.VERSION.RELEASE,
-                "timestamp" to now,
+                "timestamp" to com.google.firebase.firestore.FieldValue.serverTimestamp(),
+                "timestampMillis" to now,
                 "timestampUtc" to now
             )
             firestore.collection(COLLECTION_USER_LOGINS).document(eventId)
                 .set(logoutEvent, SetOptions.merge())
 
-            // Mirror to activity_logs collection
-            recordActivityLog(
+            // Record to activities collection
+            recordActivity(
                 userId = username,
                 username = username,
+                displayName = displayName,
                 role = role,
+                activityType = "Logout",
                 action = "Logged out",
-                activityType = "Session",
-                details = "Device: $deviceInfo",
+                description = "User ended session on $deviceInfo",
                 status = "Ended",
-                device = deviceInfo
+                deviceId = deviceInfo
             )
 
             // Update user presence to offline
@@ -443,14 +502,15 @@ class FirebaseSyncManager {
             )
             userRef.set(data, SetOptions.merge())
 
-            // Also record to activity_logs
-            recordActivityLog(
+            // Also record to activities collection
+            recordActivity(
                 userId = username,
                 username = username,
+                displayName = displayName,
                 role = role,
-                action = "Registered account",
-                activityType = "Profile",
-                details = "Display Name: $displayName",
+                activityType = "Registration",
+                action = "Registered an account",
+                description = "New account registered ($role) — $displayName",
                 status = "Created"
             )
         } catch (e: Exception) {
@@ -482,13 +542,14 @@ class FirebaseSyncManager {
             progressRef.set(hashMapOf("displayName" to newDisplayName), SetOptions.merge())
 
             // Record activity
-            recordActivityLog(
+            recordActivity(
                 userId = username,
-                username = newDisplayName,
-                role = "",
-                action = "Updated display name to: $newDisplayName",
+                username = username,
+                displayName = newDisplayName,
+                role = "Learner",
                 activityType = "Profile",
-                details = "Display name changed",
+                action = "Updated profile display name",
+                description = "Changed display name to: $newDisplayName",
                 status = "Updated"
             )
         } catch (e: Exception) {
@@ -517,18 +578,96 @@ class FirebaseSyncManager {
                 }
 
             // Record activity
-            recordActivityLog(
+            recordActivity(
                 userId = adminUsername,
                 username = adminUsername,
-                role = "admin",
-                action = "${if (isActive) "Activated" else "Deactivated"} account: $username",
-                activityType = "Admin",
-                details = "Account status changed by admin",
+                displayName = adminUsername,
+                role = "Admin",
+                activityType = "Admin Action",
+                action = "${if (isActive) "Activated" else "Deactivated"} account: @$username",
+                description = "User status changed by admin @$adminUsername",
                 status = if (isActive) "Activated" else "Deactivated"
             )
         } catch (e: Exception) {
             Log.e(tag, "syncAccountStatusChange exception: ${e.message}")
         }
+    }
+
+    /**
+     * Record module progress (start / completion) activity.
+     */
+    fun recordModuleActivity(
+        userId: String,
+        username: String,
+        displayName: String,
+        role: String,
+        moduleId: String,
+        moduleTitle: String,
+        isCompleted: Boolean,
+        xpEarned: Int? = null
+    ) {
+        val action = if (isCompleted) "Completed Module: $moduleTitle" else "Started Module: $moduleTitle"
+        recordActivity(
+            userId = userId,
+            username = username,
+            displayName = displayName,
+            role = role,
+            activityType = "Module",
+            action = action,
+            description = if (isCompleted) "Successfully finished all sections in $moduleTitle" else "Begun learning $moduleTitle",
+            moduleId = moduleId,
+            xpEarned = xpEarned,
+            status = if (isCompleted) "Completed" else "In Progress"
+        )
+    }
+
+    /**
+     * Record gamification achievement, level up, or XP award.
+     */
+    fun recordGamificationActivity(
+        userId: String,
+        username: String,
+        displayName: String,
+        role: String,
+        activityType: String,
+        action: String,
+        xpEarned: Int? = null,
+        description: String = ""
+    ) {
+        recordActivity(
+            userId = userId,
+            username = username,
+            displayName = displayName,
+            role = role,
+            activityType = activityType,
+            action = action,
+            description = description,
+            xpEarned = xpEarned,
+            status = "Awarded"
+        )
+    }
+
+    /**
+     * Record system settings change (e.g. language change).
+     */
+    fun recordSettingsActivity(
+        userId: String,
+        username: String,
+        displayName: String,
+        role: String,
+        action: String,
+        description: String
+    ) {
+        recordActivity(
+            userId = userId,
+            username = username,
+            displayName = displayName,
+            role = role,
+            activityType = "Settings",
+            action = action,
+            description = description,
+            status = "Updated"
+        )
     }
 
     /**
@@ -1102,6 +1241,7 @@ class FirebaseSyncManager {
         const val COLLECTION_USER_LOGINS = "user_logins"
         const val COLLECTION_AI_INTERACTIONS = "ai_interactions"
         const val COLLECTION_ACTIVITY_LOGS = "activity_logs"
+        const val COLLECTION_ACTIVITIES = "activities"
 
         @Volatile
         private var INSTANCE: FirebaseSyncManager? = null

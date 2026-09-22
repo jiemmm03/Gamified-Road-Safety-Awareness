@@ -347,11 +347,54 @@ class GamificationEngine(private val db: AppDatabase) {
 
         db.userProgressDao().upsert(updated)
         try {
-            FirebaseSyncManager.getInstance().syncUserProgress(
+            val sync = FirebaseSyncManager.getInstance()
+            sync.syncUserProgress(
                 progress = updated,
                 displayName = userId,
                 unlockedAchievementIds = unlocked.map { it.id }
             )
+
+            // Log activity event for module completions
+            if (activityType.startsWith("MODULE_")) {
+                sync.recordModuleActivity(
+                    userId = userId,
+                    username = userId,
+                    displayName = userId,
+                    role = "Learner",
+                    moduleId = activityName,
+                    moduleTitle = activityName,
+                    isCompleted = true,
+                    xpEarned = totalBeforeAchievements
+                )
+            }
+
+            // Log activity event for Level Up
+            if (finalLevel > previousLevel) {
+                sync.recordGamificationActivity(
+                    userId = userId,
+                    username = userId,
+                    displayName = userId,
+                    role = "Learner",
+                    activityType = "Level Up",
+                    action = "Leveled up to Level $finalLevel!",
+                    xpEarned = finalTotalXp,
+                    description = "Reached Level $finalLevel with total $finalTotalXp XP"
+                )
+            }
+
+            // Log activity event for unlocked achievements
+            for (ach in unlocked) {
+                sync.recordGamificationActivity(
+                    userId = userId,
+                    username = userId,
+                    displayName = userId,
+                    role = "Learner",
+                    activityType = "Achievement",
+                    action = "Earned achievement: ${ach.title}",
+                    xpEarned = ach.bonusXp,
+                    description = ach.description
+                )
+            }
         } catch (_: Exception) {}
 
         val totalAwarded = totalBeforeAchievements
