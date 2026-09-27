@@ -1,12 +1,12 @@
 # RoadSafe AI — Deep System Feature & Architecture Audit
 **Municipality of Dagami, Leyte · Road Safety Awareness, Traffic Rule Education, and Driver Decision-Making System**
-*Document Version: 3.5.0 | Audit Date: September 2026 | System Status: Production Ready & Fully Operational*
+*Document Version: 3.6.0 | Audit Date: September 2026 | System Status: Production Ready & Fully Operational*
 
 ---
 
 ## 📌 Executive Summary
 
-This document provides an exhaustive, line-by-line architectural and functional audit of the **RoadSafe AI** platform. The system is designed as a hybrid **mobile and web-based driver education, traffic rule compliance, gamified learning, real-time administrative monitoring, and central configuration control ecosystem** tailored for the **Municipality of Dagami, Leyte**.
+This document provides an exhaustive, line-by-line architectural and functional audit of the **RoadSafe AI** platform. The system is designed as a hybrid **mobile and web-based driver education, traffic rule compliance, gamified learning, real-time administrative monitoring, central configuration control, and real-time live activity logging ecosystem** tailored for the **Municipality of Dagami, Leyte**.
 
 ### Primary System Subsystems:
 1. **Android Mobile Application (`/app`)**: Built with **Kotlin 2.0 & Jetpack Compose (Material 3)**, utilizing an **Offline-First Architecture** with **Room SQLite v7** for local persistence and real-time bidirectional synchronization with **Google Cloud Firestore**.
@@ -277,6 +277,7 @@ erDiagram
     USERS ||--o{ USER_LOGINS : logs
     USERS ||--o{ AUDIT_LOGS : generates
     USERS ||--o{ AI_INTERACTIONS : asks
+    USERS ||--o{ ACTIVITIES : streams
 
     USERS {
         string username PK
@@ -288,6 +289,19 @@ erDiagram
         boolean isOnline
         long lastLoginAt
         string deviceInfo
+    }
+
+    ACTIVITIES {
+        string activityId PK
+        string userId FK
+        string username
+        string displayName
+        string userRole
+        string type
+        string description
+        timestamp timestamp
+        map details
+        map metadata
     }
 
     USER_PROGRESS {
@@ -389,12 +403,39 @@ graph TD
 
 ---
 
+## ⚡ Real-Time User Activity Stream & Cross-Platform Sync
+
+### 1. Dedicated Cloud Activity Stream (`/activities`)
+- **Append-Only Event Ledger**: Every key user lifecycle action is committed to Firestore `/activities` with server-side timestamps (`FieldValue.serverTimestamp()`).
+- **Comprehensive Event Taxonomy**:
+  - `LOGIN` / `LOGOUT`: Real-time session monitoring with device & version telemetry.
+  - `REGISTER`: New user account creation with role classification.
+  - `MODULE_START` / `MODULE_COMPLETE`: Educational progress milestones.
+  - `QUIZ_COMPLETE`: Exam submissions with score, passing status, and duration breakdown.
+  - `XP_AWARDED` / `LEVEL_UP` / `ACHIEVEMENT_UNLOCKED`: Gamification achievements and reward metrics.
+  - `ADMIN_ACTION`: System parameter alterations, role modifications, and policy updates.
+
+### 2. Live Administrative Activity Monitor (`/admin-web`)
+- **Real User Identity Resolution**: Resolves and renders actual `displayName` and `@username` badges, eliminating anonymous or generic placeholders.
+- **Philippine Standard Time (PST, UTC+8)**: Timestamps are formatted in Asia/Manila standard time alongside dynamic relative time badges ("Just now", "2m ago", "1h ago") that auto-refresh every 30 seconds.
+- **Interactive Multi-Criteria Filtering**: Instant client-side filtering across Role (All, Admin, User), Event Category (All, Logins, Quizzes, XP & Gamification, Admin Actions), Date Ranges (Today, 7 Days, 30 Days, All Time), and dynamic text search.
+- **Activity Payload Inspector**: High-detail inspector modal displaying structured event metadata with automatic sanitization of sensitive credentials.
+- **CSV Data Export**: One-click administrative report export with standardized columns.
+
+### 3. Cross-Platform Login & Profile Synchronization
+- **Bidirectional Cloud Identity**: Mobile app detects and synchronizes user profiles created on the Web Admin console into local Room SQLite upon login.
+- **Registration Overwrite Protection**: Safeguards existing accounts against accidental local SQLite overwrite during registration attempts.
+
+---
+
 ## 📊 Feature Completeness & Audit Verification
 
 | Module / Feature | Implementation Status | Storage Type | Real-Time Sync |
 | :--- | :---: | :---: | :---: |
 | **End-to-End Account Role System** | ✅ 100% Fully Implemented | Cloud Firestore + Room | Yes (Real-Time Stream) |
-| **Authentication & RBAC** | ✅ 100% Fully Implemented | Local Room + Firestore | Yes |
+| **Authentication & Cross-Platform Sync** | ✅ 100% Fully Implemented | Local Room + Firestore | Yes (Bidirectional) |
+| **Real-Time User Activity Stream (`/activities`)** | ✅ 100% Fully Implemented | Firestore + Web Console | Yes (Live onSnapshot) |
+| **Activity Inspector Modal & CSV Exporter** | ✅ 100% Fully Implemented | Client-Side DOM & Web | Real-time |
 | **Session-Exclusive Language Selector (EN/FIL)** | ✅ 100% Fully Implemented | Room v7 + Firestore | Yes |
 | **Dynamic Exam & Assessment Engine** | ✅ 100% Fully Implemented | Room SQLite + Firestore | Yes |
 | **Visual Simulations (20 Scenarios)** | ✅ 100% Fully Implemented | In-Memory + Room DB | Yes |
@@ -415,4 +456,4 @@ graph TD
 
 ## 🎯 Conclusion
 
-The **RoadSafe AI** system (v3.5.0) is a resilient, fully integrated dual-platform solution for the **Municipality of Dagami, Leyte**. The mobile app operates with low-connectivity offline resilience via **Room SQLite v7**, while maintaining real-time synchronization with **Google Cloud Firestore**. The standardized **Account Role System**, **Mobile App Configuration & System Control Center**, **Dual-Portal Engine**, **SPA Router**, and **Dynamic High-Res QR Distributor** provide municipal administrators with complete real-time governance over examination standards, question randomization, gamification XP economies, language availability, maintenance locks, and fleet security policies.
+The **RoadSafe AI** system (v3.6.0) is a resilient, fully integrated dual-platform solution for the **Municipality of Dagami, Leyte**. The mobile app operates with low-connectivity offline resilience via **Room SQLite v7**, while maintaining real-time synchronization with **Google Cloud Firestore**. The standardized **Account Role System**, **Real-Time Activity Stream (`/activities`)**, **Mobile App Configuration & System Control Center**, **Dual-Portal Engine**, **SPA Router**, and **Dynamic High-Res QR Distributor** provide municipal administrators with complete real-time governance over examination standards, question randomization, gamification XP economies, language availability, maintenance locks, and fleet security policies.
