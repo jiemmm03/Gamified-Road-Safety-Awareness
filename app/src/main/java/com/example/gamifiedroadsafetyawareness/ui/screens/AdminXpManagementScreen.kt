@@ -26,7 +26,13 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import com.example.gamifiedroadsafetyawareness.audit.ActionType
+import com.example.gamifiedroadsafetyawareness.audit.AuditManager
+import com.example.gamifiedroadsafetyawareness.audit.AuditResult
+import com.example.gamifiedroadsafetyawareness.audit.Module
+import com.example.gamifiedroadsafetyawareness.audit.RiskLevel
 import com.example.gamifiedroadsafetyawareness.auth.AuthManager
+import com.example.gamifiedroadsafetyawareness.firebase.FirebaseSyncManager
 import com.example.gamifiedroadsafetyawareness.model.AchievementDefinitions
 import com.example.gamifiedroadsafetyawareness.model.GamificationConstants
 import com.example.gamifiedroadsafetyawareness.model.MockData
@@ -37,8 +43,10 @@ import com.example.gamifiedroadsafetyawareness.model.db.XpHistoryEntity
 import com.example.gamifiedroadsafetyawareness.ui.components.AnimatedProgressRing
 import com.example.gamifiedroadsafetyawareness.ui.components.AppButton
 import com.example.gamifiedroadsafetyawareness.ui.components.AppCard
+import com.example.gamifiedroadsafetyawareness.ui.components.ConfirmActionDialog
 import com.example.gamifiedroadsafetyawareness.ui.theme.AmberYellow
 import com.example.gamifiedroadsafetyawareness.ui.theme.EmeraldGreen
+import com.example.gamifiedroadsafetyawareness.ui.theme.TrafficRed
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -72,6 +80,14 @@ fun AdminXpManagementScreen(
     var showAchievementXpConfig by remember { mutableStateOf(false) }
     var showStreakConfig by remember { mutableStateOf(false) }
     var refreshTrigger by remember { mutableIntStateOf(0) }
+
+    // ── Reset Rankings state ─────────────────────────────────────────────────
+    var showResetRankingsConfirm by remember { mutableStateOf(false) }
+    var isResettingRankings by remember { mutableStateOf(false) }
+    var resetResultMessage by remember { mutableStateOf<String?>(null) }
+    var resetResultIsError by remember { mutableStateOf(false) }
+    val auditManager = remember { AuditManager(context) }
+    val syncManager = remember { FirebaseSyncManager.getInstance() }
 
     LaunchedEffect(xpManager, refreshTrigger, learnerUsernames) {
         val manager = xpManager ?: return@LaunchedEffect
@@ -164,7 +180,13 @@ fun AdminXpManagementScreen(
                         onClick = { showStreakConfig = true },
                         modifier = Modifier.weight(1f)
                     )
-                    Spacer(modifier = Modifier.weight(1f))
+                    QuickActionCard(
+                        icon = Icons.Rounded.RestartAlt,
+                        title = "Reset Rankings",
+                        tint = TrafficRed,
+                        onClick = { showResetRankingsConfirm = true },
+                        modifier = Modifier.weight(1f)
+                    )
                 }
             }
 
@@ -342,6 +364,156 @@ fun AdminXpManagementScreen(
                 Toast.makeText(context, "Streak rewards saved.", Toast.LENGTH_SHORT).show()
                 showStreakConfig = false
             }
+        )
+    }
+
+    // ── Reset Rankings Confirmation Dialog ────────────────────────────────────
+    if (showResetRankingsConfirm && !isResettingRankings) {
+        ConfirmActionDialog(
+            title = "Reset Current Rankings?",
+            message = "This will clear the current leaderboard standings and start a new ranking period.\n\n" +
+                    "• All current rank positions will be archived.\n" +
+                    "• User XP and levels will be reset to zero for the new period.\n" +
+                    "• Historical activity records, quiz results, and achievements will remain preserved.\n\n" +
+                    "This action cannot be undone.",
+            confirmLabel = "Confirm Reset",
+            destructive = true,
+            onConfirm = {
+                showResetRankingsConfirm = false
+                isResettingRankings = true
+                scope.launch {
+                    val result = syncManager.resetCloudLeaderboard(
+                        adminUsername = adminUsername,
+                        adminDisplayName = adminUsername
+                    )
+                    when (result) {
+                        is FirebaseSyncManager.RankingResetResult.Success -> {
+                            // Record to local audit trail
+                            auditManager.logAction(
+                                userId = adminUsername,
+                                fullName = adminUsername,
+                                username = adminUsername,
+                                role = "ADMIN",
+                                actionType = ActionType.RANKING_RESET,
+                                module = Module.ADMINISTRATIVE,
+                                description = "Reset leaderboard rankings. Period archived: ${result.periodId}. Users reset: ${result.usersReset}.",
+                                previousValue = "Active ranking period",
+                                newValue = result.periodId,
+                                riskLevel = RiskLevel.HIGH,
+                                result = AuditResult.SUCCESS,
+                                remarks = "Leaderboard period reset completed successfully"
+                            )
+                            resetResultMessage = "Current rankings have been successfully reset.\n" +
+                                    "${result.usersReset} user(s) archived to period history."
+                            resetResultIsError = false
+                            // Refresh the leaderboard data
+                            refreshTrigger++
+                        }
+                        is FirebaseSyncManager.RankingResetResult.Failure -> {
+                            // Record the failure to audit trail
+                            auditManager.logAction(
+                                userId = adminUsername,
+                                fullName = adminUsername,
+                                username = adminUsername,
+                                role = "ADMIN",
+                                actionType = ActionType.RANKING_RESET,
+                                module = Module.ADMINISTRATIVE,
+                                description = "Failed to reset leaderboard rankings: ${result.message}",
+                                riskLevel = RiskLevel.HIGH,
+                                result = AuditResult.FAILED,
+                                remarks = result.message
+                            )
+                            resetResultMessage = result.message
+                            resetResultIsError = true
+                        }
+                    }
+                    isResettingRankings = false
+                }
+            },
+            onDismiss = { showResetRankingsConfirm = false }
+        )
+    }
+
+    // ── Reset In-Progress Indicator ───────────────────────────────────────────
+    if (isResettingRankings) {
+        Dialog(onDismissRequest = { /* non-dismissible while resetting */ }) {
+            AppCard(modifier = Modifier.fillMaxWidth()) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(32.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    CircularProgressIndicator(
+                        color = MaterialTheme.colorScheme.primary,
+                        strokeWidth = 3.dp
+                    )
+                    Text(
+                        text = "Resetting Rankings…",
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                    Text(
+                        text = "Archiving current standings and starting a new ranking period. Please wait.",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        textAlign = androidx.compose.ui.text.style.TextAlign.Center
+                    )
+                }
+            }
+        }
+    }
+
+    // ── Reset Result Dialog ───────────────────────────────────────────────────
+    if (resetResultMessage != null) {
+        AlertDialog(
+            onDismissRequest = { resetResultMessage = null },
+            icon = {
+                Icon(
+                    imageVector = if (resetResultIsError) Icons.Rounded.ErrorOutline else Icons.Rounded.CheckCircle,
+                    contentDescription = null,
+                    tint = if (resetResultIsError) MaterialTheme.colorScheme.error else EmeraldGreen,
+                    modifier = Modifier.size(36.dp)
+                )
+            },
+            title = {
+                Text(
+                    text = if (resetResultIsError) "Reset Failed" else "Rankings Reset",
+                    style = MaterialTheme.typography.titleLarge
+                )
+            },
+            text = {
+                Text(
+                    text = resetResultMessage ?: "",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            },
+            confirmButton = {
+                TextButton(onClick = { resetResultMessage = null }) {
+                    Text(
+                        if (resetResultIsError) "Dismiss" else "OK",
+                        style = MaterialTheme.typography.labelLarge,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                }
+            },
+            dismissButton = if (resetResultIsError) {
+                {
+                    TextButton(onClick = {
+                        resetResultMessage = null
+                        showResetRankingsConfirm = true
+                    }) {
+                        Text(
+                            "Retry",
+                            style = MaterialTheme.typography.labelLarge,
+                            color = MaterialTheme.colorScheme.primary
+                        )
+                    }
+                }
+            } else null
         )
     }
 }

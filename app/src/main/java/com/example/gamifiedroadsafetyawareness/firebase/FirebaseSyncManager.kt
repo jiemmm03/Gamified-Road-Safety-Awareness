@@ -7,6 +7,7 @@ import com.example.gamifiedroadsafetyawareness.model.db.QuizAttemptEntity
 import com.example.gamifiedroadsafetyawareness.model.db.UserProgressEntity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.SetOptions
@@ -1233,6 +1234,174 @@ class FirebaseSyncManager {
         )
     }
 
+    // ── Admin Ranking Reset ──────────────────────────────────────────────────────
+
+    /**
+     * Result type for the ranking reset operation.
+     */
+    sealed class RankingResetResult {
+        data class Success(
+            val periodId: String,
+            val usersReset: Int
+        ) : RankingResetResult()
+
+        data class Failure(val message: String) : RankingResetResult()
+    }
+
+    /**
+     * Admin-only: Reset the current leaderboard / ranking period.
+     *
+     * This operation:
+     *   1. Verifies the caller's admin role via Firestore users/{adminUsername} document.
+     *   2. Snapshots every document in `user_progress` as an archived historical record
+     *      under `ranking_history/{periodId}/entries/{userId}`.
+     *   3. Writes a period-level metadata document at `ranking_history/{periodId}`.
+     *   4. Zeros out ranking-relevant fields (totalXp, currentXp, currentLevel, streaks,
+     *      quiz counts, and module completions) on every `user_progress` document
+     *      while preserving the userId and displayName.
+     *   5. Records the reset as an activity and audit event.
+     *
+     * All writes use Firestore batched writes (max 500 ops per batch) so the
+     * operation either fully succeeds or fully fails — no partial state.
+     *
+     * @param adminUsername  The username of the admin performing the reset (for audit).
+     * @param adminDisplayName Friendly name for audit records.
+     * @return [RankingResetResult.Success] on success, [RankingResetResult.Failure] on error.
+     */
+    suspend fun resetCloudLeaderboard(
+        adminUsername: String,
+        adminDisplayName: String = adminUsername
+    ): RankingResetResult {
+        // ── 1. Server-side admin role verification ───────────────────────────
+        try {
+            val adminDoc = firestore.collection(COLLECTION_USERS)
+                .document(adminUsername.trim().lowercase())
+                .get()
+                .await()
+            val role = adminDoc?.getString("role")?.lowercase() ?: ""
+            if (role != "admin" && role != "super_admin") {
+                Log.w(tag, "resetCloudLeaderboard blocked: '$adminUsername' has role='$role'")
+                return RankingResetResult.Failure("Access denied. Only admin accounts may reset rankings.")
+            }
+        } catch (e: Exception) {
+            Log.e(tag, "resetCloudLeaderboard: admin verification failed — ${e.message}")
+            return RankingResetResult.Failure("Could not verify admin role. Check your network connection and try again.")
+        }
+
+        // ── 2. Snapshot all current user_progress documents ──────────────────
+        val progressDocs = try {
+            firestore.collection(COLLECTION_USER_PROGRESS)
+                .get()
+                .await()
+                .documents
+        } catch (e: Exception) {
+            Log.e(tag, "resetCloudLeaderboard: failed to read user_progress — ${e.message}")
+            return RankingResetResult.Failure("Failed to read current rankings. Please try again.")
+        }
+
+        if (progressDocs.isEmpty()) {
+            return RankingResetResult.Failure("No ranking data found to reset.")
+        }
+
+        // ── 3. Determine period identifier ──────────────────────────────────
+        val now = System.currentTimeMillis()
+        val sdf = java.text.SimpleDateFormat("yyyy-MM", java.util.Locale.US)
+        val periodLabel = sdf.format(java.util.Date(now))          // e.g. "2026-09"
+        val periodId = "period_${periodLabel}_$now"                 // unique even within same month
+
+        // ── 4. Build batched writes (archive + reset) ───────────────────────
+        try {
+            // Firestore limits 500 operations per batch. Each user needs
+            // 1 archive write + 1 reset write = 2 ops. The metadata doc is +1.
+            val maxOpsPerBatch = 498  // leave room for period metadata doc
+            val usersPerBatch = maxOpsPerBatch / 2
+            val docChunks = progressDocs.chunked(usersPerBatch)
+            var totalUsersReset = 0
+
+            for ((chunkIndex, chunk) in docChunks.withIndex()) {
+                val batch = firestore.batch()
+
+                // Write period metadata only in first batch
+                if (chunkIndex == 0) {
+                    val periodRef = firestore.collection(COLLECTION_RANKING_HISTORY)
+                        .document(periodId)
+                    val periodData = hashMapOf<String, Any>(
+                        "periodId" to periodId,
+                        "periodLabel" to periodLabel,
+                        "resetAt" to FieldValue.serverTimestamp(),
+                        "resetAtMillis" to now,
+                        "resetBy" to adminUsername.trim().lowercase(),
+                        "resetByDisplayName" to adminDisplayName,
+                        "totalUsersArchived" to progressDocs.size,
+                        "status" to "completed"
+                    )
+                    batch.set(periodRef, periodData)
+                }
+
+                for (doc in chunk) {
+                    val userId = doc.id
+                    val docData = doc.data ?: continue
+
+                    // ── 4a. Archive entry ────────────────────────────────────
+                    val archiveRef = firestore.collection(COLLECTION_RANKING_HISTORY)
+                        .document(periodId)
+                        .collection("entries")
+                        .document(userId)
+                    val archiveData = HashMap<String, Any>(docData)
+                    archiveData["archivedAt"] = FieldValue.serverTimestamp()
+                    archiveData["archivedAtMillis"] = now
+                    archiveData["periodId"] = periodId
+                    batch.set(archiveRef, archiveData)
+
+                    // ── 4b. Reset progress ───────────────────────────────────
+                    // Zero out ranking-relevant fields; preserve userId & displayName.
+                    val resetData = hashMapOf<String, Any>(
+                        "totalXp" to 0,
+                        "currentXp" to 0,
+                        "currentLevel" to 1,
+                        "currentStreak" to 0,
+                        "longestStreak" to 0,
+                        "quizzesCompleted" to 0,
+                        "perfectQuizCount" to 0,
+                        "lastSyncedTimestamp" to now,
+                        "rankingPeriodId" to periodId,
+                        "rankingResetAt" to FieldValue.serverTimestamp()
+                    )
+                    val progressRef = firestore.collection(COLLECTION_USER_PROGRESS)
+                        .document(userId)
+                    batch.update(progressRef, resetData)
+
+                    totalUsersReset++
+                }
+
+                batch.commit().await()
+            }
+
+            // ── 5. Record activity + audit ───────────────────────────────────
+            recordActivity(
+                userId = adminUsername,
+                username = adminUsername,
+                displayName = adminDisplayName,
+                role = "Admin",
+                activityType = "Admin Action",
+                action = "Reset Leaderboard Rankings",
+                description = "Archived period '$periodLabel' ($totalUsersReset users). New ranking period started.",
+                status = "Completed",
+                metadata = mapOf(
+                    "periodId" to periodId,
+                    "periodLabel" to periodLabel,
+                    "usersReset" to totalUsersReset
+                )
+            )
+
+            Log.d(tag, "resetCloudLeaderboard SUCCESS — periodId=$periodId, users=$totalUsersReset")
+            return RankingResetResult.Success(periodId = periodId, usersReset = totalUsersReset)
+        } catch (e: Exception) {
+            Log.e(tag, "resetCloudLeaderboard FAILED (batch write): ${e.message}")
+            return RankingResetResult.Failure("Reset failed: ${e.message ?: "Unknown error"}. No data was changed.")
+        }
+    }
+
     companion object {
         const val COLLECTION_USER_PROGRESS = "user_progress"
         const val COLLECTION_QUIZ_ATTEMPTS = "quiz_attempts"
@@ -1242,6 +1411,7 @@ class FirebaseSyncManager {
         const val COLLECTION_AI_INTERACTIONS = "ai_interactions"
         const val COLLECTION_ACTIVITY_LOGS = "activity_logs"
         const val COLLECTION_ACTIVITIES = "activities"
+        const val COLLECTION_RANKING_HISTORY = "ranking_history"
 
         @Volatile
         private var INSTANCE: FirebaseSyncManager? = null

@@ -368,6 +368,7 @@ internal fun getHumanReadableAction(action: ActionType): String {
         ActionType.RESTORE_OPERATION -> "Restored Data"
         ActionType.SECURITY_CONFIG_CHANGED -> "Updated Security Config"
         ActionType.ACCESS_CONTROL_UPDATED -> "Updated Access Control"
+        ActionType.RANKING_RESET -> "Reset Rankings"
         ActionType.OTHER -> "Other Activity"
     }
 }
@@ -400,6 +401,7 @@ private fun getCategoryEmoji(action: ActionType): String {
         ActionType.BULK_OPERATION -> "📦"
         ActionType.APPROVAL_ACTION -> "✅"
         ActionType.REJECTION_ACTION -> "❌"
+        ActionType.RANKING_RESET -> "🔄"
 
         ActionType.OTHER -> "📋"
     }
@@ -459,6 +461,7 @@ private fun getActionIconAndColor(action: ActionType): Pair<ImageVector, Color> 
         ActionType.RESTORE_OPERATION -> Pair(Icons.Rounded.Restore, AmberYellow)
         ActionType.SECURITY_CONFIG_CHANGED -> Pair(Icons.Rounded.Security, TrafficRed)
         ActionType.ACCESS_CONTROL_UPDATED -> Pair(Icons.Rounded.Shield, AdminPurple)
+        ActionType.RANKING_RESET -> Pair(Icons.Rounded.RestartAlt, TrafficRed)
         ActionType.OTHER -> Pair(Icons.Rounded.Info, NeutralGray)
     }
 }
