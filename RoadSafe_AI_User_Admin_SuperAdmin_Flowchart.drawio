@@ -1,0 +1,269 @@
+<mxfile host="app.diagrams.net" modified="2026-09-27T12:30:00.000Z" agent="Mozilla/5.0" version="24.7.8">
+  <diagram id="roadsafe-roles-flowchart" name="RoadSafe AI - User, Admin & Super Admin Flowchart">
+    <mxGraphModel dx="2400" dy="1600" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2700" pageHeight="1850" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- ================= TITLE BANNER ================= -->
+        <mxCell id="title_bg" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0A0F1D;strokeColor=#1E293B;arcSize=6;" vertex="1" parent="1">
+          <mxGeometry x="40" y="30" width="2620" height="95" as="geometry" />
+        </mxCell>
+        <mxCell id="title_text" value="&lt;font color=&quot;#38BDF8&quot; style=&quot;font-size: 26px;&quot;&gt;&lt;b&gt;RoadSafe AI — User, Admin &amp;amp; Super Admin Flowchart&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;font color=&quot;#94A3B8&quot; style=&quot;font-size: 14px;&quot;&gt;Municipality of Dagami, Leyte • Role-Based Access Control (RBAC), Privilege Boundaries, User Lifecycles &amp;amp; Real-Time Cross-Platform Synchronization&lt;/font&gt;" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="70" y="42" width="1800" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="title_badges" value="&lt;font color=&quot;#10B981&quot;&gt;&lt;b&gt;● 🚗 USER (Learner)&lt;/b&gt;&lt;/font&gt;&amp;nbsp;&amp;nbsp;|&amp;nbsp;&amp;nbsp;&lt;font color=&quot;#3B82F6&quot;&gt;&lt;b&gt;● 👮 ADMIN (Traffic Officer)&lt;/b&gt;&lt;/font&gt;&amp;nbsp;&amp;nbsp;|&amp;nbsp;&amp;nbsp;&lt;font color=&quot;#F59E0B&quot;&gt;&lt;b&gt;● ⭐ SUPER ADMIN (MPS Chief)&lt;/b&gt;&lt;/font&gt;&amp;nbsp;&amp;nbsp;|&amp;nbsp;&amp;nbsp;&lt;font color=&quot;#A855F7&quot;&gt;&lt;b&gt;● ☁️ Cloud Firestore Sync&lt;/b&gt;&lt;/font&gt;" style="text;html=1;align=right;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="1900" y="55" width="730" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- ================= SYSTEM ENTRY & AUTH GATEWAY ================= -->
+        <mxCell id="entry_box" value="&lt;font color=&quot;#F8FAFC&quot; style=&quot;font-size: 14px;&quot;&gt;&lt;b&gt;🚪 SYSTEM AUTHENTICATION &amp;amp; ROLE RESOLUTION GATEWAY&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;font color=&quot;#94A3B8&quot; style=&quot;font-size: 11px;&quot;&gt;User inputs credentials (Mobile Jetpack Compose or Web roadsafedrive.com) • SHA-256 + Salt verification • Resolves canonical role via RolePermissions.kt &amp;amp; Firestore users/{uid}&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1E293B;strokeColor=#475569;arcSize=6;align=left;spacingLeft=15;" vertex="1" parent="1">
+          <mxGeometry x="40" y="145" width="2620" height="70" as="geometry" />
+        </mxCell>
+
+        <mxCell id="role_eval" value="&lt;b&gt;Role Evaluation&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#CBD5E1&quot;&gt;UserRole.fromRoleString()&lt;/font&gt;" style="rhombus;whiteSpace=wrap;html=1;fillColor=#0F172A;strokeColor=#38BDF8;fontColor=#38BDF8;fontStyle=1;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="1230" y="235" width="240" height="90" as="geometry" />
+        </mxCell>
+
+        <!-- Connection from Gateway to Evaluation -->
+        <mxCell id="e_gate_eval" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#38BDF8;strokeWidth=2;" edge="1" parent="1" source="entry_box" target="role_eval">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- ================= COLUMN 1: USER (DRIVER / LEARNER) ================= -->
+        <mxCell id="user_swimlane" value="🚗 USER (Driver / Learner / Citizen of Dagami)" style="swimlane;startSize=36;rounded=1;arcSize=4;fontStyle=1;fontSize=15;align=left;spacingLeft=15;fillColor=#062D24;strokeColor=#059669;fontColor=#34D399;" vertex="1" parent="1">
+          <mxGeometry x="40" y="350" width="840" height="1100" as="geometry" />
+        </mxCell>
+
+        <mxCell id="u_desc" value="&lt;b&gt;Target Persona:&lt;/b&gt; Student drivers, Tricycle operators, Motorcyclists, Citizens seeking LTO compliance.&lt;br&gt;&lt;b&gt;Access Principle:&lt;/b&gt; Educational, assessment, and gamification features only. Strict zero-access to administrative and control tools." style="rounded=1;whiteSpace=wrap;html=1;fillColor=#022C22;strokeColor=#059669;fontColor=#D1FAE5;fontSize=11;align=left;spacingLeft=10;" vertex="1" parent="user_swimlane">
+          <mxGeometry x="20" y="50" width="800" height="55" as="geometry" />
+        </mxCell>
+
+        <!-- Step U1: Onboarding -->
+        <mxCell id="u_onboarding" value="&lt;b&gt;1. Registration &amp;amp; Demographic Profiling&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#94A3B8&quot;&gt;SignUpScreen.kt • AuthManager.kt&lt;/font&gt;&lt;br&gt;• Mandatory fields: Full Name, Username, Age, Gender, Contact No.&lt;br&gt;• SHA-256 + Salt password hashing • Auto-assigns canonical role = &lt;b&gt;&quot;user&quot;&lt;/b&gt;&lt;br&gt;• Saves locally in Room SQLite &amp;amp; emits REGISTER to Firestore /activities" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#064E3B;strokeColor=#10B981;fontColor=#ECFDF5;fontSize=11;align=left;spacingLeft=10;" vertex="1" parent="user_swimlane">
+          <mxGeometry x="20" y="125" width="800" height="75" as="geometry" />
+        </mxCell>
+
+        <!-- Step U2: Learner Scaffold -->
+        <mxCell id="u_scaffold" value="&lt;b&gt;2. Learner Dashboard &amp;amp; Navigation Scaffold&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#94A3B8&quot;&gt;RoadSafetyApp.kt • DashboardScreen.kt&lt;/font&gt;&lt;br&gt;• Personalized welcome HUD, daily streak banner, active XP progress ring&lt;br&gt;• Real-time municipal announcements stream from Firestore app_config&lt;br&gt;• Bottom navigation: Home (Dashboard), Learn, Simulation, Progress, Profile" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#064E3B;strokeColor=#10B981;fontColor=#ECFDF5;fontSize=11;align=left;spacingLeft=10;" vertex="1" parent="user_swimlane">
+          <mxGeometry x="20" y="220" width="800" height="75" as="geometry" />
+        </mxCell>
+
+        <!-- Step U3: Curriculum & Reading -->
+        <mxCell id="u_curriculum" value="&lt;b&gt;3. Traffic Law Curriculum (10 Educational Modules)&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#94A3B8&quot;&gt;AssessmentScreen.kt • LearningModule.kt&lt;/font&gt;&lt;br&gt;• Topics: Right-of-Way, Traffic Signs, Speed Limits, Overtaking, RA 4136, RA 10913&lt;br&gt;• Modular reading completion tracks progress &amp;amp; awards &lt;b&gt;+50 XP&lt;/b&gt;&lt;br&gt;• Subject to prerequisite gating if AppConfig.requireModuleBeforeQuiz is active" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#064E3B;strokeColor=#10B981;fontColor=#ECFDF5;fontSize=11;align=left;spacingLeft=10;" vertex="1" parent="user_swimlane">
+          <mxGeometry x="20" y="315" width="800" height="75" as="geometry" />
+        </mxCell>
+
+        <!-- Step U4: Language Gate & Quiz -->
+        <mxCell id="u_quiz_engine" value="&lt;b&gt;4. Session-Exclusive Language Selector &amp;amp; Dynamic Exam Engine&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#94A3B8&quot;&gt;QuizScreen.kt • LanguageManager.kt • QuizData.kt&lt;/font&gt;&lt;br&gt;• &lt;b&gt;Mandatory Pre-Quiz Language Modal:&lt;/b&gt; [ 🇬🇧 English ] vs [ 🇵🇭 Filipino / Tagalog ]&lt;br&gt;• Adaptive question pool: 100 questions per tier (🟢 Easy, 🟡 Medium, 🔴 Hard)&lt;br&gt;• Per-question countdown timer (15s/20s challenge) • Combo multiplier (1.0x to 2.5x)&lt;br&gt;• Passing score check (e.g. 70%) • ModuleReviewScreen with statutory citations" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#064E3B;strokeColor=#10B981;fontColor=#ECFDF5;fontSize=11;align=left;spacingLeft=10;" vertex="1" parent="user_swimlane">
+          <mxGeometry x="20" y="410" width="800" height="95" as="geometry" />
+        </mxCell>
+
+        <!-- Step U5: Hazard Simulation -->
+        <mxCell id="u_simulation" value="&lt;b&gt;5. Visual Driving Hazard Simulation Engine&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#94A3B8&quot;&gt;SimulationScreen.kt • ChatScenarios.kt&lt;/font&gt;&lt;br&gt;• 20 Situational Scenarios with weather conditions (Clear, Monsoon Rain, Night Fog)&lt;br&gt;• Road grip friction telemetry (0% to 35% traction reduction)&lt;br&gt;• 20-second decision loop • Consequence Tiers (Perfect +100XP / Safe +75XP / Critical 0XP)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#064E3B;strokeColor=#10B981;fontColor=#ECFDF5;fontSize=11;align=left;spacingLeft=10;" vertex="1" parent="user_swimlane">
+          <mxGeometry x="20" y="525" width="800" height="75" as="geometry" />
+        </mxCell>
+
+        <!-- Step U6: AI Coach -->
+        <mxCell id="u_ai_tutor" value="&lt;b&gt;6. 100% Offline Edge AI Traffic Tutor (&quot;RoadSafe AI&quot; Coach)&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#94A3B8&quot;&gt;AiTutorScreen.kt • AiTutorEngine.kt&lt;/font&gt;&lt;br&gt;• Instant edge NLP with bilingual auto-detection (Filipino / Tagalog vs English)&lt;br&gt;• &lt;b&gt;On-Topic Road Safety Guard:&lt;/b&gt; Respectfully blocks off-topic queries (politics, cooking)&lt;br&gt;• Structured output: Answer Label (✅/❌) ➔ Legal Explanation ➔ Defensive Driving Tip" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#064E3B;strokeColor=#10B981;fontColor=#ECFDF5;fontSize=11;align=left;spacingLeft=10;" vertex="1" parent="user_swimlane">
+          <mxGeometry x="20" y="620" width="800" height="75" as="geometry" />
+        </mxCell>
+
+        <!-- Step U7: Gamification & Leaderboard -->
+        <mxCell id="u_gamification" value="&lt;b&gt;7. Gamification Economy, Streaks &amp;amp; Municipal Leaderboard&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#94A3B8&quot;&gt;MyProgressScreen.kt • XpManager.kt • AchievementDefinitions.kt&lt;/font&gt;&lt;br&gt;• Level progression curve (Levels 1 to 50) with confetti celebration modals&lt;br&gt;• Consecutive daily learning streak tracker with automatic freeze protection&lt;br&gt;• Unlocks milestone badges • Active participant on public Dagami Leaderboard" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#064E3B;strokeColor=#10B981;fontColor=#ECFDF5;fontSize=11;align=left;spacingLeft=10;" vertex="1" parent="user_swimlane">
+          <mxGeometry x="20" y="715" width="800" height="75" as="geometry" />
+        </mxCell>
+
+        <!-- Step U8: Access Denied Gate -->
+        <mxCell id="u_security_fence" value="&lt;b&gt;🛑 ACCESS RESTRICTION BOUNDARY&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#F87171&quot;&gt;&lt;b&gt;RolePermissions.hasPermission(role, permission) == false&lt;/b&gt;&lt;/font&gt;&lt;br&gt;• If User attempts to access Admin Panel, User Management, or System Settings:&lt;br&gt;• Intercepted by AppNavigationDrawer &amp;amp; Route Resolver ➔ Renders &lt;b&gt;AccessDeniedScreen.kt&lt;/b&gt;&lt;br&gt;• Emits warning audit record to Firestore /audit_logs" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#450A0A;strokeColor=#DC2626;fontColor=#FEE2E2;fontSize=11;align=left;spacingLeft=10;" vertex="1" parent="user_swimlane">
+          <mxGeometry x="20" y="810" width="800" height="75" as="geometry" />
+        </mxCell>
+
+        <!-- Connections for User Swimlane -->
+        <mxCell id="e_u1_u2" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#10B981;strokeWidth=2;" edge="1" parent="user_swimlane" source="u_onboarding" target="u_scaffold" />
+        <mxCell id="e_u2_u3" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#10B981;strokeWidth=2;" edge="1" parent="user_swimlane" source="u_scaffold" target="u_curriculum" />
+        <mxCell id="e_u3_u4" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#10B981;strokeWidth=2;" edge="1" parent="user_swimlane" source="u_curriculum" target="u_quiz_engine" />
+        <mxCell id="e_u4_u5" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#10B981;strokeWidth=2;" edge="1" parent="user_swimlane" source="u_quiz_engine" target="u_simulation" />
+        <mxCell id="e_u5_u6" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#10B981;strokeWidth=2;" edge="1" parent="user_swimlane" source="u_simulation" target="u_ai_tutor" />
+        <mxCell id="e_u6_u7" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#10B981;strokeWidth=2;" edge="1" parent="user_swimlane" source="u_ai_tutor" target="u_gamification" />
+        <mxCell id="e_u7_u8" value="Attempt Admin Routes" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#EF4444;strokeWidth=2;dashed=1;fontColor=#F87171;" edge="1" parent="user_swimlane" source="u_gamification" target="u_security_fence" />
+
+        <!-- ================= COLUMN 2: ADMIN (TRAFFIC OFFICER) ================= -->
+        <mxCell id="admin_swimlane" value="👮 ADMIN (Traffic Management Officer / Dagami MPS)" style="swimlane;startSize=36;rounded=1;arcSize=4;fontStyle=1;fontSize=15;align=left;spacingLeft=15;fillColor=#0A1D3A;strokeColor=#1D4ED8;fontColor=#60A5FA;" vertex="1" parent="1">
+          <mxGeometry x="930" y="350" width="840" height="1100" as="geometry" />
+        </mxCell>
+
+        <mxCell id="a_desc" value="&lt;b&gt;Target Persona:&lt;/b&gt; Dagami MPS Traffic Enforcement Officers, Field Supervisors, LGU Coordinators.&lt;br&gt;&lt;b&gt;Access Principle:&lt;/b&gt; Full administrative command, learner directory management, curriculum toggles, real-time safety telemetry &amp;amp; mobile policy configuration." style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0F284F;strokeColor=#2563EB;fontColor=#DBEAFE;fontSize=11;align=left;spacingLeft=10;" vertex="1" parent="admin_swimlane">
+          <mxGeometry x="20" y="50" width="800" height="55" as="geometry" />
+        </mxCell>
+
+        <!-- Step A1: Admin Entry -->
+        <mxCell id="a_entry" value="&lt;b&gt;1. Dual-Platform Administrative Command Portal&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#94A3B8&quot;&gt;AdminDashboardScreen.kt (Mobile) • roadsafedrive.com (Web SPA)&lt;/font&gt;&lt;br&gt;• Access via dedicated Android Mobile Admin Suite or Web Single-Page App (SPA)&lt;br&gt;• Real-time telemetry: Active drivers, total assessments taken, overall average score&lt;br&gt;• &lt;b&gt;Leaderboard Protection:&lt;/b&gt; Admin accounts are excluded from driver rankings" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1E3A8A;strokeColor=#3B82F6;fontColor=#EFF6FF;fontSize=11;align=left;spacingLeft=10;" vertex="1" parent="admin_swimlane">
+          <mxGeometry x="20" y="125" width="800" height="75" as="geometry" />
+        </mxCell>
+
+        <!-- Step A2: User Management -->
+        <mxCell id="a_users" value="&lt;b&gt;2. Driver Directory &amp;amp; Account Governance&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#94A3B8&quot;&gt;AdminUserManagementScreen.kt • Web Tab 2 (/users)&lt;/font&gt;&lt;br&gt;• Searchable driver directory with demographic filters (Age, Gender, Contact)&lt;br&gt;• View full learner dossier: Completed modules, individual quiz attempts &amp;amp; timestamps&lt;br&gt;• Account status control: Activate or suspend driver accounts with immediate sync" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1E3A8A;strokeColor=#3B82F6;fontColor=#EFF6FF;fontSize=11;align=left;spacingLeft=10;" vertex="1" parent="admin_swimlane">
+          <mxGeometry x="20" y="220" width="800" height="75" as="geometry" />
+        </mxCell>
+
+        <!-- Step A3: Curriculum & Assessment Bank -->
+        <mxCell id="a_curriculum" value="&lt;b&gt;3. Traffic Curriculum &amp;amp; Assessment Bank Management&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#94A3B8&quot;&gt;AdminModuleManagementScreen.kt • Web Tab 3 &amp;amp; 4 (/modules, /quizzes)&lt;/font&gt;&lt;br&gt;• Toggle mobile availability of modules via Firestore system_settings/modules&lt;br&gt;• Review 300-question repository filtered by difficulty (Easy, Medium, Hard)&lt;br&gt;• Inspect citizen answer sheets and review exact legal citations (RA 4136)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1E3A8A;strokeColor=#3B82F6;fontColor=#EFF6FF;fontSize=11;align=left;spacingLeft=10;" vertex="1" parent="admin_swimlane">
+          <mxGeometry x="20" y="315" width="800" height="75" as="geometry" />
+        </mxCell>
+
+        <!-- Step A4: Hazard Trials & AI Monitor -->
+        <mxCell id="a_trials_ai" value="&lt;b&gt;4. Hazard Trials Control &amp;amp; AI Query Stream Monitor&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#94A3B8&quot;&gt;Web Tab 5 &amp;amp; Tab 7 (/scenarios, /ai-activity)&lt;/font&gt;&lt;br&gt;• Launch driving hazard simulations in trial mode to inspect dilemma calibration&lt;br&gt;• Real-time live feed of driver AI inquiries with bilingual badges (EN vs FIL)&lt;br&gt;• Monitor traffic topic classification frequency to detect citizen knowledge gaps" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1E3A8A;strokeColor=#3B82F6;fontColor=#EFF6FF;fontSize=11;align=left;spacingLeft=10;" vertex="1" parent="admin_swimlane">
+          <mxGeometry x="20" y="410" width="800" height="75" as="geometry" />
+        </mxCell>
+
+        <!-- Step A5: Fleet & Access Logs -->
+        <mxCell id="a_fleet" value="&lt;b&gt;5. Device Fleet Telemetry &amp;amp; Access Logs Stream&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#94A3B8&quot;&gt;Web Tab 8 &amp;amp; Tab 9 (/devices, /logins)&lt;/font&gt;&lt;br&gt;• Track connected Android hardware across Dagami (OS versions Android 11–15)&lt;br&gt;• Real-time battery status, network state, and app version deployment monitoring&lt;br&gt;• Authentication access log tracking with device fingerprints and IP records" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1E3A8A;strokeColor=#3B82F6;fontColor=#EFF6FF;fontSize=11;align=left;spacingLeft=10;" vertex="1" parent="admin_swimlane">
+          <mxGeometry x="20" y="505" width="800" height="75" as="geometry" />
+        </mxCell>
+
+        <!-- Step A6: Real-Time Activities & CSV Export -->
+        <mxCell id="a_activity_stream" value="&lt;b&gt;6. Real-Time Activity Feed (/activities) &amp;amp; CSV Exporter&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#94A3B8&quot;&gt;AdminReportsScreen.kt • Web Tab 10 (/analytics, /history)&lt;/font&gt;&lt;br&gt;• Append-only live stream of all citizen events (LOGIN, QUIZ_COMPLETE, LEVEL_UP)&lt;br&gt;• Localized Philippine Standard Time (PST, UTC+8) timestamping&lt;br&gt;• One-click export of municipal road safety metrics to official CSV reports" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1E3A8A;strokeColor=#3B82F6;fontColor=#EFF6FF;fontSize=11;align=left;spacingLeft=10;" vertex="1" parent="admin_swimlane">
+          <mxGeometry x="20" y="600" width="800" height="75" as="geometry" />
+        </mxCell>
+
+        <!-- Step A7: Mobile App Configuration Control -->
+        <mxCell id="a_config_control" value="&lt;b&gt;7. Mobile App Configuration &amp;amp; Policy Center (Tab 12)&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#94A3B8&quot;&gt;AppConfig.kt • Web Tab 12 (/settings) • Firestore system_settings/app_config&lt;/font&gt;&lt;br&gt;• Passing score thresholds (50% to 100%) • Per-question countdown timers (15s/20s/30s)&lt;br&gt;• Attempt limits (Unlimited, 1, 2, 3) • Randomization toggles for questions and choices&lt;br&gt;• Language policy toggles (English &amp;amp; Filipino availability) • Writes directly to cloud" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1E3A8A;strokeColor=#3B82F6;fontColor=#EFF6FF;fontSize=11;align=left;spacingLeft=10;" vertex="1" parent="admin_swimlane">
+          <mxGeometry x="20" y="695" width="800" height="85" as="geometry" />
+        </mxCell>
+
+        <!-- Step A8: Admin Boundary Limitation -->
+        <mxCell id="a_boundary" value="&lt;b&gt;⚠️ ADMINISTRATIVE PRIVILEGE BOUNDARY&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#FCD34D&quot;&gt;&lt;b&gt;Role Elevation &amp;amp; Destructive System Operations Reserved&lt;/b&gt;&lt;/font&gt;&lt;br&gt;• Standard Admins cannot promote users to Admin or demote fellow officers.&lt;br&gt;• Cannot trigger factory resets of municipal databases or bypass high-risk audit gates.&lt;br&gt;• Role elevation operations are exclusively delegated to the &lt;b&gt;Super Admin&lt;/b&gt;." style="rounded=1;whiteSpace=wrap;html=1;fillColor=#451A03;strokeColor=#D97706;fontColor=#FEF3C7;fontSize=11;align=left;spacingLeft=10;" vertex="1" parent="admin_swimlane">
+          <mxGeometry x="20" y="800" width="800" height="75" as="geometry" />
+        </mxCell>
+
+        <!-- Connections for Admin Swimlane -->
+        <mxCell id="e_a1_a2" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#3B82F6;strokeWidth=2;" edge="1" parent="admin_swimlane" source="a_entry" target="a_users" />
+        <mxCell id="e_a2_a3" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#3B82F6;strokeWidth=2;" edge="1" parent="admin_swimlane" source="a_users" target="a_curriculum" />
+        <mxCell id="e_a3_a4" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#3B82F6;strokeWidth=2;" edge="1" parent="admin_swimlane" source="a_curriculum" target="a_trials_ai" />
+        <mxCell id="e_a4_a5" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#3B82F6;strokeWidth=2;" edge="1" parent="admin_swimlane" source="a_trials_ai" target="a_fleet" />
+        <mxCell id="e_a5_a6" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#3B82F6;strokeWidth=2;" edge="1" parent="admin_swimlane" source="a_fleet" target="a_activity_stream" />
+        <mxCell id="e_a6_a7" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#3B82F6;strokeWidth=2;" edge="1" parent="admin_swimlane" source="a_activity_stream" target="a_config_control" />
+        <mxCell id="e_a7_a8" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#F59E0B;strokeWidth=2;dashed=1;" edge="1" parent="admin_swimlane" source="a_config_control" target="a_boundary" />
+
+        <!-- ================= COLUMN 3: SUPER ADMIN (MPS CHIEF) ================= -->
+        <mxCell id="super_swimlane" value="⭐ SUPER ADMIN (MPS Chief / Lead System Administrator)" style="swimlane;startSize=36;rounded=1;arcSize=4;fontStyle=1;fontSize=15;align=left;spacingLeft=15;fillColor=#2E0854;strokeColor=#9333EA;fontColor=#D8B4FE;" vertex="1" parent="1">
+          <mxGeometry x="1820" y="350" width="840" height="1100" as="geometry" />
+        </mxCell>
+
+        <mxCell id="s_desc" value="&lt;b&gt;Target Persona:&lt;/b&gt; Dagami MPS Chief of Police, Municipal IT Director, Lead System Architect.&lt;br&gt;&lt;b&gt;Access Principle:&lt;/b&gt; Universal Spectrum Access. Full executive governance, user role elevation/demotion, municipal emergency maintenance locks &amp;amp; factory defaults." style="rounded=1;whiteSpace=wrap;html=1;fillColor=#3B0764;strokeColor=#A855F7;fontColor=#F3E8FF;fontSize=11;align=left;spacingLeft=10;" vertex="1" parent="super_swimlane">
+          <mxGeometry x="20" y="50" width="800" height="55" as="geometry" />
+        </mxCell>
+
+        <!-- Step S1: Universal Access -->
+        <mxCell id="s_universal" value="&lt;b&gt;1. Universal Spectrum Access &amp;amp; Dual-Portal Sandbox Mode&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#94A3B8&quot;&gt;RolePermissions.kt (ALL permissions granted) • roadsafedrive.com&lt;/font&gt;&lt;br&gt;• Inherits 100% of User capabilities + 100% of Traffic Officer capabilities&lt;br&gt;• &lt;b&gt;Dual-Portal Switcher:&lt;/b&gt; One-click toggle between Admin Command Mode and Learner Simulation Portal&lt;br&gt;• Enables direct in-browser testing of driver assessments, scenarios, and AI coach" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#581C87;strokeColor=#C084FC;fontColor=#FAF5FF;fontSize=11;align=left;spacingLeft=10;" vertex="1" parent="super_swimlane">
+          <mxGeometry x="20" y="125" width="800" height="75" as="geometry" />
+        </mxCell>
+
+        <!-- Step S2: Role Elevation & Demotion -->
+        <mxCell id="s_role_manager" value="&lt;b&gt;2. Executive Role Elevation &amp;amp; Demotion Authority&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#94A3B8&quot;&gt;updateUserRole() in app.js • Firestore users/{username} • audit_logs&lt;/font&gt;&lt;br&gt;• &lt;b&gt;Promote USER ➔ ADMIN:&lt;/b&gt; Grants traffic officer powers to citizen account&lt;br&gt;• &lt;b&gt;Demote ADMIN ➔ USER:&lt;/b&gt; Revokes officer powers and restores standard driver constraints&lt;br&gt;• Prompts confirmation dialog, updates Firestore atomically &amp;amp; logs high-risk audit event" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#581C87;strokeColor=#C084FC;fontColor=#FAF5FF;fontSize=11;align=left;spacingLeft=10;" vertex="1" parent="super_swimlane">
+          <mxGeometry x="20" y="220" width="800" height="85" as="geometry" />
+        </mxCell>
+
+        <!-- Step S3: Municipal Maintenance Lock -->
+        <mxCell id="s_maintenance_lock" value="&lt;b&gt;3. Municipal Maintenance Mode &amp;amp; Lockout Control&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#94A3B8&quot;&gt;AppConfig.maintenanceMode • Firestore system_settings/app_config&lt;/font&gt;&lt;br&gt;• Instantly locks all running Android apps across the municipality with an emergency bulletin&lt;br&gt;• Disables exam taking and hazard simulations during scheduled maintenance or emergencies&lt;br&gt;• Mobile clients immediately render full-screen lock overlay via real-time StateFlow" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#581C87;strokeColor=#C084FC;fontColor=#FAF5FF;fontSize=11;align=left;spacingLeft=10;" vertex="1" parent="super_swimlane">
+          <mxGeometry x="20" y="325" width="800" height="75" as="geometry" />
+        </mxCell>
+
+        <!-- Step S4: Version & Force Update -->
+        <mxCell id="s_version_enforce" value="&lt;b&gt;4. Minimum App Version &amp;amp; Force Update Enforcement&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#94A3B8&quot;&gt;AppConfig.minAppVersion • AppConfig.forceUpdate&lt;/font&gt;&lt;br&gt;• Enforces minimum baseline build (e.g. v1.2.0) across the entire municipal driver fleet&lt;br&gt;• When forceUpdate is enabled, outdated mobile clients are locked with a direct link&lt;br&gt;• Automatically redirects drivers to download page (roadsafedrive.com/download)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#581C87;strokeColor=#C084FC;fontColor=#FAF5FF;fontSize=11;align=left;spacingLeft=10;" vertex="1" parent="super_swimlane">
+          <mxGeometry x="20" y="420" width="800" height="75" as="geometry" />
+        </mxCell>
+
+        <!-- Step S5: Tamper-Evident Security Audit -->
+        <mxCell id="s_audit_ledger" value="&lt;b&gt;5. Tamper-Evident Security Audit Ledger (/audit_logs)&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#94A3B8&quot;&gt;AuditDashboardScreen.kt • Web Tab 11 (/audit)&lt;/font&gt;&lt;br&gt;• Permanent, tamper-evident audit trail capturing all administrative and security actions&lt;br&gt;• Categorizes events by Risk Level: &lt;b&gt;LOW, MEDIUM, HIGH, CRITICAL&lt;/b&gt;&lt;br&gt;• Inspects role changes, threshold alterations, failed login bursts &amp;amp; exports to encrypted CSV" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#581C87;strokeColor=#C084FC;fontColor=#FAF5FF;fontSize=11;align=left;spacingLeft=10;" vertex="1" parent="super_swimlane">
+          <mxGeometry x="20" y="515" width="800" height="75" as="geometry" />
+        </mxCell>
+
+        <!-- Step S6: Factory Reset to Baseline -->
+        <mxCell id="s_factory_reset" value="&lt;b&gt;6. System Configuration Factory Reset to Defaults&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#94A3B8&quot;&gt;resetToDefaults() in app.js • Modal Verification&lt;/font&gt;&lt;br&gt;• Reverts all examination scores, timers, streak curves &amp;amp; progression rules to default baseline&lt;br&gt;• Protected by dual-confirmation modal to prevent accidental execution by field officers&lt;br&gt;• Emits CRITICAL security audit event with Super Admin ID and server timestamp" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#581C87;strokeColor=#C084FC;fontColor=#FAF5FF;fontSize=11;align=left;spacingLeft=10;" vertex="1" parent="super_swimlane">
+          <mxGeometry x="20" y="610" width="800" height="75" as="geometry" />
+        </mxCell>
+
+        <!-- Step S7: Cross-Role Governance -->
+        <mxCell id="s_governance" value="&lt;b&gt;7. Direct Cross-Role Governance &amp;amp; Real-Time Push&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#94A3B8&quot;&gt;Firestore Cloud Engine ➔ FirebaseSyncManager&lt;/font&gt;&lt;br&gt;• Every action taken by Super Admin propagates instantly to all User and Admin devices&lt;br&gt;• Zero mobile app restarts required • Active sessions adapt to new roles dynamically" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#581C87;strokeColor=#C084FC;fontColor=#FAF5FF;fontSize=11;align=left;spacingLeft=10;" vertex="1" parent="super_swimlane">
+          <mxGeometry x="20" y="705" width="800" height="65" as="geometry" />
+        </mxCell>
+
+        <!-- Connections for Super Admin Swimlane -->
+        <mxCell id="e_s1_s2" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#C084FC;strokeWidth=2;" edge="1" parent="super_swimlane" source="s_universal" target="s_role_manager" />
+        <mxCell id="e_s2_s3" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#C084FC;strokeWidth=2;" edge="1" parent="super_swimlane" source="s_role_manager" target="s_maintenance_lock" />
+        <mxCell id="e_s3_s4" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#C084FC;strokeWidth=2;" edge="1" parent="super_swimlane" source="s_maintenance_lock" target="s_version_enforce" />
+        <mxCell id="e_s4_s5" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#C084FC;strokeWidth=2;" edge="1" parent="super_swimlane" source="s_version_enforce" target="s_audit_ledger" />
+        <mxCell id="e_s5_s6" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#C084FC;strokeWidth=2;" edge="1" parent="super_swimlane" source="s_audit_ledger" target="s_factory_reset" />
+        <mxCell id="e_s6_s7" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#C084FC;strokeWidth=2;" edge="1" parent="super_swimlane" source="s_factory_reset" target="s_governance" />
+
+        <!-- ================= EVALUATION ROUTING ARROWS ================= -->
+        <mxCell id="e_eval_user" value="role == 'USER'" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#10B981;strokeWidth=3;fontColor=#34D399;fontStyle=1;" edge="1" parent="1" source="role_eval" target="u_onboarding">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="460" y="280" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="e_eval_admin" value="role == 'ADMIN'" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#3B82F6;strokeWidth=3;fontColor=#60A5FA;fontStyle=1;" edge="1" parent="1" source="role_eval" target="a_entry">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e_eval_super" value="role == 'SUPER_ADMIN'" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#A855F7;strokeWidth=3;fontColor=#C084FC;fontStyle=1;" edge="1" parent="1" source="role_eval" target="s_universal">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="2240" y="280" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- ================= BOTTOM LANE: REAL-TIME CROSS-ROLE SYNC & PROPAGATION ================= -->
+        <mxCell id="sync_lane" value="☁️ REAL-TIME CLOUD PROPAGATION &amp; ROLE ELEVATION PIPELINE (Firestore + FirebaseSyncManager)" style="swimlane;startSize=32;rounded=1;arcSize=4;fontStyle=1;fontSize=14;align=left;spacingLeft=15;fillColor=#111827;strokeColor=#4B5563;fontColor=#E5E7EB;" vertex="1" parent="1">
+          <mxGeometry x="40" y="1490" width="2620" height="280" as="geometry" />
+        </mxCell>
+
+        <mxCell id="fs_db_box" value="&lt;b&gt;Google Cloud Firestore Collections&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#94A3B8&quot;&gt;users/{uid} • system_settings/app_config • activities • audit_logs • quiz_attempts&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1F2937;strokeColor=#374151;fontColor=#F9FAFB;fontSize=12;" vertex="1" parent="sync_lane">
+          <mxGeometry x="30" y="50" width="460" height="200" as="geometry" />
+        </mxCell>
+
+        <mxCell id="step_sync_1" value="&lt;b&gt;Step 1: Role Elevation Trigger&lt;/b&gt;&lt;br&gt;Super Admin modifies user dropdown on Web Command Center &amp;amp; clicks Confirm.&lt;br&gt;&lt;font color=&quot;#38BDF8&quot;&gt;users/{uid}.set({ role: 'admin' }, merge: true)&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1E293B;strokeColor=#2563EB;fontColor=#EFF6FF;fontSize=11;align=left;spacingLeft=8;" vertex="1" parent="sync_lane">
+          <mxGeometry x="530" y="50" width="470" height="90" as="geometry" />
+        </mxCell>
+
+        <mxCell id="step_sync_2" value="&lt;b&gt;Step 2: Tamper-Evident Audit Logging&lt;/b&gt;&lt;br&gt;System commits immutable security event to Firestore &lt;b&gt;audit_logs&lt;/b&gt; and &lt;b&gt;activities&lt;/b&gt;.&lt;br&gt;&lt;font color=&quot;#F59E0B&quot;&gt;action: 'ROLE_UPDATED', risk: 'MEDIUM', by: @admin&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1E293B;strokeColor=#D97706;fontColor=#FEF3C7;fontSize=11;align=left;spacingLeft=8;" vertex="1" parent="sync_lane">
+          <mxGeometry x="1040" y="50" width="470" height="90" as="geometry" />
+        </mxCell>
+
+        <mxCell id="step_sync_3" value="&lt;b&gt;Step 3: Real-Time Mobile Snapshot Catch&lt;/b&gt;&lt;br&gt;Running Android device receives snapshot via &lt;b&gt;FirebaseSyncManager.observeUserRole&lt;/b&gt;.&lt;br&gt;&lt;font color=&quot;#10B981&quot;&gt;AuthManager detects role change from USER to ADMIN&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1E293B;strokeColor=#059669;fontColor=#ECFDF5;fontSize=11;align=left;spacingLeft=8;" vertex="1" parent="sync_lane">
+          <mxGeometry x="1550" y="50" width="480" height="90" as="geometry" />
+        </mxCell>
+
+        <mxCell id="step_sync_4" value="&lt;b&gt;Step 4: Dynamic Zero-Downtime Re-scaffold&lt;/b&gt;&lt;br&gt;Compose updates StateFlow: permissions elevated, drawer switches to Admin Suite.&lt;br&gt;&lt;font color=&quot;#A855F7&quot;&gt;Toast displayed: &quot;Permissions Updated: Welcome, Traffic Officer&quot;&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1E293B;strokeColor=#9333EA;fontColor=#FAF5FF;fontSize=11;align=left;spacingLeft=8;" vertex="1" parent="sync_lane">
+          <mxGeometry x="2070" y="50" width="510" height="90" as="geometry" />
+        </mxCell>
+
+        <mxCell id="step_sync_policy" value="&lt;b&gt;Policy Propagation Loop (AppConfig):&lt;/b&gt; Any change made to passing scores (50%-100%), per-question timers (15s-30s), language availability, or maintenance locks by Admin / Super Admin writes to &lt;b&gt;system_settings/app_config&lt;/b&gt;. Android mobile clients stream this via &lt;b&gt;appConfigFlow&lt;/b&gt; and apply thresholds in real-time without app reboot or user logoff." style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0F172A;strokeColor=#38BDF8;fontColor=#E2E8F0;fontSize=11;align=left;spacingLeft=12;" vertex="1" parent="sync_lane">
+          <mxGeometry x="530" y="160" width="2050" height="90" as="geometry" />
+        </mxCell>
+
+        <!-- Inter-step connections in bottom sync lane -->
+        <mxCell id="e_sync_1_2" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#38BDF8;strokeWidth=2;" edge="1" parent="sync_lane" source="step_sync_1" target="step_sync_2" />
+        <mxCell id="e_sync_2_3" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#38BDF8;strokeWidth=2;" edge="1" parent="sync_lane" source="step_sync_2" target="step_sync_3" />
+        <mxCell id="e_sync_3_4" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#38BDF8;strokeWidth=2;" edge="1" parent="sync_lane" source="step_sync_3" target="step_sync_4" />
+
+        <!-- Super Admin to Promotion link -->
+        <mxCell id="e_sa_to_sync" value="Role Promotion Execution" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#C084FC;strokeWidth=3;fontColor=#D8B4FE;fontStyle=1;" edge="1" parent="1" source="s_role_manager" target="step_sync_1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="2240" y="1470" />
+              <mxPoint x="765" y="1470" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

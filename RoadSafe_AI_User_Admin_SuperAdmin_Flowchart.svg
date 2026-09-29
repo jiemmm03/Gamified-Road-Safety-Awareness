@@ -1,0 +1,431 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2700 1900" width="2700" height="1900" style="background:#070d18; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
+  <defs>
+    <!-- Gradients -->
+    <linearGradient id="headerGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#0f172a"/>
+      <stop offset="50%" stop-color="#1e293b"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </linearGradient>
+
+    <linearGradient id="userSwimGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#04231b"/>
+      <stop offset="100%" stop-color="#021510"/>
+    </linearGradient>
+
+    <linearGradient id="adminSwimGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#091b36"/>
+      <stop offset="100%" stop-color="#050e1d"/>
+    </linearGradient>
+
+    <linearGradient id="superSwimGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#240742"/>
+      <stop offset="100%" stop-color="#120322"/>
+    </linearGradient>
+
+    <linearGradient id="syncSwimGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#0d1526"/>
+      <stop offset="100%" stop-color="#131b2e"/>
+    </linearGradient>
+
+    <linearGradient id="userCardGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#064e3b"/>
+      <stop offset="100%" stop-color="#022c22"/>
+    </linearGradient>
+
+    <linearGradient id="adminCardGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e3a8a"/>
+      <stop offset="100%" stop-color="#0f284f"/>
+    </linearGradient>
+
+    <linearGradient id="superCardGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#581c87"/>
+      <stop offset="100%" stop-color="#3b0764"/>
+    </linearGradient>
+
+    <linearGradient id="syncCardGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e293b"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </linearGradient>
+
+    <!-- Arrow Markers -->
+    <marker id="arrow-emerald" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#10b981"/>
+    </marker>
+    <marker id="arrow-blue" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#3b82f6"/>
+    </marker>
+    <marker id="arrow-purple" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#c084fc"/>
+    </marker>
+    <marker id="arrow-cyan" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#38bdf8"/>
+    </marker>
+    <marker id="arrow-red" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#ef4444"/>
+    </marker>
+  </defs>
+
+  <!-- ================= TOP HEADER BANNER ================= -->
+  <rect x="40" y="30" width="2620" height="95" rx="8" fill="url(#headerGrad)" stroke="#1e293b" stroke-width="2"/>
+  <text x="70" y="70" fill="#38bdf8" font-size="26" font-weight="bold">RoadSafe AI — User, Admin &amp; Super Admin Flowchart</text>
+  <text x="70" y="102" fill="#94a3b8" font-size="14">Municipality of Dagami, Leyte • Role-Based Access Control (RBAC), Privilege Boundaries &amp; Real-Time Cloud Synchronization</text>
+
+  <!-- Header Badges -->
+  <g transform="translate(1820, 58)">
+    <rect x="0" y="0" width="180" height="36" rx="6" fill="#064e3b" stroke="#059669"/>
+    <text x="90" y="23" fill="#34d399" font-size="13" font-weight="bold" text-anchor="middle">● 🚗 USER (Learner)</text>
+    
+    <rect x="195" y="0" width="180" height="36" rx="6" fill="#1e3a8a" stroke="#2563eb"/>
+    <text x="285" y="23" fill="#60a5fa" font-size="13" font-weight="bold" text-anchor="middle">● 👮 ADMIN (Officer)</text>
+    
+    <rect x="390" y="0" width="200" height="36" rx="6" fill="#4c1d95" stroke="#9333ea"/>
+    <text x="490" y="23" fill="#d8b4fe" font-size="13" font-weight="bold" text-anchor="middle">● ⭐ SUPER ADMIN (Chief)</text>
+    
+    <rect x="605" y="0" width="200" height="36" rx="6" fill="#1f2937" stroke="#4b5563"/>
+    <text x="705" y="23" fill="#38bdf8" font-size="13" font-weight="bold" text-anchor="middle">● ☁️ Firestore Sync</text>
+  </g>
+
+  <!-- ================= AUTH GATEWAY & DECISION DIAMOND ================= -->
+  <rect x="40" y="145" width="2620" height="65" rx="8" fill="#1e293b" stroke="#334155" stroke-width="2"/>
+  <text x="70" y="172" fill="#f8fafc" font-size="15" font-weight="bold">🚪 SYSTEM AUTHENTICATION &amp; ROLE RESOLUTION GATEWAY</text>
+  <text x="70" y="195" fill="#94a3b8" font-size="12">User inputs credentials (Mobile Jetpack Compose / Web roadsafedrive.com) • SHA-256 + Salt hash verification • Resolves canonical role from Room SQLite &amp; Firestore users/{uid}</text>
+
+  <!-- Decision Diamond -->
+  <g transform="translate(1230, 230)">
+    <polygon points="120,0 240,45 120,90 0,45" fill="#0f172a" stroke="#38bdf8" stroke-width="2"/>
+    <text x="120" y="42" fill="#38bdf8" font-size="13" font-weight="bold" text-anchor="middle">Evaluate Canonical Role</text>
+    <text x="120" y="60" fill="#94a3b8" font-size="11" text-anchor="middle">UserRole.fromRoleString()</text>
+  </g>
+
+  <!-- Connect Gateway to Diamond -->
+  <line x1="1350" y1="210" x2="1350" y2="230" stroke="#38bdf8" stroke-width="2" marker-end="url(#arrow-cyan)"/>
+
+  <!-- ================= COLUMN 1: USER (GREEN) ================= -->
+  <rect x="40" y="340" width="840" height="1100" rx="10" fill="url(#userSwimGrad)" stroke="#059669" stroke-width="2"/>
+  <rect x="40" y="340" width="840" height="42" rx="10" fill="#064e3b"/>
+  <text x="60" y="367" fill="#34d399" font-size="16" font-weight="bold">🚗 USER (Driver / Learner / Citizen of Dagami)</text>
+
+  <!-- Description Box -->
+  <rect x="60" y="395" width="800" height="48" rx="6" fill="#022c22" stroke="#059669"/>
+  <text x="75" y="415" fill="#d1fae5" font-size="11"><b>Target Persona:</b> Student drivers, Tricycle operators, Motorcyclists, Citizens seeking LTO compliance.</text>
+  <text x="75" y="432" fill="#94a3b8" font-size="11"><b>Access Principle:</b> Educational, assessment &amp; gamification features only. Strict zero-access to administrative tools.</text>
+
+  <!-- User Step Cards -->
+  <!-- U1 -->
+  <g transform="translate(60, 455)">
+    <rect width="800" height="70" rx="6" fill="url(#userCardGrad)" stroke="#10b981"/>
+    <text x="15" y="24" fill="#ecfdf5" font-size="13" font-weight="bold">1. Registration &amp; Demographic Profiling (SignUpScreen.kt • AuthManager.kt)</text>
+    <text x="15" y="44" fill="#a7f3d0" font-size="11">• Input Full Name, Username, Age, Gender, Contact Number • Password hashed with SHA-256 + Salt</text>
+    <text x="15" y="60" fill="#94a3b8" font-size="11">• Auto-assigns canonical role = "user" • Saves locally in Room SQLite &amp; emits REGISTER to Firestore /activities</text>
+  </g>
+
+  <!-- U2 -->
+  <g transform="translate(60, 545)">
+    <rect width="800" height="70" rx="6" fill="url(#userCardGrad)" stroke="#10b981"/>
+    <text x="15" y="24" fill="#ecfdf5" font-size="13" font-weight="bold">2. Learner Dashboard &amp; Navigation Scaffold (RoadSafetyApp.kt • DashboardScreen.kt)</text>
+    <text x="15" y="44" fill="#a7f3d0" font-size="11">• Personalized welcome HUD, daily streak banner, active XP progress ring, municipal announcements banner</text>
+    <text x="15" y="60" fill="#94a3b8" font-size="11">• Bottom navigation: Home (Dashboard), Learn, Simulation, Progress, Profile</text>
+  </g>
+
+  <!-- U3 -->
+  <g transform="translate(60, 635)">
+    <rect width="800" height="70" rx="6" fill="url(#userCardGrad)" stroke="#10b981"/>
+    <text x="15" y="24" fill="#ecfdf5" font-size="13" font-weight="bold">3. Traffic Law Curriculum: 10 Modules (AssessmentScreen.kt • LearningModule.kt)</text>
+    <text x="15" y="44" fill="#a7f3d0" font-size="11">• Topics: Right-of-Way, Traffic Signs, Speed Limits, Overtaking, RA 4136, Distracted Driving (RA 10913)</text>
+    <text x="15" y="60" fill="#94a3b8" font-size="11">• Modular reading completion awards +50 XP • Subject to AppConfig.requireModuleBeforeQuiz gating</text>
+  </g>
+
+  <!-- U4 -->
+  <g transform="translate(60, 725)">
+    <rect width="800" height="85" rx="6" fill="url(#userCardGrad)" stroke="#10b981"/>
+    <text x="15" y="24" fill="#ecfdf5" font-size="13" font-weight="bold">4. Session-Exclusive Language Selector &amp; Adaptive Exam Engine (QuizScreen.kt)</text>
+    <text x="15" y="44" fill="#fcd34d" font-size="11"><b>• Mandatory Pre-Quiz Language Modal:</b> [ 🇬🇧 English ] vs [ 🇵🇭 Filipino / Tagalog ] (Locked until selection made)</text>
+    <text x="15" y="60" fill="#a7f3d0" font-size="11">• 100-question pools (🟢 Easy, 🟡 Medium, 🔴 Hard) • 15s/20s timer challenges • Combo multiplier (1.0x to 2.5x)</text>
+    <text x="15" y="76" fill="#94a3b8" font-size="11">• Passing threshold check (e.g. 70%) • ModuleReviewScreen post-exam review with legal citations</text>
+  </g>
+
+  <!-- U5 -->
+  <g transform="translate(60, 830)">
+    <rect width="800" height="70" rx="6" fill="url(#userCardGrad)" stroke="#10b981"/>
+    <text x="15" y="24" fill="#ecfdf5" font-size="13" font-weight="bold">5. Visual Driving Hazard Simulation Engine (SimulationScreen.kt • ChatScenarios.kt)</text>
+    <text x="15" y="44" fill="#a7f3d0" font-size="11">• 20 Situational Scenarios with weather (Clear, Monsoon Rain, Night Fog) &amp; road grip friction loss (0% to 35%)</text>
+    <text x="15" y="60" fill="#94a3b8" font-size="11">• 20-second decision loop • Consequence Tiers (Perfect +100XP / Safe +75XP / Critical Collision 0XP)</text>
+  </g>
+
+  <!-- U6 -->
+  <g transform="translate(60, 920)">
+    <rect width="800" height="70" rx="6" fill="url(#userCardGrad)" stroke="#10b981"/>
+    <text x="15" y="24" fill="#ecfdf5" font-size="13" font-weight="bold">6. 100% Offline Edge AI Traffic Tutor (&quot;RoadSafe AI&quot; Coach) (AiTutorScreen.kt)</text>
+    <text x="15" y="44" fill="#a7f3d0" font-size="11">• Instant edge NLP with bilingual auto-detection (Tagalog/Filipino vs English) • 12 Philippine Traffic Topics</text>
+    <text x="15" y="60" fill="#94a3b8" font-size="11">• <b>On-Topic Guard:</b> Respectfully redirects non-traffic queries • Structured 3-part format (Status, Law, Tip)</text>
+  </g>
+
+  <!-- U7 -->
+  <g transform="translate(60, 1010)">
+    <rect width="800" height="70" rx="6" fill="url(#userCardGrad)" stroke="#10b981"/>
+    <text x="15" y="24" fill="#ecfdf5" font-size="13" font-weight="bold">7. Gamification Economy, Streaks &amp; Municipal Leaderboard (MyProgressScreen.kt)</text>
+    <text x="15" y="44" fill="#a7f3d0" font-size="11">• Level progression curve (Levels 1 to 50) with confetti celebration modals • Consecutive daily learning streaks</text>
+    <text x="15" y="60" fill="#94a3b8" font-size="11">• Unlocks milestone badges • Active participant on public Dagami driver rankings</text>
+  </g>
+
+  <!-- U8 Access Denied Boundary -->
+  <g transform="translate(60, 1100)">
+    <rect width="800" height="85" rx="6" fill="#450a0a" stroke="#dc2626"/>
+    <text x="15" y="24" fill="#fee2e2" font-size="13" font-weight="bold">🛑 ACCESS RESTRICTION BOUNDARY (RolePermissions.hasPermission == false)</text>
+    <text x="15" y="44" fill="#fca5a5" font-size="11">• If User attempts to navigate to Admin Panel, User Management, or System Settings:</text>
+    <text x="15" y="60" fill="#f87171" font-size="11">• Navigation intercepted by AppNavigationDrawer &amp; Route Resolver ➔ Renders <b>AccessDeniedScreen.kt</b></text>
+    <text x="15" y="76" fill="#ef4444" font-size="11">• Emits security alert to Firestore /audit_logs</text>
+  </g>
+
+  <!-- Connect User Cards -->
+  <line x1="460" y1="525" x2="460" y2="545" stroke="#10b981" stroke-width="2" marker-end="url(#arrow-emerald)"/>
+  <line x1="460" y1="615" x2="460" y2="635" stroke="#10b981" stroke-width="2" marker-end="url(#arrow-emerald)"/>
+  <line x1="460" y1="705" x2="460" y2="725" stroke="#10b981" stroke-width="2" marker-end="url(#arrow-emerald)"/>
+  <line x1="460" y1="810" x2="460" y2="830" stroke="#10b981" stroke-width="2" marker-end="url(#arrow-emerald)"/>
+  <line x1="460" y1="900" x2="460" y2="920" stroke="#10b981" stroke-width="2" marker-end="url(#arrow-emerald)"/>
+  <line x1="460" y1="990" x2="460" y2="1010" stroke="#10b981" stroke-width="2" marker-end="url(#arrow-emerald)"/>
+  <line x1="460" y1="1080" x2="460" y2="1100" stroke="#ef4444" stroke-width="2" stroke-dasharray="4,4" marker-end="url(#arrow-red)"/>
+
+  <!-- ================= COLUMN 2: ADMIN (BLUE) ================= -->
+  <rect x="930" y="340" width="840" height="1100" rx="10" fill="url(#adminSwimGrad)" stroke="#2563eb" stroke-width="2"/>
+  <rect x="930" y="340" width="840" height="42" rx="10" fill="#1e3a8a"/>
+  <text x="950" y="367" fill="#60a5fa" font-size="16" font-weight="bold">👮 ADMIN (Traffic Management Officer / Dagami MPS)</text>
+
+  <!-- Description Box -->
+  <rect x="950" y="395" width="800" height="48" rx="6" fill="#0f284f" stroke="#2563eb"/>
+  <text x="965" y="415" fill="#dbeafe" font-size="11"><b>Target Persona:</b> Dagami MPS Traffic Enforcement Officers, Field Supervisors, LGU Coordinators.</text>
+  <text x="965" y="432" fill="#94a3b8" font-size="11"><b>Access Principle:</b> Operational administrative command, citizen directory, curriculum toggles, safety telemetry &amp; AppConfig.</text>
+
+  <!-- Admin Step Cards -->
+  <!-- A1 -->
+  <g transform="translate(950, 455)">
+    <rect width="800" height="70" rx="6" fill="url(#adminCardGrad)" stroke="#3b82f6"/>
+    <text x="15" y="24" fill="#eff6ff" font-size="13" font-weight="bold">1. Dual-Platform Administrative Command Portal (AdminDashboardScreen.kt • roadsafedrive.com)</text>
+    <text x="15" y="44" fill="#bfdbfe" font-size="11">• Access via Mobile Admin Suite or Web SPA • Real-time telemetry: Active drivers, total quizzes, pass rate</text>
+    <text x="15" y="60" fill="#93c5fd" font-size="11">• <b>Leaderboard Exclusion:</b> Officer accounts are excluded from driver rankings to preserve citizen integrity</text>
+  </g>
+
+  <!-- A2 -->
+  <g transform="translate(950, 545)">
+    <rect width="800" height="70" rx="6" fill="url(#adminCardGrad)" stroke="#3b82f6"/>
+    <text x="15" y="24" fill="#eff6ff" font-size="13" font-weight="bold">2. Driver Directory &amp; Account Governance (AdminUserManagementScreen.kt • Web Tab 2)</text>
+    <text x="15" y="44" fill="#bfdbfe" font-size="11">• Searchable driver directory with demographic filters (Age, Gender, Contact) &amp; full learner history</text>
+    <text x="15" y="60" fill="#94a3b8" font-size="11">• Account status control: Activate or deactivate accounts with immediate cloud synchronization</text>
+  </g>
+
+  <!-- A3 -->
+  <g transform="translate(950, 635)">
+    <rect width="800" height="70" rx="6" fill="url(#adminCardGrad)" stroke="#3b82f6"/>
+    <text x="15" y="24" fill="#eff6ff" font-size="13" font-weight="bold">3. Traffic Curriculum &amp; Assessment Bank Management (AdminModuleManagementScreen.kt • Web Tab 3/4)</text>
+    <text x="15" y="44" fill="#bfdbfe" font-size="11">• Toggle mobile module availability via Firestore system_settings/modules • Review 300-question repository</text>
+    <text x="15" y="60" fill="#94a3b8" font-size="11">• Filter by difficulty (Easy, Medium, Hard) • Inspect citizen answer sheets and review RA 4136 citations</text>
+  </g>
+
+  <!-- A4 -->
+  <g transform="translate(950, 725)">
+    <rect width="800" height="70" rx="6" fill="url(#adminCardGrad)" stroke="#3b82f6"/>
+    <text x="15" y="24" fill="#eff6ff" font-size="13" font-weight="bold">4. Hazard Trials Control &amp; AI Query Stream Monitor (Web Tab 5 &amp; Tab 7)</text>
+    <text x="15" y="44" fill="#bfdbfe" font-size="11">• Launch driving hazard simulations in trial mode to inspect dilemma calibration and road friction parameters</text>
+    <text x="15" y="60" fill="#94a3b8" font-size="11">• Live feed of citizen AI queries with bilingual badges (EN vs FIL) • Detect high-frequency road safety doubts</text>
+  </g>
+
+  <!-- A5 -->
+  <g transform="translate(950, 815)">
+    <rect width="800" height="70" rx="6" fill="url(#adminCardGrad)" stroke="#3b82f6"/>
+    <text x="15" y="24" fill="#eff6ff" font-size="13" font-weight="bold">5. Device Fleet Telemetry &amp; Access Logs Stream (Web Tab 8 &amp; Tab 9)</text>
+    <text x="15" y="44" fill="#bfdbfe" font-size="11">• Track connected Android hardware across Dagami (OS versions Android 11–15, screen sizes, battery status)</text>
+    <text x="15" y="60" fill="#94a3b8" font-size="11">• Authentication access logs tracking with device fingerprints, timestamps, and login success/failure states</text>
+  </g>
+
+  <!-- A6 -->
+  <g transform="translate(950, 905)">
+    <rect width="800" height="70" rx="6" fill="url(#adminCardGrad)" stroke="#3b82f6"/>
+    <text x="15" y="24" fill="#eff6ff" font-size="13" font-weight="bold">6. Real-Time Activity Feed (/activities) &amp; CSV Exporter (AdminReportsScreen.kt • Web Tab 10)</text>
+    <text x="15" y="44" fill="#bfdbfe" font-size="11">• Append-only live stream of citizen actions (LOGIN, QUIZ_COMPLETE, LEVEL_UP) in Philippine Standard Time (PST)</text>
+    <text x="15" y="60" fill="#94a3b8" font-size="11">• One-click export of municipal road safety metrics and exam results to official CSV reports</text>
+  </g>
+
+  <!-- A7 -->
+  <g transform="translate(950, 995)">
+    <rect width="800" height="85" rx="6" fill="url(#adminCardGrad)" stroke="#3b82f6"/>
+    <text x="15" y="24" fill="#eff6ff" font-size="13" font-weight="bold">7. Mobile App Configuration &amp; Policy Control Center (AppConfig.kt • Tab 12)</text>
+    <text x="15" y="44" fill="#bfdbfe" font-size="11">• Passing scores (50% to 100%) • Per-question countdown timers (15s/20s/30s) • Attempt limits (Unlimited, 1, 2, 3)</text>
+    <text x="15" y="60" fill="#bfdbfe" font-size="11">• Question and choice randomization • Language policy toggles (English &amp; Filipino availability)</text>
+    <text x="15" y="76" fill="#fcd34d" font-size="11"><b>• Writes directly to system_settings/app_config:</b> Mobile apps stream updates live via StateFlow</text>
+  </g>
+
+  <!-- A8 Admin Boundary -->
+  <g transform="translate(950, 1100)">
+    <rect width="800" height="85" rx="6" fill="#451a03" stroke="#d97706"/>
+    <text x="15" y="24" fill="#fef3c7" font-size="13" font-weight="bold">⚠️ ADMINISTRATIVE PRIVILEGE BOUNDARY (Role Elevation Reserved)</text>
+    <text x="15" y="44" fill="#fde68a" font-size="11">• Standard Admins cannot promote users to Admin or demote fellow officers</text>
+    <text x="15" y="60" fill="#fcd34d" font-size="11">• Cannot trigger factory defaults or bypass high-risk security audit gates</text>
+    <text x="15" y="76" fill="#fbbf24" font-size="11">• Role elevation and municipal emergency lockouts are exclusively delegated to <b>Super Admin</b></text>
+  </g>
+
+  <!-- Connect Admin Cards -->
+  <line x1="1350" y1="525" x2="1350" y2="545" stroke="#3b82f6" stroke-width="2" marker-end="url(#arrow-blue)"/>
+  <line x1="1350" y1="615" x2="1350" y2="635" stroke="#3b82f6" stroke-width="2" marker-end="url(#arrow-blue)"/>
+  <line x1="1350" y1="705" x2="1350" y2="725" stroke="#3b82f6" stroke-width="2" marker-end="url(#arrow-blue)"/>
+  <line x1="1350" y1="795" x2="1350" y2="815" stroke="#3b82f6" stroke-width="2" marker-end="url(#arrow-blue)"/>
+  <line x1="1350" y1="885" x2="1350" y2="905" stroke="#3b82f6" stroke-width="2" marker-end="url(#arrow-blue)"/>
+  <line x1="1350" y1="975" x2="1350" y2="995" stroke="#3b82f6" stroke-width="2" marker-end="url(#arrow-blue)"/>
+  <line x1="1350" y1="1080" x2="1350" y2="1100" stroke="#d97706" stroke-width="2" stroke-dasharray="4,4" marker-end="url(#arrow-cyan)"/>
+
+  <!-- ================= COLUMN 3: SUPER ADMIN (PURPLE/GOLD) ================= -->
+  <rect x="1820" y="340" width="840" height="1100" rx="10" fill="url(#superSwimGrad)" stroke="#9333ea" stroke-width="2"/>
+  <rect x="1820" y="340" width="840" height="42" rx="10" fill="#581c87"/>
+  <text x="1840" y="367" fill="#d8b4fe" font-size="16" font-weight="bold">⭐ SUPER ADMIN (MPS Chief / Lead System Administrator)</text>
+
+  <!-- Description Box -->
+  <rect x="1840" y="395" width="800" height="48" rx="6" fill="#3b0764" stroke="#a855f7"/>
+  <text x="1855" y="415" fill="#f3e8ff" font-size="11"><b>Target Persona:</b> Dagami MPS Chief of Police, Municipal IT Director, Lead System Architect.</text>
+  <text x="1855" y="432" fill="#94a3b8" font-size="11"><b>Access Principle:</b> Universal Spectrum Access. Full executive governance, user role promotion/demotion, municipal lockout &amp; reset.</text>
+
+  <!-- Super Admin Step Cards -->
+  <!-- S1 -->
+  <g transform="translate(1840, 455)">
+    <rect width="800" height="70" rx="6" fill="url(#superCardGrad)" stroke="#c084fc"/>
+    <text x="15" y="24" fill="#faf5ff" font-size="13" font-weight="bold">1. Universal Spectrum Access &amp; Dual-Portal Sandbox Mode (RolePermissions.kt • Web SPA)</text>
+    <text x="15" y="44" fill="#e9d5ff" font-size="11">• Inherits 100% of User capabilities + 100% of Traffic Officer capabilities without restriction</text>
+    <text x="15" y="60" fill="#d8b4fe" font-size="11">• <b>Dual-Portal Switcher:</b> One-click toggle between Admin Command Mode and Learner Simulation Sandbox</text>
+  </g>
+
+  <!-- S2 -->
+  <g transform="translate(1840, 545)">
+    <rect width="800" height="85" rx="6" fill="url(#superCardGrad)" stroke="#c084fc"/>
+    <text x="15" y="24" fill="#faf5ff" font-size="13" font-weight="bold">2. Executive Role Elevation &amp; Demotion Authority (updateUserRole() in app.js)</text>
+    <text x="15" y="44" fill="#fef08a" font-size="11"><b>• Promote USER ➔ ADMIN:</b> Grants traffic officer powers to citizen account with confirmation modal</text>
+    <text x="15" y="60" fill="#fef08a" font-size="11"><b>• Demote ADMIN ➔ USER:</b> Revokes officer powers and restores standard driver constraints</text>
+    <text x="15" y="76" fill="#94a3b8" font-size="11">• Atomically updates Firestore users/{uid} &amp; logs tamper-evident audit record</text>
+  </g>
+
+  <!-- S3 -->
+  <g transform="translate(1840, 650)">
+    <rect width="800" height="70" rx="6" fill="url(#superCardGrad)" stroke="#c084fc"/>
+    <text x="15" y="24" fill="#faf5ff" font-size="13" font-weight="bold">3. Municipal Emergency Maintenance Mode &amp; Lockout (AppConfig.maintenanceMode)</text>
+    <text x="15" y="44" fill="#e9d5ff" font-size="11">• Instantly locks all running Android apps across the municipality with a custom administrative notice</text>
+    <text x="15" y="60" fill="#94a3b8" font-size="11">• Disables exam taking and hazard simulations during scheduled maintenance or typhoon alerts</text>
+  </g>
+
+  <!-- S4 -->
+  <g transform="translate(1840, 740)">
+    <rect width="800" height="70" rx="6" fill="url(#superCardGrad)" stroke="#c084fc"/>
+    <text x="15" y="24" fill="#faf5ff" font-size="13" font-weight="bold">4. Minimum App Version &amp; Force Update Enforcement (AppConfig.minAppVersion)</text>
+    <text x="15" y="44" fill="#e9d5ff" font-size="11">• Enforces minimum baseline build (e.g. v1.2.0) across the entire municipal driver fleet</text>
+    <text x="15" y="60" fill="#94a3b8" font-size="11">• When forceUpdate is active, outdated mobile clients are locked with a direct link to roadsafedrive.com/download</text>
+  </g>
+
+  <!-- S5 -->
+  <g transform="translate(1840, 830)">
+    <rect width="800" height="70" rx="6" fill="url(#superCardGrad)" stroke="#c084fc"/>
+    <text x="15" y="24" fill="#faf5ff" font-size="13" font-weight="bold">5. Tamper-Evident Security Audit Ledger: /audit_logs (AuditDashboardScreen.kt • Web Tab 11)</text>
+    <text x="15" y="44" fill="#e9d5ff" font-size="11">• Permanent audit trail capturing all administrative and security actions categorized by Risk Level</text>
+    <text x="15" y="60" fill="#94a3b8" font-size="11">• Risk Tiers: LOW, MEDIUM, HIGH, CRITICAL • Inspects role changes, threshold alterations &amp; failed logins</text>
+  </g>
+
+  <!-- S6 -->
+  <g transform="translate(1840, 920)">
+    <rect width="800" height="70" rx="6" fill="url(#superCardGrad)" stroke="#c084fc"/>
+    <text x="15" y="24" fill="#faf5ff" font-size="13" font-weight="bold">6. System Configuration Factory Reset to Defaults (resetToDefaults() in app.js)</text>
+    <text x="15" y="44" fill="#e9d5ff" font-size="11">• Reverts all examination scores, timers, streak curves &amp; progression rules to default baseline</text>
+    <text x="15" y="60" fill="#94a3b8" font-size="11">• Protected by dual-confirmation modal to prevent accidental execution by field officers</text>
+  </g>
+
+  <!-- S7 -->
+  <g transform="translate(1840, 1010)">
+    <rect width="800" height="70" rx="6" fill="url(#superCardGrad)" stroke="#c084fc"/>
+    <text x="15" y="24" fill="#faf5ff" font-size="13" font-weight="bold">7. Direct Cross-Role Governance &amp; Real-Time Push (Firestore ➔ FirebaseSyncManager)</text>
+    <text x="15" y="44" fill="#e9d5ff" font-size="11">• Every action taken by Super Admin propagates instantly to all User and Admin devices in the field</text>
+    <text x="15" y="60" fill="#94a3b8" font-size="11">• Zero mobile app restarts required • Active sessions adapt to new permissions dynamically</text>
+  </g>
+
+  <!-- Connect Super Admin Cards -->
+  <line x1="2240" y1="525" x2="2240" y2="545" stroke="#c084fc" stroke-width="2" marker-end="url(#arrow-purple)"/>
+  <line x1="2240" y1="630" x2="2240" y2="650" stroke="#c084fc" stroke-width="2" marker-end="url(#arrow-purple)"/>
+  <line x1="2240" y1="720" x2="2240" y2="740" stroke="#c084fc" stroke-width="2" marker-end="url(#arrow-purple)"/>
+  <line x1="2240" y1="810" x2="2240" y2="830" stroke="#c084fc" stroke-width="2" marker-end="url(#arrow-purple)"/>
+  <line x1="2240" y1="900" x2="2240" y2="920" stroke="#c084fc" stroke-width="2" marker-end="url(#arrow-purple)"/>
+  <line x1="2240" y1="990" x2="2240" y2="1010" stroke="#c084fc" stroke-width="2" marker-end="url(#arrow-purple)"/>
+
+  <!-- Routing Lines from Decision Diamond -->
+  <path d="M 1230 275 L 460 275 L 460 455" fill="none" stroke="#10b981" stroke-width="3" marker-end="url(#arrow-emerald)"/>
+  <rect x="780" y="258" width="130" height="24" rx="4" fill="#064e3b" stroke="#10b981"/>
+  <text x="845" y="274" fill="#34d399" font-size="11" font-weight="bold" text-anchor="middle">role == 'USER'</text>
+
+  <path d="M 1350 320 L 1350 455" fill="none" stroke="#3b82f6" stroke-width="3" marker-end="url(#arrow-blue)"/>
+  <rect x="1360" y="360" width="130" height="24" rx="4" fill="#1e3a8a" stroke="#3b82f6"/>
+  <text x="1425" y="376" fill="#60a5fa" font-size="11" font-weight="bold" text-anchor="middle">role == 'ADMIN'</text>
+
+  <path d="M 1470 275 L 2240 275 L 2240 455" fill="none" stroke="#c084fc" stroke-width="3" marker-end="url(#arrow-purple)"/>
+  <rect x="1750" y="258" width="170" height="24" rx="4" fill="#4c1d95" stroke="#c084fc"/>
+  <text x="1835" y="274" fill="#d8b4fe" font-size="11" font-weight="bold" text-anchor="middle">role == 'SUPER_ADMIN'</text>
+
+  <!-- ================= BOTTOM LANE: REAL-TIME CROSS-ROLE SYNC & PROPAGATION ================= -->
+  <rect x="40" y="1480" width="2620" height="290" rx="10" fill="url(#syncSwimGrad)" stroke="#4b5563" stroke-width="2"/>
+  <rect x="40" y="1480" width="2620" height="38" rx="10" fill="#1f2937"/>
+  <text x="60" y="1505" fill="#e5e7eb" font-size="15" font-weight="bold">☁️ REAL-TIME CLOUD PROPAGATION &amp; ROLE ELEVATION PIPELINE (Firestore + FirebaseSyncManager)</text>
+
+  <!-- Database box -->
+  <g transform="translate(60, 1535)">
+    <rect width="450" height="215" rx="8" fill="#111827" stroke="#374151" stroke-width="2"/>
+    <text x="20" y="30" fill="#38bdf8" font-size="14" font-weight="bold">Google Cloud Firestore Collections</text>
+    <text x="20" y="60" fill="#94a3b8" font-size="12">• <b>users/{uid}:</b> Canonical user record &amp; role string ('user' | 'admin')</text>
+    <text x="20" y="85" fill="#94a3b8" font-size="12">• <b>system_settings/app_config:</b> Passing marks, timers, locks</text>
+    <text x="20" y="110" fill="#94a3b8" font-size="12">• <b>activities:</b> Append-only event ledger (PST UTC+8)</text>
+    <text x="20" y="135" fill="#94a3b8" font-size="12">• <b>audit_logs:</b> Tamper-evident admin action ledger</text>
+    <text x="20" y="160" fill="#94a3b8" font-size="12">• <b>user_progress:</b> Citizen XP, levels, badges, streaks</text>
+    <text x="20" y="185" fill="#94a3b8" font-size="12">• <b>quiz_attempts:</b> Individual exam scores, answers &amp; languages</text>
+  </g>
+
+  <!-- Step 1 -->
+  <g transform="translate(540, 1535)">
+    <rect width="480" height="95" rx="6" fill="url(#syncCardGrad)" stroke="#2563eb"/>
+    <text x="15" y="24" fill="#38bdf8" font-size="13" font-weight="bold">Step 1: Role Elevation Trigger</text>
+    <text x="15" y="48" fill="#e2e8f0" font-size="11">Super Admin modifies user dropdown on Web Command Center &amp; clicks Confirm.</text>
+    <text x="15" y="68" fill="#93c5fd" font-size="11"><b>Firestore Call:</b> users/{uid}.set({ role: 'admin' }, merge: true)</text>
+  </g>
+
+  <!-- Step 2 -->
+  <g transform="translate(1050, 1535)">
+    <rect width="480" height="95" rx="6" fill="url(#syncCardGrad)" stroke="#d97706"/>
+    <text x="15" y="24" fill="#f59e0b" font-size="13" font-weight="bold">Step 2: Tamper-Evident Audit Logging</text>
+    <text x="15" y="48" fill="#e2e8f0" font-size="11">System commits immutable security event to Firestore audit_logs &amp; activities.</text>
+    <text x="15" y="68" fill="#fde68a" font-size="11"><b>Audit Record:</b> action: 'ROLE_UPDATED', risk: 'MEDIUM', by: @admin</text>
+  </g>
+
+  <!-- Step 3 -->
+  <g transform="translate(1560, 1535)">
+    <rect width="490" height="95" rx="6" fill="url(#syncCardGrad)" stroke="#059669"/>
+    <text x="15" y="24" fill="#10b981" font-size="13" font-weight="bold">Step 3: Real-Time Mobile Snapshot Catch</text>
+    <text x="15" y="48" fill="#e2e8f0" font-size="11">Running Android device receives snapshot via FirebaseSyncManager.observeUserRole.</text>
+    <text x="15" y="68" fill="#6ee7b7" font-size="11"><b>Client Event:</b> AuthManager detects role change from USER to ADMIN</text>
+  </g>
+
+  <!-- Step 4 -->
+  <g transform="translate(2080, 1535)">
+    <rect width="530" height="95" rx="6" fill="url(#syncCardGrad)" stroke="#9333ea"/>
+    <text x="15" y="24" fill="#c084fc" font-size="13" font-weight="bold">Step 4: Dynamic Zero-Downtime Re-scaffold</text>
+    <text x="15" y="48" fill="#e2e8f0" font-size="11">Compose updates StateFlow: permissions elevated, drawer switches to Admin Suite.</text>
+    <text x="15" y="68" fill="#d8b4fe" font-size="11"><b>Toast Notification:</b> "Permissions Updated: Welcome, Traffic Officer"</text>
+  </g>
+
+  <!-- Bottom Policy Banner -->
+  <g transform="translate(540, 1650)">
+    <rect width="2070" height="100" rx="6" fill="#0f172a" stroke="#38bdf8"/>
+    <text x="20" y="32" fill="#38bdf8" font-size="13" font-weight="bold">Policy Propagation Loop (AppConfig Engine):</text>
+    <text x="20" y="58" fill="#e2e8f0" font-size="12">Any change made to passing scores (50%-100%), per-question timers (15s-30s), language availability (English / Filipino),</text>
+    <text x="20" y="80" fill="#94a3b8" font-size="12">or municipal maintenance mode locks writes directly to <b>system_settings/app_config</b>. Connected Android devices stream this via <b>appConfigFlow</b> and apply new policies instantly without requiring an app reboot or user logoff.</text>
+  </g>
+
+  <!-- Connect Pipeline Steps -->
+  <line x1="1020" y1="1582" x2="1050" y2="1582" stroke="#38bdf8" stroke-width="2" marker-end="url(#arrow-cyan)"/>
+  <line x1="1530" y1="1582" x2="1560" y2="1582" stroke="#38bdf8" stroke-width="2" marker-end="url(#arrow-cyan)"/>
+  <line x1="2050" y1="1582" x2="2080" y2="1582" stroke="#38bdf8" stroke-width="2" marker-end="url(#arrow-cyan)"/>
+
+  <!-- Super Admin Role Elevation Line to Pipeline Step 1 -->
+  <path d="M 2240 630 L 2240 1460 L 780 1460 L 780 1535" fill="none" stroke="#c084fc" stroke-width="3" stroke-dasharray="6,4" marker-end="url(#arrow-purple)"/>
+  <rect x="1450" y="1445" width="220" height="26" rx="4" fill="#3b0764" stroke="#c084fc"/>
+  <text x="1560" y="1462" fill="#f3e8ff" font-size="11" font-weight="bold" text-anchor="middle">Super Admin Promotes / Demotes Role</text>
+
+</svg>
