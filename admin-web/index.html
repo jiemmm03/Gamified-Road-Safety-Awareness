@@ -1054,6 +1054,10 @@
                             <option value="streak-desc">Streak (Longest First)</option>
                             <option value="name-asc">Driver Name (A–Z)</option>
                         </select>
+                        <button class="btn btn-danger font-button-sm" id="btn-reset-leaderboard-web" onclick="openResetLeaderboardModal()"
+                            style="display:inline-flex;align-items:center;gap:6px;background:linear-gradient(135deg, #DC2626, #991B1B);color:#FFFFFF;border:1px solid rgba(220,38,38,0.5);border-radius:8px;padding:7px 14px;cursor:pointer;font-weight:700;box-shadow:0 2px 8px rgba(220,38,38,0.3);white-space:nowrap;">
+                            <span class="material-icons-round" style="font-size:16px;">restart_alt</span> Reset Rankings
+                        </button>
                     </div>
                 </div>
                 <div class="data-list" id="progress-list"></div>
@@ -2701,6 +2705,35 @@
                     style="flex:1;justify-content:center;background:#CE1126;border-color:rgba(206,17,38,0.6);">
                     <span class="material-icons-round" style="font-size:16px;">logout</span>
                     <span>Log Out</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══════════ RESET LEADERBOARD CONFIRMATION MODAL ═══════════ -->
+    <div class="modal-overlay" id="reset-leaderboard-overlay" style="z-index:99998;display:none;">
+        <div class="modal" style="max-width:440px;text-align:center;padding:26px;">
+            <div style="width:56px;height:56px;border-radius:50%;background:rgba(220,38,38,0.15);border:1px solid rgba(220,38,38,0.4);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;">
+                <span class="material-icons-round" style="color:#EF4444;font-size:30px;">restart_alt</span>
+            </div>
+            <h3 class="font-h3" style="color:#FFFFFF;margin-bottom:8px;">Reset Current Rankings?</h3>
+            <p class="font-body-sm" style="color:var(--text-secondary);margin-bottom:14px;font-size:13px;line-height:1.5;text-align:left;">
+                This will clear the current leaderboard standings and start a new ranking period.
+            </p>
+            <div style="background:rgba(220,38,38,0.08);border:1px solid rgba(220,38,38,0.25);border-radius:8px;padding:12px;margin-bottom:20px;text-align:left;">
+                <p class="font-caption" style="color:#FCA5A5;line-height:1.4;margin:0;">
+                    ✓ Current user rankings will be archived to <code>ranking_history</code>.<br>
+                    ✓ User accounts, quiz history, and achievements will <strong>NOT</strong> be deleted.<br>
+                    ✓ Active leaderboard points will be reset to 0 for all learners.
+                </p>
+            </div>
+            <div style="display:flex;gap:10px;justify-content:center;">
+                <button class="btn btn-secondary font-button" onclick="closeResetLeaderboardModal()"
+                    style="flex:1;justify-content:center;">Cancel</button>
+                <button class="btn btn-danger font-button" id="btn-confirm-reset-leaderboard" onclick="executeResetLeaderboardWeb()"
+                    style="flex:1;justify-content:center;background:linear-gradient(135deg, #DC2626, #991B1B);border-color:rgba(220,38,38,0.6);">
+                    <span class="material-icons-round" style="font-size:16px;">restart_alt</span>
+                    <span id="btn-confirm-reset-leaderboard-text">Confirm Reset</span>
                 </button>
             </div>
         </div>

@@ -5836,6 +5836,142 @@ function showToast(msg, type = 'info', duration = 3500) {
 }
 
 // ═══════════════════════════════════════════════════════════════
+// LEADERBOARD RESET MODAL & ACTION HANDLERS
+// ═══════════════════════════════════════════════════════════════
+
+window.openResetLeaderboardModal = function() {
+    const overlay = document.getElementById('reset-leaderboard-overlay');
+    if (overlay) overlay.style.display = 'flex';
+};
+
+window.closeResetLeaderboardModal = function() {
+    const overlay = document.getElementById('reset-leaderboard-overlay');
+    if (overlay) overlay.style.display = 'none';
+};
+
+window.executeResetLeaderboardWeb = async function() {
+    if (!db) {
+        showToast('Firestore database is not connected.', 'error');
+        return;
+    }
+
+    const btn = document.getElementById('btn-confirm-reset-leaderboard');
+    const btnText = document.getElementById('btn-confirm-reset-leaderboard-text');
+    if (btn) btn.disabled = true;
+    if (btnText) btnText.textContent = 'Resetting...';
+
+    try {
+        const snapshot = await db.collection('user_progress').get();
+        if (snapshot.empty) {
+            showToast('No active ranking data found to reset.', 'info');
+            closeResetLeaderboardModal();
+            if (btn) btn.disabled = false;
+            if (btnText) btnText.textContent = 'Confirm Reset';
+            return;
+        }
+
+        const now = Date.now();
+        const dateObj = new Date(now);
+        const periodLabel = `${dateObj.getFullYear()}-${String(dateObj.getMonth() + 1).padStart(2, '0')}`;
+        const periodId = `period_${periodLabel}_${now}`;
+        const adminUser = State.currentAdmin || 'admin';
+
+        const batch = db.batch();
+
+        // 1. Period metadata in ranking_history
+        const periodRef = db.collection('ranking_history').doc(periodId);
+        batch.set(periodRef, {
+            periodId: periodId,
+            periodLabel: periodLabel,
+            resetAt: firebase.firestore.FieldValue.serverTimestamp(),
+            resetAtMillis: now,
+            resetBy: adminUser,
+            resetByDisplayName: adminUser,
+            totalUsersArchived: snapshot.size,
+            status: 'completed'
+        });
+
+        // 2. Archive entries and reset active standings
+        snapshot.docs.forEach(docSnap => {
+            const data = docSnap.data();
+            const userId = docSnap.id;
+
+            // Archive individual entry
+            const entryRef = db.collection('ranking_history').doc(periodId).collection('entries').doc(userId);
+            batch.set(entryRef, {
+                userId: userId,
+                displayName: data.displayName || userId,
+                finalXp: data.totalXp || data.xp || 0,
+                finalLevel: data.currentLevel || data.level || 1,
+                finalRank: data.rank || 0,
+                quizzesCompleted: data.quizzesCompleted || 0,
+                scenariosCompleted: data.scenariosCompleted || 0,
+                longestStreak: data.longestStreak || 0,
+                archivedAt: firebase.firestore.FieldValue.serverTimestamp()
+            });
+
+            // Reset active standings in user_progress
+            const userProgressRef = db.collection('user_progress').doc(userId);
+            batch.set(userProgressRef, {
+                totalXp: 0,
+                xp: 0,
+                currentLevel: 1,
+                level: 1,
+                rank: 0,
+                lastRankingResetAt: firebase.firestore.FieldValue.serverTimestamp(),
+                lastRankingResetPeriod: periodId
+            }, { merge: true });
+        });
+
+        // 3. Log security audit event
+        const auditRef = db.collection('audit_logs').doc(`audit_${now}`);
+        batch.set(auditRef, {
+            auditId: `audit_${now}`,
+            actionType: 'RANKING_RESET',
+            module: 'GAMIFICATION',
+            adminId: adminUser,
+            adminUsername: adminUser,
+            riskLevel: 'HIGH',
+            description: `Reset leaderboard rankings via Web Command Center. Period: ${periodId}. Users archived: ${snapshot.size}.`,
+            timestampUtc: now,
+            timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+            status: 'SUCCESS'
+        });
+
+        // 4. Log to activities collection
+        const activityRef = db.collection('activities').doc(`act_reset_${now}`);
+        batch.set(activityRef, {
+            userId: adminUser,
+            username: adminUser,
+            displayName: adminUser,
+            role: 'Admin',
+            activityType: 'Admin Action',
+            action: 'Reset Leaderboard Rankings',
+            description: `Admin reset standings for new cycle (${periodLabel}). Archived ${snapshot.size} learners.`,
+            status: 'Completed',
+            timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+            timestampMillis: now
+        });
+
+        await batch.commit();
+
+        showToast(`Leaderboard reset successfully! Archived ${snapshot.size} drivers to ${periodLabel}.`, 'success');
+        closeResetLeaderboardModal();
+
+        // Refresh UI
+        setTimeout(() => {
+            if (typeof renderUsersList === 'function') renderUsersList();
+        }, 500);
+    } catch (err) {
+        console.error('Reset leaderboard error:', err);
+        showToast(`Failed to reset leaderboard: ${err.message}`, 'error');
+    } finally {
+        if (btn) btn.disabled = false;
+        if (btnText) btnText.textContent = 'Confirm Reset';
+    }
+};
+
+// ═══════════════════════════════════════════════════════════════
 // FILTER CHIPS & SEARCH EVENT HANDLERS
 // ═══════════════════════════════════════════════════════════════
 
