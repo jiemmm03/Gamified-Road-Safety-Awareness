@@ -5865,9 +5865,42 @@ window.executeResetLeaderboardWeb = async function() {
     if (btnText) btnText.textContent = 'Resetting...';
 
     try {
+        if (firebase.auth && !firebase.auth().currentUser) {
+            try {
+                await firebase.auth().signInAnonymously();
+            } catch (authErr) {
+                console.warn('Anonymous auth sign-in note:', authErr);
+            }
+        }
+
         const snapshot = await db.collection('user_progress').get();
-        if (snapshot.empty) {
-            showToast('No active ranking data found to reset.', 'info');
+        const usersSnapshot = await db.collection('users').get();
+        
+        const userIdsToReset = new Set();
+        const usersDataMap = new Map();
+
+        snapshot.docs.forEach(docSnap => {
+            const id = docSnap.id;
+            if (id.toLowerCase() !== 'admin') {
+                userIdsToReset.add(id);
+                usersDataMap.set(id, docSnap.data());
+            }
+        });
+
+        usersSnapshot.docs.forEach(docSnap => {
+            const data = docSnap.data();
+            const id = docSnap.id;
+            const role = (data.role || '').toLowerCase();
+            if (id.toLowerCase() !== 'admin' && role !== 'admin' && role !== 'officer') {
+                userIdsToReset.add(id);
+                if (!usersDataMap.has(id)) {
+                    usersDataMap.set(id, data);
+                }
+            }
+        });
+
+        if (userIdsToReset.size === 0) {
+            showToast('No active ranking data or learners found to reset.', 'info');
             closeResetLeaderboardModal();
             if (btn) btn.disabled = false;
             if (btnText) btnText.textContent = 'Confirm Reset';
@@ -5891,20 +5924,19 @@ window.executeResetLeaderboardWeb = async function() {
             resetAtMillis: now,
             resetBy: adminUser,
             resetByDisplayName: adminUser,
-            totalUsersArchived: snapshot.size,
+            totalUsersArchived: userIdsToReset.size,
             status: 'completed'
         });
 
         // 2. Archive entries and reset active standings
-        snapshot.docs.forEach(docSnap => {
-            const data = docSnap.data();
-            const userId = docSnap.id;
+        userIdsToReset.forEach(userId => {
+            const data = usersDataMap.get(userId) || {};
 
             // Archive individual entry
             const entryRef = db.collection('ranking_history').doc(periodId).collection('entries').doc(userId);
             batch.set(entryRef, {
                 userId: userId,
-                displayName: data.displayName || userId,
+                displayName: data.displayName || data.name || data.fullName || userId,
                 finalXp: data.totalXp || data.xp || 0,
                 finalLevel: data.currentLevel || data.level || 1,
                 finalRank: data.rank || 0,
@@ -5917,6 +5949,8 @@ window.executeResetLeaderboardWeb = async function() {
             // Reset active standings in user_progress
             const userProgressRef = db.collection('user_progress').doc(userId);
             batch.set(userProgressRef, {
+                userId: userId,
+                displayName: data.displayName || data.name || data.fullName || userId,
                 totalXp: 0,
                 xp: 0,
                 currentLevel: 1,
@@ -5936,7 +5970,7 @@ window.executeResetLeaderboardWeb = async function() {
             adminId: adminUser,
             adminUsername: adminUser,
             riskLevel: 'HIGH',
-            description: `Reset leaderboard rankings via Web Command Center. Period: ${periodId}. Users archived: ${snapshot.size}.`,
+            description: `Reset leaderboard rankings via Web Command Center. Period: ${periodId}. Users archived: ${userIdsToReset.size}.`,
             timestampUtc: now,
             timestamp: firebase.firestore.FieldValue.serverTimestamp(),
             status: 'SUCCESS'
@@ -5951,7 +5985,7 @@ window.executeResetLeaderboardWeb = async function() {
             role: 'Admin',
             activityType: 'Admin Action',
             action: 'Reset Leaderboard Rankings',
-            description: `Admin reset standings for new cycle (${periodLabel}). Archived ${snapshot.size} learners.`,
+            description: `Admin reset standings for new cycle (${periodLabel}). Archived ${userIdsToReset.size} learners.`,
             status: 'Completed',
             timestamp: firebase.firestore.FieldValue.serverTimestamp(),
             timestampMillis: now
@@ -5959,13 +5993,23 @@ window.executeResetLeaderboardWeb = async function() {
 
         await batch.commit();
 
-        showToast(`Leaderboard reset successfully! Archived ${snapshot.size} drivers to ${periodLabel}.`, 'success');
+        showToast(`Leaderboard reset successfully! Archived ${userIdsToReset.size} drivers to ${periodLabel}.`, 'success');
         closeResetLeaderboardModal();
 
-        // Refresh UI
-        setTimeout(() => {
-            if (typeof renderUsersList === 'function') renderUsersList();
-        }, 500);
+        // Refresh UI state immediately
+        (State.progress || []).forEach(p => {
+            p.totalXp = 0;
+            p.xp = 0;
+            p.currentLevel = 1;
+            p.level = 1;
+            p.rank = 0;
+        });
+
+        updateLeaderboardAndRanks();
+        if (typeof renderProgressList === 'function') renderProgressList();
+        if (typeof renderMiniLeaderboard === 'function') renderMiniLeaderboard();
+        if (typeof renderUsersList === 'function') renderUsersList();
+
     } catch (err) {
         console.error('Reset leaderboard error:', err);
         showToast(`Failed to reset leaderboard: ${err.message}`, 'error');
