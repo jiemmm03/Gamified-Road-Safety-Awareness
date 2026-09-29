@@ -1274,14 +1274,41 @@ class FirebaseSyncManager {
     ): RankingResetResult {
         // ── 1. Server-side admin role verification ───────────────────────────
         try {
+            val normalizedAdmin = adminUsername.trim().lowercase()
             val adminDoc = firestore.collection(COLLECTION_USERS)
-                .document(adminUsername.trim().lowercase())
+                .document(normalizedAdmin)
                 .get()
                 .await()
             val role = adminDoc?.getString("role")?.lowercase() ?: ""
+
             if (role != "admin" && role != "super_admin") {
-                Log.w(tag, "resetCloudLeaderboard blocked: '$adminUsername' has role='$role'")
-                return RankingResetResult.Failure("Access denied. Only admin accounts may reset rankings.")
+                // Fallback: the built-in "admin" account may have been created before
+                // syncRegisteredUser existed, so its Firestore users/{admin} document
+                // might not exist yet. Accept it and auto-provision the document.
+                if (normalizedAdmin == "admin") {
+                    Log.d(tag, "resetCloudLeaderboard: built-in admin account has no Firestore doc (role='$role'). Auto-provisioning.")
+                    try {
+                        val provisionData = hashMapOf<String, Any>(
+                            "username" to normalizedAdmin,
+                            "displayName" to adminDisplayName,
+                            "role" to "admin",
+                            "isOnline" to true,
+                            "isActive" to true,
+                            "createdAt" to FieldValue.serverTimestamp(),
+                            "createdAtMillis" to System.currentTimeMillis()
+                        )
+                        firestore.collection(COLLECTION_USERS)
+                            .document(normalizedAdmin)
+                            .set(provisionData, SetOptions.merge())
+                            .await()
+                        Log.d(tag, "resetCloudLeaderboard: auto-provisioned Firestore users/$normalizedAdmin")
+                    } catch (provisionErr: Exception) {
+                        Log.w(tag, "resetCloudLeaderboard: auto-provision failed (non-fatal): ${provisionErr.message}")
+                    }
+                } else {
+                    Log.w(tag, "resetCloudLeaderboard blocked: '$adminUsername' has role='$role'")
+                    return RankingResetResult.Failure("Access denied. Only admin accounts may reset rankings.")
+                }
             }
         } catch (e: Exception) {
             Log.e(tag, "resetCloudLeaderboard: admin verification failed — ${e.message}")
@@ -1347,7 +1374,12 @@ class FirebaseSyncManager {
                         .document(periodId)
                         .collection("entries")
                         .document(userId)
-                    val archiveData = HashMap<String, Any>(docData)
+                    // Filter out null values — HashMap<String, Any> is non-nullable
+                    // and Firestore documents can contain null field values.
+                    val archiveData = HashMap<String, Any>()
+                    for ((key, value) in docData) {
+                        if (value != null) archiveData[key] = value
+                    }
                     archiveData["archivedAt"] = FieldValue.serverTimestamp()
                     archiveData["archivedAtMillis"] = now
                     archiveData["periodId"] = periodId
@@ -1369,7 +1401,9 @@ class FirebaseSyncManager {
                     )
                     val progressRef = firestore.collection(COLLECTION_USER_PROGRESS)
                         .document(userId)
-                    batch.update(progressRef, resetData)
+                    // Use set+merge instead of update — update throws if the
+                    // document was deleted between the snapshot read and commit.
+                    batch.set(progressRef, resetData, SetOptions.merge())
 
                     totalUsersReset++
                 }
