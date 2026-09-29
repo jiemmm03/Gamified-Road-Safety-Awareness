@@ -75,7 +75,7 @@ graph TD
 | **Admin Web Frontend** | HTML5, CSS3 Glassmorphism, Vanilla JavaScript, Chart.js 4.4 | Real-time administrative operations, dual-portal simulation & 11-section control center |
 | **Web SPA Routing** | HTML5 History API (`pushState`, `popstate`), Clean URL Mappings | Single-Page Application navigation without page reloads |
 | **Cloud Backend** | Firebase Firestore, Firebase Authentication, Firebase Hosting | Cloud data aggregation, telemetry & live system configuration |
-| **CI/CD & Automation** | GitHub Actions, Gradle 8.11, Android SDK Build Tools | Automated 28.7 MB APK compilation and cloud deployment |
+| **CI/CD & Automation** | GitHub Actions, Gradle 8.11, Android SDK Build Tools | Automated 27.6 MB APK compilation and cloud deployment |
 
 ---
 
@@ -182,7 +182,7 @@ admin-web/
 ├── download.html     (Mobile APK download landing page with dynamic QR code)
 ├── app.js            (5,900+ lines of real-time Firebase, SPA router & control logic)
 ├── styles.css        (Custom CSS3 PNP Gold/Navy glassmorphism design system)
-├── RoadSafe-AI.apk   (Latest Android 28.7 MB binary ready for wireless deployment)
+├── RoadSafe-AI.apk   (Latest Android 27.6 MB binary ready for wireless deployment)
 └── logo.png          (Dagami MPS official seal)
 ```
 
@@ -231,7 +231,7 @@ admin-web/
 Every control in Tab 12 is **100% functional and synced live** to connected mobile devices via Firestore document `system_settings/app_config`:
 
 1. **Live Mobile App & System Status Card**:
-   - Live cloud sync status, APK release (`v1.2.0 (28.7 MB)`), active driver count, maintenance mode badge, and last sync timestamp.
+   - Live cloud sync status, APK release (`v1.2.0 (27.6 MB)`), active driver count, maintenance mode badge, and last sync timestamp.
 2. **Examination & Assessment Standards**:
    - Quiz passing score (%), Driver assessment passing score (%), Simulation passing score (%), Base quiz XP, Attempt limits, Per-question countdown timers, Min score for XP award, Question order randomization, Choice randomization, and Show correct answers toggle.
 3. **Gamification & XP Economy**:
@@ -260,7 +260,7 @@ Every control in Tab 12 is **100% functional and synced live** to connected mobi
 
 The standalone download and onboarding portal at **`https://roadsafedrive.com/download`** features:
 - **Dynamic High-Resolution QR Code**: Generated on-the-fly using HTML5 Canvas pointing directly to `https://roadsafedrive.com/RoadSafe-AI.apk`.
-- **Live Package Metrics**: Exact file size badge (**28.7 MB**), version **v1.2.0**, and minimum compatibility (**Android 8.0+ Oreo to Android 15**).
+- **Live Package Metrics**: Exact file size badge (**27.6 MB**), version **v1.2.0**, and minimum compatibility (**Android 8.0+ Oreo to Android 15**).
 - **One-Tap Direct Download**: Fast direct APK downloading with auto-fallback mirrors.
 - **Interactive Installation Guide**: 3-step walkthrough for enabling unknown app installations on modern Android devices with security tips and permissions breakdown.
 
