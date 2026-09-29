@@ -22,6 +22,10 @@ let db = null;
 try {
     if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
     db = firebase.firestore();
+    // Sign in anonymously so Firestore security rules (request.auth != null) allow writes.
+    firebase.auth().signInAnonymously()
+        .then(() => console.log("✅ Firebase Anonymous Auth established."))
+        .catch(err => console.warn("⚠️ Firebase anonymous auth failed:", err.message));
     console.log("✅ Firebase Firestore Initialized in Full Mirror Mode.");
 } catch (err) {
     console.error("❌ Firebase init error:", err);
