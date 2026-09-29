@@ -13,6 +13,7 @@ import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
@@ -20,6 +21,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.withContext
 import com.example.gamifiedroadsafetyawareness.model.AppConfig
 import com.example.gamifiedroadsafetyawareness.model.GamificationConstants
 
@@ -1433,6 +1435,114 @@ class FirebaseSyncManager {
         } catch (e: Exception) {
             Log.e(tag, "resetCloudLeaderboard FAILED (batch write): ${e.message}")
             return RankingResetResult.Failure("Reset failed: ${e.message ?: "Unknown error"}. No data was changed.")
+        }
+    }
+
+    sealed class QuizResetResult {
+        data class Success(val attemptsReset: Int) : QuizResetResult()
+        data class Failure(val message: String) : QuizResetResult()
+    }
+
+    /**
+     * Clears all historical quiz attempts across the entire system in Firestore and resets
+     * quizzesCompleted counter for all users.
+     */
+    suspend fun resetCloudQuizAttempts(
+        adminUsername: String,
+        adminDisplayName: String = adminUsername
+    ): QuizResetResult {
+        return withContext(Dispatchers.IO) {
+            try {
+                val attemptsSnapshot = firestore.collection(COLLECTION_QUIZ_ATTEMPTS).get().await()
+                val progressSnapshot = firestore.collection(COLLECTION_USER_PROGRESS).get().await()
+                val totalAttempts = attemptsSnapshot.size()
+
+                // Delete attempts in batches
+                attemptsSnapshot.documents.chunked(400).forEach { chunk ->
+                    val batch = firestore.batch()
+                    chunk.forEach { doc -> batch.delete(doc.reference) }
+                    batch.commit().await()
+                }
+
+                // Reset quizzesCompleted in user_progress
+                progressSnapshot.documents.chunked(400).forEach { chunk ->
+                    val batch = firestore.batch()
+                    chunk.forEach { doc ->
+                        batch.set(
+                            doc.reference,
+                            mapOf("quizzesCompleted" to 0, "perfectQuizCount" to 0),
+                            SetOptions.merge()
+                        )
+                    }
+                    batch.commit().await()
+                }
+
+                recordActivity(
+                    userId = adminUsername,
+                    username = adminUsername,
+                    displayName = adminDisplayName,
+                    role = "Admin",
+                    activityType = "Admin Action",
+                    action = "Reset Quiz Performance Data",
+                    description = "Admin reset all quiz submissions ($totalAttempts attempts cleared) for a new cycle.",
+                    status = "Completed",
+                    metadata = mapOf("attemptsReset" to totalAttempts)
+                )
+
+                QuizResetResult.Success(attemptsReset = totalAttempts)
+            } catch (e: Exception) {
+                Log.e(tag, "resetCloudQuizAttempts failed: ${e.message}")
+                QuizResetResult.Failure(e.message ?: "Failed to reset quiz performance data")
+            }
+        }
+    }
+
+    /**
+     * Resets quiz attempts for a single learner in Firestore.
+     */
+    suspend fun resetUserQuizAttempts(
+        targetUserId: String,
+        adminUsername: String,
+        adminDisplayName: String = adminUsername
+    ): QuizResetResult {
+        return withContext(Dispatchers.IO) {
+            try {
+                val cleanId = targetUserId.trim().lowercase()
+                val attemptsSnapshot = firestore.collection(COLLECTION_QUIZ_ATTEMPTS).get().await()
+                val matchingDocs = attemptsSnapshot.documents.filter {
+                    val uid = it.getString("userId")?.trim()?.lowercase() ?: ""
+                    uid == cleanId
+                }
+
+                matchingDocs.chunked(400).forEach { chunk ->
+                    val batch = firestore.batch()
+                    chunk.forEach { doc -> batch.delete(doc.reference) }
+                    batch.commit().await()
+                }
+
+                val progressRef = firestore.collection(COLLECTION_USER_PROGRESS).document(cleanId)
+                progressRef.set(
+                    mapOf("quizzesCompleted" to 0, "perfectQuizCount" to 0),
+                    SetOptions.merge()
+                ).await()
+
+                recordActivity(
+                    userId = adminUsername,
+                    username = adminUsername,
+                    displayName = adminDisplayName,
+                    role = "Admin",
+                    activityType = "Admin Action",
+                    action = "Reset User Quiz Attempts",
+                    description = "Admin reset quiz attempts for @$cleanId (${matchingDocs.size} attempts cleared).",
+                    status = "Completed",
+                    metadata = mapOf("targetUser" to cleanId, "attemptsReset" to matchingDocs.size)
+                )
+
+                QuizResetResult.Success(attemptsReset = matchingDocs.size)
+            } catch (e: Exception) {
+                Log.e(tag, "resetUserQuizAttempts failed: ${e.message}")
+                QuizResetResult.Failure(e.message ?: "Failed to reset user quiz attempts")
+            }
         }
     }
 

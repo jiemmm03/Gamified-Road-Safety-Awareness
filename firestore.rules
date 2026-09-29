@@ -21,8 +21,7 @@ service cloud.firestore {
 
     // Completed quiz attempts, answers, and scores
     match /quiz_attempts/{attemptId} {
-      allow read, create, update: if true;
-      allow delete: if false;
+      allow read, write: if true;
     }
 
     // Administrative security audit trail (append-only)

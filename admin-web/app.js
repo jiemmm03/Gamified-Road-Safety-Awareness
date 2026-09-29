@@ -1850,7 +1850,15 @@ function renderProfileTab(tab) {
         `;
     } else if (tab === 'p-quizzes') {
         body.innerHTML = `
-            <div class="modal-section-title font-label">Recent Quiz Assessments (${userQuizzes.length})</div>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+                <div class="modal-section-title font-label" style="margin:0;">Recent Quiz Assessments (${userQuizzes.length})</div>
+                ${userQuizzes.length > 0 ? `
+                    <button class="btn btn-danger font-button-sm" onclick="resetUserQuizAttemptsWeb('${escapeHtml(user.userId || user.username)}')" style="padding:4px 8px;font-size:11px;background:rgba(220,38,38,0.15);border:1px solid rgba(220,38,38,0.4);color:#EF4444;" title="Clear this learner's quiz history">
+                        <span class="material-icons-round" style="font-size:13px;">restart_alt</span>
+                        <span>Reset Quizzes</span>
+                    </button>
+                ` : ''}
+            </div>
             ${userQuizzes.length > 0 ? userQuizzes.map(q => `
                 <div class="modal-detail-row">
                     <div>
@@ -3990,9 +3998,17 @@ function renderGamifModalTab(tab) {
         `;
     } else if (tab === 'g-quizzes') {
         body.innerHTML = `
-            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:12px;">
                 <div class="font-h3" style="font-size:14px;">User Assessments History (${user.userQuizzes.length})</div>
-                <span class="tag-badge green font-badge">${user.quizAccuracy}% Overall Accuracy</span>
+                <div style="display:flex;align-items:center;gap:8px;">
+                    <span class="tag-badge green font-badge">${user.quizAccuracy}% Overall Accuracy</span>
+                    ${user.userQuizzes.length > 0 ? `
+                        <button class="btn btn-danger font-button-sm" onclick="resetUserQuizAttemptsWeb('${escapeHtml(user.userId)}')" style="padding:4px 8px;font-size:11px;background:rgba(220,38,38,0.15);border:1px solid rgba(220,38,38,0.4);color:#EF4444;" title="Clear this learner's quiz attempts so they can retake tests">
+                            <span class="material-icons-round" style="font-size:13px;">restart_alt</span>
+                            <span>Reset Attempts</span>
+                        </button>
+                    ` : ''}
+                </div>
             </div>
             ${user.userQuizzes.length === 0 ? `
                 <div class="empty-state mini">
@@ -6085,6 +6101,208 @@ window.executeResetLeaderboardWeb = async function() {
     } finally {
         if (btn) btn.disabled = false;
         if (btnText) btnText.textContent = 'Confirm Reset';
+    }
+};
+
+// ═══════════════════════════════════════════════════════════════
+// QUIZ PERFORMANCE RESET HANDLERS
+// ═══════════════════════════════════════════════════════════════
+
+window.openResetQuizPerformanceModal = function() {
+    const overlay = document.getElementById('reset-quiz-performance-overlay');
+    if (overlay) overlay.style.display = 'flex';
+};
+
+window.closeResetQuizPerformanceModal = function() {
+    const overlay = document.getElementById('reset-quiz-performance-overlay');
+    if (overlay) overlay.style.display = 'none';
+};
+
+window.executeResetQuizPerformanceWeb = async function() {
+    if (!db) {
+        showToast('Firestore database is not connected.', 'error');
+        return;
+    }
+
+    const btn = document.getElementById('btn-confirm-reset-quiz-perf');
+    const btnText = document.getElementById('btn-confirm-reset-quiz-perf-text');
+    if (btn) btn.disabled = true;
+    if (btnText) btnText.textContent = 'Resetting...';
+
+    try {
+        const snapshot = await db.collection('quiz_attempts').get();
+        const progressSnapshot = await db.collection('user_progress').get();
+
+        const now = Date.now();
+        const adminUser = State.currentAdmin || 'admin';
+        const totalAttempts = snapshot.size;
+
+        // 1. Delete quiz attempts in chunks of up to 400 (Firestore max 500 per batch)
+        const docs = snapshot.docs;
+        const chunkSize = 400;
+        for (let i = 0; i < docs.length; i += chunkSize) {
+            const batch = db.batch();
+            const chunk = docs.slice(i, i + chunkSize);
+            chunk.forEach(docSnap => batch.delete(docSnap.ref));
+            await batch.commit();
+        }
+
+        // 2. Reset quizzesCompleted and perfectQuizCount in user_progress
+        if (!progressSnapshot.empty) {
+            const progDocs = progressSnapshot.docs;
+            for (let i = 0; i < progDocs.length; i += chunkSize) {
+                const batch = db.batch();
+                const chunk = progDocs.slice(i, i + chunkSize);
+                chunk.forEach(docSnap => {
+                    batch.set(docSnap.ref, {
+                        quizzesCompleted: 0,
+                        perfectQuizCount: 0
+                    }, { merge: true });
+                });
+                await batch.commit();
+            }
+        }
+
+        // 3. Log security audit event
+        const auditBatch = db.batch();
+        const auditRef = db.collection('audit_logs').doc(`audit_quiz_reset_${now}`);
+        auditBatch.set(auditRef, {
+            auditId: `audit_quiz_reset_${now}`,
+            actionType: 'QUIZ_DATA_RESET',
+            module: 'EXAMINATION',
+            adminId: adminUser,
+            adminUsername: adminUser,
+            riskLevel: 'HIGH',
+            description: `Reset all historical quiz performance data and assessment attempts (${totalAttempts} attempts cleared).`,
+            timestampUtc: now,
+            timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+            status: 'SUCCESS'
+        });
+
+        // 4. Log to activities stream
+        const actRef = db.collection('activities').doc(`act_quiz_reset_${now}`);
+        auditBatch.set(actRef, {
+            userId: adminUser,
+            username: adminUser,
+            displayName: adminUser,
+            role: 'Admin',
+            activityType: 'Admin Action',
+            action: 'Reset Quiz Performance Data',
+            description: `Admin reset all driver quiz submissions (${totalAttempts} attempts cleared) for a new examination cycle.`,
+            status: 'Completed',
+            timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+            timestampMillis: now
+        });
+        await auditBatch.commit();
+
+        // 5. Update local memory state
+        State.quizzes = [];
+        (State.progress || []).forEach(p => {
+            p.quizzesCompleted = 0;
+            p.perfectQuizCount = 0;
+        });
+
+        showToast(`Quiz performance reset successfully! Cleared ${totalAttempts} quiz attempts.`, 'success');
+        closeResetQuizPerformanceModal();
+
+        // 6. Refresh UI components
+        updateMetrics();
+        if (typeof renderQuizzesList === 'function') renderQuizzesList();
+        if (typeof updateQuizChart === 'function') updateQuizChart();
+        if (typeof updateLeaderboardAndRanks === 'function') updateLeaderboardAndRanks();
+        if (typeof renderProgressList === 'function') renderProgressList();
+        if (typeof renderUsersList === 'function') renderUsersList();
+
+    } catch (err) {
+        console.error('Reset quiz performance error:', err);
+        showToast(`Failed to reset quiz performance: ${err.message}`, 'error');
+    } finally {
+        if (btn) btn.disabled = false;
+        if (btnText) btnText.textContent = 'Confirm Reset';
+    }
+};
+
+window.resetUserQuizAttemptsWeb = async function(userId) {
+    if (!userId) return;
+    const cleanId = String(userId).trim().toLowerCase();
+    const userDisplayName = State.selectedGamifUser ? State.selectedGamifUser.name : cleanId;
+
+    if (!confirm(`Are you sure you want to reset all quiz attempts for @${cleanId} (${userDisplayName})?\n\nThis will clear their quiz history so they can retake tests.`)) {
+        return;
+    }
+
+    try {
+        if (db) {
+            // Delete matching attempts from Firestore
+            const snapshot = await db.collection('quiz_attempts').get();
+            const batch = db.batch();
+            let count = 0;
+
+            snapshot.docs.forEach(docSnap => {
+                const data = docSnap.data();
+                const qUid = String(data.userId || data.username || '').trim().toLowerCase();
+                if (qUid === cleanId) {
+                    batch.delete(docSnap.ref);
+                    count++;
+                }
+            });
+
+            // Reset progress doc
+            const progressRef = db.collection('user_progress').doc(cleanId);
+            batch.set(progressRef, {
+                quizzesCompleted: 0,
+                perfectQuizCount: 0
+            }, { merge: true });
+
+            // Audit log
+            const now = Date.now();
+            const auditRef = db.collection('audit_logs').doc(`audit_u_quiz_reset_${now}`);
+            batch.set(auditRef, {
+                auditId: `audit_u_quiz_reset_${now}`,
+                actionType: 'USER_QUIZ_RESET',
+                module: 'EXAMINATION',
+                adminId: State.currentAdmin || 'admin',
+                adminUsername: State.currentAdmin || 'admin',
+                targetUser: userDisplayName,
+                description: `Admin reset quiz attempts for learner @${cleanId} (${count} attempts cleared).`,
+                riskLevel: 'MEDIUM',
+                timestampUtc: now,
+                timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                status: 'SUCCESS'
+            });
+
+            await batch.commit();
+        }
+
+        // Local state update
+        State.quizzes = (State.quizzes || []).filter(q => {
+            const qUid = String(q.userId || q.username || '').trim().toLowerCase();
+            return qUid !== cleanId;
+        });
+
+        const p = (State.progress || []).find(pr => String(pr.userId || pr.id).toLowerCase() === cleanId);
+        if (p) {
+            p.quizzesCompleted = 0;
+            p.perfectQuizCount = 0;
+        }
+
+        showToast(`Quiz attempts for ${userDisplayName} reset successfully!`, 'success');
+
+        // Refresh UI
+        updateMetrics();
+        if (typeof renderQuizzesList === 'function') renderQuizzesList();
+        if (typeof updateQuizChart === 'function') updateQuizChart();
+        if (typeof updateLeaderboardAndRanks === 'function') updateLeaderboardAndRanks();
+        if (State.selectedGamifUser) {
+            State.selectedGamifUser = getAggregatedLeaderboard().find(u => u.userId === cleanId);
+            if (typeof renderGamifModalTab === 'function') renderGamifModalTab('g-quizzes');
+        }
+        if (State.selectedUser) {
+            if (typeof renderProfileTab === 'function') renderProfileTab('p-quizzes');
+        }
+    } catch (err) {
+        console.error('Reset user quiz attempts error:', err);
+        showToast(`Failed to reset user quiz attempts: ${err.message}`, 'error');
     }
 };
 
