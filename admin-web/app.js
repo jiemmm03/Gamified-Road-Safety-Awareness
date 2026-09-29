@@ -4131,7 +4131,11 @@ function renderGamifModalTab(tab) {
                     <label class="font-label">Administrative Reason / Justification</label>
                     <input type="text" id="input-adjust-xp-reason" class="form-input font-body" placeholder="e.g. Dagami LGU On-Road Safety Workshop Completed">
                 </div>
-                <div style="margin-top:16px;display:flex;justify-content:flex-end;">
+                <div style="margin-top:16px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;">
+                    <button class="btn btn-danger font-button-sm" onclick="resetIndividualUserPoints('${escapeHtml(user.userId)}')" style="background:rgba(220,38,38,0.15);border:1px solid rgba(220,38,38,0.4);color:#EF4444;" title="Clear this learner's active leaderboard points to 0">
+                        <span class="material-icons-round" style="font-size:16px;">restart_alt</span>
+                        <span>Reset Driver to 0 XP</span>
+                    </button>
                     <button class="btn btn-primary font-button" onclick="submitAdminXpAdjustment('${escapeHtml(user.userId)}')">
                         <span class="material-icons-round">check_circle</span>
                         <span>Apply XP Adjustment</span>
@@ -4141,6 +4145,71 @@ function renderGamifModalTab(tab) {
         `;
     }
 }
+
+window.resetIndividualUserPoints = async function(userId) {
+    const leaderboard = getAggregatedLeaderboard();
+    const user = leaderboard.find(u => u.userId === String(userId).toLowerCase() || u.username === userId);
+    if (!user) return;
+
+    if (!confirm(`Are you sure you want to reset rankings and set points to 0 for ${user.name} (@${user.username})?\n\nThis clears their leaderboard score so other learners can rank up.`)) {
+        return;
+    }
+
+    try {
+        if (db) {
+            await db.collection('user_progress').doc(user.userId).set({
+                userId: user.userId,
+                displayName: user.name,
+                totalXp: 0,
+                xp: 0,
+                currentLevel: 1,
+                level: 1,
+                rank: 0,
+                lastRankingResetAt: firebase.firestore.FieldValue.serverTimestamp()
+            }, { merge: true });
+
+            await db.collection('xp_transactions').add({
+                userId: user.userId,
+                xpAmount: -user.totalXp,
+                source: 'ADMIN_RESET',
+                activityType: 'ADMIN_RESET',
+                description: `Admin reset individual standings to 0 XP for learner @${user.username}`,
+                adminId: State.currentAdmin || 'admin',
+                timestamp: firebase.firestore.FieldValue.serverTimestamp()
+            }).catch(e => console.warn(e));
+
+            await db.collection('audit_logs').add({
+                action: 'USER_RANKING_RESET',
+                actionType: 'RANKING_RESET',
+                adminId: State.currentAdmin || 'admin',
+                adminUsername: State.currentAdmin || 'admin',
+                targetUser: user.name,
+                description: `Admin reset standings to 0 XP for user @${user.username}`,
+                riskLevel: 'MEDIUM',
+                timestamp: firebase.firestore.FieldValue.serverTimestamp()
+            }).catch(e => console.warn(e));
+        }
+
+        let p = (State.progress || []).find(pr => String(pr.userId || pr.id).toLowerCase() === String(user.userId).toLowerCase());
+        if (p) {
+            p.totalXp = 0;
+            p.xp = 0;
+            p.currentLevel = 1;
+            p.level = 1;
+            p.rank = 0;
+        }
+
+        showToast(`Reset standings for ${user.name} to 0 XP successfully!`, 'success');
+        updateLeaderboardAndRanks();
+        if (State.selectedGamifUser) {
+            State.selectedGamifUser = getAggregatedLeaderboard().find(u => u.userId === user.userId);
+            renderGamifModalTab('g-breakdown');
+        }
+    } catch (err) {
+        console.error('Reset user points error:', err);
+        showToast(`Failed to reset user standings: ${err.message}`, 'error');
+    }
+};
 
 window.submitAdminXpAdjustment = function(userId) {
     const deltaInput = $('input-adjust-xp-delta');
